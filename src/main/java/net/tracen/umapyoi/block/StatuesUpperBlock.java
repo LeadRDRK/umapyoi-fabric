@@ -29,7 +29,7 @@ public class StatuesUpperBlock extends Block {
     }
     
     public StatuesUpperBlock(Supplier<Block> bottom, VoxelShape shape) {
-        super(Properties.copy(Blocks.STONE).noOcclusion());
+        super(Properties.ofLegacyCopy(Blocks.STONE).noOcclusion());
         this.bottomBlock = bottom;
         this.shape = shape;
     }

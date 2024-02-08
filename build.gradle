@@ -69,7 +69,8 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.layered() {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${project.parchment_mappings}@zip")
+        // TODO: re-enable when mappings for 1.20.4 are available
+        // parchment("org.parchmentmc.data:parchment-${project.parchment_mappings}@zip")
     }
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
@@ -77,7 +78,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     modImplementation "dev.emi:trinkets:3.7.1"
-    modCompileOnly "vazkii.patchouli:Patchouli:${project.minecraft_version}-84-FABRIC"
+    modCompileOnly "vazkii.patchouli:Patchouli:1.20.1-84-FABRIC"
 
     // compile against the JEI API but do not include it at runtime
     modCompileOnlyApi("mezz.jei:jei-${project.minecraft_version}-common-api:${project.jei_version}")

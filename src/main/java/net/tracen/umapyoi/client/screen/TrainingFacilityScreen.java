@@ -26,7 +26,7 @@ public class TrainingFacilityScreen extends AbstractContainerScreen<TrainingFaci
 
     @Override
     public void render(GuiGraphics guiGraphics, final int mouseX, final int mouseY, float partialTick) {
-        this.renderBackground(guiGraphics);
+        this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
 

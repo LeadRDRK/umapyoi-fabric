@@ -2,7 +2,7 @@ package net.tracen.umapyoi.data;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
@@ -20,7 +20,7 @@ public class UmapyoiRecipeProvider extends FabricRecipeProvider {
     }
 
     @Override
-    public void buildRecipes(Consumer<FinishedRecipe> consumer) {
+    public void buildRecipes(RecipeOutput consumer) {
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ItemRegistry.JEWEL.get())
                 .requires(Items.CARROT)
                 .requires(Ingredient.of(

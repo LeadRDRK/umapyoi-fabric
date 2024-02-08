@@ -1,5 +1,7 @@
 package net.tracen.umapyoi.block;
 
+import com.mojang.serialization.MapCodec;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
@@ -31,8 +33,17 @@ public class UmaStatueBlock extends BaseEntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     protected static final VoxelShape SHAPE = Block.box(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D);
     public UmaStatueBlock() {
-        super(Properties.copy(Blocks.STONE).noOcclusion());
+        super(Properties.ofLegacyCopy(Blocks.STONE).noOcclusion());
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
+    }
+
+    public static final MapCodec<UmaStatueBlock> CODEC = simpleCodec((properties) ->
+            new UmaStatueBlock()
+    );
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
     }
     
     @Override

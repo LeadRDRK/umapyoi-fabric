@@ -19,7 +19,7 @@ public class SkillLearningTableBlock extends CraftingTableBlock {
     private static final Component CONTAINER_TITLE = Component.translatable("container.umapyoi.skill_learning");
 
     public SkillLearningTableBlock() {
-        super(Properties.copy(Blocks.OAK_WOOD).noOcclusion());
+        super(Properties.ofLegacyCopy(Blocks.OAK_WOOD).noOcclusion());
     }
 
     @Override

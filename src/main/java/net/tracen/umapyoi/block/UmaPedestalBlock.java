@@ -1,5 +1,7 @@
 package net.tracen.umapyoi.block;
 
+import com.mojang.serialization.MapCodec;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -27,7 +29,16 @@ import javax.annotation.Nullable;
 
 public class UmaPedestalBlock extends BaseEntityBlock {
     public UmaPedestalBlock() {
-        super(Properties.copy(Blocks.STONE).noOcclusion());
+        super(Properties.ofLegacyCopy(Blocks.STONE).noOcclusion());
+    }
+
+    public static final MapCodec<UmaPedestalBlock> CODEC = simpleCodec((properties) ->
+        new UmaPedestalBlock()
+    );
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
     }
 
     @Override

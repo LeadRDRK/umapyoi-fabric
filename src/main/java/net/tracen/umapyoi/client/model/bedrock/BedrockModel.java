@@ -40,12 +40,9 @@ public interface BedrockModel {
         }
     }
 
-    default boolean isEmissive() {
-        for (BedrockPart model : this.getShouldRender()) {
-            if (model.isEmissive()) return true;
-        }
-        return false;
-    }
+    boolean isEmissive();
+
+    void setEmissive();
 
     default void loadModel(BedrockModelPOJO pojo) {
         this.getModelMap().clear();
@@ -87,8 +84,10 @@ public interface BedrockModel {
             List<Float> rotation = bones.getRotation();
             String parent = bones.getParent();
             BedrockPart model = this.getModelMap().get(name);
-            if(name.startsWith("emissive"))
+            if(name.startsWith("emissive")) {
                 model.setEmissive();
+                this.setEmissive();
+            }
             model.mirror = bones.isMirror();
 
             model.setPos(convertPivot(bones, 0), convertPivot(bones, 1), convertPivot(bones, 2));
@@ -177,8 +176,10 @@ public interface BedrockModel {
             List<Float> rotation = bones.getRotation();
             String parent = bones.getParent();
             BedrockPart model = this.getModelMap().get(name);
-            if(name.startsWith("emissive"))
+            if(name.startsWith("emissive")) {
                 model.setEmissive();
+                this.setEmissive();
+            }
             model.mirror = bones.isMirror();
 
             model.setPos(convertPivot(bones, 0), convertPivot(bones, 1), convertPivot(bones, 2));

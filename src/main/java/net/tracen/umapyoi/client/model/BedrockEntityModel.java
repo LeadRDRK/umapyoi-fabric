@@ -27,6 +27,8 @@ public class BedrockEntityModel<T extends Entity> extends EntityModel<T> impleme
     private BedrockModelPOJO modelPOJO;
     private AABB renderBoundingBox;
 
+    private boolean emissive;
+
     public BedrockEntityModel() {
         super(RenderType::entityTranslucent);
         modelMap = Maps.newHashMap();
@@ -68,6 +70,16 @@ public class BedrockEntityModel<T extends Entity> extends EntityModel<T> impleme
     @Override
     public void setRenderBoundingBox(AABB aabb) {
         this.renderBoundingBox = aabb;
+    }
+
+    @Override
+    public boolean isEmissive() {
+        return emissive;
+    }
+
+    @Override
+    public void setEmissive() {
+        this.emissive = true;
     }
 
     @Override

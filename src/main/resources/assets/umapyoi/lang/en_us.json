@@ -337,5 +337,6 @@
   "umastatus.level.8": "§bD+",
   "umastatus.level.9": "§aC",
   "umapyoi.swim_speed": "Swim Speed",
-  "umapyoi.step_height": "Step Height"
+  "umapyoi.step_height": "Step Height",
+  "entity.minecraft.villager.trainer": "Trainer"
 }

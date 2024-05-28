@@ -22,6 +22,8 @@ import net.tracen.umapyoi.events.handler.AnvilEvents;
 import net.tracen.umapyoi.events.handler.CommonEvents;
 import net.tracen.umapyoi.events.handler.PassiveSkillEvents;
 import net.tracen.umapyoi.item.ItemRegistry;
+import net.tracen.umapyoi.network.EmptyResultPacket;
+import net.tracen.umapyoi.network.SetupResultPacket;
 import net.tracen.umapyoi.network.SelectSkillPacket;
 import net.tracen.umapyoi.network.UseSkillPacket;
 import net.tracen.umapyoi.registry.SupportCardRegistry;
@@ -31,8 +33,6 @@ import net.tracen.umapyoi.registry.UmaFactorRegistry;
 import net.tracen.umapyoi.registry.UmaSkillRegistry;
 import net.tracen.umapyoi.villager.VillageRegistry;
 import net.tracen.umapyoi.villager.VillagerTradeRegistry;
-
-import net.tracen.umapyoi.UmapyoiConfig;
 
 import org.slf4j.Logger;
 
@@ -79,6 +79,8 @@ public class Umapyoi implements ModInitializer {
 
         ServerPlayNetworking.registerGlobalReceiver(UseSkillPacket.TYPE, UseSkillPacket::handler);
         ServerPlayNetworking.registerGlobalReceiver(SelectSkillPacket.TYPE, SelectSkillPacket::handler);
+        ServerPlayNetworking.registerGlobalReceiver(SetupResultPacket.TYPE, SetupResultPacket::handler);
+        ServerPlayNetworking.registerGlobalReceiver(EmptyResultPacket.TYPE, EmptyResultPacket::handler);
     }
 
     public static Logger getLogger() {

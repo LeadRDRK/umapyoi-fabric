@@ -11,14 +11,13 @@ import net.tracen.umapyoi.item.food.EnergyDrinkMethods;
 import net.tracen.umapyoi.item.food.UmaDrinkItem;
 import net.tracen.umapyoi.item.food.UmaFoodItem;
 import net.tracen.umapyoi.item.info.FoodInfo;
+import net.tracen.umapyoi.registry.LazyRegistrar;
+import net.tracen.umapyoi.registry.RegistryObject;
 import net.tracen.umapyoi.registry.TrainingSupportRegistry;
 import net.tracen.umapyoi.registry.training.SupportType;
 import net.tracen.umapyoi.utils.UmaStatusUtils;
 
 import java.util.function.Supplier;
-
-import net.tracen.umapyoi.registry.LazyRegistrar;
-import net.tracen.umapyoi.registry.RegistryObject;
 
 public class ItemRegistry {
     public static final LazyRegistrar<Item> ITEMS = LazyRegistrar.create(Registries.ITEM, Umapyoi.MODID);
@@ -60,12 +59,12 @@ public class ItemRegistry {
     public static final RegistryObject<Item> JEWEL = register("jewel", ItemRegistry::newMaterial);
 
     public static final RegistryObject<Item> BLANK_TICKET = register("blank_ticket", ItemRegistry::newMaterial);
-    public static final RegistryObject<Item> UMA_TICKET = register("uma_ticket", ItemRegistry::newMaterial);
-    public static final RegistryObject<Item> SR_UMA_TICKET = register("sr_uma_ticket", ItemRegistry::newMaterial);
-    public static final RegistryObject<Item> SSR_UMA_TICKET = register("ssr_uma_ticket", ItemRegistry::newMaterial);
-    public static final RegistryObject<Item> CARD_TICKET = register("card_ticket", ItemRegistry::newMaterial);
-    public static final RegistryObject<Item> SR_CARD_TICKET = register("sr_card_ticket", ItemRegistry::newMaterial);
-    public static final RegistryObject<Item> SSR_CARD_TICKET = register("ssr_card_ticket", ItemRegistry::newMaterial);
+    public static final RegistryObject<Item> UMA_TICKET = register("uma_ticket", UmaTicketItem::new);
+    public static final RegistryObject<Item> SR_UMA_TICKET = register("sr_uma_ticket", UmaTicketItem::new);
+    public static final RegistryObject<Item> SSR_UMA_TICKET = register("ssr_uma_ticket", UmaTicketItem::new);
+    public static final RegistryObject<Item> CARD_TICKET = register("card_ticket", UmaTicketItem::new);
+    public static final RegistryObject<Item> SR_CARD_TICKET = register("sr_card_ticket", UmaTicketItem::new);
+    public static final RegistryObject<Item> SSR_CARD_TICKET = register("ssr_card_ticket", UmaTicketItem::new);
     
     public static final RegistryObject<Item> CRYSTAL_SILVER = register("crystal_silver", ItemRegistry::newMaterial);
     public static final RegistryObject<Item> CRYSTAL_GOLD = register("crystal_gold", ItemRegistry::newMaterial);
@@ -176,6 +175,9 @@ public class ItemRegistry {
                     FoodInfo.builder().name("large_energy_drink").alwaysEat().amountAndCalories(2, 0.6F).water(30F)
                             .nutrients(2F, 2F, 0F, 0F, 0F)
                             .heatCapacity(1F).cookingTemp(480F).build()));
+
+    public static final RegistryObject<Item> UMA_SELECT_BLOCK = register("uma_select_block",
+            () -> new BlockItem(BlockRegistry.UMA_SELECT_BLOCK.get(), Umapyoi.defaultItemProperties()));
 
     private static <V extends Item> RegistryObject<V> register(String name, Supplier<V> item) {
         return ITEMS.register(name, item);

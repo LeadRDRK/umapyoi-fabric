@@ -8,7 +8,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.tracen.umapyoi.mixin.ServerPlayerAccessor;
-import net.tracen.umapyoi.mixin.ServerPlayerMixin;
 
 import java.util.function.Consumer;
 

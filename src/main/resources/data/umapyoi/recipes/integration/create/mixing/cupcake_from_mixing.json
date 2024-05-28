@@ -1,32 +1,34 @@
 {
-  "conditions": [
+  "fabric:load_conditions": [
     {
-      "type": "forge:mod_loaded",
-      "modid": "create"
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "create"
+      ]
     }
   ],
   "type": "create:mixing",
   "ingredients": [
     {
-      "tag": "forge:crops/carrot"
+      "tag": "c:crops/carrot"
     },
     [
       {
-      "tag": "forge:crops/wheat"
+      "tag": "c:crops/wheat"
       },
       {
-      "tag": "forge:flour"
+      "tag": "c:flour"
       }
     ],
     {
-      "fluidTag": "forge:milk",
+      "fluidTag": "c:milk",
       "amount": 250
     },
     {
-      "tag": "forge:eggs"
+      "tag": "c:eggs"
     },
     {
-      "tag": "forge:sugar"
+      "tag": "fabric:sugar"
     }
   ],
   "results": [

@@ -6,6 +6,7 @@
     "AnvilMenuMixin",
     "BlockBehaviourMixin",
     "PlayerMixin",
+    "PlayerFoodExhaustionMixin",
     "ServerPlayerMixin",
     "ServerPlayerAccessor",
     "LivingEntityMixin"

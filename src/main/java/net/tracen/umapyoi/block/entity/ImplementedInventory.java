@@ -128,4 +128,21 @@ public interface ImplementedInventory extends Container {
     default boolean stillValid(Player player) {
         return true;
     }
+
+    /**
+     * Determines if the given ItemStack can be stored in the given slot.
+     * @param slot the slot the resource is in
+     * @param stack the stack to check
+     * @return true if the ItemStack can be stored
+     */
+    default boolean isItemValid(int slot, ItemStack stack) {
+        return true;
+    }
+
+    /**
+     * @return max item count for the specified slot
+     */
+    default int getSlotLimit(int slot) {
+        return getItem(slot).getMaxStackSize();
+    }
 }

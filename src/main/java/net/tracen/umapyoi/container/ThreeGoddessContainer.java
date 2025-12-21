@@ -14,7 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.block.entity.ThreeGoddessBlockEntity;
-import net.tracen.umapyoi.item.ItemRegistry;
 
 import java.util.Objects;
 
@@ -35,10 +34,9 @@ public class ThreeGoddessContainer extends AbstractContainerMenu {
         this.canInteractWithCallable = ContainerLevelAccess.create(tileEntity.getLevel(), tileEntity.getBlockPos());
         int startX = 8;
 
-        this.addSlot(new ThreeGoddessJewelSlot(tileEntity, 0, 80, 27));
-
-        this.addSlot(new ThreeGoddessFactorSlot(tileEntity, 1, 50, 78));
-        this.addSlot(new ThreeGoddessFactorSlot(tileEntity, 2, 109, 78));
+        this.addSlot(new InventorySlot(tileEntity, 0, 80, 27));
+        this.addSlot(new InventorySlot(tileEntity, 1, 50, 78));
+        this.addSlot(new InventorySlot(tileEntity, 2, 109, 78));
 
         this.addSlot(new CommonResultSlot(playerInventory.player, tileEntity, 3, 80, 79));
 
@@ -118,59 +116,4 @@ public class ThreeGoddessContainer extends AbstractContainerMenu {
         int i = this.containerData.get(0);
         return i != 0 ? i * 158 / ThreeGoddessBlockEntity.MAX_PROCESS_TIME : 0;
     }
-
-    public static class ThreeGoddessJewelSlot extends Slot {
-
-        public ThreeGoddessJewelSlot(ThreeGoddessBlockEntity container, int index, int xPosition, int yPosition) {
-            super(container, index, xPosition, yPosition);
-        }
-
-        @Override
-        public boolean mayPlace(ItemStack stack) {
-            if (stack.is(ItemRegistry.BLANK_UMA_SOUL.get())) {
-                String name = stack.getOrCreateTag().getString("name");
-                return !(name.equals(container.getItem(1).getOrCreateTag().getString("name"))
-                        || name.equals(container.getItem(2).getOrCreateTag().getString("name")));
-            }
-            return false;
-        }
-
-        @Override
-        public int getMaxStackSize(ItemStack stack) {
-            return 1;
-        }
-    }
-
-    public static class ThreeGoddessFactorSlot extends Slot {
-        public ThreeGoddessFactorSlot(ThreeGoddessBlockEntity container, int index, int xPosition, int yPosition) {
-            super(container, index, xPosition, yPosition);
-        }
-
-        @Override
-        public boolean mayPlace(ItemStack stack) {
-            boolean result = stack.is(ItemRegistry.UMA_FACTOR_ITEM.get());
-            boolean factorFlag = false;
-            var soulStack = container.getItem(0);
-            boolean soulFlag = !soulStack.isEmpty() && stack.getOrCreateTag().getString("name")
-                    .equals(soulStack.getOrCreateTag().getString("name"));
-
-            switch (this.getContainerSlot()) {
-            case 1: {
-                factorFlag = stack.getOrCreateTag().getString("name")
-                        .equals(container.getItem(2).getOrCreateTag().getString("name"));
-                break;
-            }
-            case 2: {
-                factorFlag = stack.getOrCreateTag().getString("name")
-                        .equals(container.getItem(1).getOrCreateTag().getString("name"));
-                break;
-            }
-            default:
-                break;
-            }
-
-            return result && !soulFlag && !factorFlag;
-        }
-    }
-
 }

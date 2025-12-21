@@ -36,13 +36,13 @@ public class TrainingFacilityContainer extends AbstractContainerMenu {
         this.canInteractWithCallable = ContainerLevelAccess.create(tileEntity.getLevel(), tileEntity.getBlockPos());
         int startX = 8;
 
-        this.addSlot(new TrainingUmaSlot(tileEntity, 0, 80, 98));
+        this.addSlot(new InventorySlot(tileEntity, 0, 80, 98));
         for (int i = 1; i < 4; i++) {
-            this.addSlot(new TrainingSupportSlot(tileEntity, i, (i - 1) * 27 + 12, 19));
+            this.addSlot(new InventorySlot(tileEntity, i, (i - 1) * 27 + 12, 19));
         }
 
         for (int i = 4; i < 7; i++) {
-            this.addSlot(new TrainingSupportSlot(tileEntity, i, (i - 4) * 27 + 94, 19));
+            this.addSlot(new InventorySlot(tileEntity, i, (i - 4) * 27 + 94, 19));
         }
 
         // Main Player Inventory
@@ -130,46 +130,5 @@ public class TrainingFacilityContainer extends AbstractContainerMenu {
     public int getAnimation() {
         int i = this.containerData.get(0);
         return i != 0 ? i % 4 : 0;
-    }
-
-    public static class TrainingSupportSlot extends Slot {
-        private final TrainingFacilityBlockEntity tileEntity;
-
-        public TrainingSupportSlot(TrainingFacilityBlockEntity container, int index,
-                                   int xPosition, int yPosition) {
-            super(container, index, xPosition, yPosition);
-            this.tileEntity = container;
-        }
-
-        @Override
-        public boolean mayPlace(ItemStack stack) {
-            if (stack.getItem() instanceof SupportContainer support) {
-                for (int i = 1; i < 7; i++) {
-                    ItemStack other = container.getItem(i);
-                    if (i == this.getContainerSlot() || other.isEmpty())
-                        continue;
-                    if (!(support.canSupport(tileEntity.getLevel(), stack).test(other)))
-                        return false;
-                }
-            }
-            return true;
-        }
-
-        @Override
-        public int getMaxStackSize(ItemStack stack) {
-            return 1;
-        }
-    }
-
-    public static class TrainingUmaSlot extends Slot {
-
-        public TrainingUmaSlot(TrainingFacilityBlockEntity container, int index, int xPosition, int yPosition) {
-            super(container, index, xPosition, yPosition);
-        }
-
-        @Override
-        public boolean mayPlace(ItemStack stack) {
-            return stack.is(ItemRegistry.UMA_SOUL.get());
-        }
     }
 }

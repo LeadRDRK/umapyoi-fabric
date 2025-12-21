@@ -16,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.tracen.umapyoi.container.TrainingFacilityContainer;
+import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.item.UmaSoulItem;
 import net.tracen.umapyoi.registry.training.SupportContainer;
 import net.tracen.umapyoi.registry.umadata.Growth;
@@ -38,6 +39,55 @@ public class TrainingFacilityBlockEntity extends SyncedInventoryEntity implement
     @Override
     public NonNullList<ItemStack> getItems() {
         return items;
+    }
+
+    @Override
+    public boolean isItemValid(int slot, ItemStack stack) {
+        if (slot == 0) {
+            if(!(stack.is(ItemRegistry.UMA_SOUL.get()) && UmaSoulUtils.getGrowth(stack) != Growth.RETIRED))
+                return false;
+            for (int i = 1; i < 7; i++) {
+                ItemStack other = this.getItem(i);
+                if (other.isEmpty())
+                    continue;
+                if (other.getItem()instanceof SupportContainer support) {
+                    if (!(support.canSupport(TrainingFacilityBlockEntity.this.getLevel(), other).test(stack)))
+                        return false;
+                } else
+                    return false;
+            }
+            return true;
+        }
+        else {
+            if (stack.getItem() instanceof SupportContainer support) {
+                var soul = this.getItem(0);
+                for (int i = 1; i < 7; i++) {
+                    ItemStack other = this.getItem(i);
+                    if(!soul.isEmpty()) {
+                        if (!support.canSupport(TrainingFacilityBlockEntity.this.getLevel(), stack).test(soul))
+                            return false;
+                    }
+
+                    if (i == slot || other.isEmpty())
+                        continue;
+
+                    if (!(support.canSupport(TrainingFacilityBlockEntity.this.getLevel(), stack).test(other)))
+                        return false;
+                }
+            } else {
+                return false;
+            }
+            return true;
+        }
+    }
+
+    @Override
+    public int getSlotLimit(int slot) {
+        if (slot != 0) {
+            // support slots
+            return 1;
+        }
+        return super.getSlotLimit(slot);
     }
 
     public static void workingTick(Level level, BlockPos pos, BlockState state,

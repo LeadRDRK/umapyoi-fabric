@@ -56,6 +56,49 @@ public class ThreeGoddessBlockEntity extends SyncedInventoryEntity implements Me
         return items;
     }
 
+    @Override
+    public boolean isItemValid(int slot, ItemStack stack) {
+        if (slot == 0) {
+            if (stack.is(ItemRegistry.BLANK_UMA_SOUL.get())) {
+                String name = stack.getOrCreateTag().getString("name");
+                return !(name.equals(this.getItem(1).getOrCreateTag().getString("name"))
+                        || name.equals(this.getItem(2).getOrCreateTag().getString("name")));
+            }
+            return false;
+        }
+        else if (slot == 1) {
+            boolean result = stack.is(ItemRegistry.UMA_FACTOR_ITEM.get());
+            boolean factorFlag = false;
+            String name = stack.getOrCreateTag().getString("name");
+            var soulStack = this.getItem(0);
+            boolean soulFlag = !soulStack.isEmpty() && stack.getOrCreateTag().getString("name")
+                    .equals(soulStack.getOrCreateTag().getString("name"));
+            factorFlag = name.equals(this.getItem(2).getOrCreateTag().getString("name"));
+
+            return result && !soulFlag && !factorFlag;
+        }
+        else if (slot == 2) {
+            boolean result = stack.is(ItemRegistry.UMA_FACTOR_ITEM.get());
+            boolean factorFlag = false;
+            String name = stack.getOrCreateTag().getString("name");
+            var soulStack = this.getItem(0);
+            boolean soulFlag = !soulStack.isEmpty() && stack.getOrCreateTag().getString("name")
+                    .equals(soulStack.getOrCreateTag().getString("name"));
+            factorFlag = name.equals(this.getItem(1).getOrCreateTag().getString("name"));
+
+            return result && !soulFlag && !factorFlag;
+        }
+        return super.isItemValid(slot, stack);
+    }
+
+    @Override
+    public int getSlotLimit(int slot) {
+        if (slot == 0) {
+            return 1;
+        }
+        return super.getSlotLimit(slot);
+    }
+
     public static void workingTick(Level level, BlockPos pos, BlockState state, ThreeGoddessBlockEntity blockEntity) {
         if (level.isClientSide())
             return;

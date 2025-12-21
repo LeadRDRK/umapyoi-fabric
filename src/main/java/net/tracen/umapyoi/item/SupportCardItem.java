@@ -93,6 +93,9 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
     @Environment(EnvType.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
+        ResourceLocation cardID = this.getSupportCardID(stack);
+        if (isEmptyCard(worldIn, cardID))
+            return ;
         if(!this.getSupports(worldIn, stack).isEmpty()) {
             if (Screen.hasShiftDown() || !Umapyoi.CONFIG.TOOLTIP_SWITCH()) {
                 tooltip.add(Component.translatable("tooltip.umapyoi.supports").withStyle(ChatFormatting.AQUA));
@@ -104,8 +107,7 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
             }
         }
 
-        List<ResourceLocation> supporters = ClientUtils.getClientSupportCardRegistry().get(this.getSupportCardID(stack))
-                .getSupporters();
+        List<ResourceLocation> supporters = ClientUtils.getClientSupportCardRegistry().get(cardID).getSupporters();
         if (!supporters.isEmpty()) {
             if (Screen.hasControlDown() || !Umapyoi.CONFIG.TOOLTIP_SWITCH()) {
                 tooltip.add(Component.translatable("tooltip.umapyoi.supporters").withStyle(ChatFormatting.AQUA));
@@ -126,9 +128,13 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
 
     public SupportCard getSupportCard(Level level, ItemStack stack) {
         ResourceLocation cardID = this.getSupportCardID(stack);
-        if (level == null || !UmapyoiAPI.getSupportCardRegistry(level).containsKey(cardID))
+        if (isEmptyCard(level, cardID))
             return SupportCardRegistry.BLANK_CARD.get();
         return UmapyoiAPI.getSupportCardRegistry(level).get(cardID);
+    }
+
+    private boolean isEmptyCard(Level level, ResourceLocation cardID) {
+        return level == null || cardID.equals(SupportCardRegistry.BLANK_CARD.getId()) || !UmapyoiAPI.getSupportCardRegistry(level).containsKey(cardID);
     }
 
     @Override
@@ -163,7 +169,7 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
                 UmaData data = UmapyoiAPI.getUmaDataRegistry(level).get(UmaSoulUtils.getName(itemstack));
                 return !(this.getSupportCard(level, stack).getSupporters().contains(data.getIdentifier()));
             }
-            if (item instanceof SupportCardItem other) {
+            if (item instanceof SupportCardItem) {
                 return this.checkSupports(level, stack, itemstack);
             }
             return true;
@@ -171,7 +177,7 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
     }
 
     public boolean checkSupports(Level level, ItemStack stack, ItemStack other) {
-        if (stack.getItem()instanceof SupportCardItem otherItem) {
+        if (stack.getItem()instanceof SupportCardItem) {
 
             var supportCardID = this.getSupportCardID(stack);
             var otherCardID = this.getSupportCardID(other);

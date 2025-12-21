@@ -114,7 +114,7 @@ public abstract class AbstractSuitItem extends TrinketItem implements TrinketRen
             }
 
             VertexConsumer vertexconsumer = multiBufferSource.getBuffer(
-                    RenderType.entityTranslucent(flat_flag ? getFlatTexture(tanned) : getTexture(tanned)));
+                    RenderType.entityTranslucentCull(flat_flag ? getFlatTexture(tanned) : getTexture(tanned)));
 
             var pojo = ClientUtils.getModelPOJO(flat_flag ? getFlatModel() : getModel());
             if (baseModel.needRefresh(pojo))

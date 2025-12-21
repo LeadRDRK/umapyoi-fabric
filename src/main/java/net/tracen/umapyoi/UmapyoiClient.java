@@ -68,6 +68,7 @@ public class UmapyoiClient implements ClientModInitializer {
         AbstractSuitItem.registerRenderer(ItemRegistry.WINTER_UNIFORM.get());
         AbstractSuitItem.registerRenderer(ItemRegistry.TRAINING_SUIT.get());
         AbstractSuitItem.registerRenderer(ItemRegistry.KINDERGARTEN_UNIFORM.get());
+        AbstractSuitItem.registerRenderer(ItemRegistry.SWIMSUIT.get());
 
         // Skill key binds
         KeyBindingHelper.registerKeyBinding(SkillKeyMapping.KEY_USE_SKILL);

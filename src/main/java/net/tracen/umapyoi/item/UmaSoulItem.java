@@ -330,7 +330,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
             baseModel.loadModel(pojo);
 
         VertexConsumer vertexConsumer = multiBufferSource
-                .getBuffer(RenderType.entityTranslucent(ClientUtils.getTexture(renderTarget)));
+                .getBuffer(RenderType.entityTranslucentCull(ClientUtils.getTexture(renderTarget)));
         baseModel.setModelProperties(entity, suit_flag, false);
         baseModel.prepareMobModel(entity, limbAngle, limbDistance, tickDelta);
 

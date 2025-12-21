@@ -1,11 +1,5 @@
 {
-  "maxProperty": [
-    18,
-    18,
-    18,
-    18,
-    18
-  ],
+  "identifier": "umapyoi:manhattan_cafe",
   "propertyRate": [
     0,
     20,
@@ -13,14 +7,5 @@
     0,
     0
   ],
-  "uniqueSkill": "umapyoi:basic_pace",
-  "identifier": "umapyoi:manhattan_cafe",
-  "ranking": "ssr",
-  "property": [
-    1,
-    1,
-    1,
-    1,
-    1
-  ]
+  "ranking": "ssr"
 }

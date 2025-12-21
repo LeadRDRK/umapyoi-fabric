@@ -1,5 +1,9 @@
 {
   "variants": {
+    "facing=east": {
+      "model": "umapyoi:block/uma_select_block",
+      "y": 90
+    },
     "facing=north": {
       "model": "umapyoi:block/uma_select_block"
     },
@@ -10,10 +14,6 @@
     "facing=west": {
       "model": "umapyoi:block/uma_select_block",
       "y": 270
-    },
-    "facing=east": {
-      "model": "umapyoi:block/uma_select_block",
-      "y": 90
     }
   }
 }

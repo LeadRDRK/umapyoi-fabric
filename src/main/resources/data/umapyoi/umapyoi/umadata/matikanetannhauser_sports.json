@@ -1,11 +1,5 @@
 {
-  "maxProperty": [
-    18,
-    18,
-    18,
-    18,
-    18
-  ],
+  "identifier": "umapyoi:matikanetannhauser",
   "propertyRate": [
     20,
     0,
@@ -13,14 +7,5 @@
     0,
     0
   ],
-  "uniqueSkill": "umapyoi:basic_pace",
-  "identifier": "umapyoi:matikanetannhauser",
-  "ranking": "ssr",
-  "property": [
-    1,
-    1,
-    1,
-    1,
-    1
-  ]
+  "ranking": "ssr"
 }

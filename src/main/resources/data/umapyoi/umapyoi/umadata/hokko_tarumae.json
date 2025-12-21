@@ -1,11 +1,5 @@
 {
-  "maxProperty": [
-    18,
-    18,
-    18,
-    18,
-    18
-  ],
+  "identifier": "umapyoi:hokko_tarumae",
   "propertyRate": [
     0,
     20,
@@ -13,14 +7,5 @@
     0,
     0
   ],
-  "uniqueSkill": "umapyoi:basic_pace",
-  "identifier": "umapyoi:hokko_tarumae",
-  "ranking": "sr",
-  "property": [
-    1,
-    1,
-    1,
-    1,
-    1
-  ]
+  "ranking": "sr"
 }

@@ -1,11 +1,5 @@
 {
-  "maxProperty": [
-    18,
-    18,
-    18,
-    18,
-    18
-  ],
+  "identifier": "umapyoi:daiwa_scarlet",
   "propertyRate": [
     10,
     0,
@@ -13,14 +7,5 @@
     20,
     0
   ],
-  "uniqueSkill": "umapyoi:basic_pace",
-  "identifier": "umapyoi:daiwa_scarlet",
-  "ranking": "sr",
-  "property": [
-    1,
-    1,
-    1,
-    1,
-    1
-  ]
+  "ranking": "sr"
 }

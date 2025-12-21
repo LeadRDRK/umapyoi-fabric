@@ -1,26 +1,11 @@
 {
-  "maxProperty": [
-    18,
-    18,
-    18,
-    18,
-    18
-  ],
+  "identifier": "umapyoi:king_halo",
   "propertyRate": [
+    0,
     20,
     0,
-    10,
     0,
-    0
+    10
   ],
-  "uniqueSkill": "umapyoi:basic_pace",
-  "identifier": "umapyoi:king_halo",
-  "ranking": "sr",
-  "property": [
-    1,
-    1,
-    1,
-    1,
-    1
-  ]
+  "ranking": "sr"
 }

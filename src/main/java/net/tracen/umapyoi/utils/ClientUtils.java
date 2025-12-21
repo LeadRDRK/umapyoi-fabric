@@ -3,6 +3,8 @@ package net.tracen.umapyoi.utils;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
 import com.mojang.blaze3d.platform.Lighting;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.fabricmc.api.EnvType;
@@ -20,6 +22,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
+import net.tracen.umapyoi.client.EmissiveRenderType;
+import net.tracen.umapyoi.client.model.bedrock.BedrockModel;
 import net.tracen.umapyoi.client.model.pojo.BedrockModelPOJO;
 import net.tracen.umapyoi.registry.training.card.SupportCard;
 import net.tracen.umapyoi.registry.umadata.UmaData;
@@ -43,6 +47,9 @@ public class ClientUtils {
 
     public static final ResourceLocation THREE_GODDESS = getModel("three_goddesses");
     public static final ResourceLocation UMA_STATUES = getModel("uma_statue");
+
+    public static final ResourceLocation SWIMSUIT = getModel("swimsuit");
+    public static final ResourceLocation SWIMSUIT_FLAT = getModel("swimsuit_flat");
 
     public static ResourceLocation getModel(String name) {
         return getModel(Umapyoi.MODID, name);
@@ -83,20 +90,35 @@ public class ClientUtils {
         }
     }
 
-    public static void renderModelInInventory(GuiGraphics guiGraphics, int p_283622_, int p_283401_, int p_281360_, Quaternionf p_281880_, Model pModel,
+    public static void renderModelInInventory(GuiGraphics guiGraphics, int pPosX, int pPosY, int pScale, Quaternionf pQuaternion, Model pModel,
                                               ResourceLocation texture) {
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate((double)p_283622_, (double)p_283401_, 50.0D);
-        guiGraphics.pose().mulPoseMatrix((new Matrix4f()).scaling((float)p_281360_, (float)p_281360_, (float)(-p_281360_)));
-        guiGraphics.pose().mulPose(p_281880_);
+        var posestack = guiGraphics.pose();
+        posestack.pushPose();
+        posestack.translate((double) pPosX, (double) pPosY, 1050.0D);
+        posestack.scale(1.0F, 1.0F, -1.0F);
+        RenderSystem.applyModelViewMatrix();
+        PoseStack posestack1 = new PoseStack();
+        posestack1.translate(0.0D, 0.0D, 1000.0D);
+        posestack1.scale((float) pScale, (float) pScale, (float) pScale);
+        if (pQuaternion != null)
+            posestack1.mulPose(pQuaternion);
         Lighting.setupForEntityInInventory();
-        MultiBufferSource.BufferSource multibuffersource$buffersource = Minecraft.getInstance().renderBuffers()
+        MultiBufferSource.BufferSource buffersource = Minecraft.getInstance().renderBuffers()
                 .bufferSource();
-        VertexConsumer vertexconsumer = multibuffersource$buffersource
+        VertexConsumer vertexconsumer = buffersource
                 .getBuffer(RenderType.entityTranslucent(ClientUtils.getTexture(texture)));
-        pModel.renderToBuffer(guiGraphics.pose(), vertexconsumer, 15728880, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
-        multibuffersource$buffersource.endBatch();
-        guiGraphics.pose().popPose();
+        pModel.renderToBuffer(posestack1, vertexconsumer, 15728880, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
+        if(pModel instanceof BedrockModel bedrock) {
+            if(bedrock.isEmissive()) {
+                VertexConsumer emissiveConsumer = buffersource.getBuffer(
+                        EmissiveRenderType.emissive(ClientUtils.getEmissiveTexture(texture)));
+                bedrock.renderEmissiveParts(posestack1, emissiveConsumer,
+                        15728880, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
+            }
+        }
+        buffersource.endBatch();
+        posestack.popPose();
+        RenderSystem.applyModelViewMatrix();
         Lighting.setupFor3DItems();
     }
 

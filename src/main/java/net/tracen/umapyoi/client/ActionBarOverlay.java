@@ -26,6 +26,10 @@ public class ActionBarOverlay implements HudRenderCallback {
     public void onHudRender(GuiGraphics drawContext, float tickDelta) {
         if (!Umapyoi.CONFIG.OVERLAY_SWITCH())
             return;
+
+        if (minecraft.options.hideGui)
+            return;
+
         var window = minecraft.getWindow();
         int x = window.getGuiScaledWidth();
         int y = window.getGuiScaledHeight();

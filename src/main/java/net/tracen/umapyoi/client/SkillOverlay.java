@@ -28,6 +28,10 @@ public class SkillOverlay implements HudRenderCallback {
     public void onHudRender(GuiGraphics guiGraphics, float tickDelta) {
         if (!Umapyoi.CONFIG.OVERLAY_SWITCH())
             return;
+
+        if (minecraft.options.hideGui)
+            return;
+
         var window = minecraft.getWindow();
         int x = window.getGuiScaledWidth() / 2;
         int y = window.getGuiScaledHeight();

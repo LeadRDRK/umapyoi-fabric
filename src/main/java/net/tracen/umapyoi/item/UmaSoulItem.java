@@ -41,6 +41,7 @@ import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.attributes.ExtraAttributes;
 import net.tracen.umapyoi.client.EmissiveRenderType;
 import net.tracen.umapyoi.client.model.UmaPlayerModel;
+import net.tracen.umapyoi.data.tag.UmapyoiUmaDataTags;
 import net.tracen.umapyoi.events.ResumeActionPointCallback;
 import net.tracen.umapyoi.events.client.RenderingUmaSoulCallback;
 import net.tracen.umapyoi.registry.umadata.Growth;
@@ -306,32 +307,14 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
         if ((entity instanceof ArmorStand) || (entity.isInvisible() && !entity.isSpectator()))
             return;
 
-        boolean suit_flag = false;
-        var compOpt = TrinketsApi.getTrinketComponent(entity);
-        if (compOpt.isPresent()) {
-            var comp = compOpt.get();
-            var entityInventory = comp.getInventory();
-            if (entityInventory.containsKey("umapyoi")) {
-                var group = entityInventory.get("umapyoi");
-                if (group.containsKey("uma_suit")) {
-                    var inventory = group.get("uma_suit");
-                    if (inventory.getContainerSize() > 0 && inventory.getItem(0).getItem() instanceof AbstractSuitItem) {
-                        suit_flag = true;
-                    }
-                }
-            }
-        }
-
-        ResourceLocation renderTarget = suit_flag
-                ? ClientUtils.getClientUmaDataRegistry().get(UmaSoulUtils.getName(itemStack)).getIdentifier()
-                : UmaSoulUtils.getName(itemStack);
+        ResourceLocation renderTarget = getRenderTarget(itemStack, entity);
         var pojo = ClientUtils.getModelPOJO(renderTarget);
         if (baseModel.needRefresh(pojo))
             baseModel.loadModel(pojo);
 
         VertexConsumer vertexConsumer = multiBufferSource
                 .getBuffer(RenderType.entityTranslucentCull(ClientUtils.getTexture(renderTarget)));
-        baseModel.setModelProperties(entity, suit_flag, false);
+        baseModel.setModelProperties(entity);
         baseModel.prepareMobModel(entity, limbAngle, limbDistance, tickDelta);
 
         if (RenderingUmaSoulCallback.Pre.invoke(entity, baseModel, tickDelta, poseStack, multiBufferSource, light))
@@ -350,13 +333,48 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
                 LivingEntityRenderer.getOverlayCoords(entity, 0.0F), 1, 1, 1, 1);
         if (baseModel.isEmissive()) {
             VertexConsumer emissiveConsumer = multiBufferSource
-                    .getBuffer(EmissiveRenderType.emissive(ClientUtils.getEmissiveTexture(renderTarget)));
+                    .getBuffer(RenderType.entityTranslucentEmissive(ClientUtils.getEmissiveTexture(renderTarget)));
             baseModel.renderEmissiveParts(poseStack, emissiveConsumer, light,
                     LivingEntityRenderer.getOverlayCoords(entity, 0.0F), 1, 1, 1, 1);
         }
 
         RenderingUmaSoulCallback.Post.invoke(entity, baseModel, tickDelta, poseStack, multiBufferSource, light);
     }
+
+    public static ResourceLocation getRenderTarget(ItemStack stack, LivingEntity entity) {
+        boolean suit_flag = false;
+        boolean alter_flag = false;
+        var compOpt = TrinketsApi.getTrinketComponent(entity);
+        if (compOpt.isPresent()) {
+            var comp = compOpt.get();
+            var entityInventory = comp.getInventory();
+            if (entityInventory.containsKey("umapyoi")) {
+                var group = entityInventory.get("umapyoi");
+                if (group.containsKey("uma_suit")) {
+                    var inventory = group.get("uma_suit");
+                    if (inventory.getContainerSize() > 0 && (inventory.getItem(0).getItem() instanceof AbstractSuitItem ||
+                            inventory.getItem(0).getItem() instanceof UmaCostumeItem)) {
+                        suit_flag = true;
+
+                        alter_flag = ClientUtils.getClientUmaDataRegistry()
+                                .getHolder(ResourceKey.create(UmaData.REGISTRY_KEY, UmaSoulUtils.getName(stack)))
+                                .get().is(UmapyoiUmaDataTags.ALTER_MODEL);
+                    }
+                }
+            }
+        }
+
+        ResourceLocation renderTarget = suit_flag ? getSuitTarget(stack, alter_flag) : UmaSoulUtils.getName(stack);
+        return renderTarget;
+    }
+
+    private static ResourceLocation getSuitTarget(ItemStack stack, boolean alter) {
+        ResourceLocation identifier = ClientUtils.getClientUmaDataRegistry().get(UmaSoulUtils.getName(stack)).getIdentifier();
+        if(alter)
+            identifier = new ResourceLocation(identifier.getNamespace(), identifier.getPath()+"_alter");
+        return identifier;
+    }
+
 
     public static void registerRenderer() {
         Item item = ItemRegistry.UMA_SOUL.get();

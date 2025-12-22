@@ -103,13 +103,8 @@ public class TargetSelector {
         TargetingConditions predicate = areaTarget.range(reach);
 
         list1.addAll(world.getEntitiesOfClass(LivingEntity.class, aabb).stream()
-                .filter(t -> {
-                    boolean result = false;
-                    if (t instanceof LivingEntity living) {
-                        result = predicate.test(attacker, living);
-                    }
-                    return result;
-                }).toList());
+                .filter(t -> predicate.test(attacker, t))
+                .toList());
 
         return list1;
     }

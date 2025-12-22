@@ -1,28 +1,29 @@
 package net.tracen.umapyoi.item;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.utils.ClientUtils;
 
 public class TrainingSuitItem extends AbstractSuitItem {
     @Override
-    protected ResourceLocation getModel() {
+    protected ResourceLocation getModel(ItemStack stack) {
         return ClientUtils.TRAINING_SUIT;
     }
 
     @Override
-    protected ResourceLocation getTexture(boolean tanned) {
+    protected ResourceLocation getTexture(ItemStack stack, boolean tanned) {
         return tanned ? new ResourceLocation(Umapyoi.MODID, "textures/model/trainning_suit_tanned.png")
                 : new ResourceLocation(Umapyoi.MODID, "textures/model/trainning_suit.png");
     }
 
     @Override
-    protected ResourceLocation getFlatModel() {
+    protected ResourceLocation getFlatModel(ItemStack stack) {
         return ClientUtils.TRAINING_SUIT_FLAT;
     }
 
     @Override
-    protected ResourceLocation getFlatTexture(boolean tanned) {
+    protected ResourceLocation getFlatTexture(ItemStack stack, boolean tanned) {
         return tanned ? new ResourceLocation(Umapyoi.MODID, "textures/model/trainning_suit_tanned.png")
                 : new ResourceLocation(Umapyoi.MODID, "textures/model/trainning_suit.png");
     }

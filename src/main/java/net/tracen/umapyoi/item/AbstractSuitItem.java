@@ -11,7 +11,6 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
@@ -23,10 +22,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.client.model.UmaPlayerModel;
-import net.tracen.umapyoi.data.tag.UmapyoiUmaDataTags;
 import net.tracen.umapyoi.events.client.RenderingUmaSuitCallback;
 import net.tracen.umapyoi.registry.umadata.Growth;
-import net.tracen.umapyoi.registry.umadata.UmaData;
 import net.tracen.umapyoi.utils.ClientUtils;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
@@ -39,6 +36,10 @@ import dev.emi.trinkets.api.client.TrinketRendererRegistry;
 
 public abstract class AbstractSuitItem extends TrinketItem implements TrinketRenderer {
     private final UmaPlayerModel<LivingEntity> baseModel;
+
+    public UmaPlayerModel<LivingEntity> getBaseModel() {
+        return baseModel;
+    }
 
     public AbstractSuitItem() {
         super(Umapyoi.defaultItemProperties().stacksTo(1));
@@ -104,29 +105,24 @@ public abstract class AbstractSuitItem extends TrinketItem implements TrinketRen
                 if (stackInSlot.isEmpty() || !(stackInSlot.getItem() instanceof UmaSoulItem))
                     return;
 
-                flat_flag = ClientUtils.getClientUmaDataRegistry()
-                        .getHolder(ResourceKey.create(UmaData.REGISTRY_KEY, UmaSoulUtils.getName(stackInSlot)))
-                        .get().is(UmapyoiUmaDataTags.FLAT_CHEST);
+                flat_flag = ClientUtils.isFlatUmamusume(stackInSlot);
 
-                tanned = ClientUtils.getClientUmaDataRegistry()
-                        .getHolder(ResourceKey.create(UmaData.REGISTRY_KEY, UmaSoulUtils.getName(stackInSlot)))
-                        .get().is(UmapyoiUmaDataTags.TANNED_SKIN);
+                tanned = ClientUtils.isTannedSkin(stackInSlot);
             }
 
             VertexConsumer vertexconsumer = multiBufferSource.getBuffer(
-                    RenderType.entityTranslucentCull(flat_flag ? getFlatTexture(tanned) : getTexture(tanned)));
+                    RenderType.entityTranslucentCull(flat_flag ? getFlatTexture(itemStack, tanned) : getTexture(itemStack, tanned)));
 
-            var pojo = ClientUtils.getModelPOJO(flat_flag ? getFlatModel() : getModel());
+            var pojo = ClientUtils.getModelPOJO(flat_flag ? getFlatModel(itemStack) : getModel(itemStack));
             if (baseModel.needRefresh(pojo))
                 baseModel.loadModel(pojo);
-            if (RenderingUmaSuitCallback.Pre.invoke(entity, baseModel, tickDelta,
-                    poseStack, multiBufferSource, light))
-                return;
             baseModel.setModelProperties(entity);
             baseModel.head.visible = false;
             baseModel.tail.visible = false;
-            baseModel.hat.visible = false;
             baseModel.prepareMobModel(entity, limbAngle, limbDistance, tickDelta);
+            if (RenderingUmaSuitCallback.Pre.invoke(entity, baseModel, tickDelta,
+                    poseStack, multiBufferSource, light))
+                return;
 
             if (entityModel instanceof HumanoidModel) {
                 @SuppressWarnings("unchecked")
@@ -153,11 +149,11 @@ public abstract class AbstractSuitItem extends TrinketItem implements TrinketRen
         TrinketRendererRegistry.registerRenderer(item, (TrinketRenderer) item);
     }
 
-    protected abstract ResourceLocation getModel();
+    protected abstract ResourceLocation getModel(ItemStack stack);
 
-    protected abstract ResourceLocation getTexture(boolean tanned);
+    protected abstract ResourceLocation getTexture(ItemStack stack, boolean tanned);
 
-    protected abstract ResourceLocation getFlatModel();
+    protected abstract ResourceLocation getFlatModel(ItemStack stack);
 
-    protected abstract ResourceLocation getFlatTexture(boolean tanned);
+    protected abstract ResourceLocation getFlatTexture(ItemStack stack, boolean tanned);
 }

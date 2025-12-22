@@ -62,19 +62,6 @@ public class UmapyoiClient implements ClientModInitializer {
         // ScreensRegistry
         ScreensRegistry.register();
 
-        // Trinkets renderer
-        UmaSoulItem.registerRenderer();
-        AbstractSuitItem.registerRenderer(ItemRegistry.SUMMER_UNIFORM.get());
-        AbstractSuitItem.registerRenderer(ItemRegistry.WINTER_UNIFORM.get());
-        AbstractSuitItem.registerRenderer(ItemRegistry.TRAINING_SUIT.get());
-        AbstractSuitItem.registerRenderer(ItemRegistry.KINDERGARTEN_UNIFORM.get());
-        AbstractSuitItem.registerRenderer(ItemRegistry.SWIMSUIT.get());
-
-        // Skill key binds
-        KeyBindingHelper.registerKeyBinding(SkillKeyMapping.KEY_USE_SKILL);
-        KeyBindingHelper.registerKeyBinding(SkillKeyMapping.KEY_FORMER_SKILL);
-        KeyBindingHelper.registerKeyBinding(SkillKeyMapping.KEY_LATTER_SKILL);
-
         // Networking
         ClientPlayNetworking.registerGlobalReceiver(OpenScreenPacket.TYPE, OpenScreenPacket::handler);
     }

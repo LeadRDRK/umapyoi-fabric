@@ -121,7 +121,7 @@ public class TrainingFacilityBlockEntity extends SyncedInventoryEntity implement
 
         ItemStack resultStack = getResultItem();
         setItem(0, resultStack);
-
+        this.getLevel().playSound(null, this.getBlockPos(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.BLOCKS, 1F, 1F);
         for (int i = 1; i < 7; i++) {
             ItemStack supportItem = getItem(i);
             if (supportItem.getItem() instanceof SupportContainer supports) {
@@ -148,7 +148,7 @@ public class TrainingFacilityBlockEntity extends SyncedInventoryEntity implement
         for (int i = 1; i < 7; i++) {
             ItemStack supportItem = getItem(i);
             if (supportItem.getItem()instanceof SupportContainer supports) {
-                supports.getSupports(this.getLevel(), supportItem).forEach(support -> support.applySupport(result));
+                supports.getSupports(this.getLevel(), supportItem).forEach(support -> support.applySupport(result, this.level.getRandom()));
             }
         }
         return result;

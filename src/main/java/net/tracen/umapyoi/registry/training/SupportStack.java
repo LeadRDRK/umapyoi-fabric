@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.events.ApplyTrainingSupportCallback;
 
@@ -64,9 +65,9 @@ public class SupportStack {
         }
     }
 
-    public boolean applySupport(ItemStack soul) {
+    public boolean applySupport(ItemStack soul, RandomSource rand) {
         if (!ApplyTrainingSupportCallback.Pre.invoke(this, soul)) {
-            boolean result = this.getFactor().applySupport(soul, this);
+            boolean result = this.getFactor().applySupport(soul, rand, this);
             return result && !ApplyTrainingSupportCallback.Post.invoke(this, soul);
         } else
             return false;

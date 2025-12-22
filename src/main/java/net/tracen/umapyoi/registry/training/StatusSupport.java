@@ -1,5 +1,6 @@
 package net.tracen.umapyoi.registry.training;
 
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 import net.tracen.umapyoi.utils.UmaStatusUtils.StatusType;
@@ -13,7 +14,7 @@ public class StatusSupport extends TrainingSupport {
     }
 
     @Override
-    public boolean applySupport(ItemStack soul, SupportStack stack) {
+    public boolean applySupport(ItemStack soul, RandomSource rand, SupportStack stack) {
         if (UmaSoulUtils.getMaxProperty(soul)[statusType.getId()] > UmaSoulUtils.getProperty(soul)[statusType
                 .getId()]) {
             UmaSoulUtils.getProperty(soul)[statusType.getId()] = Math.min(

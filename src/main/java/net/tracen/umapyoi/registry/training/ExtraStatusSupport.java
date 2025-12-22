@@ -1,5 +1,6 @@
 package net.tracen.umapyoi.registry.training;
 
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
@@ -12,7 +13,7 @@ public class ExtraStatusSupport extends TrainingSupport {
     }
 
     @Override
-    public boolean applySupport(ItemStack soul, SupportStack stack) {
+    public boolean applySupport(ItemStack soul, RandomSource rand, SupportStack stack) {
         if (this.statusType == 3)
             UmaSoulUtils.getExtraProperty(soul)[statusType] += stack.getLevel() * 100;
         else

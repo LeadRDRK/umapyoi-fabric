@@ -19,6 +19,7 @@ import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.UmapyoiConfigModel;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
+import net.tracen.umapyoi.item.FadedUmaSoulItem;
 import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.registry.UmaDataRegistry;
 import net.tracen.umapyoi.registry.umadata.UmaData;
@@ -120,9 +121,12 @@ public class SilverUmaPedestalBlockEntity extends SyncedInventoryEntity implemen
         ResourceLocation holder = keys.stream().skip(keys.isEmpty() ? 0 : rand.nextInt(keys.size())).findFirst()
                 .orElse(UmaDataRegistry.COMMON_UMA.getId());
 
-        ItemStack result = ItemRegistry.BLANK_UMA_SOUL.get().getDefaultInstance();
-        result.getOrCreateTag().putString("name", holder.toString());
-
+//        ItemStack result = ItemRegistry.BLANK_UMA_SOUL.get().getDefaultInstance();
+//        UmaData data = registry.get(holder);
+//        result.getOrCreateTag().putString("name", holder.toString());
+//        result.getOrCreateTag().putString("identifier", data.getIdentifier().toString());
+//        result.getOrCreateTag().putString("ranking", data.getGachaRanking().toString().toLowerCase());
+        ItemStack result = FadedUmaSoulItem.genUmaSoul(holder.toString(), registry.get(holder));
         return result;
     }
 

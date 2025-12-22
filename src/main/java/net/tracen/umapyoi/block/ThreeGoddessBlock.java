@@ -67,8 +67,16 @@ public class ThreeGoddessBlock extends BaseEntityBlock {
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        BlockState state = this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
-        return state;
+        BlockPos blockpos = context.getClickedPos();
+        Level level = context.getLevel();
+        if (blockpos.getY() < level.getMaxBuildHeight() - 1
+                && level.getBlockState(blockpos.above()).canBeReplaced(context)) {
+            BlockState state = this.defaultBlockState().setValue(FACING,
+                    context.getHorizontalDirection().getOpposite());
+            return state;
+        } else {
+            return null;
+        }
     }
 
     @Override

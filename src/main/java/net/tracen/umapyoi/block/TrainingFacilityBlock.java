@@ -23,6 +23,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.tracen.umapyoi.block.entity.BlockEntityRegistry;
 import net.tracen.umapyoi.block.entity.TrainingFacilityBlockEntity;
@@ -33,7 +34,25 @@ import javax.annotation.Nullable;
 public class TrainingFacilityBlock extends BaseEntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-    protected static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 6.0D, 16.0D);
+    protected static final VoxelShape SHAPE = Shapes.or(
+            Block.box(0.0D, 0.0D, 0.0D, 16.0D, 6.0D, 16.0D),
+            Block.box(4.0D, 6.0D, 11.0D, 16.0D, 15.0D, 14.0D)
+    );
+
+    protected static final VoxelShape SHAPE_WEST = Shapes.or(
+            Block.box(0.0D, 0.0D, 0.0D, 16.0D, 6.0D, 16.0D),
+            Block.box(11.0D, 6.0D, 0.0D, 14.0D, 15.0D, 12.0D)
+    );
+
+    protected static final VoxelShape SHAPE_SOUTH = Shapes.or(
+            Block.box(0.0D, 0.0D, 0.0D, 16.0D, 6.0D, 16.0D),
+            Block.box(0.0D, 6.0D, 2.0D, 12.0D, 15.0D, 5.0D)
+    );
+
+    protected static final VoxelShape SHAPE_EAST = Shapes.or(
+            Block.box(0.0D, 0.0D, 0.0D, 16.0D, 6.0D, 16.0D),
+            Block.box(2.0D, 6.0D, 4.0D, 5.0D, 15.0D, 16.0D)
+    );
 
     public TrainingFacilityBlock() {
         super(Properties.copy(Blocks.IRON_BLOCK).noOcclusion().noCollission());
@@ -47,7 +66,18 @@ public class TrainingFacilityBlock extends BaseEntityBlock {
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
-        return SHAPE;
+        switch (state.getValue(FACING)) {
+            case NORTH:
+                return SHAPE;
+            case SOUTH:
+                return SHAPE_SOUTH;
+            case EAST:
+                return SHAPE_EAST;
+            case WEST:
+                return SHAPE_WEST;
+            default:
+                return SHAPE;
+        }
     }
 
     @Override

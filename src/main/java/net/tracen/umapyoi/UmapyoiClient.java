@@ -1,7 +1,6 @@
 package net.tracen.umapyoi;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
@@ -14,16 +13,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.tracen.umapyoi.client.key.SkillKeyMapping;
 import net.tracen.umapyoi.client.screen.ScreensRegistry;
 import net.tracen.umapyoi.events.client.RenderArmCallback;
 import net.tracen.umapyoi.events.client.RenderPlayerCallback;
+import net.tracen.umapyoi.events.client.RenderingUmaSoulCallback;
 import net.tracen.umapyoi.events.handler.ClientEvents;
 import net.tracen.umapyoi.events.handler.ClientSetupEvents;
-import net.tracen.umapyoi.item.AbstractSuitItem;
 import net.tracen.umapyoi.item.CreativeModeTabFiller;
 import net.tracen.umapyoi.item.ItemRegistry;
-import net.tracen.umapyoi.item.UmaSoulItem;
 import net.tracen.umapyoi.network.OpenScreenPacket;
 import net.tracen.umapyoi.registry.RegistryObject;
 
@@ -52,6 +49,7 @@ public class UmapyoiClient implements ClientModInitializer {
         });
 
         // ClientEvents
+        RenderingUmaSoulCallback.Pre.EVENT.register(ClientEvents::preUmaSoulRendering);
         RenderPlayerCallback.Pre.EVENT.register(ClientEvents::onPlayerRendering);
         RenderPlayerCallback.Post.EVENT.register(ClientEvents::onPlayerRenderingPost);
         RenderArmCallback.EVENT.register(ClientEvents::onPlayerArmRendering);

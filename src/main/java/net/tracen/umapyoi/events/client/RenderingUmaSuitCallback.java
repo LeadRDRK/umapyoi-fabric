@@ -14,35 +14,33 @@ import net.tracen.umapyoi.client.model.UmaPlayerModel;
 public interface RenderingUmaSuitCallback extends RenderingModelCallback {
     interface Pre extends RenderingUmaSuitCallback {
         Event<Pre> EVENT = EventFactory.createArrayBacked(Pre.class,
-                (listeners) -> (entity, model, partialTick, poseStack, multiBufferSource, packedLight) -> {
+                (listeners) -> (context) -> {
                     for (Pre listener : listeners) {
-                        if (listener.callback(entity, model, partialTick, poseStack, multiBufferSource, packedLight))
+                        if (listener.callback(context))
                             return true;
                     }
 
                     return false;
                 });
 
-        static boolean invoke(LivingEntity entity, UmaPlayerModel<LivingEntity> model, float partialTick,
-                           PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight) {
-            return EVENT.invoker().callback(entity, model, partialTick, poseStack, multiBufferSource, packedLight);
+        static boolean invoke(Context context) {
+            return EVENT.invoker().callback(context);
         }
     }
 
     interface Post extends RenderingUmaSuitCallback {
         Event<Post> EVENT = EventFactory.createArrayBacked(Post.class,
-                (listeners) -> (entity, model, partialTick, poseStack, multiBufferSource, packedLight) -> {
+                (listeners) -> (context) -> {
                     for (Post listener : listeners) {
-                        if (listener.callback(entity, model, partialTick, poseStack, multiBufferSource, packedLight))
+                        if (listener.callback(context))
                             return true;
                     }
 
                     return false;
                 });
 
-        static boolean invoke(LivingEntity entity, UmaPlayerModel<LivingEntity> model, float partialTick,
-                           PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight) {
-            return EVENT.invoker().callback(entity, model, partialTick, poseStack, multiBufferSource, packedLight);
+        static boolean invoke(Context context) {
+            return EVENT.invoker().callback(context);
         }
     }
 }

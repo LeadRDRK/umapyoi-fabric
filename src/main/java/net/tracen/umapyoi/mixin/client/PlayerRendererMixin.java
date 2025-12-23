@@ -30,27 +30,31 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
     private void preRender(AbstractClientPlayer entity, float entityYaw, float partialTicks,
                            PoseStack poseStack, MultiBufferSource buffer, int packedLight,
                            CallbackInfo info) {
-        RenderPlayerCallback.Pre.invoke((PlayerRenderer)(Object) this, entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+        RenderPlayerCallback.Pre.invoke(new RenderPlayerCallback.Context(
+                (PlayerRenderer)(Object) this, entity, entityYaw, partialTicks, poseStack, buffer, packedLight));
     }
 
     @Inject(at = @At("TAIL"), method = "render")
     private void postRender(AbstractClientPlayer entity, float entityYaw, float partialTicks,
                            PoseStack poseStack, MultiBufferSource buffer, int packedLight,
                            CallbackInfo info) {
-        RenderPlayerCallback.Post.invoke((PlayerRenderer)(Object) this, entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+        RenderPlayerCallback.Post.invoke(new RenderPlayerCallback.Context(
+                (PlayerRenderer)(Object) this, entity, entityYaw, partialTicks, poseStack, buffer, packedLight));
     }
 
     @Inject(at = @At("HEAD"), method = "renderRightHand", cancellable = true)
     private void renderRightHand(PoseStack poseStack, MultiBufferSource buffer, int combinedLight,
                                  AbstractClientPlayer player, CallbackInfo info) {
-        if (RenderArmCallback.invoke(poseStack, buffer, combinedLight, player, HumanoidArm.RIGHT))
+        if (RenderArmCallback.invoke(new RenderArmCallback.Context(
+                poseStack, buffer, combinedLight, player, HumanoidArm.RIGHT)))
             info.cancel();
     }
 
     @Inject(at = @At("HEAD"), method = "renderLeftHand", cancellable = true)
     private void renderLeftHand(PoseStack poseStack, MultiBufferSource buffer, int combinedLight,
                                 AbstractClientPlayer player, CallbackInfo info) {
-        if (RenderArmCallback.invoke(poseStack, buffer, combinedLight, player, HumanoidArm.LEFT))
+        if (RenderArmCallback.invoke(new RenderArmCallback.Context(
+                poseStack, buffer, combinedLight, player, HumanoidArm.LEFT)))
             info.cancel();
     }
 }

@@ -39,7 +39,6 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.attributes.ExtraAttributes;
-import net.tracen.umapyoi.client.EmissiveRenderType;
 import net.tracen.umapyoi.client.model.UmaPlayerModel;
 import net.tracen.umapyoi.data.tag.UmapyoiUmaDataTags;
 import net.tracen.umapyoi.events.ResumeActionPointCallback;
@@ -317,7 +316,9 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
         baseModel.setModelProperties(entity);
         baseModel.prepareMobModel(entity, limbAngle, limbDistance, tickDelta);
 
-        if (RenderingUmaSoulCallback.Pre.invoke(entity, baseModel, tickDelta, poseStack, multiBufferSource, light))
+        var callbackContext = new RenderingUmaSoulCallback.Context(entity, baseModel, tickDelta,
+                poseStack, multiBufferSource, light);
+        if (RenderingUmaSoulCallback.Pre.invoke(callbackContext))
             return;
 
         if (entityModel instanceof HumanoidModel<?> humanoidModel) {
@@ -338,7 +339,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
                     LivingEntityRenderer.getOverlayCoords(entity, 0.0F), 1, 1, 1, 1);
         }
 
-        RenderingUmaSoulCallback.Post.invoke(entity, baseModel, tickDelta, poseStack, multiBufferSource, light);
+        RenderingUmaSoulCallback.Post.invoke(callbackContext);
     }
 
     public static ResourceLocation getRenderTarget(ItemStack stack, LivingEntity entity) {

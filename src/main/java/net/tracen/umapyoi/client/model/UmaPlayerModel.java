@@ -1,16 +1,25 @@
 package net.tracen.umapyoi.client.model;
 
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.item.ElytraItem;
+import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.Umapyoi;
+import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.client.model.bedrock.BedrockPart;
 import net.tracen.umapyoi.client.model.pojo.BedrockModelPOJO;
+import net.tracen.umapyoi.data.tag.UmapyoiUmaDataTags;
+import net.tracen.umapyoi.registry.umadata.UmaData;
+import net.tracen.umapyoi.utils.ClientUtils;
+import net.tracen.umapyoi.utils.UmaSoulUtils;
 
 import java.util.List;
 
@@ -27,14 +36,14 @@ public class UmaPlayerModel<T extends LivingEntity> extends BedrockHumanoidModel
     public BedrockPart leftFoot;
     public BedrockPart rightLegHideParts;
     public BedrockPart leftLegHideParts;
-    public BedrockPart hat;
+    public BedrockPart hat = new BedrockPart();
     public BedrockPart hideParts;
     public BedrockPart tail;
     public BedrockPart tailDown;
 
     public BedrockPart cape;
 
-    public List<BedrockPart> longHairParts;
+    public List<BedrockPart> longHairParts = Lists.newArrayList();
     public UmaPlayerModel() {
         super();
     }
@@ -72,6 +81,12 @@ public class UmaPlayerModel<T extends LivingEntity> extends BedrockHumanoidModel
             if(name.startsWith("long_hair_") || name.equals("long_hair"))
                 this.longHairParts.add(part);
         });
+    }
+
+    @Override
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay,
+                               float red, float green, float blue, float alpha) {
+        super.renderToBuffer(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
     @Override
@@ -119,8 +134,12 @@ public class UmaPlayerModel<T extends LivingEntity> extends BedrockHumanoidModel
             }
             else
                 this.longHairParts.forEach(part -> part.xRot = 0F);
-
-            animationEarTail(entityIn, pAgeInTicks);
+            ItemStack renderingUmaSoul = UmapyoiAPI.getRenderingUmaSoul(entityIn);
+            boolean isStucked = ClientUtils.getClientUmaDataRegistry()
+                    .getHolder(ResourceKey.create(UmaData.REGISTRY_KEY, UmaSoulUtils.getName(renderingUmaSoul)))
+                    .get().is(UmapyoiUmaDataTags.STUCK_MODEL);
+            if(!isStucked)
+                animationEarTail(entityIn, pAgeInTicks);
         }
         this.hat.copyFrom(head);
 
@@ -158,14 +177,6 @@ public class UmaPlayerModel<T extends LivingEntity> extends BedrockHumanoidModel
     }
 
     public void setModelProperties(LivingEntity player) {
-        this.setModelProperties(player, false);
-    }
-
-    public void setModelProperties(LivingEntity player, boolean render_head_only) {
-        this.setModelProperties(player, render_head_only, false);
-    }
-
-    public void setModelProperties(LivingEntity player, boolean render_head_only, boolean hide_head) {
         boolean shouldSit = player.isPassenger()
                 && (player.getVehicle() != null/* && player.getVehicle().shouldRiderSit()*/);
         this.riding = shouldSit;
@@ -175,51 +186,66 @@ public class UmaPlayerModel<T extends LivingEntity> extends BedrockHumanoidModel
             this.head.visible = true;
         } else {
             this.setAllVisible(true);
-            if (render_head_only) {
-                this.setAllVisible(false);
-                this.head.visible = true;
-                this.tail.visible = true;
-                this.hat.visible = !this.hat.isEmpty();
-            } else if (hide_head) {
-                this.head.visible = false;
-                this.tail.visible = false;
-                this.hat.visible = !this.hat.isEmpty();
-            }
 
             this.crouching = player.isCrouching();
             if (Umapyoi.CONFIG.VANILLA_ARMOR_RENDER() && !Umapyoi.CONFIG.HIDE_PARTS_RENDER()) {
 
                 if (!player.getItemBySlot(EquipmentSlot.HEAD).isEmpty()) {
-                    this.hat.visible = false;
+                    this.hideHat();
+                }else {
+                    this.showHat();
                 }
 
                 if (!player.getItemBySlot(EquipmentSlot.CHEST).isEmpty()
                         && !(player.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof ElytraItem)) {
                     this.hideParts.visible = false;
+                    this.cape.visible = false;
+                }else {
+                    this.hideParts.visible = true;
+                    this.cape.visible = true;
                 }
 
                 if (!player.getItemBySlot(EquipmentSlot.LEGS).isEmpty()) {
                     this.rightLegHideParts.visible = false;
                     this.leftLegHideParts.visible = false;
+                }else {
+                    this.rightLegHideParts.visible = true;
+                    this.leftLegHideParts.visible = true;
                 }
 
                 if (!player.getItemBySlot(EquipmentSlot.FEET).isEmpty()) {
                     this.rightFoot.visible = false;
                     this.leftFoot.visible = false;
+                }else {
+                    this.rightFoot.visible = true;
+                    this.leftFoot.visible = true;
                 }
             }
-            if (this.hat.visible) {
-                if (this.leftEarHideParts != null)
-                    this.leftEar.visible = false;
-                if (this.rightEarHideParts != null)
-                    this.rightEar.visible = false;
-            } else {
-                if (this.leftEarHideParts != null)
-                    this.leftEar.visible = true;
-                if (this.rightEarHideParts != null)
-                    this.rightEar.visible = true;
-            }
+
+            this.showEars();
         }
+    }
+
+    public void showEars() {
+        if (this.hat.visible) {
+            if (this.leftEarHideParts != null && !this.leftEarHideParts.isEmpty())
+                this.leftEar.visible = false;
+            if (this.rightEarHideParts != null && !this.rightEarHideParts.isEmpty())
+                this.rightEar.visible = false;
+        } else {
+            if (this.leftEarHideParts != null && !this.leftEarHideParts.isEmpty())
+                this.leftEar.visible = true;
+            if (this.rightEarHideParts != null && !this.rightEarHideParts.isEmpty())
+                this.rightEar.visible = true;
+        }
+    }
+
+    @Override
+    public void setAllVisible(boolean pVisible) {
+        super.setAllVisible(pVisible);
+        this.hat.visible = pVisible;
+        this.cape.visible = pVisible;
+        this.tail.visible = pVisible;
     }
 
     public void copyAnim(BedrockPart part, ModelPart old_part) {
@@ -242,5 +268,13 @@ public class UmaPlayerModel<T extends LivingEntity> extends BedrockHumanoidModel
             part.z -= 0.125F;
         if (part == this.rightLeg)
             part.z -= 0.125F;
+    }
+
+    public void showHat() {
+        this.hat.visible = true;
+    }
+
+    public void hideHat() {
+        this.hat.visible = false;
     }
 }

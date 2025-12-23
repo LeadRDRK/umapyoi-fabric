@@ -120,8 +120,9 @@ public abstract class AbstractSuitItem extends TrinketItem implements TrinketRen
             baseModel.head.visible = false;
             baseModel.tail.visible = false;
             baseModel.prepareMobModel(entity, limbAngle, limbDistance, tickDelta);
-            if (RenderingUmaSuitCallback.Pre.invoke(entity, baseModel, tickDelta,
-                    poseStack, multiBufferSource, light))
+            var callbackContext = new RenderingUmaSuitCallback.Context(entity, baseModel, tickDelta,
+                    poseStack, multiBufferSource, light);
+            if (RenderingUmaSuitCallback.Pre.invoke(callbackContext))
                 return;
 
             if (entityModel instanceof HumanoidModel) {
@@ -140,8 +141,7 @@ public abstract class AbstractSuitItem extends TrinketItem implements TrinketRen
 
             baseModel.renderToBuffer(poseStack, vertexconsumer, light,
                     LivingEntityRenderer.getOverlayCoords(entity, 0.0F), 1, 1, 1, 1);
-            RenderingUmaSuitCallback.Post.invoke(entity, baseModel, tickDelta,
-                    poseStack, multiBufferSource, light);
+            RenderingUmaSuitCallback.Post.invoke(callbackContext);
         });
     }
 

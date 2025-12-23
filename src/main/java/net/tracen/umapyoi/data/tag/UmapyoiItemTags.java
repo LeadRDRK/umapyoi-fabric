@@ -6,6 +6,8 @@ import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.utils.TagUtils;
 
 public class UmapyoiItemTags {
+    public static final TagKey<Item> SHOULD_RENDER = TagUtils.modItemTag(Umapyoi.MODID, "should_render");
+
     public static final TagKey<Item> COMMON_GACHA_ITEM = TagUtils.modItemTag(Umapyoi.MODID, "common_gacha_item");
     
     public static final TagKey<Item> HORSESHOE = TagUtils.modItemTag(Umapyoi.MODID, "horseshoe");
@@ -17,11 +19,18 @@ public class UmapyoiItemTags {
     public static final TagKey<Item> CARD_TICKET = TagUtils.modItemTag(Umapyoi.MODID, "card_ticket");
     public static final TagKey<Item> SR_CARD_TICKET = TagUtils.modItemTag(Umapyoi.MODID, "sr_card_ticket");
     public static final TagKey<Item> SSR_CARD_TICKET = TagUtils.modItemTag(Umapyoi.MODID, "ssr_card_ticket");
+
+    // commented out = unused/invalid tags that are not available in fabric api
+    // FIXME: these tags are available on version >= 1.20.5
+
+    //public static final TagKey<Item> WATER = TagUtils.forgeItemTag("water");
+    //public static final TagKey<Item> SUGAR = TagUtils.forgeItemTag("sugar");
+    //public static final TagKey<Item> MILK = TagUtils.forgeItemTag("milk");
     
-    public static final TagKey<Item> WATER = TagUtils.fabricItemTag("water");
-    public static final TagKey<Item> SUGAR = TagUtils.fabricItemTag("sugar");
-    public static final TagKey<Item> MILK = TagUtils.fabricItemTag("milk");
-    
-    public static final TagKey<Item> BREAD = TagUtils.fabricItemTag("bread");
-    public static final TagKey<Item> BREAD_WHEAT = TagUtils.fabricItemTag("bread/wheat");
+    //public static final TagKey<Item> BREAD = TagUtils.forgeItemTag("bread");
+    //public static final TagKey<Item> BREAD_WHEAT = TagUtils.forgeItemTag("bread/wheat");
+
+    //public static final TagKey<Item> BAMBOO = TagUtils.forgeItemTag("bamboo");
+
+    //public static final TagKey<Item> VEGETABLES_CARROT = TagUtils.forgeItemTag("vegetables/carrot");
 }

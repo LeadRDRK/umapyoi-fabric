@@ -24,20 +24,4 @@ public class TagUtils {
     public static TagKey<Fluid> modFluidTag(String modid, String path) {
         return TagKey.create(Registries.FLUID, new ResourceLocation(modid, path));
     }
-
-    public static TagKey<Item> fabricItemTag(String path) {
-        return TagKey.create(Registries.ITEM, new ResourceLocation("fabric", path));
-    }
-
-    public static TagKey<Block> fabricBlockTag(String path) {
-        return TagKey.create(Registries.BLOCK, new ResourceLocation("fabric", path));
-    }
-
-    public static TagKey<EntityType<?>> fabricEntityTag(String path) {
-        return TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation("fabric", path));
-    }
-
-    public static TagKey<Fluid> fabricFluidTag(String path) {
-        return TagKey.create(Registries.FLUID, new ResourceLocation("fabric", path));
-    }
 }

@@ -15,18 +15,53 @@ import net.minecraft.world.entity.HumanoidArm;
  */
 @Environment(EnvType.CLIENT)
 public interface RenderArmCallback {
-    boolean callback(PoseStack poseStack, MultiBufferSource buffer, int combinedLight, AbstractClientPlayer player, HumanoidArm arm);
+    class Context {
+        private final PoseStack poseStack;
+        private final MultiBufferSource multiBufferSource;
+        private final int packedLight;
+        private final AbstractClientPlayer player;
+        private final HumanoidArm arm;
+
+        public Context(PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, AbstractClientPlayer player, HumanoidArm arm) {
+            this.poseStack = poseStack;
+            this.multiBufferSource = multiBufferSource;
+            this.packedLight = packedLight;
+            this.player = player;
+            this.arm = arm;
+        }
+
+        public PoseStack getPoseStack() {
+            return poseStack;
+        }
+
+        public MultiBufferSource getMultiBufferSource() {
+            return multiBufferSource;
+        }
+
+        public int getPackedLight() {
+            return packedLight;
+        }
+
+        public AbstractClientPlayer getPlayer() {
+            return player;
+        }
+
+        public HumanoidArm getArm() {
+            return arm;
+        }
+    }
+    boolean callback(Context context);
 
     Event<RenderArmCallback> EVENT = EventFactory.createArrayBacked(RenderArmCallback.class,
-            (listeners) -> (poseStack, buffer, combinedLight, player, arm) -> {
+            (listeners) -> (context) -> {
                 for (RenderArmCallback listener : listeners) {
-                    if (listener.callback(poseStack, buffer, combinedLight, player, arm)) return true;
+                    if (listener.callback(context)) return true;
                 }
 
                 return false;
             });
 
-    static boolean invoke(PoseStack poseStack, MultiBufferSource buffer, int combinedLight, AbstractClientPlayer player, HumanoidArm arm) {
-        return EVENT.invoker().callback(poseStack, buffer, combinedLight, player, arm);
+    static boolean invoke(Context context) {
+        return EVENT.invoker().callback(context);
     }
 }

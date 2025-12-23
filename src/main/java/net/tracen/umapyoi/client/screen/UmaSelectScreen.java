@@ -30,8 +30,8 @@ import net.tracen.umapyoi.container.UmaSelectMenu;
 import net.tracen.umapyoi.container.UmaSelectMenu.SelectComparator;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
 import net.tracen.umapyoi.item.ItemRegistry;
-import net.tracen.umapyoi.network.EmptyResultPacket;
 import net.tracen.umapyoi.network.SetupResultPacket;
+import net.tracen.umapyoi.network.EmptyResultPacket;
 import net.tracen.umapyoi.registry.training.card.SupportCard;
 import net.tracen.umapyoi.registry.umadata.UmaData;
 import net.tracen.umapyoi.utils.ClientUtils;
@@ -123,6 +123,7 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
         String s = this.searchBox.getValue();
         this.init(pMinecraft, pWidth, pHeight);
         this.searchBox.setValue(s);
+        this.searchBox.setEditable(this.hasRequestItems());
     }
 
     @Override
@@ -148,16 +149,18 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
     }
 
     private void onNameChanged(String name) {
-        boolean hasItems = this.menu.getSlot(0).hasItem() && this.menu.getSlot(1).hasItem();
+        boolean hasItems = hasRequestItems();
         if (!hasItems)
             return;
         if (name.length() <= 50 && !this.name.equalsIgnoreCase(name)) {
             this.name = name;
             this.selectIndex = -1;
-            this.startIndex = (int) ((double) (this.scrollOffs * (float) this.getOffscreenRows()) + 0.5D)
-                    * RECIPES_COLUMNS;
             ClientPlayNetworking.send(new EmptyResultPacket());
         }
+    }
+
+    public boolean hasRequestItems() {
+        return this.menu.getSlot(0).hasItem() && this.menu.getSlot(1).hasItem();
     }
 
     protected void renderBg(GuiGraphics pPoseStack, float pPartialTick, int pX, int pY) {
@@ -215,7 +218,7 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
         }
     }
 
-    private void renderRecipes(GuiGraphics pPoseStack, int pLeft, int pTop, int pRecipeIndexOffsetMax) {
+    private void renderRecipes(GuiGraphics pPoseStack,int pLeft, int pTop, int pRecipeIndexOffsetMax) {
         if (this.displayRecipes) {
             List<ResourceLocation> list = getResults();
 
@@ -316,10 +319,11 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
         if (this.displayRecipes) {
             int i = this.leftPos + RECIPES_X;
             int j = this.topPos + RECIPES_Y;
-            List<ResourceLocation> results = this.getResults();
-            int k = Math.min(this.startIndex + SCROLLER_WIDTH, results.size());
+            int k = this.startIndex + SCROLLER_WIDTH;
 
             for (int l = this.startIndex; l < k; ++l) {
+                if(l >= this.getResults().size())
+                    return super.mouseClicked(pMouseX, pMouseY, pButton);
                 int i1 = l - this.startIndex;
                 double d0 = pMouseX - (double) (i + i1 % RECIPES_COLUMNS * RECIPES_IMAGE_SIZE_WIDTH);
                 double d1 = pMouseY - (double) (j + i1 / RECIPES_COLUMNS * 18);
@@ -328,7 +332,7 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
                             .play(SimpleSoundInstance.forUI(SoundEvents.UI_STONECUTTER_SELECT_RECIPE, 1.0F));
                     this.selectIndex = l;
                     ClientPlayNetworking.send(
-                            new SetupResultPacket(results.get(this.selectIndex).toString()));
+                            new SetupResultPacket(this.getResults().get(this.getSelectIndex()).toString()));
                     return true;
                 }
             }
@@ -374,7 +378,7 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
     }
 
     protected int getOffscreenRows() {
-        return Math.max(0, (this.getResults().size() + RECIPES_COLUMNS - 1) / RECIPES_COLUMNS - RECIPES_ROWS);
+        return (this.getResults().size() + RECIPES_COLUMNS - 1) / RECIPES_COLUMNS - RECIPES_ROWS;
     }
 
     /**

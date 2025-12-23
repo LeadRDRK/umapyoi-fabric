@@ -10,7 +10,10 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.container.TrainingFacilityContainer;
+import net.tracen.umapyoi.item.UmaSoulItem;
 import net.tracen.umapyoi.registry.training.SupportContainer;
+import net.tracen.umapyoi.registry.umadata.Growth;
+import net.tracen.umapyoi.utils.UmaSoulUtils;
 
 public class TrainingFacilityScreen extends AbstractContainerScreen<TrainingFacilityContainer> {
     private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation(Umapyoi.MODID,
@@ -50,6 +53,18 @@ public class TrainingFacilityScreen extends AbstractContainerScreen<TrainingFaci
         this.renderSupportBG(guiGraphics);
         this.renderTrainingAnim(guiGraphics);
         this.renderSupportTypes(guiGraphics);
+        this.renderUmaSoulPhysique(guiGraphics);
+    }
+
+    private void renderUmaSoulPhysique(GuiGraphics graphic) {
+        ItemStack soul = this.getMenu().tileEntity.getItem(0);
+        if(soul.getItem() instanceof UmaSoulItem) {
+            if(UmaSoulUtils.getGrowth(soul) == Growth.RETIRED)
+                return;
+            graphic.blit(BACKGROUND_TEXTURE, this.leftPos + 102, this.topPos + 103, 0, 246, 65, 5);
+            int training_times = 5 - UmaSoulUtils.getPhysique(soul);
+            graphic.blit(BACKGROUND_TEXTURE, this.leftPos + 102, this.topPos + 103, 0, 251, training_times * 13, 5);
+        }
     }
 
     private void renderSupportTypes(GuiGraphics guiGraphics) {

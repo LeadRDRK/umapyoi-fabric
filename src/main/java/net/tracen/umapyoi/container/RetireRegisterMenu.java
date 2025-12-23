@@ -2,6 +2,7 @@ package net.tracen.umapyoi.container;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -19,11 +20,13 @@ import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.item.UmaSoulItem;
 import net.tracen.umapyoi.registry.UmaFactorRegistry;
+import net.tracen.umapyoi.registry.UmaSkillRegistry;
 import net.tracen.umapyoi.registry.factors.FactorType;
 import net.tracen.umapyoi.registry.factors.SkillFactor;
 import net.tracen.umapyoi.registry.factors.StatusFactor;
 import net.tracen.umapyoi.registry.factors.UmaFactor;
 import net.tracen.umapyoi.registry.factors.UmaFactorStack;
+import net.tracen.umapyoi.registry.skills.UmaSkill;
 import net.tracen.umapyoi.registry.umadata.Growth;
 import net.tracen.umapyoi.utils.ResultRankingUtils;
 import net.tracen.umapyoi.utils.UmaFactorUtils;
@@ -177,7 +180,7 @@ public class RetireRegisterMenu extends AbstractContainerMenu {
         StatusFactor statusFactor = (StatusFactor) status.skip(rand.nextLong(statusCount)).findFirst()
                 .orElse(UmaFactorRegistry.SPEED_FACTOR.get());
         var statusProperty = UmaSoulUtils.getProperty(inputSoul)[statusFactor.getStatusType().getId()];
-        var i = statusProperty > 19 ? 5 :
+        var i = statusProperty > 18 ? statusFactor.getMaxLevel() + 1 :
                 statusProperty > 10 ? 3 :
                 2;
         var statusFactorStack = new UmaFactorStack(statusFactor,
@@ -189,7 +192,8 @@ public class RetireRegisterMenu extends AbstractContainerMenu {
                 .filter(fac -> fac.getFactorType() == FactorType.EXTRASTATUS).count();
         UmaFactor extraStatusFactor = extraStatus.skip(rand.nextLong(extraStatusCount)).findFirst()
                 .orElse(UmaFactorRegistry.PHYSIQUE_FACTOR.get());
-        var extraStatusFactorStack = new UmaFactorStack(extraStatusFactor, rand.nextInt(ranking > 18 ? 3 : 2) + 1);
+        var extraStatusFactorStack = new UmaFactorStack(extraStatusFactor, rand.nextInt(ranking > 18 ?
+                statusFactor.getMaxLevel() : 2) + 1);
 
         UmaFactorStack uniqueFactor = new UmaFactorStack(UmaFactorRegistry.UNIQUE_SKILL_FACTOR.get(), 1);
         uniqueFactor.getOrCreateTag().putString("skill", UmaSoulUtils.getSkills(inputSoul).get(0).getAsString());
@@ -203,12 +207,20 @@ public class RetireRegisterMenu extends AbstractContainerMenu {
 
     public void createSkillFactors(ItemStack inputSoul, int ranking, List<UmaFactorStack> stackList) {
         UmaSoulUtils.getSkills(inputSoul).stream().skip(1).forEach(skillTag -> {
-            int skillLevel = this.rand.nextInt(ranking > 19 ? 6 : 4);
-            if (skillLevel == 0)
-                return;
-            UmaFactorStack skillFactor = new UmaFactorStack(UmaFactorRegistry.SKILL_FACTOR.get(), skillLevel);
-            skillFactor.getOrCreateTag().putString("skill", skillTag.getAsString());
-            stackList.add(skillFactor);
+            var name = skillTag.getAsString();
+            ResourceLocation skill = ResourceLocation.tryParse(name);
+            if (skill != null && UmaSkillRegistry.REGISTRY.get().containsKey(skill)) {
+                UmaSkill result = UmaSkillRegistry.REGISTRY.get().get(skill);
+                if(!result.isInheritable())
+                    return;
+
+                int skillLevel = this.rand.nextInt(ranking > 18 ? 6 : 4);
+                if (skillLevel == 0)
+                    return;
+                UmaFactorStack skillFactor = new UmaFactorStack(UmaFactorRegistry.SKILL_FACTOR.get(), skillLevel);
+                skillFactor.getOrCreateTag().putString("skill", name);
+                stackList.add(skillFactor);
+            }
         });
 
     }
@@ -217,7 +229,7 @@ public class RetireRegisterMenu extends AbstractContainerMenu {
         UmaFactorRegistry.REGISTRY.get().stream()
                 .filter(fac -> fac.getFactorType() == FactorType.OTHER && !(fac instanceof SkillFactor))
                 .forEach(fac -> {
-                    int skillLevel = this.rand.nextInt(ranking > 19 ? 6 : 4);
+                    int skillLevel = this.rand.nextInt(ranking > 19 ? fac.getMaxLevel() + 1 : (fac.getMaxLevel() / 2) + 1);
                     if (skillLevel == 0)
                         return;
 

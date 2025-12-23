@@ -20,7 +20,8 @@ public class StatusFactor extends UmaFactor {
     
     @Override
     public void applyFactor(ItemStack soul, UmaFactorStack stack) {
-        UmaSoulUtils.getMaxProperty(soul)[statusType.getId()] += stack.getLevel();
+        UmaSoulUtils.getMaxProperty(soul)[statusType.getId()] = Math.min(39,
+                UmaSoulUtils.getMaxProperty(soul)[statusType.getId()] + 1);
         int maxStatusLevel = UmaSoulUtils.getMaxProperty(soul)[statusType.getId()];
         int statusLevel = UmaSoulUtils.getProperty(soul)[statusType.getId()];
         UmaSoulUtils.getProperty(soul)[statusType.getId()] = Math.min(maxStatusLevel, statusLevel + stack.getLevel());

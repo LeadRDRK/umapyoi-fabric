@@ -69,4 +69,8 @@ public class UmaFactor extends RegistryNameHolder {
         mutablecomponent.append(" ").append(Component.translatable("enchantment.level." + pLevel));
         return mutablecomponent;
     }
+
+    public int getMaxLevel() {
+        return this.getFactorType().getMaxLevel();
+    }
 }

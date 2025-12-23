@@ -26,6 +26,7 @@ import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.client.EmissiveRenderType;
 import net.tracen.umapyoi.client.model.bedrock.BedrockModel;
+import net.tracen.umapyoi.client.model.bedrock.BedrockVersion;
 import net.tracen.umapyoi.client.model.pojo.BedrockModelPOJO;
 import net.tracen.umapyoi.data.tag.UmapyoiUmaDataTags;
 import net.tracen.umapyoi.registry.cosmetics.CosmeticData;
@@ -149,12 +150,12 @@ public class ClientUtils {
     public static void loadModel(ResourceLocation modelLocation, JsonElement element) {
         BedrockModelPOJO pojo = DataGenUtils.DATA_GSON.fromJson(element, BedrockModelPOJO.class);
 
-        if(pojo.getFormatVersion() == null) {
+        if (pojo.getFormatVersion() == null) {
             Umapyoi.getLogger().error("Failed to load model: {}, it's not a Bedrock Model!", modelLocation);
             return;
         } else {
             // 先判断是不是 1.10.0 版本基岩版模型文件
-            if (pojo.getFormatVersion().equals("1.10.0")) {
+            if (pojo.getFormatVersion().equals(BedrockVersion.LEGACY.getVersion())) {
                 // 如果 model 字段不为空
                 if (pojo.getGeometryModelLegacy() != null) {
                     Umapyoi.getLogger().info("Loaded 1.10.0 version model : {}", modelLocation);
@@ -168,11 +169,11 @@ public class ClientUtils {
             }
 
             // 判定是不是 1.12.0 版本基岩版模型文件
-            if (pojo.getFormatVersion().equals("1.12.0")) {
+            if (pojo.getFormatVersion().compareTo(BedrockVersion.NEW.getVersion()) >= 0) {
                 // 如果 model 字段不为空
                 if (pojo.getGeometryModelNew() != null) {
                     MODEL_MAP.put(modelLocation, pojo);
-                    Umapyoi.getLogger().info("Loaded 1.12.0 version model : {}", modelLocation);
+                    Umapyoi.getLogger().info("Loaded {} version model : {}", pojo.getFormatVersion(), modelLocation);
                     return;
                 } else {
                     // 否则日志给出提示
@@ -181,14 +182,12 @@ public class ClientUtils {
                 }
             }
 
-            Umapyoi.getLogger().error("{} model version is not 1.10.0 or 1.12.0", modelLocation);
+            Umapyoi.getLogger().error("{} model version is not 1.10.0 or new version bedrock model", modelLocation);
         }
     }
 
     public static BedrockModelPOJO getModelPOJO(ResourceLocation modelLocation) {
-        if (MODEL_MAP.containsKey(modelLocation))
-            return MODEL_MAP.get(modelLocation);
-        return null;
+        return MODEL_MAP.get(modelLocation);
     }
 
     public static float convertRotation(float degree) {

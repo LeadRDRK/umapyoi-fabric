@@ -5,7 +5,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.tracen.umapyoi.api.UmapyoiAPI;
-import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
 import net.tracen.umapyoi.events.AnvilUpdateCallback;
 import net.tracen.umapyoi.item.FadedUmaSoulItem;
 import net.tracen.umapyoi.item.ItemRegistry;

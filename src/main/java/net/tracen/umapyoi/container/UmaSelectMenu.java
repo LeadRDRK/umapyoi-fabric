@@ -59,7 +59,7 @@ public class UmaSelectMenu extends AbstractContainerMenu {
     }
 
     public UmaSelectMenu(int pContainerId, Inventory pPlayerInventory, ContainerLevelAccess pAccess) {
-        this(ContainerRegistry.UMA_SELECT_TICKET.get(), pContainerId, pPlayerInventory, pAccess);
+        this(ContainerRegistry.UMA_SELECT_MENU.get(), pContainerId, pPlayerInventory, pAccess);
     }
 
     public UmaSelectMenu(@Nullable MenuType<?> pType, int pContainerId, Inventory pPlayerInventory,

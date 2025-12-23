@@ -14,6 +14,7 @@ import net.tracen.umapyoi.utils.ClientUtils;
 import java.util.HashMap;
 import java.util.List;
 
+/** Ported from MMLib **/
 public interface BedrockModel {
     BedrockModelPOJO getBedrockModelPOJO();
     void setBedrockModelPOJO(BedrockModelPOJO pojo);
@@ -22,6 +23,8 @@ public interface BedrockModel {
     List<BedrockPart> getShouldRender();
     AABB getRenderBoundingBox();
     void setRenderBoundingBox(AABB aabb);
+    boolean isEmissive();
+    void setEmissive(boolean emissive);
 
     default boolean needRefresh(BedrockModelPOJO pojo) {
         // if not same object, refresh it.
@@ -40,10 +43,6 @@ public interface BedrockModel {
         }
     }
 
-    boolean isEmissive();
-
-    void setEmissive(boolean emissive);
-
     default void loadModel(BedrockModelPOJO pojo) {
         this.getModelMap().clear();
         this.getIndexBones().clear();
@@ -51,7 +50,7 @@ public interface BedrockModel {
         String formatVersion = pojo.getFormatVersion();
         if (formatVersion.equals(BedrockVersion.LEGACY.getVersion())) {
             loadLegacyModel(pojo);
-        } else if (formatVersion.equals(BedrockVersion.NEW.getVersion())) {
+        } else if (formatVersion.compareTo(BedrockVersion.NEW.getVersion()) >= 0) {
             loadNewModel(pojo);
         }
         this.setBedrockModelPOJO(pojo);
@@ -100,7 +99,7 @@ public interface BedrockModel {
 
             if (parent != null) {
                 var parentPart = this.getModelMap().get(parent);
-                parentPart.addChild(model);
+                parentPart.addChild(bones.getName(), model);
             } else {
                 this.getShouldRender().add(model);
             }
@@ -119,12 +118,12 @@ public interface BedrockModel {
 
                 if (cubeRotation == null) {
                     if (faceUv == null) {
-                        model.cubes.add(new BedrockCube(uv.get(0), uv.get(1),
+                        model.getCubes().add(new BedrockCube(uv.get(0), uv.get(1),
                                 convertOrigin(bones, cube, 0), convertOrigin(bones, cube, 1), convertOrigin(bones, cube, 2),
                                 size.get(0), size.get(1), size.get(2), inflate, mirror,
                                 texWidth, texHeight));
                     } else {
-                        model.cubes.add(new BedrockCube(
+                        model.getCubes().add(new BedrockCube(
                                 convertOrigin(bones, cube, 0), convertOrigin(bones, cube, 1), convertOrigin(bones, cube, 2),
                                 size.get(0), size.get(1), size.get(2), inflate,
                                 texWidth, texHeight, faceUv));
@@ -136,18 +135,18 @@ public interface BedrockModel {
                     cubeRenderer.setPos(convertPivot(bones, cube, 0), convertPivot(bones, cube, 1), convertPivot(bones, cube, 2));
                     setRotationAngle(cubeRenderer, ClientUtils.convertRotation(cubeRotation.get(0)), ClientUtils.convertRotation(cubeRotation.get(1)), ClientUtils.convertRotation(cubeRotation.get(2)));
                     if (faceUv == null) {
-                        cubeRenderer.cubes.add(new BedrockCube(uv.get(0), uv.get(1),
+                        cubeRenderer.getCubes().add(new BedrockCube(uv.get(0), uv.get(1),
                                 convertOrigin(cube, 0), convertOrigin(cube, 1), convertOrigin(cube, 2),
                                 size.get(0), size.get(1), size.get(2), inflate, mirror,
                                 texWidth, texHeight));
                     } else {
-                        cubeRenderer.cubes.add(new BedrockCube(
+                        cubeRenderer.getCubes().add(new BedrockCube(
                                 convertOrigin(cube, 0), convertOrigin(cube, 1), convertOrigin(cube, 2),
                                 size.get(0), size.get(1), size.get(2), inflate,
                                 texWidth, texHeight, faceUv));
                     }
 
-                    model.addChild(cubeRenderer);
+                    model.addChild(bones.getName(), cubeRenderer);
                 }
             }
         }
@@ -193,7 +192,7 @@ public interface BedrockModel {
             }
 
             if (parent != null) {
-                this.getModelMap().get(parent).addChild(model);
+                this.getModelMap().get(parent).addChild(bones.getName(), model);
             } else {
                 this.getShouldRender().add(model);
             }
@@ -208,7 +207,7 @@ public interface BedrockModel {
                 boolean mirror = cube.isMirror();
                 float inflate = cube.getInflate();
 
-                model.cubes.add(new BedrockCube(uv.get(0), uv.get(1),
+                model.getCubes().add(new BedrockCube(uv.get(0), uv.get(1),
                         convertOrigin(bones, cube, 0), convertOrigin(bones, cube, 1), convertOrigin(bones, cube, 2),
                         size.get(0), size.get(1), size.get(2), inflate, mirror,
                         texWidth, texHeight));
@@ -265,6 +264,6 @@ public interface BedrockModel {
     }
 
     default BedrockPart getChild(String partName) {
-        return this.getModelMap().get(partName);
+        return this.getModelMap().getOrDefault(partName, new BedrockPart());
     }
 }

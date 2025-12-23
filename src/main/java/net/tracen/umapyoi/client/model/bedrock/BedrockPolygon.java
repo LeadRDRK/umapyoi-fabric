@@ -4,6 +4,7 @@ import net.minecraft.core.Direction;
 
 import org.joml.Vector3f;
 
+/** Ported from MMLib **/
 public class BedrockPolygon {
     public final BedrockVertex[] vertices;
     public final Vector3f normal;

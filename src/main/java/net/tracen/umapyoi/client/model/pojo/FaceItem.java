@@ -2,6 +2,7 @@ package net.tracen.umapyoi.client.model.pojo;
 
 import com.google.gson.annotations.SerializedName;
 
+/** Ported from MMLib **/
 public class FaceItem {
     @SerializedName("uv")
     private float[] uv;

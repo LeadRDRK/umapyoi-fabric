@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+/** Ported from MMLib **/
 public class GeometryModelNew {
     @SerializedName("description")
     private Description description;

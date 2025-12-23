@@ -18,6 +18,7 @@ import net.tracen.umapyoi.client.model.pojo.BonesItem;
 import java.util.HashMap;
 import java.util.List;
 
+/** Ported from MMLib **/
 @Environment(EnvType.CLIENT)
 public class SimpleBedrockModel extends Model implements BedrockModel {
     protected final HashMap<String, BedrockPart> modelMap;
@@ -73,16 +74,6 @@ public class SimpleBedrockModel extends Model implements BedrockModel {
     }
 
     @Override
-    public boolean isEmissive() {
-        return emissive;
-    }
-
-    @Override
-    public void setEmissive(boolean emissive) {
-        this.emissive = emissive;
-    }
-
-    @Override
     public BedrockModelPOJO getBedrockModelPOJO() {
         return this.modelPOJO;
     }
@@ -90,6 +81,16 @@ public class SimpleBedrockModel extends Model implements BedrockModel {
     @Override
     public void setBedrockModelPOJO(BedrockModelPOJO pojo) {
         this.modelPOJO = pojo;
+    }
+
+    @Override
+    public boolean isEmissive() {
+        return emissive;
+    }
+
+    @Override
+    public void setEmissive(boolean emissive) {
+        this.emissive = emissive;
     }
 
 }

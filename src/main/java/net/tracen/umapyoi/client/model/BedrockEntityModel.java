@@ -16,8 +16,10 @@ import net.tracen.umapyoi.client.model.pojo.BonesItem;
 
 import java.util.HashMap;
 import java.util.List;
+
 /**
  * Simple Bedrock Entity Model, No need for other change.
+ * Ported from MMLib
  */
 public class BedrockEntityModel<T extends Entity> extends EntityModel<T> implements BedrockModel {
 
@@ -26,7 +28,6 @@ public class BedrockEntityModel<T extends Entity> extends EntityModel<T> impleme
     private final List<BedrockPart> shouldRender;
     private BedrockModelPOJO modelPOJO;
     private AABB renderBoundingBox;
-
     private boolean emissive;
 
     public BedrockEntityModel() {
@@ -74,16 +75,6 @@ public class BedrockEntityModel<T extends Entity> extends EntityModel<T> impleme
     }
 
     @Override
-    public boolean isEmissive() {
-        return emissive;
-    }
-
-    @Override
-    public void setEmissive(boolean emissive) {
-        this.emissive = emissive;
-    }
-
-    @Override
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks,
             float netHeadYaw, float headPitch) {
         
@@ -97,5 +88,15 @@ public class BedrockEntityModel<T extends Entity> extends EntityModel<T> impleme
     @Override
     public void setBedrockModelPOJO(BedrockModelPOJO pojo) {
         this.modelPOJO = pojo;
+    }
+
+    @Override
+    public boolean isEmissive() {
+        return emissive;
+    }
+
+    @Override
+    public void setEmissive(boolean emissive) {
+        this.emissive = emissive;
     }
 }

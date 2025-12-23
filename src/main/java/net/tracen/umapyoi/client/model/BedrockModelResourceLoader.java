@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
+/** Ported from MMLib **/
 public class BedrockModelResourceLoader implements SimpleResourceReloadListener<Map<ResourceLocation, JsonElement>> {
     private final String resource_path;
     public BedrockModelResourceLoader(String path) {

@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+/** Ported from MMLib **/
 public class BonesItem {
     @SerializedName("cubes")
     private List<CubesItem> cubes;

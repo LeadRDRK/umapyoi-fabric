@@ -1,5 +1,6 @@
 package net.tracen.umapyoi.client.model.bedrock;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -16,6 +17,7 @@ import org.joml.Vector4f;
 
 import java.util.List;
 
+/** Ported from MMLib **/
 public class BedrockCube {
     public final float minX;
     public final float minY;
@@ -25,10 +27,19 @@ public class BedrockCube {
     public final float maxZ;
 
     private final List<BedrockPolygon> polygons;
+
+    public List<BedrockPolygon> getPolygons() {
+        return ImmutableList.copyOf(this.polygons);
+    }
+
     private final Vector3f[] vectors;
 
+    public Vector3f[] getVectors() {
+        return vectors;
+    }
+
     public BedrockCube(float x, float y, float z, float width, float height, float depth, float delta, float texWidth,
-            float texHeight, boolean mirror) {
+                       float texHeight, boolean mirror) {
         this.minX = x;
         this.minY = y;
         this.minZ = z;
@@ -82,14 +93,14 @@ public class BedrockCube {
         boolean nullFlag = (zFlag && xFlag) || (xFlag && yFlag) || (zFlag && yFlag);
 
         if (!nullFlag) {
-            BedrockVertex vertex1 = new BedrockVertex(0, 0.0F, 0.0F);
-            BedrockVertex vertex2 = new BedrockVertex(1, 0.0F, 8.0F);
-            BedrockVertex vertex3 = new BedrockVertex(2, 8.0F, 8.0F);
-            BedrockVertex vertex4 = new BedrockVertex(3, 8.0F, 0.0F);
-            BedrockVertex vertex5 = new BedrockVertex(4, 0.0F, 0.0F);
-            BedrockVertex vertex6 = new BedrockVertex(5, 0.0F, 8.0F);
-            BedrockVertex vertex7 = new BedrockVertex(6, 8.0F, 8.0F);
-            BedrockVertex vertex8 = new BedrockVertex(7, 8.0F, 0.0F);
+            BedrockVertex vertex1 = new BedrockVertex(this.vectors[0], 0.0F, 0.0F);
+            BedrockVertex vertex2 = new BedrockVertex(this.vectors[1], 0.0F, 8.0F);
+            BedrockVertex vertex3 = new BedrockVertex(this.vectors[2], 8.0F, 8.0F);
+            BedrockVertex vertex4 = new BedrockVertex(this.vectors[3], 8.0F, 0.0F);
+            BedrockVertex vertex5 = new BedrockVertex(this.vectors[4], 0.0F, 0.0F);
+            BedrockVertex vertex6 = new BedrockVertex(this.vectors[5], 0.0F, 8.0F);
+            BedrockVertex vertex7 = new BedrockVertex(this.vectors[6], 8.0F, 8.0F);
+            BedrockVertex vertex8 = new BedrockVertex(this.vectors[7], 8.0F, 0.0F);
 
             depth = (float) (depth < 1.0F && depth > 0.0F ? Math.ceil(depth) : Math.floor(depth));
             width = (float) (width < 1.0F && depth > 0.0F ? Math.ceil(width) : Math.floor(width));
@@ -130,14 +141,14 @@ public class BedrockCube {
             float texHeight, FaceUVsItem faces) {
         this(x, y, z, width, height, depth, delta, texWidth, texHeight, false);
 
-        BedrockVertex vertex1 = new BedrockVertex(0, 0.0F, 0.0F);
-        BedrockVertex vertex2 = new BedrockVertex(1, 0.0F, 8.0F);
-        BedrockVertex vertex3 = new BedrockVertex(2, 8.0F, 8.0F);
-        BedrockVertex vertex4 = new BedrockVertex(3, 8.0F, 0.0F);
-        BedrockVertex vertex5 = new BedrockVertex(4, 0.0F, 0.0F);
-        BedrockVertex vertex6 = new BedrockVertex(5, 0.0F, 8.0F);
-        BedrockVertex vertex7 = new BedrockVertex(6, 8.0F, 8.0F);
-        BedrockVertex vertex8 = new BedrockVertex(7, 8.0F, 0.0F);
+        BedrockVertex vertex1 = new BedrockVertex(this.vectors[0], 0.0F, 0.0F);
+        BedrockVertex vertex2 = new BedrockVertex(this.vectors[1], 0.0F, 8.0F);
+        BedrockVertex vertex3 = new BedrockVertex(this.vectors[2], 8.0F, 8.0F);
+        BedrockVertex vertex4 = new BedrockVertex(this.vectors[3], 8.0F, 0.0F);
+        BedrockVertex vertex5 = new BedrockVertex(this.vectors[4], 0.0F, 0.0F);
+        BedrockVertex vertex6 = new BedrockVertex(this.vectors[5], 0.0F, 8.0F);
+        BedrockVertex vertex7 = new BedrockVertex(this.vectors[6], 8.0F, 8.0F);
+        BedrockVertex vertex8 = new BedrockVertex(this.vectors[7], 8.0F, 0.0F);
 
         BedrockPolygon downQuad = getTexturedQuad(new BedrockVertex[] { vertex6, vertex5, vertex1, vertex2 }, texWidth,
                 texHeight, Direction.DOWN, faces);
@@ -192,8 +203,7 @@ public class BedrockCube {
             nz = vector3f.z();
 
             for (BedrockVertex vertex : polygon.vertices) {
-                vector4f = new Vector4f(this.vectors[vertex.posIndex], 1.f);
-                matrix4f.transform(vector4f);
+                vector4f = matrix4f.transform(new Vector4f(vertex.pos, 1.0F));
                 consumer.vertex(vector4f.x(), vector4f.y(), vector4f.z(), red, green, blue, alpha, vertex.u, vertex.v,
                         texV, texU, nx, ny, nz);
             }

@@ -1,5 +1,6 @@
 package net.tracen.umapyoi.client.model.bedrock;
 
+/** Ported from MMLib **/
 public enum BedrockVersion {
     /**
      * 旧版本基岩版模型

@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import net.minecraft.core.Direction;
 
+/** Ported from MMLib **/
 public class FaceUVsItem {
     @SerializedName("down")
     private FaceItem down = FaceItem.empty();

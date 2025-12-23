@@ -16,6 +16,7 @@ import com.google.gson.annotations.SerializedName;
 import java.lang.reflect.Type;
 import java.util.List;
 
+/** Ported from MMLib **/
 public class CubesItem {
     private List<Float> uv;
     private FaceUVsItem faceUv;

@@ -111,35 +111,20 @@ public class ClientUtils {
         }
     }
 
-    public static void renderModelInInventory(GuiGraphics guiGraphics, int pPosX, int pPosY, int pScale, Quaternionf pQuaternion, Model pModel,
+    public static void renderModelInInventory(GuiGraphics guiGraphic, int pPosX, int pPosY, int pScale, Quaternionf pQuaternion, Model pModel,
                                               ResourceLocation texture) {
-        var posestack = guiGraphics.pose();
-        posestack.pushPose();
-        posestack.translate((double) pPosX, (double) pPosY, 1050.0D);
-        posestack.scale(1.0F, 1.0F, -1.0F);
-        RenderSystem.applyModelViewMatrix();
-        PoseStack posestack1 = new PoseStack();
-        posestack1.translate(0.0D, 0.0D, 1000.0D);
-        posestack1.scale((float) pScale, (float) pScale, (float) pScale);
-        if (pQuaternion != null)
-            posestack1.mulPose(pQuaternion);
+        guiGraphic.pose().pushPose();
+        guiGraphic.pose().translate((double)pPosX, (double)pPosY, 50.0D);
+        guiGraphic.pose().mulPoseMatrix((new Matrix4f()).scaling((float)pScale, (float)pScale, (float)(-pScale)));
+        guiGraphic.pose().mulPose(pQuaternion);
         Lighting.setupForEntityInInventory();
-        MultiBufferSource.BufferSource buffersource = Minecraft.getInstance().renderBuffers()
+        MultiBufferSource.BufferSource multibuffersource$buffersource = Minecraft.getInstance().renderBuffers()
                 .bufferSource();
-        VertexConsumer vertexconsumer = buffersource
+        VertexConsumer vertexconsumer = multibuffersource$buffersource
                 .getBuffer(RenderType.entityTranslucent(ClientUtils.getTexture(texture)));
-        pModel.renderToBuffer(posestack1, vertexconsumer, 15728880, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
-        if(pModel instanceof BedrockModel bedrock) {
-            if(bedrock.isEmissive()) {
-                VertexConsumer emissiveConsumer = buffersource.getBuffer(
-                        EmissiveRenderType.emissive(ClientUtils.getEmissiveTexture(texture)));
-                bedrock.renderEmissiveParts(posestack1, emissiveConsumer,
-                        15728880, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
-            }
-        }
-        buffersource.endBatch();
-        posestack.popPose();
-        RenderSystem.applyModelViewMatrix();
+        pModel.renderToBuffer(guiGraphic.pose(), vertexconsumer, 15728880, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
+        multibuffersource$buffersource.endBatch();
+        guiGraphic.pose().popPose();
         Lighting.setupFor3DItems();
     }
 

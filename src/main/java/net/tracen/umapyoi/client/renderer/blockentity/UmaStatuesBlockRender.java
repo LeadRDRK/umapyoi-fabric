@@ -2,6 +2,7 @@ package net.tracen.umapyoi.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -16,13 +17,10 @@ import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.block.UmaStatueBlock;
 import net.tracen.umapyoi.block.entity.UmaStatueBlockEntity;
-import net.tracen.umapyoi.client.EmissiveRenderType;
 import net.tracen.umapyoi.client.model.SimpleBedrockModel;
 import net.tracen.umapyoi.client.model.bedrock.BedrockPart;
 import net.tracen.umapyoi.utils.ClientUtils;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
-
-import org.joml.Quaternionf;
 
 public class UmaStatuesBlockRender implements BlockEntityRenderer<UmaStatueBlockEntity> {
     public static final ResourceLocation TEXTURE = new ResourceLocation(Umapyoi.MODID, "textures/model/three_goddesses.png");
@@ -51,8 +49,8 @@ public class UmaStatuesBlockRender implements BlockEntityRenderer<UmaStatueBlock
         poseStack.pushPose();
         poseStack.translate(0.5D, 1.5D, 0.5D);
 
-        poseStack.mulPose(new Quaternionf().rotateY(ClientUtils.convertRotation(-direction.toYRot())));
-        poseStack.mulPose(new Quaternionf().rotateX(ClientUtils.convertRotation(180)));
+        poseStack.mulPose(Axis.YN.rotationDegrees(direction.toYRot()));
+        poseStack.mulPose(Axis.XP.rotationDegrees(180));
         ItemStack item = tileEntity.getStoredItem();
         var pojo = tileEntity.isEmpty() ? ClientUtils.getModelPOJO(ClientUtils.UMA_STATUES) : ClientUtils.getModelPOJO(UmaSoulUtils.getName(item));
 
@@ -63,17 +61,17 @@ public class UmaStatuesBlockRender implements BlockEntityRenderer<UmaStatueBlock
         var rightArm = model.getChild("right_arm") != null ? model.getChild("right_arm") : new BedrockPart();
         leftArm.zRot = ClientUtils.convertRotation(-5);
         rightArm.zRot = ClientUtils.convertRotation(5);
-        
+
         VertexConsumer vertexConsumer = buffer
-                .getBuffer(RenderType.entityTranslucentCull(tileEntity.isEmpty() ? TEXTURE : ClientUtils.getTexture(UmaSoulUtils.getName(item))));
+                .getBuffer(RenderType.entityTranslucent(tileEntity.isEmpty() ? TEXTURE : ClientUtils.getTexture(UmaSoulUtils.getName(item))));
         model.renderToBuffer(poseStack, vertexConsumer, combinedLight, combinedOverlay, 1, 1, 1, 1);
 
-        if (model.isEmissive()) {
+        if(model.isEmissive()) {
             VertexConsumer emissiveConsumer = buffer
-                    .getBuffer(EmissiveRenderType.emissive(tileEntity.isEmpty() ? TEXTURE : ClientUtils.getEmissiveTexture(UmaSoulUtils.getName(item))));
+                    .getBuffer(RenderType.entityTranslucentEmissive(tileEntity.isEmpty() ? TEXTURE : ClientUtils.getEmissiveTexture(UmaSoulUtils.getName(item))));
             model.renderEmissiveParts(poseStack, emissiveConsumer, combinedLight, combinedOverlay, 1, 1, 1, 1);
         }
-        
+
         poseStack.popPose();
     }
 

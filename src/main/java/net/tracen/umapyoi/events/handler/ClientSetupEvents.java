@@ -76,18 +76,16 @@ public class ClientSetupEvents {
     }
 
     public static void registerModelLoadingPlugin() {
-        var models = FileToIdConverter.json("models/item/costume")
-                .listMatchingResources(Minecraft.getInstance().getResourceManager())
-                .keySet()
-                .stream()
-                .map(location -> {
-                    Umapyoi.getLogger().info("Found resource:{}", location.toString());
-                    return resolveCostumeLocation(location);
-                })
-                .toList();
-
         ModelLoadingPlugin.register(pluginContext -> {
-            pluginContext.addModels(models);
+            FileToIdConverter.json("models/item/costume")
+                    .listMatchingResources(Minecraft.getInstance().getResourceManager())
+                    .keySet()
+                    .stream()
+                    .map(location -> {
+                        Umapyoi.getLogger().info("Found resource:{}", location.toString());
+                        return resolveCostumeLocation(location);
+                    })
+                    .forEach(pluginContext::addModels);
             pluginContext.modifyModelAfterBake().register(ClientSetupEvents::onBakedModel);
         });
     }

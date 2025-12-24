@@ -27,11 +27,16 @@ public class UmapyoiAPI {
     }
 
     public static ItemStack getUmaSoul(LivingEntity entity) {
-        var result = FindUmaSoulCallback.Pre.invoke(entity);
+        var preEvent = new FindUmaSoulCallback.Pre.Context(entity);
+        FindUmaSoulCallback.Pre.invoke(preEvent);
+
+        var result = preEvent.getUmaSoul();
         if (!result.isEmpty())
             return result;
 
-        return FindUmaSoulCallback.Post.invoke(entity, getUmaSoulFromTrinkets(entity));
+        var postEvent = new FindUmaSoulCallback.Post.Context(entity, getUmaSoulFromTrinkets(entity));
+        FindUmaSoulCallback.Post.invoke(postEvent);
+        return postEvent.getUmaSoul();
     }
 
     private static ItemStack getUmaSoulFromTrinkets(LivingEntity entity) {

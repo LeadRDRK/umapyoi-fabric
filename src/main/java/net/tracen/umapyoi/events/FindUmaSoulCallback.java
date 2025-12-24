@@ -6,40 +6,57 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
 public interface FindUmaSoulCallback {
+    abstract class Context extends UmaSoulContext {
+        private final LivingEntity owner;
+        protected Context(LivingEntity entity, ItemStack soul) {
+            super(soul);
+            this.owner = entity;
+        }
+
+        public LivingEntity getLivingEntity() {
+            return owner;
+        }
+    }
+
     interface Pre extends FindUmaSoulCallback {
-        ItemStack callback(LivingEntity entity);
+        class Context extends FindUmaSoulCallback.Context {
+            public Context(LivingEntity entity) {
+                super(entity, ItemStack.EMPTY);
+            }
+        }
+
+        void callback(Context context);
 
         Event<Pre> EVENT = EventFactory.createArrayBacked(Pre.class,
-                (listeners) -> (entity) -> {
-                    var soul = ItemStack.EMPTY;
+                (listeners) -> (context) -> {
                     for (Pre listener : listeners) {
-                        var res = listener.callback(entity);
-                        if (!res.isEmpty())
-                            soul = res;
+                        listener.callback(context);
                     }
-                    return soul;
                 });
 
-        static ItemStack invoke(LivingEntity entity) {
-            return EVENT.invoker().callback(entity);
+        static void invoke(Context context) {
+            EVENT.invoker().callback(context);
         }
     }
 
     interface Post extends FindUmaSoulCallback {
-        ItemStack callback(LivingEntity entity, ItemStack soul);
+        class Context extends FindUmaSoulCallback.Context {
+            public Context(LivingEntity entity, ItemStack soul) {
+                super(entity, soul);
+            }
+        }
+
+        void callback(Context context);
 
         Event<Post> EVENT = EventFactory.createArrayBacked(Post.class,
-                (listeners) -> (entity, soul) -> {
+                (listeners) -> (context) -> {
                     for (Post listener : listeners) {
-                        var res = listener.callback(entity, soul);
-                        if (!res.isEmpty())
-                            soul = res;
+                        listener.callback(context);
                     }
-                    return soul;
                 });
 
-        static ItemStack invoke(LivingEntity entity, ItemStack soul) {
-            return EVENT.invoker().callback(entity, soul);
+        static void invoke(Context context) {
+            EVENT.invoker().callback(context);
         }
     }
 }

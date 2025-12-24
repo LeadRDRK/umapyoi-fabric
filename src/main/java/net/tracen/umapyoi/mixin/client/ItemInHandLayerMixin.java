@@ -23,15 +23,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ItemInHandLayerMixin {
     // Correct coordinates by Mixin method
     @Inject(method = "renderArmWithItem", at = @At(value = "HEAD"))
-    private void renderArmWithItemHead(LivingEntity entity, ItemStack stack, ItemDisplayContext display, HumanoidArm arm, PoseStack poseStack, MultiBufferSource source, int light, CallbackInfo ci) {
-        if (!UmapyoiAPI.getUmaSoul(entity).isEmpty() && UmapyoiAPI.isUmaSoulRendering(entity)) {
-            boolean leftArmFlag = arm == HumanoidArm.LEFT;
+    private void renderArmWithItemHead(LivingEntity pLivingEntity, ItemStack pItemStack,
+                                       ItemDisplayContext pTransformType, HumanoidArm pArm, PoseStack pPoseStack, MultiBufferSource pBuffer,
+                                       int pPackedLight, CallbackInfo ci) {
+        if (!UmapyoiAPI.getRenderingUmaSoul(pLivingEntity).isEmpty()) {
+            boolean leftArmFlag = pArm == HumanoidArm.LEFT;
             boolean slimArmFlag = false;
-            //  1 / 16 = 0.0625D, right arm direction is the X positive direction
-            PlayerItemInHandLayer<?,?> layer = (PlayerItemInHandLayer<?,?>)(Object) this;
-            if(layer.getParentModel() instanceof PlayerModel<?> playerModel)
-                if(((PlayerModelMixin<?>) playerModel).isSlim()) slimArmFlag = true;
-            poseStack.translate((slimArmFlag ? 0.5 : 1) * (leftArmFlag ? -0.125D : 0.0625D), 0D, 0D);
+            // 1 / 16 = 0.0625D, right arm direction is the X positive direction
+            PlayerItemInHandLayer<?, ?> layer = (PlayerItemInHandLayer<?, ?>) (Object) this;
+            if (layer.getParentModel()instanceof PlayerModel<?> playerModel)
+                if (playerModel.slim)
+                    slimArmFlag = true;
+            pPoseStack.translate((slimArmFlag ? 0.5 : 1) * (leftArmFlag ? -0.125D : 0.0625D), 0D, 0D);
         }
     }
 }

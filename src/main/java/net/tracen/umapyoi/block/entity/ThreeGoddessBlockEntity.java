@@ -68,6 +68,8 @@ public class ThreeGoddessBlockEntity extends SyncedInventoryEntity implements Me
         }
         else if (slot == 1) {
             boolean result = stack.is(ItemRegistry.UMA_FACTOR_ITEM.get());
+            if (!result) return false;
+
             boolean factorFlag = false;
             String name = stack.getOrCreateTag().getString("name");
             var soulStack = this.getItem(0);
@@ -75,10 +77,12 @@ public class ThreeGoddessBlockEntity extends SyncedInventoryEntity implements Me
                     .equals(soulStack.getOrCreateTag().getString("name"));
             factorFlag = name.equals(this.getItem(2).getOrCreateTag().getString("name"));
 
-            return result && !soulFlag && !factorFlag;
+            return !soulFlag && !factorFlag;
         }
         else if (slot == 2) {
             boolean result = stack.is(ItemRegistry.UMA_FACTOR_ITEM.get());
+            if (!result) return false;
+
             boolean factorFlag = false;
             String name = stack.getOrCreateTag().getString("name");
             var soulStack = this.getItem(0);
@@ -86,7 +90,7 @@ public class ThreeGoddessBlockEntity extends SyncedInventoryEntity implements Me
                     .equals(soulStack.getOrCreateTag().getString("name"));
             factorFlag = name.equals(this.getItem(1).getOrCreateTag().getString("name"));
 
-            return result && !soulFlag && !factorFlag;
+            return !soulFlag && !factorFlag;
         }
         return super.isItemValid(slot, stack);
     }

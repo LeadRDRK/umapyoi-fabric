@@ -19,6 +19,142 @@ public class SupportCardRegistry {
     public static final RegistryObject<SupportCard> BLANK_CARD = SUPPORT_CARD.register("blank_card",
             SupportCard.Builder.create().ranking(GachaRanking.EASTER_EGG).supportType(SupportType.GROUP)::build);
     
+    public static final RegistryObject<SupportCard> SSR_ANIME_MAIN = SUPPORT_CARD.register("ssr_anime_main",
+            SupportCard.Builder.create()
+            .ranking(GachaRanking.SSR)
+            .maxDamage(5)
+            .supportType(SupportType.GROUP)
+            .addSupporter(UmaDataRegistry.SPECIAL_WEEK.getId())
+            .addSupporter(UmaDataRegistry.TOKAI_TEIO.getId())
+            .addSupporter(UmaDataRegistry.KITASAN_BLACK.getId())
+            .addSupport(new SupportEntry(TrainingSupportRegistry.SPEED_SUPPORT.getId(), 3))
+            .addSupport(new SupportEntry(TrainingSupportRegistry.STAMINA_SUPPORT.getId(), 3))
+            .addSupport(new SupportEntry(TrainingSupportRegistry.STRENGTH_SUPPORT.getId(), 2))
+            .addSupport(new SupportEntry(TrainingSupportRegistry.GUTS_SUPPORT.getId(), 3))
+            .addSupport(UmaSkillUtils.getSkillSupportEnrty(UmaSkillRegistry.HEART_AND_SOUL.getId()))
+            ::build);
+
+    public static final RegistryObject<SupportCard> SSR_KIRYUUIN_AOI = SUPPORT_CARD.register("ssr_kiryuuin_aoi",
+            SupportCard.Builder.create()
+            .ranking(GachaRanking.SSR)
+            .maxDamage(3)
+            .supportType(SupportType.FRIENDSHIP)
+            .addSupporter(new ResourceLocation(Umapyoi.MODID, "kiryuuin_aoi"))
+            .addSupport(new SupportEntry(TrainingSupportRegistry.AP_SUPPORT.getId(), 1))
+            .addSupport(new SupportEntry(TrainingSupportRegistry.MEMORY_SUPPORT.getId(), 1))
+            .addSupport(UmaSkillUtils.getSkillSupportEnrty(UmaSkillRegistry.STEEL_WILL.getId()))
+            ::build);
+
+    public static final RegistryObject<SupportCard> SSR_SATONO_DIAMOND_STAMINA = SUPPORT_CARD.register("ssr_mejiro_mcqueen_stamina",
+            SupportCard.Builder.create()
+            .ranking(GachaRanking.SSR)
+            .maxDamage(5)
+            .supportType(SupportType.STAMINA)
+            .addSupporter(UmaDataRegistry.SATONO_DIAMOND.getId())
+            .addSupport(new SupportEntry(TrainingSupportRegistry.STAMINA_SUPPORT.getId(), 3))
+            .addSupport(new SupportEntry(TrainingSupportRegistry.GUTS_SUPPORT.getId(), 2))
+            .addSupport(UmaSkillUtils.getSkillSupportEnrty(UmaSkillRegistry.STEEL_WILL.getId()))
+            ::build);
+
+    public static final RegistryObject<SupportCard> SSR_NEO_UNIVERSE_WIDSOM = SUPPORT_CARD.register("ssr_neo_universe_wisdom",
+            SupportCard.Builder.create()
+            .ranking(GachaRanking.SSR)
+            .maxDamage(5)
+            .supportType(SupportType.WISDOM)
+            .addSupporter(UmaDataRegistry.NEO_UNIVERSE.getId())
+            .addSupport(new SupportEntry(TrainingSupportRegistry.SPEED_SUPPORT.getId(), 2))
+            .addSupport(new SupportEntry(TrainingSupportRegistry.WISDOM_SUPPORT.getId(), 3))
+            .addSupport(UmaSkillUtils.getSkillSupportEnrty(UmaSkillRegistry.ADV_LOWHEALTH_BUFF.getId()))
+            ::build);
+
+
+    public static final RegistryObject<SupportCard> SSR_THREE_GODDESSES = SUPPORT_CARD.register("ssr_three_goddesses",
+            SupportCard.Builder.create()
+            .ranking(GachaRanking.SSR)
+            .maxDamage(2)
+            .supportType(SupportType.GROUP)
+            .addSupporter(UmaDataRegistry.DARLEY_ARABIAN.getId())
+            .addSupporter(UmaDataRegistry.GODOLPHIN_BARB.getId())
+            .addSupporter(UmaDataRegistry.BYERLEY_TURK.getId())
+            .addSupport(new SupportEntry(TrainingSupportRegistry.SPEED_SUPPORT.getId(), 2))
+            .addSupport(new SupportEntry(TrainingSupportRegistry.STAMINA_SUPPORT.getId(), 2))
+            .addSupport(new SupportEntry(TrainingSupportRegistry.STRENGTH_SUPPORT.getId(), 1))
+            .addSupport(new SupportEntry(TrainingSupportRegistry.GUTS_SUPPORT.getId(), 1))
+            .addSupport(new SupportEntry(TrainingSupportRegistry.WISDOM_SUPPORT.getId(), 2))
+            .addSupport(new SupportEntry(TrainingSupportRegistry.MEMORY_SUPPORT.getId(), 1))
+            .addSupport(UmaSkillUtils.getSkillSupportEnrty(UmaSkillRegistry.DIVINE_SPEED.getId()))
+            ::build);
+
+    public static final RegistryObject<SupportCard> SSR_TEAM_SIRIUS = SUPPORT_CARD.register("ssr_team_sirius",
+            SupportCard.Builder.create()
+            .ranking(GachaRanking.SSR)
+            .maxDamage(1)
+            .supportType(SupportType.GROUP)
+            .addSupporter(UmaDataRegistry.MEJIRO_MCQUEEN.getId())
+            .addSupporter(UmaDataRegistry.RICE_SHOWER.getId())
+            .addSupporter(new ResourceLocation(Umapyoi.MODID, "winning_ticket"))
+            .addSupporter(new ResourceLocation(Umapyoi.MODID, "narita_brian"))
+            .addSupporter(UmaDataRegistry.SILENCE_SUZUKA.getId())
+            .addSupporter(UmaDataRegistry.SPECIAL_WEEK.getId())
+            .addSupport(new SupportEntry(TrainingSupportRegistry.SPEED_SUPPORT.getId(), 3))
+            .addSupport(new SupportEntry(TrainingSupportRegistry.STAMINA_SUPPORT.getId(), 3))
+            .addSupport(new SupportEntry(TrainingSupportRegistry.STRENGTH_SUPPORT.getId(), 3))
+
+            .addSupport(UmaSkillUtils.getSkillSupportEnrty(UmaSkillRegistry.TOP_UMAMUSUME.getId()))
+            ::build);
+
+    public static final RegistryObject<SupportCard> SSR_ORFEVRE = SUPPORT_CARD.register("ssr_orfevre",
+            SupportCard.Builder.create()
+            .ranking(GachaRanking.SSR)
+            .maxDamage(5)
+            .supportType(SupportType.GUTS)
+            .addSupporter(new ResourceLocation(Umapyoi.MODID, "orfevre"))
+            .addSupport(new SupportEntry(TrainingSupportRegistry.SPEED_SUPPORT.getId(), 2))
+            .addSupport(new SupportEntry(TrainingSupportRegistry.STRENGTH_SUPPORT.getId(), 1))
+            .addSupport(new SupportEntry(TrainingSupportRegistry.GUTS_SUPPORT.getId(), 3))
+            .addSupport(new SupportEntry(TrainingSupportRegistry.AP_SUPPORT.getId(), 1))
+            .addSupport(UmaSkillUtils.getSkillSupportEnrty(UmaSkillRegistry.DIVINE_SPEED.getId()))
+            ::build);
+
+    public static final RegistryObject<SupportCard> SSR_MEJIRO_MCQUEEN_STAMINA = SUPPORT_CARD.register("ssr_mejiro_mcqueen_stamina",
+            SupportCard.Builder.create()
+            .ranking(GachaRanking.SSR)
+            .maxDamage(5)
+            .supportType(SupportType.STAMINA)
+            .addSupporter(UmaDataRegistry.MEJIRO_MCQUEEN.getId())
+            .addSupport(new SupportEntry(TrainingSupportRegistry.STAMINA_SUPPORT.getId(), 4))
+            .addSupport(new SupportEntry(TrainingSupportRegistry.GUTS_SUPPORT.getId(), 2))
+            ::build);
+
+    public static final RegistryObject<SupportCard> SSR_ACUPUNCTUIST = SUPPORT_CARD.register("ssr_acupunctuist",
+            SupportCard.Builder.create()
+            .ranking(GachaRanking.SSR)
+            .maxDamage(3)
+            .supportType(SupportType.FRIENDSHIP)
+            .addSupporter(new ResourceLocation(Umapyoi.MODID, "anshinzawa_sasami"))
+            .addSupport(new SupportEntry(TrainingSupportRegistry.RANDOM_STATUS_SUPPORT.getId(), 2))
+            .addSupport(new SupportEntry(TrainingSupportRegistry.ACUPUNCTUIST_SUPPORT.getId(), 1))
+            ::build);
+
+    public static final RegistryObject<SupportCard> R_ACUPUNCTUIST = SUPPORT_CARD.register("r_acupunctuist",
+            SupportCard.Builder.create()
+            .ranking(GachaRanking.R)
+            .maxDamage(3)
+            .supportType(SupportType.FRIENDSHIP)
+            .addSupporter(new ResourceLocation(Umapyoi.MODID, "anshinzawa_sasami"))
+            .addSupport(new SupportEntry(TrainingSupportRegistry.ACUPUNCTUIST_SUPPORT.getId(), 1))
+            ::build);
+
+    public static final RegistryObject<SupportCard> R_TM_OPERA = SUPPORT_CARD.register("r_tm_opera",
+            SupportCard.Builder.create()
+            .ranking(GachaRanking.R)
+            .maxDamage(10)
+            .supportType(SupportType.STAMINA)
+            .addSupporter(UmaDataRegistry.TM_OPERA_O.getId())
+            .addSupport(new SupportEntry(TrainingSupportRegistry.STAMINA_SUPPORT.getId(), 1))
+            .addSupport(new SupportEntry(TrainingSupportRegistry.AP_SUPPORT.getId(), 1))
+            ::build);
+    
     public static final RegistryObject<SupportCard> R_TURF_TRAINING = SUPPORT_CARD.register("r_turf_training",
                     SupportCard.Builder.create()
                     .ranking(GachaRanking.R)

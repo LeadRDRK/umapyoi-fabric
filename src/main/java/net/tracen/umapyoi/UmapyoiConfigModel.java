@@ -51,6 +51,9 @@ public class UmapyoiConfigModel {
     public boolean UMASOUL_STAMINA_PRECENT_ENABLE = false;
     public boolean UMASOUL_GUTS_PRECENT_ENABLE = false;
 
+    @RangeConstraint(min = 0.0, max = 1.0)
+    public double ACUPUNCTUIST_SUPPORT_CHANCE = 0.4;
+
     /* Client config */
     @SectionHeader("client")
 
@@ -65,4 +68,6 @@ public class UmapyoiConfigModel {
 
     public boolean OVERLAY_SWITCH = true;
     public boolean TOOLTIP_SWITCH = true;
+
+    public boolean DISPLAY_SKILL_DETAIL = false;
 }

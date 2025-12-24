@@ -1,7 +1,11 @@
-package net.tracen.umapyoi.registry;
+package net.tracen.umapyoi.data.builtin;
 
 import net.minecraft.resources.ResourceLocation;
 import net.tracen.umapyoi.Umapyoi;
+import net.tracen.umapyoi.registry.LazyRegistrar;
+import net.tracen.umapyoi.registry.RegistryObject;
+import net.tracen.umapyoi.registry.TrainingSupportRegistry;
+import net.tracen.umapyoi.registry.UmaSkillRegistry;
 import net.tracen.umapyoi.registry.training.SupportType;
 import net.tracen.umapyoi.registry.training.card.SupportCard;
 import net.tracen.umapyoi.registry.training.card.SupportEntry;

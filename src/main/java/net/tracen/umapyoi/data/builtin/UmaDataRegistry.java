@@ -1,8 +1,10 @@
-package net.tracen.umapyoi.registry;
+package net.tracen.umapyoi.data.builtin;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.tracen.umapyoi.Umapyoi;
+import net.tracen.umapyoi.registry.LazyRegistrar;
+import net.tracen.umapyoi.registry.RegistryObject;
 import net.tracen.umapyoi.registry.umadata.UmaData;
 import net.tracen.umapyoi.utils.GachaRanking;
 

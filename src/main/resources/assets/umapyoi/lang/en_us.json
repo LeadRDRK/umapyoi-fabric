@@ -28,6 +28,8 @@
   "umapyoi.advancement.uma_ticket.desc": "Got the Blank Ticket.",
   "umapyoi.advancement.uma_ticket": "Wastepaper",
   "attribute.umapyoi.generic.sprint_speed": "Sprint Speed",
+  "attribute.umapyoi.generic.step_height_addition": "Step Height Addition",
+  "attribute.umapyoi.generic.swim_speed": "Swim Speed",
   "block.umapyoi.disassembly_block": "Transfer Register Lectern",
   "block.umapyoi.register_lectern": "Retire Register Lectern",
   "block.umapyoi.silver_support_album_pedestal": "Silver Support Album Pedestal",
@@ -417,7 +419,5 @@
   "umastatus.level.7": "§bD",
   "umastatus.level.8": "§bD+",
   "umastatus.level.9": "§aC",
-  "umapyoi.swim_speed": "Swim Speed",
-  "umapyoi.step_height": "Step Height",
   "entity.minecraft.villager.trainer": "Trainer"
 }

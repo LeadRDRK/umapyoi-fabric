@@ -6,7 +6,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.world.item.Item;
-import net.tracen.umapyoi.attributes.ExtraAttributes;
+import net.tracen.umapyoi.registry.UmapyoiAttributesRegistry;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.block.entity.BlockEntityRegistry;
 import net.tracen.umapyoi.container.ContainerRegistry;
@@ -33,6 +33,7 @@ import net.tracen.umapyoi.registry.UmaFactorRegistry;
 import net.tracen.umapyoi.registry.UmaSkillRegistry;
 import net.tracen.umapyoi.villager.VillageRegistry;
 import net.tracen.umapyoi.villager.VillagerTradeRegistry;
+import net.tracen.umapyoi.UmapyoiConfig;
 
 import org.slf4j.Logger;
 
@@ -60,6 +61,7 @@ public class Umapyoi implements ModInitializer {
         VillageRegistry.PROFESSIONS.register();
         VillageRegistry.registerPoi();
         VillagerTradeRegistry.register();
+        UmapyoiAttributesRegistry.ATTRIBUTES.register();
 
         ServerLivingEntityEvents.ALLOW_DAMAGE.register(CommonEvents::onDamageDownMotivation);
         ServerLivingEntityEvents.ALLOW_DAMAGE.register(CommonEvents::onDamagePanicking);
@@ -74,8 +76,6 @@ public class Umapyoi implements ModInitializer {
         PlayerTickCallback.EVENT.register(PassiveSkillEvents::passiveTurfRunner);
         PlayerTickCallback.EVENT.register(PassiveSkillEvents::passiveDirtRunner);
         PlayerTickCallback.EVENT.register(PassiveSkillEvents::passiveSnowRunner);
-
-        ExtraAttributes.register();
 
         ServerPlayNetworking.registerGlobalReceiver(UseSkillPacket.TYPE, UseSkillPacket::handler);
         ServerPlayNetworking.registerGlobalReceiver(SelectSkillPacket.TYPE, SelectSkillPacket::handler);

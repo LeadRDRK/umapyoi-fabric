@@ -19,12 +19,12 @@ public class LazyRegistrar<T> {
     private final Set<RegistryObject<T>> entriesView = Collections.unmodifiableSet(entries.keySet());
     private final Supplier<Registry<T>> registrySupplier;
 
-    private LazyRegistrar(ResourceKey<Registry<T>> key, String namespace) {
+    private LazyRegistrar(ResourceKey<? extends Registry<T>> key, String namespace) {
         this.namespace = namespace;
         this.registrySupplier = new RegistrySupplier(key);
     }
 
-    public static <B> LazyRegistrar<B> create(ResourceKey<Registry<B>> key, String namespace) {
+    public static <B> LazyRegistrar<B> create(ResourceKey<? extends Registry<B>> key, String namespace) {
         return new LazyRegistrar<>(key, namespace);
     }
 
@@ -62,10 +62,10 @@ public class LazyRegistrar<T> {
     }
 
     private class RegistrySupplier implements Supplier<Registry<T>> {
-        private final ResourceKey<Registry<T>> key;
+        private final ResourceKey<? extends Registry<T>> key;
         private Registry<T> registry = null;
 
-        private RegistrySupplier(ResourceKey<Registry<T>> key) {
+        private RegistrySupplier(ResourceKey<? extends Registry<T>> key) {
             this.key = key;
         }
 
@@ -77,7 +77,9 @@ public class LazyRegistrar<T> {
                 if (BuiltInRegistries.REGISTRY.containsKey(key.location()))
                     this.registry = (Registry<T>) BuiltInRegistries.REGISTRY.get(key.location());
                 else
-                    this.registry = (Registry<T>) FabricRegistryBuilder.createSimple(key).buildAndRegister();
+                    this.registry = FabricRegistryBuilder
+                            .createSimple((ResourceKey<Registry<T>>) key)
+                            .buildAndRegister();
             }
             return this.registry;
         }

@@ -6,6 +6,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.world.item.Item;
+import net.tracen.umapyoi.data.builtin.CostumeDataRegistry;
 import net.tracen.umapyoi.registry.UmapyoiAttributesRegistry;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.block.entity.BlockEntityRegistry;
@@ -50,6 +51,7 @@ public class Umapyoi implements ModInitializer {
     public void onInitialize() {
         TrainingSupportRegistry.SUPPORTS.register();
         UmaSkillRegistry.SKILLS.register();
+        CostumeDataRegistry.COSTUME_DATA.register();
         SupportCardRegistry.SUPPORT_CARD.register();
         UmaDataRegistry.UMA_DATA.register();
         UmaFactorRegistry.FACTORS.register();

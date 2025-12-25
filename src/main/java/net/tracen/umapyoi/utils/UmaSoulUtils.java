@@ -89,8 +89,10 @@ public class UmaSoulUtils {
     public static ListTag getSkills(ItemStack stack) {
         return stack.getOrCreateTag().getList("skills", Tag.TAG_STRING);
     }
-    
+
     public static boolean hasSkill(ItemStack stack, ResourceLocation skill) {
+        if(stack.isEmpty())
+            return false;
         for(Tag tag : stack.getOrCreateTag().getList("skills", Tag.TAG_STRING)) {
             if(tag.getAsString().equals(skill.toString()))
                 return true;

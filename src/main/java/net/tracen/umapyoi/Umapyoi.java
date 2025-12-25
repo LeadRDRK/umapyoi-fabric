@@ -66,10 +66,8 @@ public class Umapyoi implements ModInitializer {
         VillagerTradeRegistry.register();
         UmapyoiAttributesRegistry.ATTRIBUTES.register();
 
-        ServerLivingEntityEvents.ALLOW_DAMAGE.register(CommonEvents::onDamageDownMotivation);
-        ServerLivingEntityEvents.ALLOW_DAMAGE.register(CommonEvents::onDamagePanicking);
-        ApplyTrainingSupportCallback.Post.EVENT.register(CommonEvents::onTrainingFinished);
-        ApplyFactorCallback.Post.EVENT.register(CommonEvents::onFactorFinished);
+        CommonEvents.register();
+
         ResumeActionPointCallback.EVENT.register(PanickingEffect::onResumeAP);
 
         // Forge hooks

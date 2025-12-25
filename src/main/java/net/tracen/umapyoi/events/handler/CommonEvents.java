@@ -1,5 +1,6 @@
 package net.tracen.umapyoi.events.handler;
 
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -8,8 +9,9 @@ import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.effect.MobEffectRegistry;
-import net.tracen.umapyoi.registry.factors.UmaFactorStack;
-import net.tracen.umapyoi.registry.training.SupportStack;
+import net.tracen.umapyoi.events.ApplyFactorCallback;
+import net.tracen.umapyoi.events.ApplyTrainingSupportCallback;
+import net.tracen.umapyoi.events.LearnSkillCallback;
 import net.tracen.umapyoi.registry.umadata.Motivations;
 import net.tracen.umapyoi.utils.ResultRankingUtils;
 import net.tracen.umapyoi.utils.UmaSkillUtils;
@@ -43,17 +45,33 @@ public class CommonEvents {
         return true;
     }
 
-    public static boolean onTrainingFinished(SupportStack stack, ItemStack soul) {
-        UmaSkillUtils.syncActionPoint(soul);
-        CompoundTag tag = soul.getOrCreateTag();
-        tag.putInt("resultRanking", ResultRankingUtils.generateRanking(soul));
+    public static boolean onTrainingFinished(ApplyTrainingSupportCallback.Context event) {
+        var umaSoul = event.getUmaSoul();
+        UmaSkillUtils.syncActionPoint(umaSoul);
+        CompoundTag tag = umaSoul.getOrCreateTag();
+        tag.putInt("resultRanking", ResultRankingUtils.generateRanking(umaSoul));
         return false;
     }
 
-    public static boolean onFactorFinished(UmaFactorStack stack, ItemStack soul) {
-        UmaSkillUtils.syncActionPoint(soul);
-        CompoundTag tag = soul.getOrCreateTag();
-        tag.putInt("resultRanking", ResultRankingUtils.generateRanking(soul));
-        return false;
+    public static void onFactorFinished(ApplyFactorCallback.Context event) {
+        var umaSoul = event.getUmaSoul();
+        UmaSkillUtils.syncActionPoint(umaSoul);
+        CompoundTag tag = umaSoul.getOrCreateTag();
+        tag.putInt("resultRanking", ResultRankingUtils.generateRanking(umaSoul));
+    }
+
+    public static void onSkillLearned(LearnSkillCallback.Context event) {
+        var umaSoul = event.getUmaSoul();
+        UmaSkillUtils.syncActionPoint(umaSoul);
+        CompoundTag tag = umaSoul.getOrCreateTag();
+        tag.putInt("resultRanking", ResultRankingUtils.generateRanking(umaSoul));
+    }
+
+    public static void register() {
+        ServerLivingEntityEvents.ALLOW_DAMAGE.register(CommonEvents::onDamageDownMotivation);
+        ServerLivingEntityEvents.ALLOW_DAMAGE.register(CommonEvents::onDamagePanicking);
+        ApplyTrainingSupportCallback.Post.EVENT.register(CommonEvents::onTrainingFinished);
+        ApplyFactorCallback.Post.EVENT.register(CommonEvents::onFactorFinished);
+        LearnSkillCallback.EVENT.register(CommonEvents::onSkillLearned);
     }
 }

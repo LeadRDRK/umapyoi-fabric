@@ -53,9 +53,10 @@ public class UmaFactorStack {
     }
 
     public void applyFactor(ItemStack soul) {
-        if (!ApplyFactorCallback.Pre.invoke(this, soul)) {
+        var event = new ApplyFactorCallback.Context(this, soul);
+        if (!ApplyFactorCallback.Pre.invoke(event)) {
             this.getFactor().applyFactor(soul, this);
-            ApplyFactorCallback.Post.invoke(this, soul);
+            ApplyFactorCallback.Post.invoke(event);
         }
     }
 

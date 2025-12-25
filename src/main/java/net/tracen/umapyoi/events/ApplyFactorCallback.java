@@ -6,38 +6,56 @@ import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.registry.factors.UmaFactorStack;
 
 public interface ApplyFactorCallback {
-    /**
-     * @return Whether to cancel the event
-     */
-    boolean callback(UmaFactorStack stack, ItemStack soul);
+    class Context {
+        private final UmaFactorStack factor;
+        private final ItemStack soul;
+
+        public Context(UmaFactorStack stack, ItemStack soul) {
+            this.factor = stack;
+            this.soul = soul;
+        }
+
+        public UmaFactorStack getFactor() {
+            return factor;
+        }
+
+        public ItemStack getUmaSoul() {
+            return this.soul;
+        }
+    }
 
     interface Pre extends ApplyFactorCallback {
+        /**
+         * @return Whether to cancel the event
+         */
+        boolean callback(Context context);
+
         Event<Pre> EVENT = EventFactory.createArrayBacked(Pre.class,
-                (listeners) -> (stack, soul) -> {
+                (listeners) -> (context) -> {
                     for (Pre listener : listeners) {
-                        if (listener.callback(stack, soul)) return true;
+                        if (listener.callback(context)) return true;
                     }
 
                     return false;
                 });
 
-        static boolean invoke(UmaFactorStack stack, ItemStack soul) {
-            return EVENT.invoker().callback(stack, soul);
+        static boolean invoke(Context context) {
+            return EVENT.invoker().callback(context);
         }
     }
 
     interface Post extends ApplyFactorCallback {
-        Event<Post> EVENT = EventFactory.createArrayBacked(Post.class,
-                (listeners) -> (stack, soul) -> {
-                    for (Post listener : listeners) {
-                        if (listener.callback(stack, soul)) return true;
-                    }
+        void callback(Context context);
 
-                    return false;
+        Event<Post> EVENT = EventFactory.createArrayBacked(Post.class,
+                (listeners) -> (context) -> {
+                    for (Post listener : listeners) {
+                        listener.callback(context);
+                    }
                 });
 
-        static boolean invoke(UmaFactorStack stack, ItemStack soul) {
-            return EVENT.invoker().callback(stack, soul);
+        static void invoke(Context context) {
+            EVENT.invoker().callback(context);
         }
     }
 }

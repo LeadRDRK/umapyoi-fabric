@@ -66,9 +66,10 @@ public class SupportStack {
     }
 
     public boolean applySupport(ItemStack soul, RandomSource rand) {
-        if (!ApplyTrainingSupportCallback.Pre.invoke(this, soul)) {
+        var event = new ApplyTrainingSupportCallback.Context(this, soul);
+        if (!ApplyTrainingSupportCallback.Pre.invoke(event)) {
             boolean result = this.getFactor().applySupport(soul, rand, this);
-            return result && !ApplyTrainingSupportCallback.Post.invoke(this, soul);
+            return result && !ApplyTrainingSupportCallback.Post.invoke(event);
         } else
             return false;
     }

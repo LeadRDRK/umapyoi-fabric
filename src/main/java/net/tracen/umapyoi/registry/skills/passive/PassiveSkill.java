@@ -1,6 +1,8 @@
 package net.tracen.umapyoi.registry.skills.passive;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -18,7 +20,12 @@ public class PassiveSkill extends UmaSkill {
         if(user instanceof Player player)
             player.displayClientMessage(Component.translatable("umapyoi.skill.passive"), true);
     }
-    
+
+    @Override
+    public SoundEvent getSound() {
+        return SoundEvents.EMPTY;
+    }
+
     @Override
     public SkillType getType() {
         return SkillType.PASSIVE;

@@ -15,6 +15,9 @@
   "icon": "icon.png",
   "environment": "*",
   "entrypoints": {
+    "fabric-datagen": [
+      "net.tracen.umapyoi.UmapyoiData"
+    ],
     "main": [
       "net.tracen.umapyoi.Umapyoi"
     ],

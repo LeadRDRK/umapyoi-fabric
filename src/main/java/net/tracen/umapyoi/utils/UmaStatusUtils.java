@@ -27,12 +27,12 @@ public class UmaStatusUtils {
     public static void addMotivation(ItemStack stack) {
         Motivations motivation = UmaSoulUtils.getMotivation(stack);
         switch (motivation) {
-        case PERFECT -> UmaSoulUtils.setMotivation(stack, Motivations.PERFECT);
-        case GOOD -> UmaSoulUtils.setMotivation(stack, Motivations.PERFECT);
-        case NORMAL -> UmaSoulUtils.setMotivation(stack, Motivations.GOOD);
-        case DOWN -> UmaSoulUtils.setMotivation(stack, Motivations.NORMAL);
-        case BAD -> UmaSoulUtils.setMotivation(stack, Motivations.DOWN);
-        default -> throw new IllegalArgumentException("Unexpected motivation value: " + motivation);
+            case PERFECT -> UmaSoulUtils.setMotivation(stack, Motivations.PERFECT);
+            case GOOD -> UmaSoulUtils.setMotivation(stack, Motivations.PERFECT);
+            case NORMAL -> UmaSoulUtils.setMotivation(stack, Motivations.GOOD);
+            case DOWN -> UmaSoulUtils.setMotivation(stack, Motivations.NORMAL);
+            case BAD -> UmaSoulUtils.setMotivation(stack, Motivations.DOWN);
+            default -> throw new IllegalArgumentException("Unexpected motivation value: " + motivation);
         }
     }
 

@@ -52,6 +52,7 @@ public class Umapyoi implements ModInitializer {
         SupportCardRegistry.SUPPORT_CARD.register();
         UmaDataRegistry.UMA_DATA.register();
         UmaFactorRegistry.FACTORS.register();
+        UmapyoiAttributesRegistry.ATTRIBUTES.register();
         MobEffectRegistry.EFFECTS.register();
         BlockRegistry.BLOCKS.register();
         BlockEntityRegistry.BLOCK_ENTITIES.register();
@@ -60,7 +61,6 @@ public class Umapyoi implements ModInitializer {
         VillageRegistry.PROFESSIONS.register();
         VillageRegistry.registerPoi();
         VillagerTradeRegistry.register();
-        UmapyoiAttributesRegistry.ATTRIBUTES.register();
         RecipeSerializerRegistry.RECIPE_SERIALIZER.register();
 
         CommonEvents.register();

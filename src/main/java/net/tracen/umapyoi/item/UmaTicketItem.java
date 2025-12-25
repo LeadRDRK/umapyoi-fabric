@@ -11,8 +11,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
-import net.tracen.umapyoi.data.builtin.SupportCardRegistry;
 import net.tracen.umapyoi.data.builtin.UmaDataRegistry;
+import net.tracen.umapyoi.registry.training.card.SupportCard;
 import net.tracen.umapyoi.utils.TrainingSupportUtils;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
@@ -48,6 +48,7 @@ public class UmaTicketItem extends Item {
     private ResourceLocation getSupportCardID(ItemStack stack) {
         if (stack.getOrCreateTag().contains("name"))
             return ResourceLocation.tryParse(stack.getOrCreateTag().getString("name"));
-        return SupportCardRegistry.BLANK_CARD.getId();
+        return SupportCard.EMPTY_ID;
     }
+
 }

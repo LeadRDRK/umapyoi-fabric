@@ -30,6 +30,9 @@ public class SupportCard extends RegistryNameHolder {
     public static final ResourceKey<Registry<SupportCard>> REGISTRY_KEY = ResourceKey
             .createRegistryKey(new ResourceLocation(Umapyoi.MODID, "support_card"));
 
+    public static final ResourceLocation EMPTY_ID = new ResourceLocation(Umapyoi.MODID, "blank_card");
+    public static final SupportCard EMPTY = SupportCard.Builder.create().ranking(GachaRanking.EASTER_EGG).supportType(SupportType.GROUP).build();
+
     private final GachaRanking ranking;
     private final SupportType type;
     private final List<SupportEntry> supports;

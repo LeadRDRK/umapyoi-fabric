@@ -1,5 +1,6 @@
 package net.tracen.umapyoi.item;
 
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +18,7 @@ import net.tracen.umapyoi.utils.UmaSoulUtils;
 import java.util.List;
 import java.util.Optional;
 
-public class FadedUmaSoulItem extends Item {
+public class FadedUmaSoulItem extends Item implements CreativeModeTabFiller {
 
     public FadedUmaSoulItem() {
         super(Umapyoi.defaultItemProperties().stacksTo(1));
@@ -57,5 +58,19 @@ public class FadedUmaSoulItem extends Item {
         result.getOrCreateTag().putString("identifier", data.getIdentifier().toString());
         result.getOrCreateTag().putString("ranking", data.getGachaRanking().toString().toLowerCase());
         return result;
+    }
+
+    @Override
+    public void fillItemCategory(FabricItemGroupEntries entries) {
+        UmaSoulItem.sortedUmaDataList(entries.getContext().holders()).forEach(
+                entry -> {
+//                    ItemStack result = ItemRegistry.BLANK_UMA_SOUL.get().getDefaultInstance();
+//                    result.getOrCreateTag().putString("name", entry.key().location().toString());
+//                    result.getOrCreateTag().putString("identifier", entry.value().getIdentifier().toString());
+//                    result.getOrCreateTag().putString("ranking", entry.value().getGachaRanking().toString().toLowerCase());
+                    ItemStack result = FadedUmaSoulItem.genUmaSoul(entry.key().location().toString(), entry.value());
+                    entries.accept(result);
+                }
+        );
     }
 }

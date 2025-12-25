@@ -1,5 +1,6 @@
 package net.tracen.umapyoi.item;
 
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.Holder.Reference;
@@ -13,7 +14,7 @@ import net.tracen.umapyoi.utils.ClientUtils;
 import java.util.Comparator;
 import java.util.stream.Stream;
 
-public class UmaCostumeItem extends AbstractSuitItem {
+public class UmaCostumeItem extends AbstractSuitItem implements CreativeModeTabFiller {
     private static final Comparator<Reference<CosmeticData>> COMPARATOR = new DataComparator();
 
     public static Stream<Reference<CosmeticData>> sortedCosmeticDataList(HolderLookup.Provider provider) {
@@ -36,6 +37,17 @@ public class UmaCostumeItem extends AbstractSuitItem {
         ItemStack defaultInstance = ItemRegistry.UMA_COSTUME.get().getDefaultInstance();
         defaultInstance.getOrCreateTag().putString("cosmetic", loc.toString());
         return defaultInstance;
+    }
+
+    @Override
+    public void fillItemCategory(FabricItemGroupEntries entries) {
+        UmaCostumeItem.sortedCosmeticDataList(entries.getContext().holders()).forEach(
+                entry -> {
+                    ItemStack result = ItemRegistry.UMA_COSTUME.get().getDefaultInstance();
+                    result.getOrCreateTag().putString("cosmetic", entry.key().location().toString());
+                    entries.accept(result);
+                }
+        );
     }
 
     private static class DataComparator implements Comparator<Reference<CosmeticData>> {

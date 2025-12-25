@@ -1,7 +1,7 @@
 package net.tracen.umapyoi.item;
 
-import net.minecraft.world.item.CreativeModeTab;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 
 public interface CreativeModeTabFiller {
-    void fillItemCategory(CreativeModeTab.Output entries);
+    void fillItemCategory(FabricItemGroupEntries entries);
 }

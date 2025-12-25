@@ -2,12 +2,12 @@ package net.tracen.umapyoi.item;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -30,7 +30,7 @@ public class UmaFactorContainerItem extends Item implements CreativeModeTabFille
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void fillItemCategory(CreativeModeTab.Output entries) {
+    public void fillItemCategory(FabricItemGroupEntries entries) {
         for (UmaFactor factor : UmaFactorRegistry.REGISTRY.get()) {
             if (factor == UmaFactorRegistry.SKILL_FACTOR.get() || factor.getFactorType() == FactorType.UNIQUE)
                 continue;
@@ -57,10 +57,10 @@ public class UmaFactorContainerItem extends Item implements CreativeModeTabFille
 
             stackList.forEach(factor -> {
                 switch (factor.getFactor().getFactorType()) {
-                case STATUS -> tooltip.add(factor.getDescription().copy().withStyle(ChatFormatting.BLUE));
-                case UNIQUE -> tooltip.add(factor.getDescription().copy().withStyle(ChatFormatting.GREEN));
-                case EXTRASTATUS -> tooltip.add(factor.getDescription().copy().withStyle(ChatFormatting.RED));
-                default -> tooltip.add(factor.getDescription().copy().withStyle(ChatFormatting.GRAY));
+                    case STATUS -> tooltip.add(factor.getDescription().copy().withStyle(ChatFormatting.BLUE));
+                    case UNIQUE -> tooltip.add(factor.getDescription().copy().withStyle(ChatFormatting.GREEN));
+                    case EXTRASTATUS -> tooltip.add(factor.getDescription().copy().withStyle(ChatFormatting.RED));
+                    default -> tooltip.add(factor.getDescription().copy().withStyle(ChatFormatting.GRAY));
                 }
             });
         } else {

@@ -4,13 +4,14 @@ import com.google.common.base.Suppliers;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -31,35 +32,31 @@ import net.tracen.umapyoi.utils.UmaSoulUtils;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
 public class SupportCardItem extends Item implements SupportContainer, CreativeModeTabFiller {
-    private static final Comparator<Entry<ResourceKey<SupportCard>, SupportCard>> COMPARATOR = new CardDataComparator();
+    private static final Comparator<Holder.Reference<SupportCard>> COMPARATOR = new CardDataComparator();
 
     public SupportCardItem() {
         super(Umapyoi.defaultItemProperties().stacksTo(1));
     }
 
-    public static Stream<Entry<ResourceKey<SupportCard>, SupportCard>> sortedCardDataList() {
-        return ClientUtils.getClientSupportCardRegistry().entrySet().stream().sorted(SupportCardItem.COMPARATOR);
+    public static Stream<Holder.Reference<SupportCard>> sortedCardDataList(HolderLookup.Provider provider) {
+        return UmapyoiAPI.getSupportCardRegistry(provider).listElements().sorted(SupportCardItem.COMPARATOR);
     }
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void fillItemCategory(CreativeModeTab.Output entries) {
-        SupportCardItem.sortedCardDataList().forEach(card -> {
-            if (card.getKey().location().equals(SupportCardRegistry.BLANK_CARD.getId()))
+    public void fillItemCategory(FabricItemGroupEntries entries) {
+        SupportCardItem.sortedCardDataList(entries.getContext().holders()).forEach(card -> {
+            if (card.key().location().equals(new ResourceLocation(Umapyoi.MODID, "blank_card")))
                 return;
-            ItemStack result = getDefaultInstance();
-            result.getOrCreateTag().putString("support_card", card.getKey().location().toString());
-            result.getOrCreateTag().putString("ranking",
-                    card.getValue().getGachaRanking().name().toLowerCase());
-            result.getOrCreateTag().putInt("maxDamage",
-                    card.getValue().getMaxDamage());
+            ItemStack result = ItemRegistry.SUPPORT_CARD.get().getDefaultInstance();
+            result.getOrCreateTag().putString("support_card", card.key().location().toString());
+            result.getOrCreateTag().putString("ranking", card.value().getGachaRanking().name().toLowerCase());
             entries.accept(result);
         });
     }
@@ -91,15 +88,15 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flagIn) {
+        super.appendHoverText(stack, level, tooltip, flagIn);
         ResourceLocation cardID = this.getSupportCardID(stack);
-        if (isEmptyCard(worldIn, cardID))
+        if (isEmptyCard(level, cardID))
             return ;
-        if(!this.getSupports(worldIn, stack).isEmpty()) {
+        if(!this.getSupports(level, stack).isEmpty()) {
             if (Screen.hasShiftDown() || !Umapyoi.CONFIG.TOOLTIP_SWITCH()) {
                 tooltip.add(Component.translatable("tooltip.umapyoi.supports").withStyle(ChatFormatting.AQUA));
-                this.getSupports(worldIn, stack)
+                this.getSupports(level, stack)
                         .forEach(support -> tooltip.add(support.getDescription().copy().withStyle(ChatFormatting.GRAY)));
             } else {
                 tooltip.add(Component.translatable("tooltip.umapyoi.support_card.press_shift_for_supports")
@@ -178,7 +175,6 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
 
     public boolean checkSupports(Level level, ItemStack stack, ItemStack other) {
         if (stack.getItem()instanceof SupportCardItem) {
-
             var supportCardID = this.getSupportCardID(stack);
             var otherCardID = this.getSupportCardID(other);
             if (supportCardID.equals(otherCardID))
@@ -195,15 +191,14 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
         return true;
     }
 
-    private static class CardDataComparator implements Comparator<Entry<ResourceKey<SupportCard>, SupportCard>> {
+    private static class CardDataComparator implements Comparator<Holder.Reference<SupportCard>> {
         @Override
-        public int compare(Entry<ResourceKey<SupportCard>, SupportCard> left,
-                Entry<ResourceKey<SupportCard>, SupportCard> right) {
-            var leftRanking = left.getValue().getGachaRanking();
-            var rightRanking = right.getValue().getGachaRanking();
-            if (leftRanking == rightRanking) {
-                String leftName = left.getKey().location().toString();
-                String rightName = right.getKey().location().toString();
+        public int compare(Holder.Reference<SupportCard> left, Holder.Reference<SupportCard> right) {
+            var leftRanking = left.value().getGachaRanking();
+            var rightRanking = right.value().getGachaRanking();
+            if(leftRanking == rightRanking) {
+                String leftName = left.key().location().toString();
+                String rightName = right.key().location().toString();
                 return leftName.compareToIgnoreCase(rightName);
             }
             return leftRanking.compareTo(rightRanking);

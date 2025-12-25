@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -16,12 +17,13 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -31,7 +33,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -39,6 +40,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
+import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.events.ApplyUmasoulAttributeCallback;
 import net.tracen.umapyoi.events.SettingPropertyCallback;
 import net.tracen.umapyoi.registry.UmapyoiAttributesRegistry;
@@ -57,7 +59,6 @@ import net.tracen.umapyoi.utils.UmaStatusUtils.StatusType;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -71,7 +72,7 @@ import dev.emi.trinkets.api.client.TrinketRenderer;
 import dev.emi.trinkets.api.client.TrinketRendererRegistry;
 
 public class UmaSoulItem extends TrinketItem implements TrinketRenderer, CreativeModeTabFiller, Equipable {
-    private static final Comparator<Entry<ResourceKey<UmaData>, UmaData>> COMPARATOR = new UmaDataComparator();
+    private static final Comparator<Holder.Reference<UmaData>> COMPARATOR = new UmaDataComparator();
 
     private final UmaPlayerModel<LivingEntity> baseModel;
 
@@ -80,17 +81,17 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
         baseModel = FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT ? new UmaPlayerModel<>() : null;
     }
 
-    public static Stream<Entry<ResourceKey<UmaData>, UmaData>> sortedUmaDataList() {
-        return ClientUtils.getClientUmaDataRegistry().entrySet().stream().sorted(UmaSoulItem.COMPARATOR);
+    public static Stream<Holder.Reference<UmaData>> sortedUmaDataList(HolderLookup.Provider provider) {
+        return UmapyoiAPI.getUmaDataRegistry(provider).listElements().sorted(UmaSoulItem.COMPARATOR);
     }
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void fillItemCategory(CreativeModeTab.Output entries) {
-        sortedUmaDataList().forEach(entry -> {
+    public void fillItemCategory(FabricItemGroupEntries entries) {
+        sortedUmaDataList(entries.getContext().holders()).forEach(entry -> {
             var initUmaSoul = UmaSoulUtils.initUmaSoul(getDefaultInstance(),
-                    entry.getKey().location(),
-                    entry.getValue());
+                    entry.key().location(),
+                    entry.value());
             UmaSoulUtils.setPhysique(initUmaSoul, 5);
             entries.accept(initUmaSoul);
         });
@@ -118,26 +119,27 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
     public boolean isFoil(ItemStack pStack) {
         return UmaSoulUtils.getGrowth(pStack) == Growth.RETIRED;
     }
-    
-    @Override
-    public boolean isBarVisible(ItemStack pStack) {
-        var physique = UmaSoulUtils.getPhysique(pStack);
-        return UmaSoulUtils.getGrowth(pStack) != Growth.RETIRED && physique != 5;
-    }
-    
-    @Override
-    public int getBarWidth(ItemStack pStack) {
-        var physique = UmaSoulUtils.getPhysique(pStack);
-        return Math.round(13.0F - (5 - physique) * 13.0F / 5);
-    }
-    
-    @Override
-    public int getBarColor(ItemStack pStack) {
-        float stackMaxDamage = 5;
-        var physique = UmaSoulUtils.getPhysique(pStack);
-        float f = Math.max(0.0F, physique / stackMaxDamage);
-        return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
-    }
+
+//    TODO: Temporarily removed until a better version is released or the durability bar is completely phased out.。
+//    @Override
+//    public boolean isBarVisible(ItemStack pStack) {
+//        var physique = UmaSoulUtils.getPhysique(pStack);
+//        return UmaSoulUtils.getGrowth(pStack) != Growth.RETIRED && physique != 5;
+//    }
+//
+//    @Override
+//    public int getBarWidth(ItemStack pStack) {
+//        var physique = UmaSoulUtils.getPhysique(pStack);
+//        return Math.round(13.0F - (5 - physique) * 13.0F / 5);
+//    }
+//
+//    @Override
+//    public int getBarColor(ItemStack pStack) {
+//        float stackMaxDamage = 5;
+//        var physique = UmaSoulUtils.getPhysique(pStack);
+//        float f = Math.max(0.0F, physique / stackMaxDamage);
+//        return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
+//    }
 
 
     @Override
@@ -145,9 +147,13 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
         int ranking = ResultRankingUtils.getRanking(stack);
+        if(UmaSoulUtils.getGrowth(stack) == Growth.TRAINED && UmaSoulUtils.getPhysique(stack) <= 0)
+            tooltip.add(Component.translatable("tooltip.umapyoi.uma_soul.should_retire", UmaStatusUtils.getStatusLevel(ranking))
+                    .withStyle(ChatFormatting.GRAY));
+
         if(UmaSoulUtils.getGrowth(stack) == Growth.RETIRED)
             tooltip.add(Component.translatable("tooltip.umapyoi.uma_soul.ranking", UmaStatusUtils.getStatusLevel(ranking))
-                            .withStyle(ChatFormatting.GOLD));
+                    .withStyle(ChatFormatting.GOLD));
         if (Screen.hasShiftDown() || !Umapyoi.CONFIG.TOOLTIP_SWITCH()) {
             tooltip.add(
                     Component.translatable("tooltip.umapyoi.uma_soul.soul_details").withStyle(ChatFormatting.AQUA));
@@ -376,14 +382,14 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
         return SoundEvents.ARMOR_EQUIP_LEATHER;
     }
 
-    private static class UmaDataComparator implements Comparator<Entry<ResourceKey<UmaData>, UmaData>> {
+    private static class UmaDataComparator implements Comparator<Holder.Reference<UmaData>> {
         @Override
-        public int compare(Entry<ResourceKey<UmaData>, UmaData> left, Entry<ResourceKey<UmaData>, UmaData> right) {
-            var leftRanking = left.getValue().getGachaRanking();
-            var rightRanking = right.getValue().getGachaRanking();
-            if (leftRanking == rightRanking) {
-                String leftName = left.getKey().location().toString();
-                String rightName = right.getKey().location().toString();
+        public int compare(Holder.Reference<UmaData> left, Holder.Reference<UmaData> right) {
+            var leftRanking = left.value().getGachaRanking();
+            var rightRanking = right.value().getGachaRanking();
+            if(leftRanking == rightRanking) {
+                String leftName = left.key().location().toString();
+                String rightName = right.key().location().toString();
                 return leftName.compareToIgnoreCase(rightName);
             }
             return leftRanking.compareTo(rightRanking);

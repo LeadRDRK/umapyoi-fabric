@@ -70,13 +70,9 @@ public class Umapyoi implements ModInitializer {
 
         ResumeActionPointCallback.EVENT.register(PanickingEffect::onResumeAP);
 
-        // Forge hooks
         AnvilUpdateCallback.EVENT.register(AnvilEvents::onAnvilEgg);
-        PlayerBreakSpeedCallback.EVENT.register(PassiveSkillEvents::testPassiveSkill_att);
-        PlayerTickCallback.EVENT.register(PassiveSkillEvents::passiveStepHeight);
-        PlayerTickCallback.EVENT.register(PassiveSkillEvents::passiveTurfRunner);
-        PlayerTickCallback.EVENT.register(PassiveSkillEvents::passiveDirtRunner);
-        PlayerTickCallback.EVENT.register(PassiveSkillEvents::passiveSnowRunner);
+
+        PassiveSkillEvents.register();
 
         ServerPlayNetworking.registerGlobalReceiver(UseSkillPacket.TYPE, UseSkillPacket::handler);
         ServerPlayNetworking.registerGlobalReceiver(SelectSkillPacket.TYPE, SelectSkillPacket::handler);

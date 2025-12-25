@@ -60,7 +60,8 @@ public class UmaSkillUtils {
             if (!hasLearnedSkill(stack, skill))
                 skills.add(tag);
         }
-        LearnSkillCallback.invoke(skill);
+        var event = new LearnSkillCallback.Context(skill, stack);
+        LearnSkillCallback.invoke(event);
     }
 
     public static boolean hasLearnedSkill(ItemStack stack, ResourceLocation skill) {

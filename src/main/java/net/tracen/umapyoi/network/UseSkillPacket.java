@@ -13,6 +13,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
+import net.tracen.umapyoi.events.ApplySkillCallback;
+import net.tracen.umapyoi.events.UseSkillCallback;
 import net.tracen.umapyoi.registry.UmaSkillRegistry;
 import net.tracen.umapyoi.registry.skills.UmaSkill;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
@@ -46,20 +48,20 @@ public class UseSkillPacket implements FabricPacket {
                 player.displayClientMessage(Component.translatable("umapyoi.unknown_skill"), true);
                 return;
             }
-            /*
-            if (MinecraftForge.EVENT_BUS.post(new SkillEvent.UseSkillEvent(selectedSkillName, player.getLevel(), player)))
+
+            var useEvent = new UseSkillCallback.Context(selectedSkillName, player.level(), player);
+            if (UseSkillCallback.invoke(useEvent))
                 return;
-            */
+
             int ap = UmaSoulUtils.getActionPoint(umaSoul);
             if (ap >= selectedSkill.getActionPoint()) {
                 player.connection.send(new ClientboundSoundPacket(Holder.direct(selectedSkill.getSound()), SoundSource.PLAYERS,
                         player.getX(), player.getY(), player.getZ(), 1F, 1F, 0L));
                 selectedSkill.applySkill(player.level(), player);
                 UmaSoulUtils.setActionPoint(umaSoul, ap - selectedSkill.getActionPoint());
-                /*
-                MinecraftForge.EVENT_BUS.post(
-                        new SkillEvent.ApplySkillEvent(selectedSkill.getRegistryName(), player.getLevel(), player));
-                */
+
+                var applyEvent = new ApplySkillCallback.Context(UmaSkillRegistry.REGISTRY.get().getKey(selectedSkill), player.level(), player);
+                ApplySkillCallback.invoke(applyEvent);
             } else {
                 player.displayClientMessage(Component.translatable("umapyoi.not_enough_ap"), true);
             }

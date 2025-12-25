@@ -2,6 +2,7 @@ package net.tracen.umapyoi.item.food;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
@@ -16,6 +17,11 @@ public class UmaDrinkItem extends ItemDrinkBase {
 
     public UmaDrinkItem(Consumer<ItemStack> consumer, FoodInfo info) {
         super(Umapyoi.defaultItemProperties(), info);
+        this.consumer = consumer;
+    }
+
+    public UmaDrinkItem(Item.Properties properties, Consumer<ItemStack> consumer, FoodInfo info) {
+        super(properties, info);
         this.consumer = consumer;
     }
 

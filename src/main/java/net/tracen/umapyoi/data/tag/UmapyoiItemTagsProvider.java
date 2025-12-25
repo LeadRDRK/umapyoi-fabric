@@ -3,6 +3,7 @@ package net.tracen.umapyoi.data.tag;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider.ItemTagProvider;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.tracen.umapyoi.item.ItemRegistry;
 
@@ -15,6 +16,10 @@ public class UmapyoiItemTagsProvider extends ItemTagProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider arg) {
+        getOrCreateTagBuilder(UmapyoiItemTags.SHOULD_RENDER).add(Items.ELYTRA)
+                .addOptional(new ResourceLocation("corn_delight:cob_pipe"))
+                .addOptional(new ResourceLocation("create:goggles"));
+
         getOrCreateTagBuilder(UmapyoiItemTags.COMMON_GACHA_ITEM)
                 .add(ItemRegistry.JEWEL.get()).add(ItemRegistry.BLANK_TICKET.get());
         getOrCreateTagBuilder(UmapyoiItemTags.SR_UMA_TICKET).add(ItemRegistry.SR_UMA_TICKET.get());
@@ -27,6 +32,7 @@ public class UmapyoiItemTagsProvider extends ItemTagProvider {
 
         getOrCreateTagBuilder(UmapyoiItemTags.BREAD).addTag(UmapyoiItemTags.BREAD_WHEAT);
         getOrCreateTagBuilder(UmapyoiItemTags.BREAD_WHEAT).add(Items.BREAD);
+        getOrCreateTagBuilder(UmapyoiItemTags.BAMBOO).add(Items.BAMBOO);
 
         getOrCreateTagBuilder(UmapyoiItemTags.UMA_TICKET).addTag(UmapyoiItemTags.COMMON_GACHA_ITEM)
                 .add(ItemRegistry.UMA_TICKET.get())

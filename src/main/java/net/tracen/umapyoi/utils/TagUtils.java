@@ -24,4 +24,8 @@ public class TagUtils {
     public static TagKey<Fluid> modFluidTag(String modid, String path) {
         return TagKey.create(Registries.FLUID, new ResourceLocation(modid, path));
     }
+
+    public static TagKey<Item> cItemTag(String path) {
+        return TagKey.create(Registries.ITEM, new ResourceLocation("c", path));
+    }
 }

@@ -5,6 +5,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.tracen.umapyoi.api.UmapyoiAPI;
+import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
 import net.tracen.umapyoi.events.AnvilUpdateCallback;
 import net.tracen.umapyoi.item.FadedUmaSoulItem;
 import net.tracen.umapyoi.item.ItemRegistry;
@@ -89,7 +90,7 @@ public class AnvilEvents {
 
         public Optional<AnvilUpdateCallback.Result> miyaSoul() {
             if(!soul.is(ItemRegistry.BLANK_UMA_SOUL.get())) return Optional.empty();
-            if(!material.is(Items.BAMBOO)) return Optional.empty();
+            if(!material.is(UmapyoiItemTags.BAMBOO)) return Optional.empty();
             var registry = UmapyoiAPI.getUmaDataRegistry(player.level());
             ResourceLocation name = soul.getOrCreateTag().contains("name") ?
                     ResourceLocation.tryParse(soul.getOrCreateTag().getString("name")) : UmaDataRegistry.COMMON_UMA.getId();
@@ -104,7 +105,7 @@ public class AnvilEvents {
 
         public Optional<AnvilUpdateCallback.Result> venusParkSoul() {
             if(!soul.is(ItemRegistry.BLANK_UMA_SOUL.get())) return Optional.empty();
-            if(!material.is(Items.BREAD)) return Optional.empty();
+            if(!material.is(UmapyoiItemTags.BREAD)) return Optional.empty();
             if(!itemName.equalsIgnoreCase("vivelafrance")) return Optional.empty();
 
             var registry = UmapyoiAPI.getUmaDataRegistry(player.level());

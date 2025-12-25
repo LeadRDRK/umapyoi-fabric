@@ -34,6 +34,16 @@ public class UmapyoiItemTagsProvider extends ItemTagProvider {
         getOrCreateTagBuilder(UmapyoiItemTags.BREAD_WHEAT).add(Items.BREAD);
         getOrCreateTagBuilder(UmapyoiItemTags.BAMBOO).add(Items.BAMBOO);
 
+        // forge tag additions
+        // FIXME: not needed on fabric api >= 1.20.5
+        getOrCreateTagBuilder(UmapyoiItemTags.STONES)
+                .add(Items.ANDESITE)
+                .add(Items.DEEPSLATE)
+                .add(Items.DIORITE)
+                .add(Items.GRANITE)
+                .add(Items.STONE)
+                .add(Items.TUFF);
+
         getOrCreateTagBuilder(UmapyoiItemTags.UMA_TICKET).addTag(UmapyoiItemTags.COMMON_GACHA_ITEM)
                 .add(ItemRegistry.UMA_TICKET.get())
                 .addTag(UmapyoiItemTags.SR_UMA_TICKET).addTag(UmapyoiItemTags.SSR_UMA_TICKET);

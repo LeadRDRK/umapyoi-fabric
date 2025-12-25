@@ -32,4 +32,6 @@ public class UmapyoiItemTags {
     public static final TagKey<Item> BAMBOO = TagUtils.cItemTag("bamboo");
 
     public static final TagKey<Item> VEGETABLES_CARROT = TagUtils.cItemTag("vegetables/carrot");
+
+    public static final TagKey<Item> STONES = TagUtils.cItemTag("stones");
 }

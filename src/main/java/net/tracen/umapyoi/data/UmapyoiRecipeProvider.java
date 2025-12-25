@@ -6,6 +6,7 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.tracen.umapyoi.block.BlockRegistry;
@@ -53,27 +54,49 @@ public class UmapyoiRecipeProvider extends FabricRecipeProvider {
                 .requires(ItemRegistry.HORSESHOE_RAINBOW.get())
                 .unlockedBy("has_item", has(ItemRegistry.BLANK_TICKET.get())).save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, BlockRegistry.DISASSEMBLY_BLOCK.get()).pattern(" J ").pattern("ALA").pattern("AAA")
-                .define('A', Items.IRON_INGOT).define('L', Items.LECTERN)
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, BlockRegistry.DISASSEMBLY_BLOCK.get())
+                .pattern(" J ")
+                .pattern(" A ")
+                .pattern("ALA")
+                .define('A', Items.IRON_INGOT)
+                .define('L', Items.LECTERN)
                 .define('J', ItemRegistry.BLANK_TICKET.get())
                 .unlockedBy("has_item", has(ItemRegistry.BLANK_TICKET.get())).save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, BlockRegistry.THREE_GODDESS.get()).pattern(" J ").pattern("JLJ").pattern("AAA")
-                .define('A', Items.STONE).define('L', Items.QUARTZ_BLOCK)
-                .define('J', ItemRegistry.JEWEL.get()).unlockedBy("has_item", has(ItemRegistry.JEWEL.get()))
-                .save(consumer);
-        
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, BlockRegistry.UMA_STATUES.get()).pattern(" J ").pattern(" A ").pattern("AAA")
-                .define('A', Items.STONE)
-                .define('J', ItemRegistry.JEWEL.get()).unlockedBy("has_item", has(ItemRegistry.JEWEL.get()))
-                .save(consumer);
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ItemRegistry.NAGINATA.get())
+                .pattern("  J")
+                .pattern(" L ")
+                .pattern("A  ")
+                .define('A', Items.STICK)
+                .define('L', Items.LIGHTNING_ROD)
+                .define('J', ItemRegistry.HORSESHOE_RAINBOW.get())
+                .unlockedBy("has_item", has(ItemRegistry.HORSESHOE_RAINBOW.get())).save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ItemRegistry.BASEBALL_BAT.get())
+                .pattern("  A")
+                .pattern("JA ")
+                .pattern("L  ")
+                .define('A', Items.IRON_BLOCK)
+                .define('L', Items.IRON_INGOT)
+                .define('J', ItemRegistry.HORSESHOE_SILVER.get())
+                .unlockedBy("has_item", has(ItemRegistry.HORSESHOE_RAINBOW.get())).save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, BlockRegistry.UMA_SELECT_BLOCK.get()).pattern(" J ").pattern("BLB").pattern("AAA")
+                .define('A', Items.DIAMOND)
+                .define('B', Items.NETHER_STAR).define('L', Items.LECTERN)
+                .define('J', ItemRegistry.JEWEL.get())
+                .unlockedBy("has_item", has(ItemRegistry.BLANK_TICKET.get())).save(consumer);
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, BlockRegistry.THREE_GODDESS.get()).pattern(" J ")
+                .pattern("JAJ").pattern("AAA").define('A', UmapyoiItemTags.STONES)
+                .define('J', ItemRegistry.JEWEL.get())
+                .unlockedBy("has_item", has(ItemRegistry.JEWEL.get())).save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, BlockRegistry.REGISTER_LECTERN.get()).pattern(" J ").pattern(" G ").pattern("GAG")
                 .define('A', Items.LECTERN).define('G', Items.GOLD_INGOT).define('J', ItemRegistry.JEWEL.get())
                 .unlockedBy("has_item", has(ItemRegistry.JEWEL.get())).save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, BlockRegistry.SILVER_UMA_PEDESTAL.get()).pattern("AJA").pattern("GAG").pattern("AAA")
-                .define('A', Items.STONE).define('G', Items.IRON_INGOT).define('J', ItemRegistry.JEWEL.get())
+                .define('A', UmapyoiItemTags.STONES).define('G', Items.IRON_INGOT).define('J', ItemRegistry.JEWEL.get())
                 .unlockedBy("has_item", has(ItemRegistry.JEWEL.get())).save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, BlockRegistry.UMA_PEDESTAL.get()).pattern(" J ").pattern("GAG").pattern("GGG")
@@ -83,6 +106,21 @@ public class UmapyoiRecipeProvider extends FabricRecipeProvider {
                         ItemRegistry.HORSESHOE_GOLD.get()
                 ))
                 .unlockedBy("has_item", has(ItemRegistry.CRYSTAL_GOLD.get())).save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS,
+                        BlockRegistry.UMA_STATUES.get()).pattern(" J ").pattern(" A ").pattern("AAA")
+                .define('A', UmapyoiItemTags.STONES)
+                .define('J', ItemRegistry.JEWEL.get()).unlockedBy("has_item", has(ItemRegistry.JEWEL.get()))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ItemRegistry.SWIMSUIT.get())
+                .pattern("IJI")
+                .pattern("ILI")
+                .pattern(" I ")
+                .define('I', Items.LEATHER)
+                .define('L', Items.BLUE_DYE)
+                .define('J', ItemRegistry.JEWEL.get())
+                .unlockedBy("has_item", has(ItemRegistry.JEWEL.get())).save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, BlockRegistry.SKILL_LEARNING_TABLE.get()).pattern(" J").pattern(" L")
                 .define('L', Items.BOOKSHELF).define('J', ItemRegistry.JEWEL.get())

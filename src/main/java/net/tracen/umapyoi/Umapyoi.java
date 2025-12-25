@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.world.item.Item;
 import net.tracen.umapyoi.data.builtin.CostumeDataRegistry;
+import net.tracen.umapyoi.events.DatapackEvents;
 import net.tracen.umapyoi.registry.UmapyoiAttributesRegistry;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.block.entity.BlockEntityRegistry;
@@ -83,6 +84,9 @@ public class Umapyoi implements ModInitializer {
         ServerPlayNetworking.registerGlobalReceiver(SelectSkillPacket.TYPE, SelectSkillPacket::handler);
         ServerPlayNetworking.registerGlobalReceiver(SetupResultPacket.TYPE, SetupResultPacket::handler);
         ServerPlayNetworking.registerGlobalReceiver(EmptyResultPacket.TYPE, EmptyResultPacket::handler);
+
+        DatapackEvents.registerDatapackRegistries();
+        DatapackEvents.registerSerializers();
     }
 
     public static Logger getLogger() {

@@ -1,14 +1,9 @@
 package net.tracen.umapyoi.events.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.world.entity.LivingEntity;
-import net.tracen.umapyoi.client.model.UmaPlayerModel;
 
 @Environment(EnvType.CLIENT)
 public interface RenderingUmaSoulCallback extends RenderingModelCallback {

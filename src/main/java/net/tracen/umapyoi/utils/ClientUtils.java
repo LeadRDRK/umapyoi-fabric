@@ -3,8 +3,6 @@ package net.tracen.umapyoi.utils;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
 import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.fabricmc.api.EnvType;
@@ -24,8 +22,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
-import net.tracen.umapyoi.client.EmissiveRenderType;
-import net.tracen.umapyoi.client.model.bedrock.BedrockModel;
 import net.tracen.umapyoi.client.model.bedrock.BedrockVersion;
 import net.tracen.umapyoi.client.model.pojo.BedrockModelPOJO;
 import net.tracen.umapyoi.data.tag.UmapyoiUmaDataTags;

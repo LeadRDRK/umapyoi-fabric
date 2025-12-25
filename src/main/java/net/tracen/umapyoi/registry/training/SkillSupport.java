@@ -8,8 +8,6 @@ import net.tracen.umapyoi.registry.UmaSkillRegistry;
 import net.tracen.umapyoi.registry.skills.UmaSkill;
 import net.tracen.umapyoi.utils.UmaSkillUtils;
 
-import java.util.Random;
-
 public class SkillSupport extends TrainingSupport {
     public SkillSupport() {
         super();

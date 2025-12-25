@@ -11,12 +11,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
+import net.tracen.umapyoi.data.tag.UmapyoiBlockTags;
 import net.tracen.umapyoi.events.ApplyUmasoulAttributeCallback;
 import net.tracen.umapyoi.events.PlayerBreakSpeedCallback;
 import net.tracen.umapyoi.events.PlayerTickCallback;
-import net.tracen.umapyoi.registry.UmapyoiAttributesRegistry;
-import net.tracen.umapyoi.data.tag.UmapyoiBlockTags;
 import net.tracen.umapyoi.registry.UmaSkillRegistry;
+import net.tracen.umapyoi.registry.UmapyoiAttributesRegistry;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 import net.tracen.umapyoi.utils.UmaStatusUtils;
 

@@ -1,11 +1,5 @@
 package net.tracen.umapyoi.api;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.google.common.collect.Lists;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -21,6 +15,12 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TargetSelector {
     // Copied from slashblade, need refine.

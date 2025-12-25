@@ -1,9 +1,5 @@
 package net.tracen.umapyoi.item;
 
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
-
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
 
@@ -18,6 +14,10 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.item.info.FoodInfo;
+
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
 
 public interface IFoodLike {
     FoodInfo getFoodInfo();

@@ -1,9 +1,5 @@
 package net.tracen.umapyoi.item.factor;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
@@ -16,6 +12,10 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.registry.factors.FactorType;
+
+import java.util.List;
+
+import javax.annotation.Nullable;
 
 public class UmaFactorAmplifierItem extends Item {
     // TODO: 实现overrideStackedOnOther对指定FactorType的因子进行随机等级增长。

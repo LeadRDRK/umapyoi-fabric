@@ -14,8 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.block.entity.TrainingFacilityBlockEntity;
-import net.tracen.umapyoi.item.ItemRegistry;
-import net.tracen.umapyoi.registry.training.SupportContainer;
 
 import java.util.Objects;
 

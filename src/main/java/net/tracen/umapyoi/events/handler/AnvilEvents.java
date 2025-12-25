@@ -5,11 +5,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.tracen.umapyoi.api.UmapyoiAPI;
+import net.tracen.umapyoi.data.builtin.UmaDataRegistry;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
 import net.tracen.umapyoi.events.AnvilUpdateCallback;
 import net.tracen.umapyoi.item.FadedUmaSoulItem;
 import net.tracen.umapyoi.item.ItemRegistry;
-import net.tracen.umapyoi.data.builtin.UmaDataRegistry;
 import net.tracen.umapyoi.utils.GachaRanking;
 
 import java.util.Optional;

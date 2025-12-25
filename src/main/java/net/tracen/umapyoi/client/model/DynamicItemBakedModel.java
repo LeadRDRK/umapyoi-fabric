@@ -1,10 +1,5 @@
 package net.tracen.umapyoi.client.model;
 
-import java.util.Collections;
-import java.util.List;
-
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModel;
@@ -22,6 +17,11 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Collections;
+import java.util.List;
 
 /** Ported from MMLib **/
 public abstract class DynamicItemBakedModel implements BakedModel {

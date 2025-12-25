@@ -1,13 +1,13 @@
 package net.tracen.umapyoi.registry.skills;
 
-import java.util.List;
-
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.api.TargetSelector;
+
+import java.util.List;
 
 public class TetherSkill extends UmaSkill {
 

@@ -1,7 +1,5 @@
 package net.tracen.umapyoi.item.weapon;
 
-import java.util.UUID;
-
 import com.google.common.collect.Multimap;
 
 import net.minecraft.world.entity.EquipmentSlot;
@@ -13,6 +11,8 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
 import net.tracen.umapyoi.Umapyoi;
+
+import java.util.UUID;
 
 public class BaseballBatItem extends UmaWeaponItem {
     private static final UUID KNOCKBACK_UUID = UUID.fromString("1F199A02-626F-13A3-2365-3D4D6D075737");

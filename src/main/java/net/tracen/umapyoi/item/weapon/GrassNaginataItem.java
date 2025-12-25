@@ -1,8 +1,5 @@
 package net.tracen.umapyoi.item.weapon;
 
-import java.util.Objects;
-import java.util.UUID;
-
 import com.google.common.collect.Multimap;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -15,6 +12,9 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.item.ItemRegistry;
+
+import java.util.Objects;
+import java.util.UUID;
 
 public class GrassNaginataItem extends UmaWeaponItem {
     private static final UUID REACH_UUID = UUID.fromString("1F199A02-626F-13A3-2365-3D4D6D075737");

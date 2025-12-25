@@ -1,11 +1,5 @@
 package net.tracen.umapyoi.container;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nullable;
-
 import com.google.common.collect.Lists;
 
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
@@ -24,6 +18,12 @@ import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nullable;
 
 public class UmaSelectMenu extends AbstractContainerMenu {
 

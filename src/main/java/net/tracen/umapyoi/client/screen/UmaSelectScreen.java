@@ -1,10 +1,5 @@
 package net.tracen.umapyoi.client.screen;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -30,13 +25,18 @@ import net.tracen.umapyoi.container.UmaSelectMenu;
 import net.tracen.umapyoi.container.UmaSelectMenu.SelectComparator;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
 import net.tracen.umapyoi.item.ItemRegistry;
-import net.tracen.umapyoi.network.SetupResultPacket;
 import net.tracen.umapyoi.network.EmptyResultPacket;
+import net.tracen.umapyoi.network.SetupResultPacket;
 import net.tracen.umapyoi.registry.training.card.SupportCard;
 import net.tracen.umapyoi.registry.umadata.UmaData;
 import net.tracen.umapyoi.utils.ClientUtils;
 import net.tracen.umapyoi.utils.GachaRanking;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> implements ContainerListener {
 

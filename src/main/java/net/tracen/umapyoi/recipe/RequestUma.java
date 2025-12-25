@@ -1,8 +1,5 @@
 package net.tracen.umapyoi.recipe;
 
-import java.util.List;
-import java.util.Optional;
-
 import com.google.common.collect.Lists;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -18,6 +15,9 @@ import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.utils.GachaRanking;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
+
+import java.util.List;
+import java.util.Optional;
 
 public class RequestUma {
     private final Optional<ResourceLocation> name;

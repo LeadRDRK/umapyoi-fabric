@@ -1,11 +1,5 @@
 package net.tracen.umapyoi.recipe;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -21,6 +15,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.item.ItemRegistry;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class UmasoulIngredient implements CustomIngredient {
     private final Set<Item> items;

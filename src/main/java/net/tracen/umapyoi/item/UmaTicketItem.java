@@ -1,7 +1,5 @@
 package net.tracen.umapyoi.item;
 
-import java.util.List;
-import java.util.Optional;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -10,11 +8,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
-import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
 import net.tracen.umapyoi.data.builtin.UmaDataRegistry;
+import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
 import net.tracen.umapyoi.registry.training.card.SupportCard;
 import net.tracen.umapyoi.utils.TrainingSupportUtils;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
+
+import java.util.List;
+import java.util.Optional;
 
 public class UmaTicketItem extends Item {
     public UmaTicketItem() {

@@ -1,10 +1,5 @@
 package net.tracen.umapyoi.recipe;
 
-import java.util.function.BiFunction;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import com.google.gson.JsonObject;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -12,6 +7,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.function.BiFunction;
 
 public record UmasoulRecipeSerializer<T extends Recipe<?>, U extends T> (RecipeSerializer<T> compose,
                                                                          BiFunction<T, @Nullable ResourceLocation, U> converter) implements RecipeSerializer<U> {

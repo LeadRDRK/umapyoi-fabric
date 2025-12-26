@@ -38,7 +38,7 @@ loom {
         }
     }
 
-    accessWidenerPath.set(file("src/main/resources/umapyoi.accesswidener"))
+    accessWidenerPath = file("src/main/resources/umapyoi.accesswidener")
 
     runs {
         // gradlew runDatagen

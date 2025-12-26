@@ -2,8 +2,6 @@ package net.tracen.umapyoi.item.weapon;
 
 import com.google.common.collect.Multimap;
 
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -13,7 +11,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.item.ItemRegistry;
 
-import java.util.Objects;
 import java.util.UUID;
 
 public class GrassNaginataItem extends UmaWeaponItem {
@@ -26,13 +23,13 @@ public class GrassNaginataItem extends UmaWeaponItem {
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(ItemStack stack, EquipmentSlot slot) {
         Multimap<Attribute, AttributeModifier> attributeModifiers = super.getAttributeModifiers(stack, slot);
-        if (slot == EquipmentSlot.MAINHAND) {
-            AttributeModifier value = new AttributeModifier(REACH_UUID, "Weapon modifier", 2D,
-                    AttributeModifier.Operation.ADDITION);
-            if(!attributeModifiers.containsValue(value))
-                attributeModifiers.put(Objects.requireNonNull(BuiltInRegistries.ATTRIBUTE.get(
-                        new ResourceLocation("minecraft", "player.entity_interaction_range"))), value);
-        }
+//        FIXME: ENTITY_INTERACTION_RANGE is not builtin on 1.20.1
+//        if (slot == EquipmentSlot.MAINHAND) {
+//            AttributeModifier value = new AttributeModifier(REACH_UUID, "Weapon modifier", 2D,
+//                    AttributeModifier.Operation.ADDITION);
+//            if(!attributeModifiers.containsValue(value))
+//                attributeModifiers.put(Attributes.ENTITY_INTERACTION_RANGE, value);
+//        }
         return attributeModifiers;
     }
 

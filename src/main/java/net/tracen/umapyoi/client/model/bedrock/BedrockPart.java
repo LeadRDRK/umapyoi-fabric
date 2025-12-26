@@ -195,6 +195,6 @@ public final class BedrockPart {
     }
 
     public BedrockPart getChild(String childPartName) {
-        return this.children.get(childPartName) == null ? new BedrockPart() : this.children.get(childPartName);
+        return this.children.get(childPartName);
     }
 }

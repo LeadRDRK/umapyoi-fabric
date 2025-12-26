@@ -10,7 +10,7 @@ import net.tracen.umapyoi.Umapyoi;
 public class UmapyoiAttributesRegistry {
     public static final Attribute SPRINT_SPEED = new RangedAttribute(
             "attribute.umapyoi.generic.sprint_speed",
-            0.7F, 0.0D, 1024.0D).setSyncable(true);
+            0.7D, 0.0D, 1024.0D).setSyncable(true);
 
     public static final Attribute STEP_HEIGHT_ADDITION = new RangedAttribute(
             "attribute.umapyoi.generic.step_height_addition",

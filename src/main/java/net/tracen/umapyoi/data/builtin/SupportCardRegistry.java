@@ -45,7 +45,7 @@ public class SupportCardRegistry {
             .addSupport(UmaSkillUtils.getSkillSupportEnrty(UmaSkillRegistry.STEEL_WILL.getId()))
             ::build);
 
-    public static final RegistryObject<SupportCard> SSR_SATONO_DIAMOND_STAMINA = SUPPORT_CARD.register("ssr_mejiro_mcqueen_stamina",
+    public static final RegistryObject<SupportCard> SSR_SATONO_DIAMOND_STAMINA = SUPPORT_CARD.register("ssr_satono_diamond_stamina",
             SupportCard.Builder.create()
             .ranking(GachaRanking.SSR)
             .maxDamage(5)
@@ -56,7 +56,7 @@ public class SupportCardRegistry {
             .addSupport(UmaSkillUtils.getSkillSupportEnrty(UmaSkillRegistry.STEEL_WILL.getId()))
             ::build);
 
-    public static final RegistryObject<SupportCard> SSR_NEO_UNIVERSE_WIDSOM = SUPPORT_CARD.register("ssr_neo_universe_wisdom",
+    public static final RegistryObject<SupportCard> SSR_NEO_UNIVERSE_WISDOM = SUPPORT_CARD.register("ssr_neo_universe_wisdom",
             SupportCard.Builder.create()
             .ranking(GachaRanking.SSR)
             .maxDamage(5)

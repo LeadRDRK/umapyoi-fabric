@@ -6,7 +6,9 @@ import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.tracen.umapyoi.data.builtin.CostumeDataRegistry;
 import net.tracen.umapyoi.item.ItemRegistry;
+import net.tracen.umapyoi.item.UmaCostumeItem;
 import net.tracen.umapyoi.villager.itemlisting.RandomItemOrderItemListing;
 import net.tracen.umapyoi.villager.itemlisting.RandomPriceOrderItemListing;
 import net.tracen.umapyoi.villager.itemlisting.RandomPriceSellItemListing;
@@ -52,8 +54,9 @@ public class VillagerTradeRegistry {
             factories.add(new RandomPriceOrderItemListing(new ItemStack(ItemRegistry.TRAINING_SUIT.get()), 1, 1, 1, 8, 30, 0.2F))
         );
 
+        var kindergartenUniform = UmaCostumeItem.getCostume(CostumeDataRegistry.KINDERGARTEN_UNIFORM.getId());
         TradeOfferHelper.registerVillagerOffers(VillagerProfession.SHEPHERD, 5, factories ->
-            factories.add(new RandomPriceOrderItemListing(new ItemStack(ItemRegistry.KINDERGARTEN_UNIFORM.get()), 1, 1, 1, 8, 30, 0.2F))
+            factories.add(new RandomPriceOrderItemListing(kindergartenUniform, 1, 1, 1, 8, 30, 0.2F))
         );
     }
 

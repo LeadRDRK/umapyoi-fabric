@@ -50,7 +50,6 @@ public class ClientSetupEvents {
         AbstractSuitItem.registerRenderer(ItemRegistry.SUMMER_UNIFORM.get());
         AbstractSuitItem.registerRenderer(ItemRegistry.WINTER_UNIFORM.get());
         AbstractSuitItem.registerRenderer(ItemRegistry.TRAINING_SUIT.get());
-        AbstractSuitItem.registerRenderer(ItemRegistry.KINDERGARTEN_UNIFORM.get());
         AbstractSuitItem.registerRenderer(ItemRegistry.SWIMSUIT.get());
         AbstractSuitItem.registerRenderer(ItemRegistry.UMA_COSTUME.get());
 

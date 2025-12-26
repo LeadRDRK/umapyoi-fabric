@@ -15,7 +15,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "umapyoi:kindergarten_uniform"
+        "recipe": "umapyoi:uma_costume"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -28,7 +28,7 @@
   ],
   "rewards": {
     "recipes": [
-      "umapyoi:kindergarten_uniform"
+      "umapyoi:uma_costume"
     ]
   },
   "sends_telemetry_event": false

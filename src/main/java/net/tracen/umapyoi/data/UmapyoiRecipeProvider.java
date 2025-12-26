@@ -9,8 +9,10 @@ import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.tracen.umapyoi.block.BlockRegistry;
+import net.tracen.umapyoi.data.builtin.CostumeDataRegistry;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
 import net.tracen.umapyoi.item.ItemRegistry;
+import net.tracen.umapyoi.item.UmaCostumeItem;
 
 import java.util.function.Consumer;
 
@@ -142,7 +144,10 @@ public class UmapyoiRecipeProvider extends FabricRecipeProvider {
                 .define('I', Items.RED_WOOL).define('L', Items.WHITE_WOOL).define('J', ItemRegistry.JEWEL.get())
                 .unlockedBy("has_item", has(ItemRegistry.JEWEL.get())).save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ItemRegistry.KINDERGARTEN_UNIFORM.get()).pattern("IJI").pattern("III").pattern("III")
+        var kindergartenUniform = UmaCostumeItem
+                .getCostume(CostumeDataRegistry.KINDERGARTEN_UNIFORM.getId())
+                .getItem();
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, kindergartenUniform).pattern("IJI").pattern("III").pattern("III")
                 .define('I', Items.LIGHT_BLUE_WOOL).define('J', ItemRegistry.JEWEL.get())
                 .unlockedBy("has_item", has(ItemRegistry.JEWEL.get())).save(consumer);
 

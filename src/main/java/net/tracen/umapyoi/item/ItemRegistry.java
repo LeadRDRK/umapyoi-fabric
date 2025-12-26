@@ -58,7 +58,6 @@ public class ItemRegistry {
     public static final RegistryObject<Item> SUMMER_UNIFORM = register("summer_uniform", SummerUniformItem::new);
     public static final RegistryObject<Item> WINTER_UNIFORM = register("winter_uniform", WinterUniformItem::new);
     public static final RegistryObject<Item> TRAINING_SUIT = register("trainning_suit", TrainingSuitItem::new);
-    public static final RegistryObject<Item> KINDERGARTEN_UNIFORM = register("kindergarten_uniform", KindergartenUniformItem::new);
     public static final RegistryObject<Item> SWIMSUIT = register("swimsuit", SwimsuitItem::new);
 
     public static final RegistryObject<Item> UMA_COSTUME = register("uma_costume", UmaCostumeItem::new);

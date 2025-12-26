@@ -45,19 +45,28 @@ public class PassiveSkillEvents {
             return origSpeed;
     }
 
-    public static void sprintSpeedTick(Player player) {
-        AttributeInstance movementSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);
+    public static void sprintSpeedTick(Player living) {
+        AttributeInstance sprintSpeed = living.getAttribute(UmapyoiAttributesRegistry.SPRINT_SPEED);
+
+        if(sprintSpeed == null)
+            return;
+
+        AttributeInstance movementSpeed = living.getAttribute(Attributes.MOVEMENT_SPEED);
+
 
         var speedModifier = new AttributeModifier(SPRINTUUID,
-                "sprint_speed_bonus", player.getAttributeValue(UmapyoiAttributesRegistry.SPRINT_SPEED),
+                "sprint_speed_bonus",
+                sprintSpeed.getValue() - sprintSpeed.getBaseValue()
+                ,
                 Umapyoi.CONFIG.UMASOUL_SPEED_PRECENT_ENABLE() ? AttributeModifier.Operation.MULTIPLY_TOTAL
                         : AttributeModifier.Operation.ADDITION);
-        if (UmapyoiAPI.getUmaSoul(player).isEmpty()) {
+
+        if (UmapyoiAPI.getUmaSoul(living).isEmpty()) {
             movementSpeed.removeModifier(speedModifier);
             return;
         }
 
-        if (player.isSprinting()) {
+        if (living.isSprinting()) {
             if (!movementSpeed.hasModifier(speedModifier))
                 movementSpeed.addTransientModifier(speedModifier);
         } else {

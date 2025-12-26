@@ -144,4 +144,8 @@ public class UmaFactorStack {
     public void setTag(@Nullable CompoundTag tag) {
         this.tag = tag;
     }
+
+    public Component getDescriptionDetail() {
+        return this.getFactor().getDescriptionDetail(this);
+    }
 }

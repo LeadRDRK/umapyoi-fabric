@@ -63,6 +63,9 @@ public class UmaFactorContainerItem extends Item implements CreativeModeTabFille
                     case EXTRASTATUS -> tooltip.add(factor.getDescription().copy().withStyle(ChatFormatting.RED));
                     default -> tooltip.add(factor.getDescription().copy().withStyle(ChatFormatting.GRAY));
                 }
+                if(flagIn.isAdvanced() || Umapyoi.CONFIG.DISPLAY_DETAIL()) {
+                    tooltip.add(factor.getDescriptionDetail().copy().withStyle(ChatFormatting.DARK_GRAY));
+                }
             });
         } else {
             tooltip.add(Component.translatable("tooltip.umapyoi.press_shift_for_details")

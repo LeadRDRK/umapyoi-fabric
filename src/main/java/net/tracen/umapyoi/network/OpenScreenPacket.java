@@ -45,7 +45,7 @@ public class OpenScreenPacket implements FabricPacket {
     }
 
     public static final PacketType<OpenScreenPacket> TYPE = PacketType.create(
-            new ResourceLocation(Umapyoi.MODID, "open_screen"),
+            new ResourceLocation(Umapyoi.MODID, "packet/open_screen"),
             (buf) -> new OpenScreenPacket(
                     buf.readVarInt(),
                     buf.readVarInt(),

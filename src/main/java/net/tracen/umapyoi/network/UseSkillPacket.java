@@ -28,7 +28,7 @@ public class UseSkillPacket implements FabricPacket {
     }
 
     public static final PacketType<UseSkillPacket> TYPE = PacketType.create(
-            new ResourceLocation(Umapyoi.MODID, "use_skill"),
+            new ResourceLocation(Umapyoi.MODID, "packet/use_skill"),
             (buf) -> new UseSkillPacket()
     );
 

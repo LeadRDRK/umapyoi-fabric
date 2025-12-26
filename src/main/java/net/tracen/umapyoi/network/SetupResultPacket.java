@@ -23,7 +23,7 @@ public class SetupResultPacket implements FabricPacket {
     }
 
     public static final PacketType<SetupResultPacket> TYPE = PacketType.create(
-            new ResourceLocation(Umapyoi.MODID, "setup_result"),
+            new ResourceLocation(Umapyoi.MODID, "packet/setup_result"),
             (buf) -> new SetupResultPacket(
                     buf.readUtf()
             )

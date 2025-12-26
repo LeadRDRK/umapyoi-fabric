@@ -26,7 +26,7 @@ public class SelectSkillPacket implements FabricPacket {
     }
 
     public static final PacketType<SelectSkillPacket> TYPE = PacketType.create(
-            new ResourceLocation(Umapyoi.MODID, "use_skill"),
+            new ResourceLocation(Umapyoi.MODID, "packet/select_skill"),
             (buf) -> new SelectSkillPacket(buf.readInt())
     );
 

@@ -18,7 +18,7 @@ public class EmptyResultPacket implements FabricPacket {
     }
 
     public static final PacketType<EmptyResultPacket> TYPE = PacketType.create(
-            new ResourceLocation(Umapyoi.MODID, "empty_result"),
+            new ResourceLocation(Umapyoi.MODID, "packet/empty_result"),
             (buf) -> new EmptyResultPacket()
     );
 

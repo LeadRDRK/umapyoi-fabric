@@ -41,7 +41,7 @@ public class OpenScreenPacket implements FabricPacket {
         buf.writeVarInt(syncId);
         buf.writeComponent(title);
         buf.writeVarInt(extraData.readableBytes());
-        buf.writeBytes(extraData);
+        buf.writeBytes(extraData, extraData.readerIndex(), extraData.readableBytes());
     }
 
     public static final PacketType<OpenScreenPacket> TYPE = PacketType.create(
@@ -73,6 +73,7 @@ public class OpenScreenPacket implements FabricPacket {
 
         Minecraft client = Minecraft.getInstance();
         Inventory inventory = client.player.getInventory();
+        packet.extraData.readerIndex(0); // is this even needed?
         AbstractContainerMenu menu = ((ExtendedScreenHandlerType<?>)type).create(packet.syncId, inventory, packet.extraData);
         @SuppressWarnings("unchecked")
         Screen screen = ((MenuScreens.ScreenConstructor<AbstractContainerMenu, ?>) MenuScreens.getConstructor(type)).create(menu, inventory, packet.title);

@@ -25,6 +25,7 @@ public class NetworkHooks {
 
         FriendlyByteBuf extraData = new FriendlyByteBuf(Unpooled.buffer());
         extraDataWriter.accept(extraData);
+        extraData.readerIndex(0);
         AbstractContainerMenu menu = factory.createMenu(syncId, player.getInventory(), player);
         ServerPlayNetworking.send(player, new OpenScreenPacket(
                 BuiltInRegistries.MENU.getId(menu.getType()),

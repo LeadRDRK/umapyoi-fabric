@@ -9,13 +9,13 @@
       "item": "minecraft:honey_bottle"
     },
     {
-      "tag": "fabric:sugar"
+      "tag": "c:sugar"
     },
     {
-      "tag": "fabric:sugar"
+      "tag": "c:sugar"
     },
     {
-      "tag": "fabric:water"
+      "tag": "c:water"
     }
   ],
   "result": {

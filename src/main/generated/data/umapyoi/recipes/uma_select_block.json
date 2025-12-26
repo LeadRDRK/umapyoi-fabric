@@ -3,10 +3,13 @@
   "category": "misc",
   "key": {
     "A": {
-      "item": "minecraft:iron_ingot"
+      "item": "minecraft:diamond"
+    },
+    "B": {
+      "item": "minecraft:nether_star"
     },
     "J": {
-      "item": "umapyoi:blank_ticket"
+      "item": "umapyoi:jewel"
     },
     "L": {
       "item": "minecraft:lectern"
@@ -14,11 +17,11 @@
   },
   "pattern": [
     " J ",
-    " A ",
-    "ALA"
+    "BLB",
+    "AAA"
   ],
   "result": {
-    "item": "umapyoi:disassembly_block"
+    "item": "umapyoi:uma_select_block"
   },
   "show_notification": true
 }

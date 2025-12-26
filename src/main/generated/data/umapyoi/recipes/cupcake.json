@@ -12,10 +12,10 @@
       "item": "minecraft:egg"
     },
     {
-      "tag": "fabric:sugar"
+      "tag": "c:sugar"
     },
     {
-      "tag": "fabric:milk"
+      "tag": "c:milk"
     }
   ],
   "result": {

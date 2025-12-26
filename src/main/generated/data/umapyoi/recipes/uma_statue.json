@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "A": {
-      "item": "minecraft:stone"
+      "tag": "c:stones"
     },
     "J": {
       "item": "umapyoi:jewel"

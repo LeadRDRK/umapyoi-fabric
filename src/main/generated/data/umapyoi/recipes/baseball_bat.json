@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "minecraft:iron_block"
+    },
+    "J": {
+      "item": "umapyoi:horseshoe_silver"
+    },
+    "L": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "pattern": [
+    "  A",
+    "JA ",
+    "L  "
+  ],
+  "result": {
+    "item": "umapyoi:baseball_bat"
+  },
+  "show_notification": true
+}

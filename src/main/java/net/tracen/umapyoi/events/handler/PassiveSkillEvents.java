@@ -49,7 +49,7 @@ public class PassiveSkillEvents {
         AttributeInstance movementSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);
 
         var speedModifier = new AttributeModifier(SPRINTUUID,
-                "sprint_speed_bonus", player.getAttributeValue(UmapyoiAttributesRegistry.SPRINT_SPEED.get()),
+                "sprint_speed_bonus", player.getAttributeValue(UmapyoiAttributesRegistry.SPRINT_SPEED),
                 Umapyoi.CONFIG.UMASOUL_SPEED_PRECENT_ENABLE() ? AttributeModifier.Operation.MULTIPLY_TOTAL
                         : AttributeModifier.Operation.ADDITION);
         if (UmapyoiAPI.getUmaSoul(player).isEmpty()) {
@@ -66,7 +66,7 @@ public class PassiveSkillEvents {
     }
 
     public static void passiveStepHeight(Player player) {
-        AttributeInstance stepHeight = player.getAttribute(UmapyoiAttributesRegistry.STEP_HEIGHT_ADDITION.get());
+        AttributeInstance stepHeight = player.getAttribute(UmapyoiAttributesRegistry.STEP_HEIGHT_ADDITION);
         var heightModifier = new AttributeModifier(PASSIVEUUID,
                 "passive_skill_height", 0.5D, Operation.ADDITION);
         if (UmapyoiAPI.getUmaSoul(player).isEmpty()) {
@@ -83,7 +83,7 @@ public class PassiveSkillEvents {
     }
 
     public static void passiveTurfRunner(Player player) {
-        AttributeInstance movementSpeed = player.getAttribute(UmapyoiAttributesRegistry.SPRINT_SPEED.get());
+        AttributeInstance movementSpeed = player.getAttribute(UmapyoiAttributesRegistry.SPRINT_SPEED);
 
         var test_speed = new AttributeModifier(PASSIVEUUID,
                 "passive_skill_turf", 0.1D, Operation.MULTIPLY_TOTAL);
@@ -101,7 +101,7 @@ public class PassiveSkillEvents {
     }
 
     public static void passiveDirtRunner(Player player) {
-        AttributeInstance movementSpeed = player.getAttribute(UmapyoiAttributesRegistry.SPRINT_SPEED.get());
+        AttributeInstance movementSpeed = player.getAttribute(UmapyoiAttributesRegistry.SPRINT_SPEED);
 
         var test_speed = new AttributeModifier(PASSIVEUUID,
                 "passive_skill_dirt", 0.1D, Operation.MULTIPLY_TOTAL);
@@ -119,7 +119,7 @@ public class PassiveSkillEvents {
     }
 
     public static void passiveSnowRunner(Player player) {
-        AttributeInstance movementSpeed = player.getAttribute(UmapyoiAttributesRegistry.SPRINT_SPEED.get());
+        AttributeInstance movementSpeed = player.getAttribute(UmapyoiAttributesRegistry.SPRINT_SPEED);
 
         var test_speed = new AttributeModifier(PASSIVEUUID,
                 "passive_skill_snow", 0.1D, Operation.MULTIPLY_TOTAL);

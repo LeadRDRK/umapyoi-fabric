@@ -207,13 +207,13 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
         if (UmaSoulUtils.getGrowth(stack) == Growth.UNTRAINED)
             return atts;
 
-        atts.put(UmapyoiAttributesRegistry.SPRINT_SPEED.get(),
+        atts.put(UmapyoiAttributesRegistry.SPRINT_SPEED,
                 new AttributeModifier(uuid, "sprint_speed_running_bonus",
                         getExactProperty(stack, entity, StatusType.SPEED, Umapyoi.CONFIG.UMASOUL_MAX_SPEED()),
                         Umapyoi.CONFIG.UMASOUL_SPEED_PRECENT_ENABLE() ? AttributeModifier.Operation.MULTIPLY_TOTAL
                                 : AttributeModifier.Operation.ADDITION));
 
-        atts.put(UmapyoiAttributesRegistry.SWIM_SPEED.get(),
+        atts.put(UmapyoiAttributesRegistry.SWIM_SPEED,
                 new AttributeModifier(uuid, "speed_swiming_bonus",
                         getExactProperty(stack, entity, StatusType.SPEED, Umapyoi.CONFIG.UMASOUL_MAX_SPEED()),
                         Umapyoi.CONFIG.UMASOUL_SPEED_PRECENT_ENABLE() ? AttributeModifier.Operation.MULTIPLY_TOTAL

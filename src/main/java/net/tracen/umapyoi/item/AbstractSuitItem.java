@@ -12,14 +12,11 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -37,7 +34,7 @@ import dev.emi.trinkets.api.TrinketsApi;
 import dev.emi.trinkets.api.client.TrinketRenderer;
 import dev.emi.trinkets.api.client.TrinketRendererRegistry;
 
-public abstract class AbstractSuitItem extends TrinketItem implements TrinketRenderer, Equipable {
+public abstract class AbstractSuitItem extends TrinketItem implements TrinketRenderer {
     private final UmaPlayerModel<LivingEntity> baseModel;
 
     public UmaPlayerModel<LivingEntity> getBaseModel() {
@@ -159,14 +156,4 @@ public abstract class AbstractSuitItem extends TrinketItem implements TrinketRen
     protected abstract ResourceLocation getFlatModel(ItemStack stack);
 
     protected abstract ResourceLocation getFlatTexture(ItemStack stack, boolean tanned);
-
-    @Override
-    public EquipmentSlot getEquipmentSlot() {
-        return EquipmentSlot.byName("uma_suit");
-    }
-
-    @Override
-    public SoundEvent getEquipSound() {
-        return SoundEvents.ARMOR_EQUIP_LEATHER;
-    }
 }

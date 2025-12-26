@@ -22,18 +22,15 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -71,7 +68,7 @@ import dev.emi.trinkets.api.TrinketsApi;
 import dev.emi.trinkets.api.client.TrinketRenderer;
 import dev.emi.trinkets.api.client.TrinketRendererRegistry;
 
-public class UmaSoulItem extends TrinketItem implements TrinketRenderer, CreativeModeTabFiller, Equipable {
+public class UmaSoulItem extends TrinketItem implements TrinketRenderer, CreativeModeTabFiller {
     private static final Comparator<Holder.Reference<UmaData>> COMPARATOR = new UmaDataComparator();
 
     private final UmaPlayerModel<LivingEntity> baseModel;
@@ -370,16 +367,6 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
     public static void registerRenderer() {
         Item item = ItemRegistry.UMA_SOUL.get();
         TrinketRendererRegistry.registerRenderer(item, (TrinketRenderer) item);
-    }
-
-    @Override
-    public EquipmentSlot getEquipmentSlot() {
-        return EquipmentSlot.byName("uma_soul");
-    }
-
-    @Override
-    public SoundEvent getEquipSound() {
-        return SoundEvents.ARMOR_EQUIP_LEATHER;
     }
 
     private static class UmaDataComparator implements Comparator<Holder.Reference<UmaData>> {

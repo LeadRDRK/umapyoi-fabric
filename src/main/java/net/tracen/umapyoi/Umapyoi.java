@@ -8,9 +8,6 @@ import net.minecraft.world.item.Item;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.block.entity.BlockEntityRegistry;
 import net.tracen.umapyoi.container.ContainerRegistry;
-import net.tracen.umapyoi.data.builtin.CostumeDataRegistry;
-import net.tracen.umapyoi.data.builtin.SupportCardRegistry;
-import net.tracen.umapyoi.data.builtin.UmaDataRegistry;
 import net.tracen.umapyoi.effect.MobEffectRegistry;
 import net.tracen.umapyoi.effect.PanickingEffect;
 import net.tracen.umapyoi.events.AnvilUpdateCallback;
@@ -48,9 +45,6 @@ public class Umapyoi implements ModInitializer {
     public void onInitialize() {
         TrainingSupportRegistry.SUPPORTS.register();
         UmaSkillRegistry.SKILLS.register();
-        CostumeDataRegistry.COSTUME_DATA.register();
-        SupportCardRegistry.SUPPORT_CARD.register();
-        UmaDataRegistry.UMA_DATA.register();
         UmaFactorRegistry.FACTORS.register();
         UmapyoiAttributesRegistry.register();
         MobEffectRegistry.EFFECTS.register();

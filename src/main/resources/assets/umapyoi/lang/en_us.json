@@ -196,7 +196,7 @@
   "text.config.umapyoi.option.TAIL_ANIMATION_INTERVAL": "§eTail Animation Interval§r\nThe interval tick between tail animations.",
   "text.config.umapyoi.option.OVERLAY_SWITCH": "§eEnable Overlay§r\nIf disabled, Uma's selected skill and motivation won't render.",
   "text.config.umapyoi.option.TOOLTIP_SWITCH": "§eHide Tooltip Details§r\nAfter enabling, hold Shift to show more details.",
-  "text.config.umapyoi.option.DISPLAY_SKILL_DETAIL": "§eAlways Display Skill Details§r\nIf enabled, skill book will always display skill details.",
+  "text.config.umapyoi.option.DISPLAY_DETAIL": "§eAlways Display Details§r\nIf enabled, skill or factor details will always be shown.",
   "tooltip.umapyoi.factors.factors_details": "Factors:",
   "tooltip.umapyoi.press_shift_for_details": "Press Shift Button for details.",
   "tooltip.umapyoi.support_card.name": "Support Card:%s",

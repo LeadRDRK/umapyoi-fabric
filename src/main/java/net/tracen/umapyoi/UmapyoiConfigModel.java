@@ -69,5 +69,5 @@ public class UmapyoiConfigModel {
     public boolean OVERLAY_SWITCH = true;
     public boolean TOOLTIP_SWITCH = true;
 
-    public boolean DISPLAY_SKILL_DETAIL = false;
+    public boolean DISPLAY_DETAIL = false;
 }

@@ -8,6 +8,7 @@ import net.minecraft.world.item.Item;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.block.entity.BlockEntityRegistry;
 import net.tracen.umapyoi.container.ContainerRegistry;
+import net.tracen.umapyoi.data.loot.AddLootTableModifier;
 import net.tracen.umapyoi.effect.MobEffectRegistry;
 import net.tracen.umapyoi.effect.PanickingEffect;
 import net.tracen.umapyoi.events.AnvilUpdateCallback;
@@ -72,6 +73,8 @@ public class Umapyoi implements ModInitializer {
 
         DatapackEvents.registerDatapackRegistries();
         DatapackEvents.registerSerializers();
+
+        AddLootTableModifier.registerListeners();
     }
 
     public static Logger getLogger() {

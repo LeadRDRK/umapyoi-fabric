@@ -8,6 +8,12 @@
         "type": "minecraft:uniform"
       },
       "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:random_chance",
+          "chance": 0.25
+        }
+      ],
       "entries": [
         {
           "type": "minecraft:item",

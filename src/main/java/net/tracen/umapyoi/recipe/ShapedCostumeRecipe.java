@@ -18,7 +18,7 @@ public class ShapedCostumeRecipe extends ShapedRecipe {
     private final ResourceLocation output;
 
     public ShapedCostumeRecipe(ShapedRecipe compose, ResourceLocation outputBlade) {
-        super(compose.getId(), compose.getGroup(), compose.category(), compose.getWidth(), compose.getHeight(),
+        super(compose.getGroup(), compose.category(), compose.getWidth(), compose.getHeight(),
                 compose.getIngredients(), getResultItem(outputBlade));
         this.output = outputBlade;
     }

@@ -35,13 +35,11 @@ public interface IFoodLike {
             Supplier<MobEffectInstance> instance = effectPair.getFirst();
             MutableComponent iformattabletextcomponent = Component.translatable(instance.get().getDescriptionId());
             MobEffect effect = instance.get().getEffect();
-            Map<Attribute, AttributeModifier> attributeMap = effect.getAttributeModifiers();
+            var attributeMap = effect.getAttributeModifiers();
             if (!attributeMap.isEmpty()) {
-                for (Map.Entry<Attribute, AttributeModifier> entry : attributeMap.entrySet()) {
-                    AttributeModifier rawModifier = entry.getValue();
-                    AttributeModifier modifier = new AttributeModifier(rawModifier.getName(),
-                            effect.getAttributeModifierValue(instance.get().getAmplifier(), rawModifier),
-                            rawModifier.getOperation());
+                for (var entry : attributeMap.entrySet()) {
+                    var template = entry.getValue();
+                    var modifier = template.create(instance.get().getAmplifier());
                     attributeList.add(new Pair<>(entry.getKey(), modifier));
                 }
             }

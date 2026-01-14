@@ -18,7 +18,7 @@ public class ShapelessCostumeRecipe extends ShapelessRecipe {
     private final ResourceLocation output;
 
     public ShapelessCostumeRecipe(ShapelessRecipe compose, ResourceLocation output) {
-        super(compose.getId(), compose.getGroup(), compose.category(),
+        super(compose.getGroup(), compose.category(),
                 getResultItem(output), compose.getIngredients());
         this.output = output;
     }

@@ -29,7 +29,7 @@ public class ThreeGoddessScreen extends AbstractContainerScreen<ThreeGoddessCont
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(guiGraphics);
+        this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
         this.renderModels(guiGraphics);

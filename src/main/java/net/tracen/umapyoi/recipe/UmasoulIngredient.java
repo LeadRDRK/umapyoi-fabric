@@ -3,22 +3,30 @@ package net.tracen.umapyoi.recipe;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.item.ItemRegistry;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -81,24 +89,54 @@ public class UmasoulIngredient implements CustomIngredient {
         }
 
         @Override
-        public UmasoulIngredient read(JsonObject json) {
-            // parse items
-            Set<Item> items;
-            if (json.has("item"))
-                items = Set.of(CraftingHelper.getItem(GsonHelper.getAsString(json, "item"), true));
-            else if (json.has("items")) {
-                ImmutableSet.Builder<Item> builder = ImmutableSet.builder();
-                JsonArray itemArray = GsonHelper.getAsJsonArray(json, "items");
-                for (int i = 0; i < itemArray.size(); i++) {
-                    builder.add(CraftingHelper.getItem(GsonHelper.convertToString(itemArray.get(i), "items[" + i + ']'),
-                            true));
-                }
-                items = builder.build();
-            } else {
-                items = Set.of(ItemRegistry.BLANK_UMA_SOUL.get());
-            }
-            var request = RequestUma.fromJSON(json.getAsJsonObject("request"));
-            return new UmasoulIngredient(items, request);
+        public Codec<UmasoulIngredient> getCodec(boolean allowEmpty) {
+            Codec<Set<Item>> itemSetCodec = ResourceLocation.CODEC
+                    .xmap(
+                            BuiltInRegistries.ITEM::get,
+                            BuiltInRegistries.ITEM::getKey
+                    )
+                    .listOf()
+                    .comapFlatMap(
+                            list -> {
+                                if (!allowEmpty && list.isEmpty()) {
+                                    return DataResult.error(() -> "Item array cannot be empty, at least one item must be defined");
+                                }
+                                return DataResult.success(ImmutableSet.copyOf(list));
+                            },
+                            set -> set.stream().sorted(Comparator.comparing(BuiltInRegistries.ITEM::getKey)).toList()
+                    );
+
+            // Codec for a single item
+            Codec<Set<Item>> singleItemCodec = ResourceLocation.CODEC
+                    .xmap(
+                            BuiltInRegistries.ITEM::get,
+                            BuiltInRegistries.ITEM::getKey
+                    )
+                    .xmap(
+                            Set::of,
+                            set -> set.iterator().next()
+                    );
+
+            // Either single item or array of items
+            Codec<Set<Item>> itemsCodec = ExtraCodecs.either(
+                    singleItemCodec.fieldOf("item").codec(),
+                    itemSetCodec.fieldOf("items").codec()
+            ).xmap(
+                    either -> either.map(Function.identity(), Function.identity()),
+                    items -> items.size() == 1
+                            ? Either.left(items)
+                            : Either.right(items)
+            );
+
+            // Final codec with optional default
+            return RecordCodecBuilder.create(instance ->
+                    instance.group(
+                            itemsCodec.optionalFieldOf("items",
+                                    allowEmpty ? Set.of() : Set.of(ItemRegistry.BLANK_UMA_SOUL.get())
+                            ).forGetter(ingredient -> ingredient.items),
+                            RequestUma.CODEC.fieldOf("request").forGetter(ingredient -> ingredient.request)
+                    ).apply(instance, UmasoulIngredient::new)
+            );
         }
 
         @Override
@@ -107,20 +145,6 @@ public class UmasoulIngredient implements CustomIngredient {
                     .limit(buffer.readVarInt()).collect(Collectors.toSet());
             RequestUma request = RequestUma.fromNetwork(buffer);
             return new UmasoulIngredient(items, request);
-        }
-
-        @Override
-        public void write(JsonObject json, UmasoulIngredient ingredient) {
-            json.addProperty("type", getIdentifier().toString());
-            if (ingredient.items.size() == 1) {
-                json.addProperty("item", BuiltInRegistries.ITEM.getKey(ingredient.items.iterator().next()).toString());
-            } else {
-                JsonArray items = new JsonArray();
-                // ensure the order of items in the set is deterministic when saved to JSON
-                ingredient.items.stream().map(BuiltInRegistries.ITEM::getKey).sorted().forEach(name -> items.add(name.toString()));
-                json.add("items", items);
-            }
-            json.add("request", ingredient.request.toJson());
         }
 
         @Override

@@ -20,7 +20,7 @@ public class ShapedSupportCardRecipe extends ShapedRecipe {
     private final ResourceLocation outputUma;
 
     public ShapedSupportCardRecipe(ShapedRecipe compose, ResourceLocation outputBlade) {
-        super(compose.getId(), compose.getGroup(), compose.category(), compose.getWidth(), compose.getHeight(),
+        super(compose.getGroup(), compose.category(), compose.getWidth(), compose.getHeight(),
                 compose.getIngredients(), getResultItem(outputBlade));
         this.outputUma = outputBlade;
     }

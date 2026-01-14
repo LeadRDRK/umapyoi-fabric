@@ -20,7 +20,7 @@ public class ShapelessUmasoulRecipe extends ShapelessRecipe {
     private final ResourceLocation outputUma;
 
     public ShapelessUmasoulRecipe(ShapelessRecipe compose, ResourceLocation output) {
-        super(compose.getId(), compose.getGroup(), compose.category(),
+        super(compose.getGroup(), compose.category(),
                 getResultItem(output), compose.getIngredients());
         this.outputUma = output;
     }

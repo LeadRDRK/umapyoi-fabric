@@ -75,8 +75,7 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    modImplementation "dev.emi:trinkets:3.7.1"
-    modCompileOnly "vazkii.patchouli:Patchouli:${project.minecraft_version}-84-FABRIC"
+    modImplementation "dev.emi:trinkets:${project.trinkets_version}"
 
     // compile against the JEI API but do not include it at runtime
     modCompileOnlyApi("mezz.jei:jei-${project.minecraft_version}-common-api:${project.jei_version}")
@@ -87,7 +86,7 @@ dependencies {
     annotationProcessor modImplementation("io.wispforest:owo-lib:${project.owo_version}")
     include "io.wispforest:owo-sentinel:${project.owo_version}"
 
-    modCompileOnly "maven.modrinth:first-person-model:ykbeYJad" // 2.3.3-mc1.20.1
+    modCompileOnly "maven.modrinth:first-person-model:${project.first_person_model_version}"
 
     implementation "com.google.code.findbugs:jsr305:3.0.2"
 }

@@ -9,8 +9,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.registry.training.card.SupportCard;
+
+import java.util.Optional;
 
 public class ShapedSupportCardRecipe extends ShapedRecipe {
 
@@ -20,8 +23,9 @@ public class ShapedSupportCardRecipe extends ShapedRecipe {
     private final ResourceLocation outputUma;
 
     public ShapedSupportCardRecipe(ShapedRecipe compose, ResourceLocation outputBlade) {
-        super(compose.getGroup(), compose.category(), compose.getWidth(), compose.getHeight(),
-                compose.getIngredients(), getResultItem(outputBlade));
+        super(compose.getGroup(), compose.category(),
+                new ShapedRecipePattern(compose.getWidth(), compose.getHeight(), compose.getIngredients(), Optional.empty()),
+                getResultItem(outputBlade));
         this.outputUma = outputBlade;
     }
 

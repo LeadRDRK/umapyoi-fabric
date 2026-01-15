@@ -47,7 +47,7 @@ public class UmaSelectBlock extends Block {
             Block.box(0.0D, 14.0D, 2.0D, 16.0D, 18.0D, 6.333333D), SHAPE_COMMON);
 
     public UmaSelectBlock() {
-        super(Properties.copy(Blocks.OAK_WOOD));
+        super(Properties.ofLegacyCopy(Blocks.OAK_WOOD));
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 

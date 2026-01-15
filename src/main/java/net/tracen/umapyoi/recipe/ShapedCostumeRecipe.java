@@ -8,7 +8,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.tracen.umapyoi.item.ItemRegistry;
+
+import java.util.Optional;
 
 public class ShapedCostumeRecipe extends ShapedRecipe {
 
@@ -18,8 +21,9 @@ public class ShapedCostumeRecipe extends ShapedRecipe {
     private final ResourceLocation output;
 
     public ShapedCostumeRecipe(ShapedRecipe compose, ResourceLocation outputBlade) {
-        super(compose.getGroup(), compose.category(), compose.getWidth(), compose.getHeight(),
-                compose.getIngredients(), getResultItem(outputBlade));
+        super(compose.getGroup(), compose.category(),
+                new ShapedRecipePattern(compose.getWidth(), compose.getHeight(), compose.getIngredients(), Optional.empty()),
+                getResultItem(outputBlade));
         this.output = outputBlade;
     }
 

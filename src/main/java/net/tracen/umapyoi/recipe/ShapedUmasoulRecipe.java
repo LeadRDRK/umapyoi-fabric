@@ -22,10 +22,13 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.registry.umadata.UmaData;
 
 import org.apache.commons.lang3.NotImplementedException;
+
+import java.util.Optional;
 
 public class ShapedUmasoulRecipe extends ShapedRecipe {
 
@@ -35,8 +38,9 @@ public class ShapedUmasoulRecipe extends ShapedRecipe {
     private final ResourceLocation outputUma;
 
     public ShapedUmasoulRecipe(ShapedRecipe compose, ResourceLocation outputBlade) {
-        super(compose.getGroup(), compose.category(), compose.getWidth(), compose.getHeight(),
-                compose.getIngredients(), getResultItem(outputBlade));
+        super(compose.getGroup(), compose.category(),
+                new ShapedRecipePattern(compose.getWidth(), compose.getHeight(), compose.getIngredients(), Optional.empty()),
+                getResultItem(outputBlade));
         this.outputUma = outputBlade;
     }
 

@@ -1,5 +1,7 @@
 package net.tracen.umapyoi.block;
 
+import com.mojang.serialization.MapCodec;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -12,6 +14,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
@@ -24,12 +27,19 @@ import net.tracen.umapyoi.block.entity.BlockEntityRegistry;
 import net.tracen.umapyoi.block.entity.SupportAlbumPedestalBlockEntity;
 
 public class SupportAlbumPedestalBlock extends BaseEntityBlock {
+    public static final MapCodec<SupportAlbumPedestalBlock> CODEC = simpleCodec(p -> new SupportAlbumPedestalBlock());
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
     public SupportAlbumPedestalBlock() {
-        super(Properties.copy(Blocks.STONE).noOcclusion());
+        super(Properties.ofLegacyCopy(Blocks.STONE).noOcclusion());
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
         return BlockRegistry.UMA_PEDESTAL.get().getCloneItemStack(level, pos, state);
     }
 

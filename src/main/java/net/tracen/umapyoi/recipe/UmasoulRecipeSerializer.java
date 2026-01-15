@@ -45,6 +45,10 @@ public record UmasoulRecipeSerializer<T extends Recipe<?>, U extends T> (RecipeS
                 new Decoder<>() {
                     @Override
                     public <V> DataResult<Pair<U, V>> decode(DynamicOps<V> ops, V input) {
+                        if (input == null) {
+                            return DataResult.error(() -> "Input is null");
+                        }
+
                         V newInput;
                         if (ops.get(input, "result").result().isEmpty()) {
                             newInput = ops.mergeToMap(input, ops.createString("result"), ops.createMap(

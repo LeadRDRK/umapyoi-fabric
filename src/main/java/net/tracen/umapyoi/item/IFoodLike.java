@@ -51,7 +51,7 @@ public interface IFoodLike {
 
             if (instance.get().getDuration() > 20) {
                 iformattabletextcomponent = Component.translatable("potion.withDuration", iformattabletextcomponent,
-                        MobEffectUtil.formatDuration(instance.get(), 1.0F));
+                        MobEffectUtil.formatDuration(instance.get(), 1.0F, 20.0F));
             }
 
             tooltips.add(iformattabletextcomponent.withStyle(effect.getCategory().getTooltipFormatting()));

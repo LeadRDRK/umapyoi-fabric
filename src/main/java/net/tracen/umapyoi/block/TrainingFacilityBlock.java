@@ -1,5 +1,7 @@
 package net.tracen.umapyoi.block;
 
+import com.mojang.serialization.MapCodec;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -32,6 +34,7 @@ import net.tracen.umapyoi.network.NetworkHooks;
 import javax.annotation.Nullable;
 
 public class TrainingFacilityBlock extends BaseEntityBlock {
+    public static final MapCodec<TrainingFacilityBlock> CODEC = simpleCodec(p -> new TrainingFacilityBlock());
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     protected static final VoxelShape SHAPE = Shapes.or(
@@ -55,8 +58,13 @@ public class TrainingFacilityBlock extends BaseEntityBlock {
     );
 
     public TrainingFacilityBlock() {
-        super(Properties.copy(Blocks.IRON_BLOCK).noOcclusion().noCollission());
+        super(Properties.ofLegacyCopy(Blocks.IRON_BLOCK).noOcclusion().noCollission());
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
     }
 
     @Override

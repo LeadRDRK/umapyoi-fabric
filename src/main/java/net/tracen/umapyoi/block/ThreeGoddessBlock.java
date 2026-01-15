@@ -1,5 +1,7 @@
 package net.tracen.umapyoi.block;
 
+import com.mojang.serialization.MapCodec;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -29,11 +31,17 @@ import net.tracen.umapyoi.network.NetworkHooks;
 import javax.annotation.Nullable;
 
 public class ThreeGoddessBlock extends BaseEntityBlock {
+    public static final MapCodec<ThreeGoddessBlock> CODEC = simpleCodec(p -> new ThreeGoddessBlock());
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     public ThreeGoddessBlock() {
-        super(Properties.copy(Blocks.POLISHED_ANDESITE).noOcclusion());
+        super(Properties.ofLegacyCopy(Blocks.POLISHED_ANDESITE).noOcclusion());
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
     }
 
     @Override

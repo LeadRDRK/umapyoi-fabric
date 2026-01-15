@@ -97,12 +97,7 @@ public class UmasoulIngredient implements CustomIngredient {
                     )
                     .listOf()
                     .comapFlatMap(
-                            list -> {
-                                if (!allowEmpty && list.isEmpty()) {
-                                    return DataResult.error(() -> "Item array cannot be empty, at least one item must be defined");
-                                }
-                                return DataResult.success(ImmutableSet.copyOf(list));
-                            },
+                            list -> DataResult.success(ImmutableSet.copyOf(list)),
                             set -> set.stream().sorted(Comparator.comparing(BuiltInRegistries.ITEM::getKey)).toList()
                     );
 
@@ -131,10 +126,10 @@ public class UmasoulIngredient implements CustomIngredient {
             // Final codec with optional default
             return RecordCodecBuilder.create(instance ->
                     instance.group(
-                            itemsCodec.optionalFieldOf("items",
-                                    allowEmpty ? Set.of() : Set.of(ItemRegistry.BLANK_UMA_SOUL.get())
-                            ).forGetter(ingredient -> ingredient.items),
-                            RequestUma.CODEC.fieldOf("request").forGetter(ingredient -> ingredient.request)
+                            itemsCodec.optionalFieldOf("items", Set.of(ItemRegistry.BLANK_UMA_SOUL.get()))
+                                    .forGetter(ingredient -> ingredient.items),
+                            RequestUma.CODEC.fieldOf("request")
+                                    .forGetter(ingredient -> ingredient.request)
                     ).apply(instance, UmasoulIngredient::new)
             );
         }

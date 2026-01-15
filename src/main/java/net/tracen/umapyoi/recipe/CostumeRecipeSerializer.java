@@ -37,19 +37,23 @@ public record CostumeRecipeSerializer<T extends Recipe<?>, U extends T> (RecipeS
                 new Decoder<>() {
                     @Override
                     public <V> DataResult<Pair<U, V>> decode(DynamicOps<V> ops, V input) {
-                        var resultField = ops.get(input, "result").result();
-                        if (resultField.isEmpty()) {
-                            ops.set(input, "result", ops.createMap(
+                        V newInput;
+                        if (ops.get(input, "result").result().isEmpty()) {
+                            newInput = ops.mergeToMap(input, ops.createString("result"), ops.createMap(
                                     Stream.of(Pair.of(
                                             ops.createString("item"),
                                             ops.createString("umapyoi:uma_costume")
                                     ))
-                            ));
+                            )).result().orElse(input);
                         }
+                        else {
+                            newInput = input;
+                        }
+                        var resultField = ops.get(newInput, "result").result();
 
-                        var baseResult = compose().codec().decode(ops, input);
+                        var baseResult = compose().codec().decode(ops, newInput);
                         return baseResult.flatMap(basePair -> {
-                            var extraResult = ResourceLocation.CODEC.optionalFieldOf("cosmetic").codec().decode(ops, input);
+                            var extraResult = ResourceLocation.CODEC.optionalFieldOf("cosmetic").codec().decode(ops, newInput);
                             return extraResult.map(extraPair -> {
                                 var output = extraPair.getFirst()
                                         .orElseGet(() -> // result.item MUST be present for the base recipe to even decode correctly
@@ -60,7 +64,7 @@ public record CostumeRecipeSerializer<T extends Recipe<?>, U extends T> (RecipeS
                                                         .getFirst()
                                         );
 
-                                return Pair.of(converter.apply(basePair.getFirst(), output), input);
+                                return Pair.of(converter.apply(basePair.getFirst(), output), newInput);
                             });
                         });
                     }

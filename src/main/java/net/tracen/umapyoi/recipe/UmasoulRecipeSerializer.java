@@ -19,11 +19,13 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.tracen.umapyoi.Umapyoi;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -37,25 +39,29 @@ public record UmasoulRecipeSerializer<T extends Recipe<?>, U extends T> (RecipeS
                 new Encoder<>() {
                     @Override
                     public <V> DataResult<V> encode(U input, DynamicOps<V> ops, V prefix) {
-                        throw new NotImplementedException("Serializing ShapedUmasoulRecipe is not implemented yet.");
+                        throw new NotImplementedException("Serializing UmasoulRecipe is not implemented yet.");
                     }
                 },
                 new Decoder<>() {
                     @Override
                     public <V> DataResult<Pair<U, V>> decode(DynamicOps<V> ops, V input) {
-                        var resultField = ops.get(input, "result").result();
-                        if (resultField.isEmpty()) {
-                            ops.set(input, "result", ops.createMap(
+                        V newInput;
+                        if (ops.get(input, "result").result().isEmpty()) {
+                            newInput = ops.mergeToMap(input, ops.createString("result"), ops.createMap(
                                     Stream.of(Pair.of(
                                             ops.createString("item"),
                                             ops.createString("umapyoi:blank_uma_soul")
                                     ))
-                            ));
+                            )).result().orElse(input);
                         }
+                        else {
+                            newInput = input;
+                        }
+                        var resultField = ops.get(newInput, "result").result();
 
-                        var baseResult = compose().codec().decode(ops, input);
+                        var baseResult = compose().codec().decode(ops, newInput);
                         return baseResult.flatMap(basePair -> {
-                            var extraResult = ResourceLocation.CODEC.optionalFieldOf("umasoul").codec().decode(ops, input);
+                            var extraResult = ResourceLocation.CODEC.optionalFieldOf("umasoul").codec().decode(ops, newInput);
                             return extraResult.map(extraPair -> {
                                 var outputUma = extraPair.getFirst()
                                         .orElseGet(() -> // result.item MUST be present for the base recipe to even decode correctly
@@ -66,7 +72,7 @@ public record UmasoulRecipeSerializer<T extends Recipe<?>, U extends T> (RecipeS
                                                         .getFirst()
                                         );
 
-                                return Pair.of(converter.apply(basePair.getFirst(), outputUma), input);
+                                return Pair.of(converter.apply(basePair.getFirst(), outputUma), newInput);
                             });
                         });
                     }

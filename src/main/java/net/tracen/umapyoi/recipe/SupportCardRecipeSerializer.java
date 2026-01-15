@@ -31,25 +31,29 @@ public record SupportCardRecipeSerializer<T extends Recipe<?>, U extends T> (Rec
                 new Encoder<>() {
                     @Override
                     public <V> DataResult<V> encode(U input, DynamicOps<V> ops, V prefix) {
-                        throw new NotImplementedException("Serializing SupportCardRecipeSerializer is not implemented yet.");
+                        throw new NotImplementedException("Serializing SupportCardRecipe is not implemented yet.");
                     }
                 },
                 new Decoder<>() {
                     @Override
                     public <V> DataResult<Pair<U, V>> decode(DynamicOps<V> ops, V input) {
-                        var resultField = ops.get(input, "result").result();
-                        if (resultField.isEmpty()) {
-                            ops.set(input, "result", ops.createMap(
+                        V newInput;
+                        if (ops.get(input, "result").result().isEmpty()) {
+                            newInput = ops.mergeToMap(input, ops.createString("result"), ops.createMap(
                                     Stream.of(Pair.of(
                                             ops.createString("item"),
                                             ops.createString("umapyoi:support_card")
                                     ))
-                            ));
+                            )).result().orElse(input);
                         }
+                        else {
+                            newInput = input;
+                        }
+                        var resultField = ops.get(newInput, "result").result();
 
-                        var baseResult = compose().codec().decode(ops, input);
+                        var baseResult = compose().codec().decode(ops, newInput);
                         return baseResult.flatMap(basePair -> {
-                            var extraResult = ResourceLocation.CODEC.optionalFieldOf("card").codec().decode(ops, input);
+                            var extraResult = ResourceLocation.CODEC.optionalFieldOf("card").codec().decode(ops, newInput);
                             return extraResult.map(extraPair -> {
                                 var output = extraPair.getFirst()
                                         .orElseGet(() -> // result.item MUST be present for the base recipe to even decode correctly
@@ -60,7 +64,7 @@ public record SupportCardRecipeSerializer<T extends Recipe<?>, U extends T> (Rec
                                                         .getFirst()
                                         );
 
-                                return Pair.of(converter.apply(basePair.getFirst(), output), input);
+                                return Pair.of(converter.apply(basePair.getFirst(), output), newInput);
                             });
                         });
                     }

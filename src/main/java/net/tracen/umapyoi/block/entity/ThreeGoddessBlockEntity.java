@@ -1,17 +1,19 @@
 package net.tracen.umapyoi.block.entity;
 
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.ContainerHelper;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -30,7 +32,7 @@ import net.tracen.umapyoi.utils.UmaSoulUtils;
 
 import java.util.List;
 
-public class ThreeGoddessBlockEntity extends SyncedInventoryEntity implements MenuProvider {
+public class ThreeGoddessBlockEntity extends SyncedInventoryEntity implements ExtendedScreenHandlerFactory {
     public static final int MAX_PROCESS_TIME = 200;
     private final NonNullList<ItemStack> items = NonNullList.withSize(4, ItemStack.EMPTY);
     protected final ContainerData tileData;
@@ -281,5 +283,10 @@ public class ThreeGoddessBlockEntity extends SyncedInventoryEntity implements Me
     @Override
     public Component getDisplayName() {
         return Component.translatable("container.umapyoi.three_goddess");
+    }
+
+    @Override
+    public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
+        buf.writeBlockPos(getBlockPos());
     }
 }

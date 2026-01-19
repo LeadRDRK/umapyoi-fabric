@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.events.FindUmaSoulCallback;
 import net.tracen.umapyoi.item.AbstractSuitItem;
+import net.tracen.umapyoi.item.UmaCostumeItem;
 import net.tracen.umapyoi.item.UmaSoulItem;
 import net.tracen.umapyoi.registry.cosmetics.CosmeticData;
 import net.tracen.umapyoi.registry.training.card.SupportCard;
@@ -73,7 +74,7 @@ public class UmapyoiAPI {
                         return ItemStack.EMPTY;
 
                     var stack = inventory.getItem(0);
-                    if (stack.getItem() instanceof UmaSoulItem)
+                    if (stack.getItem() instanceof AbstractSuitItem)
                         return stack;
                 }
             }

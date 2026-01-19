@@ -4,7 +4,6 @@ import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -29,7 +28,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.tracen.umapyoi.block.entity.BlockEntityRegistry;
 import net.tracen.umapyoi.block.entity.TrainingFacilityBlockEntity;
-import net.tracen.umapyoi.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
@@ -108,9 +106,9 @@ public class TrainingFacilityBlock extends BaseEntityBlock {
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (!level.isClientSide) {
-            BlockEntity tileEntity = level.getBlockEntity(pos);
-            if (tileEntity instanceof TrainingFacilityBlockEntity blockEntity) {
-                NetworkHooks.openScreen((ServerPlayer) player, blockEntity, pos);
+            var menu = state.getMenuProvider(level, pos);
+            if (menu != null) {
+                player.openMenu(menu);
             }
         }
         return InteractionResult.SUCCESS;

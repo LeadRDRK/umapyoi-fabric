@@ -19,7 +19,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
-import net.tracen.umapyoi.data.builtin.SupportCardRegistry;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
 import net.tracen.umapyoi.registry.training.SupportContainer;
 import net.tracen.umapyoi.registry.training.SupportStack;
@@ -64,7 +63,7 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
     @Override
     public ItemStack getDefaultInstance() {
         ItemStack result = super.getDefaultInstance();
-        result.getOrCreateTag().putString("support_card", SupportCardRegistry.BLANK_CARD.getId().toString());
+        result.getOrCreateTag().putString("support_card", SupportCard.EMPTY_ID.toString());
         result.getOrCreateTag().putString("ranking", GachaRanking.R.name().toLowerCase());
         result.getOrCreateTag().putInt("maxDamage", 0);
         return result;
@@ -120,18 +119,18 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
     public ResourceLocation getSupportCardID(ItemStack stack) {
         if (stack.getOrCreateTag().contains("support_card"))
             return ResourceLocation.tryParse(stack.getOrCreateTag().getString("support_card"));
-        return SupportCardRegistry.BLANK_CARD.getId();
+        return SupportCard.EMPTY_ID;
     }
 
     public SupportCard getSupportCard(Level level, ItemStack stack) {
         ResourceLocation cardID = this.getSupportCardID(stack);
         if (isEmptyCard(level, cardID))
-            return SupportCardRegistry.BLANK_CARD.get();
+            return SupportCard.EMPTY;
         return UmapyoiAPI.getSupportCardRegistry(level).get(cardID);
     }
 
     private boolean isEmptyCard(Level level, ResourceLocation cardID) {
-        return level == null || cardID.equals(SupportCardRegistry.BLANK_CARD.getId()) || !UmapyoiAPI.getSupportCardRegistry(level).containsKey(cardID);
+        return level == null || cardID.equals(SupportCard.EMPTY_ID) || !UmapyoiAPI.getSupportCardRegistry(level).containsKey(cardID);
     }
 
     @Override

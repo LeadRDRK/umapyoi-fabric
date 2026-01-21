@@ -118,7 +118,7 @@ public class SilverUmaPedestalBlockEntity extends SyncedInventoryEntity implemen
                 .collect(Collectors.toCollection(Lists::newArrayList));
 
         ResourceLocation holder = keys.stream().skip(keys.isEmpty() ? 0 : rand.nextInt(keys.size())).findFirst()
-                .orElse(UmaDataRegistry.COMMON_UMA.getId());
+                .orElse(UmaDataRegistry.COMMON_UMA.location());
 
 //        ItemStack result = ItemRegistry.BLANK_UMA_SOUL.get().getDefaultInstance();
 //        UmaData data = registry.get(holder);

@@ -37,7 +37,7 @@ public class UmaFactorContainerItem extends Item implements CreativeModeTabFille
                 continue;
             List<UmaFactorStack> stackList = List.of(new UmaFactorStack(factor, 1));
             ItemStack result = getDefaultInstance();
-            result.getOrCreateTag().putString("name", UmaDataRegistry.COMMON_UMA.getId().toString());
+            result.getOrCreateTag().putString("name", UmaDataRegistry.COMMON_UMA.location().toString());
             result.getOrCreateTag().put("factors", UmaFactorUtils.serializeNBT(stackList));
             entries.accept(result);
         }

@@ -197,7 +197,7 @@ public class SilverSupportAlbumPedestalBlockEntity extends SyncedInventoryEntity
                 .collect(Collectors.toCollection(Lists::newArrayList));
 
         ResourceLocation key = keys.stream().skip(keys.isEmpty() ? 0 : rand.nextInt(keys.size())).findFirst()
-                .orElse(SupportCardRegistry.BLANK_CARD.getId());
+                .orElse(SupportCard.EMPTY_ID);
         
         ItemStack result = ItemRegistry.SUPPORT_CARD.get().getDefaultInstance();
         result.getOrCreateTag().putString("support_card", key.toString());

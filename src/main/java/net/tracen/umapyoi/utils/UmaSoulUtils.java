@@ -40,7 +40,7 @@ public class UmaSoulUtils {
     }
 
     public static ResourceLocation getName(ItemStack stack) {
-        return stack.getOrCreateTag().getString("name").isBlank() ? UmaDataRegistry.COMMON_UMA.getId()
+        return stack.getOrCreateTag().getString("name").isBlank() ? UmaDataRegistry.COMMON_UMA.location()
                 : ResourceLocation.tryParse(stack.getOrCreateTag().getString("name"));
     }
 

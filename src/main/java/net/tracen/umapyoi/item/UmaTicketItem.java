@@ -38,7 +38,7 @@ public class UmaTicketItem extends Item {
 
     public ResourceLocation getUmaName(ItemStack pStack) {
         return Optional.ofNullable(ResourceLocation.tryParse(pStack.getOrCreateTag().getString("name")))
-                .orElse(UmaDataRegistry.COMMON_UMA.getId());
+                .orElse(UmaDataRegistry.COMMON_UMA.location());
     }
 
     @Override

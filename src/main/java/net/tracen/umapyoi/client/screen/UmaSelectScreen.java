@@ -100,7 +100,7 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
     protected void renderLabels(GuiGraphics pPoseStack, int pMouseX, int pMouseY) {
         pPoseStack.drawString(this.font, this.title,
                 (this.imageWidth / 2) - (this.font.width(this.title.getVisualOrderText()) / 2),
-                this.titleLabelY - 3, 0xFFFFFF);
+                this.titleLabelY - 3, 0xFFFFFF, false);
         pPoseStack.drawString(this.font, this.playerInventoryTitle,
                 this.inventoryLabelX,this.inventoryLabelY + 20, 4210752, false);
     }

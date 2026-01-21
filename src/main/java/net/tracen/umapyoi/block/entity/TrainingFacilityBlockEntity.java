@@ -5,7 +5,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -25,7 +24,7 @@ import net.tracen.umapyoi.registry.training.SupportContainer;
 import net.tracen.umapyoi.registry.umadata.Growth;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
-public class TrainingFacilityBlockEntity extends SyncedInventoryEntity implements ExtendedScreenHandlerFactory {
+public class TrainingFacilityBlockEntity extends SyncedInventoryEntity implements ExtendedScreenHandlerFactory<BlockPos> {
 
     public static final int MAX_PROCESS_TIME = 260;
     private final NonNullList<ItemStack> items = NonNullList.withSize(7, ItemStack.EMPTY);
@@ -260,7 +259,7 @@ public class TrainingFacilityBlockEntity extends SyncedInventoryEntity implement
     }
 
     @Override
-    public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
-        buf.writeBlockPos(getBlockPos());
+    public BlockPos getScreenOpeningData(ServerPlayer player) {
+        return getBlockPos();
     }
 }

@@ -7,7 +7,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -34,7 +33,7 @@ import net.tracen.umapyoi.utils.UmaSoulUtils;
 import java.util.List;
 import java.util.Objects;
 
-public class ThreeGoddessBlockEntity extends SyncedInventoryEntity implements ExtendedScreenHandlerFactory {
+public class ThreeGoddessBlockEntity extends SyncedInventoryEntity implements ExtendedScreenHandlerFactory<BlockPos> {
     public static final int MAX_PROCESS_TIME = 200;
     private final NonNullList<ItemStack> items = NonNullList.withSize(4, ItemStack.EMPTY);
     protected final ContainerData tileData;
@@ -302,7 +301,7 @@ public class ThreeGoddessBlockEntity extends SyncedInventoryEntity implements Ex
     }
 
     @Override
-    public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
-        buf.writeBlockPos(getBlockPos());
+    public BlockPos getScreenOpeningData(ServerPlayer player) {
+        return getBlockPos();
     }
 }

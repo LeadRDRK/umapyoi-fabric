@@ -31,8 +31,8 @@
   "accessWidener" : "umapyoi.accesswidener",
   "depends": {
     "fabricloader": ">=0.18.0",
-    "minecraft": ">=1.20",
-    "java": ">=17",
+    "minecraft": ">=1.20.5",
+    "java": ">=21",
     "fabric-api": "*",
     "trinkets": "*",
     "owo": "*"

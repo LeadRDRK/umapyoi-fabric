@@ -1,13 +1,12 @@
 package net.tracen.umapyoi.mixin;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AnvilMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.ItemCombinerMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.tracen.umapyoi.events.AnvilUpdateCallback;
 
 import org.jetbrains.annotations.Nullable;
@@ -16,8 +15,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.Map;
 
 @Mixin(AnvilMenu.class)
 public abstract class AnvilMenuMixin extends ItemCombinerMenu {
@@ -38,8 +35,8 @@ public abstract class AnvilMenuMixin extends ItemCombinerMenu {
     public void createResult(CallbackInfo callback) {
         var left = inputSlots.getItem(0);
         var right = inputSlots.getItem(1);
-        Map<Enchantment, Integer> map = EnchantmentHelper.getEnchantments(left);
-        var baseCost = left.getBaseRepairCost() + (right.isEmpty() ? 0 : right.getBaseRepairCost());
+        var baseCost = left.getOrDefault(DataComponents.REPAIR_COST, 0)
+                + (right.isEmpty() ? 0 : right.getOrDefault(DataComponents.REPAIR_COST, 0));
 
         var result = AnvilUpdateCallback.invoke(left, right, getItemName(), baseCost, player);
         if (result.cancel)
@@ -49,6 +46,7 @@ public abstract class AnvilMenuMixin extends ItemCombinerMenu {
             resultSlots.setItem(0, result.output);
             getCost_().set(result.cost);
             setRepairItemCountCost(result.materialCost);
+            broadcastChanges();
             callback.cancel();
         }
     }

@@ -2,12 +2,15 @@ package net.tracen.umapyoi.data;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
+import net.minecraft.core.HolderLookup;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.item.ItemRegistry;
 
+import java.util.concurrent.CompletableFuture;
+
 public class UmapyoiLootTableProvider extends FabricBlockLootTableProvider {
-    public UmapyoiLootTableProvider(FabricDataOutput dataOutput) {
-        super(dataOutput);
+    public UmapyoiLootTableProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
+        super(dataOutput, registryLookup);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package net.tracen.umapyoi.item.food;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -26,7 +27,7 @@ public class UmaFoodItem extends ItemFoodBase {
 
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
-        ItemStack itemstack = this.isEdible() ? this.eatAsUma(stack, level, entity) : stack;
+        ItemStack itemstack = stack.has(DataComponents.FOOD) ? this.eatAsUma(stack, level, entity) : stack;
         if (stack.getCount() > 0) {
             if (entity instanceof Player) {
                 Player entityplayer = (Player) entity;
@@ -44,7 +45,8 @@ public class UmaFoodItem extends ItemFoodBase {
     private ItemStack eatAsUma(ItemStack stack, Level level, LivingEntity entity) {
         if (entity instanceof Player player) {
             if (UmapyoiAPI.getUmaSoul(player).isEmpty()) {
-                player.getFoodData().eat(this, stack);
+                var info = this.getFoodInfo();
+                player.getFoodData().eat(info.getAmount(), info.getCalories());
                 if (!player.getAbilities().instabuild)
                     stack.shrink(1);
                 return stack;

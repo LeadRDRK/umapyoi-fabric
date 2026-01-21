@@ -1,6 +1,7 @@
 package net.tracen.umapyoi.block.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.ContainerHelper;
@@ -23,16 +24,16 @@ public class UmaStatueBlockEntity extends SyncedInventoryEntity {
     }
 
     @Override
-    public void load(CompoundTag compound) {
-        super.load(compound);
+    public void loadAdditional(CompoundTag compound, HolderLookup.Provider registries) {
+        super.loadAdditional(compound, registries);
         clearContent();
-        ContainerHelper.loadAllItems(compound, items);
+        ContainerHelper.loadAllItems(compound, items, registries);
     }
 
     @Override
-    public void saveAdditional(CompoundTag compound) {
-        super.saveAdditional(compound);
-        ContainerHelper.saveAllItems(compound, items);
+    public void saveAdditional(CompoundTag compound, HolderLookup.Provider registries) {
+        super.saveAdditional(compound, registries);
+        ContainerHelper.saveAllItems(compound, items, registries);
     }
 
     public boolean addItem(ItemStack itemStack) {

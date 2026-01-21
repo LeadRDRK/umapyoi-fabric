@@ -11,16 +11,17 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.data.builtin.SupportCardRegistry;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.training.SupportContainer;
 import net.tracen.umapyoi.registry.training.SupportStack;
 import net.tracen.umapyoi.registry.training.SupportType;
@@ -34,8 +35,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-
-import javax.annotation.Nullable;
 
 public class SupportCardItem extends Item implements SupportContainer, CreativeModeTabFiller {
     private static final Comparator<Holder.Reference<SupportCard>> COMPARATOR = new CardDataComparator();
@@ -54,31 +53,19 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
         SupportCardItem.sortedCardDataList(entries.getContext().holders()).forEach(card -> {
             if (card.key().location().equals(new ResourceLocation(Umapyoi.MODID, "blank_card")))
                 return;
-            ItemStack result = ItemRegistry.SUPPORT_CARD.get().getDefaultInstance();
-            result.getOrCreateTag().putString("support_card", card.key().location().toString());
-            result.getOrCreateTag().putString("ranking", card.value().getGachaRanking().name().toLowerCase());
+            ItemStack result = SupportCard.init(card.key().location(), card.value());
             entries.accept(result);
         });
     }
 
     @Override
     public ItemStack getDefaultInstance() {
-        ItemStack result = super.getDefaultInstance();
-        result.getOrCreateTag().putString("support_card", SupportCardRegistry.BLANK_CARD.getId().toString());
-        result.getOrCreateTag().putString("ranking", GachaRanking.R.name().toLowerCase());
-        result.getOrCreateTag().putInt("maxDamage", 0);
-        return result;
+        return SupportCard.init(SupportCard.EMPTY_ID, SupportCard.EMPTY);
     }
 
     @Override
     public boolean isValidRepairItem(ItemStack pToRepair, ItemStack pRepair) {
         return pRepair.is(UmapyoiItemTags.HORSESHOE) || super.isValidRepairItem(pToRepair, pRepair);
-    }
-
-    @Override
-    public Rarity getRarity(ItemStack pStack) {
-        GachaRanking ranking = GachaRanking.getGachaRanking(pStack);
-        return ranking == GachaRanking.SSR ? Rarity.EPIC : ranking == GachaRanking.SR ? Rarity.UNCOMMON : Rarity.COMMON;
     }
 
     @Override
@@ -88,15 +75,16 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flagIn) {
-        super.appendHoverText(stack, level, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltip, tooltipFlag);
         ResourceLocation cardID = this.getSupportCardID(stack);
-        if (isEmptyCard(level, cardID))
+        var registries = context.registries();
+        if (isEmptyCard(registries, cardID))
             return ;
-        if(!this.getSupports(level, stack).isEmpty()) {
+        if(!this.getSupports(registries, stack).isEmpty()) {
             if (Screen.hasShiftDown() || !Umapyoi.CONFIG.TOOLTIP_SWITCH()) {
                 tooltip.add(Component.translatable("tooltip.umapyoi.supports").withStyle(ChatFormatting.AQUA));
-                this.getSupports(level, stack)
+                this.getSupports(registries, stack)
                         .forEach(support -> tooltip.add(support.getDescription().copy().withStyle(ChatFormatting.GRAY)));
             } else {
                 tooltip.add(Component.translatable("tooltip.umapyoi.support_card.press_shift_for_supports")
@@ -118,20 +106,24 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
     }
 
     public ResourceLocation getSupportCardID(ItemStack stack) {
-        if (stack.getOrCreateTag().contains("support_card"))
-            return ResourceLocation.tryParse(stack.getOrCreateTag().getString("support_card"));
-        return SupportCardRegistry.BLANK_CARD.getId();
+        return stack.getOrDefault(DataComponentsTypeRegistry.DATA_LOCATION.get(), SupportCard.EMPTY_ID);
     }
 
-    public SupportCard getSupportCard(Level level, ItemStack stack) {
+    public SupportCard getSupportCard(HolderLookup.Provider registries, ItemStack stack) {
         ResourceLocation cardID = this.getSupportCardID(stack);
-        if (isEmptyCard(level, cardID))
+        if (isEmptyCard(registries, cardID))
             return SupportCardRegistry.BLANK_CARD.get();
-        return UmapyoiAPI.getSupportCardRegistry(level).get(cardID);
+        return UmapyoiAPI.getSupportCardRegistry(registries)
+                .get(ResourceKey.create(SupportCard.REGISTRY_KEY, cardID))
+                .map(Holder.Reference::value)
+                .orElse(null);
     }
 
-    private boolean isEmptyCard(Level level, ResourceLocation cardID) {
-        return level == null || cardID.equals(SupportCardRegistry.BLANK_CARD.getId()) || !UmapyoiAPI.getSupportCardRegistry(level).containsKey(cardID);
+    private boolean isEmptyCard(HolderLookup.Provider registries, ResourceLocation cardID) {
+        return registries == null || cardID.equals(SupportCard.EMPTY_ID) || UmapyoiAPI
+                .getSupportCardRegistry(registries)
+                .get(ResourceKey.create(SupportCard.REGISTRY_KEY, cardID))
+                .isEmpty();
     }
 
     @Override
@@ -143,17 +135,21 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
     public GachaRanking getSupportLevel(Level level, ItemStack stack) {
         if (level == null)
             return GachaRanking.R;
-        return this.getSupportCard(level, stack).getGachaRanking();
+        return this.getSupportCard(level.registryAccess(), stack).getGachaRanking();
     }
 
     @Override
     public SupportType getSupportType(Level level, ItemStack stack) {
-        return this.getSupportCard(level, stack).getSupportType();
+        return this.getSupportCard(level.registryAccess(), stack).getSupportType();
     }
 
     @Override
     public List<SupportStack> getSupports(Level level, ItemStack stack) {
-        return Suppliers.memoize(this.getSupportCard(level, stack)::getSupportStacks).get();
+        return getSupports(level.registryAccess(), stack);
+    }
+
+    public List<SupportStack> getSupports(HolderLookup.Provider registries, ItemStack stack) {
+        return Suppliers.memoize(this.getSupportCard(registries, stack)::getSupportStacks).get();
     }
 
     @Override
@@ -164,7 +160,7 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
             var item = itemstack.getItem();
             if (item instanceof UmaSoulItem) {
                 UmaData data = UmapyoiAPI.getUmaDataRegistry(level).get(UmaSoulUtils.getName(itemstack));
-                return !(this.getSupportCard(level, stack).getSupporters().contains(data.getIdentifier()));
+                return !(this.getSupportCard(level.registryAccess(), stack).getSupporters().contains(data.identifier()));
             }
             if (item instanceof SupportCardItem) {
                 return this.checkSupports(level, stack, itemstack);
@@ -180,8 +176,8 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
             if (supportCardID.equals(otherCardID))
                 return false;
 
-            var supportCard = this.getSupportCard(level, stack);
-            var otherCard = this.getSupportCard(level, other);
+            var supportCard = this.getSupportCard(level.registryAccess(), stack);
+            var otherCard = this.getSupportCard(level.registryAccess(), other);
 
             for (ResourceLocation name : supportCard.getSupporters()) {
                 if (otherCard.getSupporters().contains(name))

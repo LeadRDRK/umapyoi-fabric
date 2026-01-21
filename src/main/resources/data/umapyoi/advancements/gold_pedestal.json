@@ -2,7 +2,7 @@
   "parent": "umapyoi:summon_pedestal",
   "display": {
     "icon": {
-      "item": "umapyoi:uma_pedestal"
+      "id": "umapyoi:uma_pedestal"
     },
     "title": {
       "translate": "advancement.umapyoi.gold_pedestal.title"

@@ -15,10 +15,11 @@
       "tag": "c:sugar"
     },
     {
-      "tag": "c:milk"
+      "tag": "c:buckets/milk"
     }
   ],
   "result": {
-    "item": "umapyoi:cupcake"
+    "count": 1,
+    "id": "umapyoi:cupcake"
   }
 }

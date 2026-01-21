@@ -18,7 +18,6 @@ import net.tracen.umapyoi.events.PlayerTickCallback;
 import net.tracen.umapyoi.registry.UmaSkillRegistry;
 import net.tracen.umapyoi.registry.UmapyoiAttributesRegistry;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
-import net.tracen.umapyoi.utils.UmaStatusUtils;
 
 import java.util.UUID;
 
@@ -30,10 +29,10 @@ public class PassiveSkillEvents {
     public static void testPassiveSkill_im(ApplyUmasoulAttributeCallback.Context event) {
         var soul = event.getUmaSoul();
         if (UmaSoulUtils.hasSkill(soul, UmaSkillRegistry.INQUISITIVE_MIND.getId())) {
-            var speedFlag = UmaSoulUtils.getProperty(soul)[UmaStatusUtils.StatusType.SPEED.getId()] >= 12;
-            var wisdomFlag = UmaSoulUtils.getProperty(soul)[UmaStatusUtils.StatusType.WISDOM.getId()] >= 12;
+            var speedFlag = UmaSoulUtils.getProperty(soul).speed() >= 12;
+            var wisdomFlag = UmaSoulUtils.getProperty(soul).wisdom() >= 12;
             event.getAttributes().put(Attributes.ATTACK_SPEED, new AttributeModifier(PASSIVEUUID, "passive_speed_bonus",
-                    speedFlag && wisdomFlag ? 0.075D :0.05D, AttributeModifier.Operation.MULTIPLY_TOTAL));
+                    speedFlag && wisdomFlag ? 0.075D :0.05D, Operation.ADD_MULTIPLIED_TOTAL));
         }
     }
 
@@ -58,11 +57,11 @@ public class PassiveSkillEvents {
                 "sprint_speed_bonus",
                 sprintSpeed.getValue() - sprintSpeed.getBaseValue()
                 ,
-                Umapyoi.CONFIG.UMASOUL_SPEED_PRECENT_ENABLE() ? AttributeModifier.Operation.MULTIPLY_TOTAL
-                        : AttributeModifier.Operation.ADDITION);
+                Umapyoi.CONFIG.UMASOUL_SPEED_PRECENT_ENABLE() ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                        : AttributeModifier.Operation.ADD_VALUE);
 
         if (UmapyoiAPI.getUmaSoul(living).isEmpty()) {
-            movementSpeed.removeModifier(speedModifier.getId());
+            movementSpeed.removeModifier(speedModifier);
             return;
         }
 
@@ -70,16 +69,16 @@ public class PassiveSkillEvents {
             if (!movementSpeed.hasModifier(speedModifier))
                 movementSpeed.addTransientModifier(speedModifier);
         } else {
-            movementSpeed.removeModifier(speedModifier.getId());
+            movementSpeed.removeModifier(speedModifier);
         }
     }
 
     public static void passiveStepHeight(Player player) {
         AttributeInstance stepHeight = player.getAttribute(UmapyoiAttributesRegistry.STEP_HEIGHT_ADDITION);
         var heightModifier = new AttributeModifier(PASSIVEUUID,
-                "passive_skill_height", 0.5D, Operation.ADDITION);
+                "passive_skill_height", 0.5D, Operation.ADD_VALUE);
         if (UmapyoiAPI.getUmaSoul(player).isEmpty()) {
-            stepHeight.removeModifier(heightModifier.getId());
+            stepHeight.removeModifier(heightModifier);
             return;
         }
 
@@ -87,7 +86,7 @@ public class PassiveSkillEvents {
             if (!stepHeight.hasModifier(heightModifier))
                 stepHeight.addTransientModifier(heightModifier);
         } else {
-            stepHeight.removeModifier(heightModifier.getId());
+            stepHeight.removeModifier(heightModifier);
         }
     }
 
@@ -95,9 +94,9 @@ public class PassiveSkillEvents {
         AttributeInstance movementSpeed = player.getAttribute(UmapyoiAttributesRegistry.SPRINT_SPEED);
 
         var test_speed = new AttributeModifier(PASSIVEUUID,
-                "passive_skill_turf", 0.1D, Operation.MULTIPLY_TOTAL);
+                "passive_skill_turf", 0.1D, Operation.ADD_MULTIPLIED_TOTAL);
         if (UmapyoiAPI.getUmaSoul(player).isEmpty()) {
-            movementSpeed.removeModifier(test_speed.getId());
+            movementSpeed.removeModifier(test_speed);
             return;
         }
 
@@ -113,9 +112,9 @@ public class PassiveSkillEvents {
         AttributeInstance movementSpeed = player.getAttribute(UmapyoiAttributesRegistry.SPRINT_SPEED);
 
         var test_speed = new AttributeModifier(PASSIVEUUID,
-                "passive_skill_dirt", 0.1D, Operation.MULTIPLY_TOTAL);
+                "passive_skill_dirt", 0.1D, Operation.ADD_MULTIPLIED_TOTAL);
         if (UmapyoiAPI.getUmaSoul(player).isEmpty()) {
-            movementSpeed.removeModifier(test_speed.getId());
+            movementSpeed.removeModifier(test_speed);
             return;
         }
 
@@ -131,9 +130,9 @@ public class PassiveSkillEvents {
         AttributeInstance movementSpeed = player.getAttribute(UmapyoiAttributesRegistry.SPRINT_SPEED);
 
         var test_speed = new AttributeModifier(PASSIVEUUID,
-                "passive_skill_snow", 0.1D, Operation.MULTIPLY_TOTAL);
+                "passive_skill_snow", 0.1D, Operation.ADD_MULTIPLIED_TOTAL);
         if (UmapyoiAPI.getUmaSoul(player).isEmpty()) {
-            movementSpeed.removeModifier(test_speed.getId());
+            movementSpeed.removeModifier(test_speed);
             return;
         }
 
@@ -141,7 +140,7 @@ public class PassiveSkillEvents {
         BlockState groundBlock = player.level().getBlockState(groundPos);
 
         if (UmaSoulUtils.hasSkill(UmapyoiAPI.getUmaSoul(player), UmaSkillRegistry.SNOW_RUNNER.getId())) {
-            handleMovementModifier(movementSpeed, test_speed, groundBlock, player.getFeetBlockState(), UmapyoiBlockTags.TRACK_SNOW);
+            handleMovementModifier(movementSpeed, test_speed, groundBlock, player.getBlockStateOn(), UmapyoiBlockTags.TRACK_SNOW);
         }
     }
 
@@ -156,7 +155,7 @@ public class PassiveSkillEvents {
             return ;
         if (!groundBlock.is(tagIn) && !feetblock.is(tagIn)) {
             if (attribute.hasModifier(modifier))
-                attribute.removeModifier(modifier.getId());
+                attribute.removeModifier(modifier);
             return ;
         }
         if (!attribute.hasModifier(modifier))

@@ -26,23 +26,9 @@ public class UmapyoiItemTagsProvider extends ItemTagProvider {
         getOrCreateTagBuilder(UmapyoiItemTags.SSR_UMA_TICKET).add(ItemRegistry.SSR_UMA_TICKET.get());
         getOrCreateTagBuilder(UmapyoiItemTags.SR_CARD_TICKET).add(ItemRegistry.SR_CARD_TICKET.get());
         getOrCreateTagBuilder(UmapyoiItemTags.SSR_CARD_TICKET).add(ItemRegistry.SSR_CARD_TICKET.get());
-        getOrCreateTagBuilder(UmapyoiItemTags.WATER).add(Items.WATER_BUCKET);
+
         getOrCreateTagBuilder(UmapyoiItemTags.SUGAR).add(Items.SUGAR);
-        getOrCreateTagBuilder(UmapyoiItemTags.MILK).add(Items.MILK_BUCKET);
-
-        getOrCreateTagBuilder(UmapyoiItemTags.BREAD).addTag(UmapyoiItemTags.BREAD_WHEAT);
-        getOrCreateTagBuilder(UmapyoiItemTags.BREAD_WHEAT).add(Items.BREAD);
         getOrCreateTagBuilder(UmapyoiItemTags.BAMBOO).add(Items.BAMBOO);
-
-        // forge tag additions
-        // FIXME: not needed on fabric api >= 1.20.5
-        getOrCreateTagBuilder(UmapyoiItemTags.STONES)
-                .add(Items.ANDESITE)
-                .add(Items.DEEPSLATE)
-                .add(Items.DIORITE)
-                .add(Items.GRANITE)
-                .add(Items.STONE)
-                .add(Items.TUFF);
 
         getOrCreateTagBuilder(UmapyoiItemTags.UMA_TICKET).addTag(UmapyoiItemTags.COMMON_GACHA_ITEM)
                 .add(ItemRegistry.UMA_TICKET.get())

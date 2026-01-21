@@ -8,7 +8,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -71,35 +71,38 @@ public class UmaStatueBlock extends BaseEntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn,
-                                 BlockHitResult hit) {
-        BlockEntity tileEntity = worldIn.getBlockEntity(pos);
-        if (tileEntity instanceof UmaStatueBlockEntity status) {
-            ItemStack heldStack = player.getItemInHand(handIn);
-
-            if (status.isEmpty()) {
-                if (heldStack.isEmpty()) {
-                    return InteractionResult.PASS;
-                } else if (status.addItem(player.getAbilities().instabuild ? heldStack.copy() : heldStack)) {
-                    worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.STONE_PLACE,
-                            SoundSource.BLOCKS, 1.0F, 0.8F);
-                    return InteractionResult.SUCCESS;
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        BlockEntity tileEntity = level.getBlockEntity(pos);
+        if (tileEntity instanceof UmaStatueBlockEntity obon) {
+            if (obon.isEmpty()) {
+                if (stack.isEmpty()) {
+                    return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+                }
+                else if (obon.addItem(player.getAbilities().instabuild ? stack.copy() : stack)) {
+                    level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.STONE_PLACE,
+                            SoundSource.BLOCKS, 1.0F, 0.8F
+                    );
+                    return ItemInteractionResult.sidedSuccess(level.isClientSide);
                 }
 
-            } else if (handIn.equals(InteractionHand.MAIN_HAND)) {
+            }
+            else if (hand.equals(InteractionHand.MAIN_HAND)) {
                 if (!player.isCreative()) {
-                    if (!player.getInventory().add(status.removeItem())) {
-                        Containers.dropItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), status.removeItem());
+                    if (!player.getInventory().add(obon.removeItem())) {
+                        Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), obon.removeItem());
                     }
-                } else {
-                    status.removeItem();
                 }
-                worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.WOOD_HIT, SoundSource.BLOCKS,
-                        0.25F, 0.5F);
-                return InteractionResult.SUCCESS;
+                else {
+                    obon.removeItem();
+                }
+                level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.WOOD_HIT, SoundSource.BLOCKS,
+                        0.25F, 0.5F
+                );
+                return ItemInteractionResult.sidedSuccess(level.isClientSide);
             }
         }
-        return InteractionResult.PASS;
+        // Maybe no need to pass to default interaction
+        return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
     }
 
     @SuppressWarnings("deprecation")

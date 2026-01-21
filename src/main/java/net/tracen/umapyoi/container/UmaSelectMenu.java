@@ -18,6 +18,7 @@ import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 
 import java.util.Comparator;
 import java.util.List;
@@ -224,7 +225,7 @@ public class UmaSelectMenu extends AbstractContainerMenu {
         if (!this.recipes.isEmpty() && this.getItemName()!=null) {
             ItemStack result = this.inputTicket.copy();
             result.setCount(1);
-            result.getOrCreateTag().putString("name", this.getItemName().toString());
+            result.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), this.getItemName());
             this.resultSlot.set(result);
         } else {
             UmaSelectMenu.this.itemName = null;

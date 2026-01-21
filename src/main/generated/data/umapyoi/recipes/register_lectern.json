@@ -18,7 +18,7 @@
     "GAG"
   ],
   "result": {
-    "item": "umapyoi:register_lectern"
-  },
-  "show_notification": true
+    "count": 1,
+    "id": "umapyoi:register_lectern"
+  }
 }

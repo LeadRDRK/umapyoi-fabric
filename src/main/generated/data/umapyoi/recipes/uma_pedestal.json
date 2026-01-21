@@ -23,7 +23,7 @@
     "GGG"
   ],
   "result": {
-    "item": "umapyoi:uma_pedestal"
-  },
-  "show_notification": true
+    "count": 1,
+    "id": "umapyoi:uma_pedestal"
+  }
 }

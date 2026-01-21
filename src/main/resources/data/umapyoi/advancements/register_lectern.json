@@ -2,7 +2,7 @@
   "parent": "umapyoi:training",
   "display": {
     "icon": {
-      "item": "umapyoi:register_lectern"
+      "id": "umapyoi:register_lectern"
     },
     "title": {
       "translate": "advancement.umapyoi.register_lectern.title"

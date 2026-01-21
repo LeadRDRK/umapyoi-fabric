@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "umapyoi:jewel"
+      "id": "umapyoi:jewel"
     },
     "title": {
       "translate": "advancement.umapyoi.root.title"

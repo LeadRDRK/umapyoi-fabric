@@ -1,14 +1,16 @@
 package net.tracen.umapyoi.recipe;
 
-import net.minecraft.core.Registry;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
+import net.tracen.umapyoi.item.FadedUmaSoulItem;
 import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.registry.umadata.UmaData;
 
@@ -37,24 +39,26 @@ public class ShapelessUmasoulRecipe extends ShapelessRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer pContainer, RegistryAccess pRegistryAccess) {
-        return this.getResultItem(pRegistryAccess).copy();
+    public ItemStack assemble(CraftingContainer craftingContainer, HolderLookup.Provider registries) {
+        return this.getResultItem(registries).copy();
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess access) {
-        ItemStack result = ShapelessUmasoulRecipe.getResultItem(this.getOutputUma()).copy();
-        if(access == RegistryAccess.EMPTY)
+    public ItemStack getResultItem(HolderLookup.Provider registries) {
+        ItemStack result = getResultItem(outputUma).copy();
+        if(registries == RegistryAccess.EMPTY)
             return result;
-        Registry<UmaData> registry = access.registryOrThrow(UmaData.REGISTRY_KEY);
-        if (!BuiltInRegistries.ITEM.getKey(result.getItem()).equals(getOutputUma()))
-            result = ItemRegistry.BLANK_UMA_SOUL.get().getDefaultInstance();
-        UmaData data = registry.get(outputUma);
-        if(data == null)
-            return ItemStack.EMPTY;
-        result.getOrCreateTag().putString("name", this.outputUma.toString());
-        result.getOrCreateTag().putString("identifier", data.getIdentifier().toString());
-        result.getOrCreateTag().putString("ranking", data.getGachaRanking().toString().toLowerCase());
+
+        if (!BuiltInRegistries.ITEM.getKey(result.getItem()).equals(outputUma)) {
+            var dataOpt = registries
+                    .lookupOrThrow(UmaData.REGISTRY_KEY)
+                    .get(ResourceKey.create(UmaData.REGISTRY_KEY, outputUma));
+            if (dataOpt.isEmpty())
+                return ItemStack.EMPTY;
+
+            var data = dataOpt.get().value();
+            return FadedUmaSoulItem.genUmaSoul(outputUma, data);
+        }
         return result;
     }
 

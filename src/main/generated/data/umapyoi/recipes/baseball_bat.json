@@ -18,7 +18,7 @@
     "L  "
   ],
   "result": {
-    "item": "umapyoi:baseball_bat"
-  },
-  "show_notification": true
+    "count": 1,
+    "id": "umapyoi:baseball_bat"
+  }
 }

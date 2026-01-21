@@ -27,14 +27,14 @@ public class WhiteExtraStatusFactor extends UmaFactor {
         }
 
         if (level != 0) {
-            if (this.statusType == 0)
-                UmaSoulUtils.getExtraProperty(soul)[statusType] = Math.min(5,
-                        UmaSoulUtils.getExtraProperty(soul)[statusType] + level);
-            else {
-                if (isAP)
-                    UmaSoulUtils.getExtraProperty(soul)[statusType] += level * 100;
-                else
-                    UmaSoulUtils.getExtraProperty(soul)[statusType] += level;
+            switch (this.statusType) {
+                case 0 ->
+                        UmaSoulUtils.setPhysique(soul, Math.min(5, UmaSoulUtils.getPhysique(soul) + level));
+                case 1 -> UmaSoulUtils.setLearningTimes(soul, UmaSoulUtils.getLearningTimes(soul) + level);
+                case 2 -> UmaSoulUtils.setSkillSlots(soul, UmaSoulUtils.getSkillSlots(soul)+ level);
+                case 3 -> UmaSoulUtils.setExtraActionPoint(soul, UmaSoulUtils.getExtraActionPoint(soul) + level * 100);
+                default ->
+                        throw new IllegalArgumentException("Unexpected value: " + this.statusType);
             }
         }
     }

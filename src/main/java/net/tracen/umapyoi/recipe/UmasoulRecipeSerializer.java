@@ -1,112 +1,131 @@
 package net.tracen.umapyoi.recipe;
 
-import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-import com.mojang.serialization.Decoder;
 import com.mojang.serialization.DynamicOps;
-import com.mojang.serialization.Encoder;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.mojang.serialization.KeyCompressor;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.MapDecoder;
+import com.mojang.serialization.MapEncoder;
+import com.mojang.serialization.MapLike;
+import com.mojang.serialization.RecordBuilder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.NonNullList;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.tracen.umapyoi.Umapyoi;
 
 import org.apache.commons.lang3.NotImplementedException;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 public record UmasoulRecipeSerializer<T extends Recipe<?>, U extends T> (RecipeSerializer<T> compose,
                                                                          BiFunction<T, @Nullable ResourceLocation, U> converter) implements RecipeSerializer<U> {
     @Override
     @MethodsReturnNonnullByDefault
-    public Codec<U> codec() {
-        return Codec.of(
-                new Encoder<>() {
+    public MapCodec<U> codec() {
+        return MapCodec.of(
+                new MapEncoder<>() {
                     @Override
-                    public <V> DataResult<V> encode(U input, DynamicOps<V> ops, V prefix) {
-                        throw new NotImplementedException("Serializing UmasoulRecipe is not implemented yet.");
+                    public <V> Stream<V> keys(DynamicOps<V> ops) {
+                        throw notImplemented();
+                    }
+
+                    @Override
+                    public <V> RecordBuilder<V> encode(U input, DynamicOps<V> ops, RecordBuilder<V> prefix) {
+                        throw notImplemented();
+                    }
+
+                    @Override
+                    public <V> KeyCompressor<V> compressor(DynamicOps<V> ops) {
+                        throw notImplemented();
+                    }
+
+                    private NotImplementedException notImplemented() {
+                        return new NotImplementedException("Serializing UmasoulRecipe is not implemented yet.");
                     }
                 },
-                new Decoder<>() {
+                new MapDecoder<>() {
                     @Override
-                    public <V> DataResult<Pair<U, V>> decode(DynamicOps<V> ops, V input) {
+                    public <V> Stream<V> keys(DynamicOps<V> ops) {
+                        return Stream.concat(
+                                compose().codec().keys(ops),
+                                Stream.of(ops.createString("umasoul"))
+                        );
+                    }
+
+                    @Override
+                    public <V> DataResult<U> decode(DynamicOps<V> ops, MapLike<V> input) {
                         if (input == null) {
                             return DataResult.error(() -> "Input is null");
                         }
 
-                        V newInput;
-                        if (ops.get(input, "result").result().isEmpty()) {
-                            newInput = ops.mergeToMap(input, ops.createString("result"), ops.createMap(
-                                    Stream.of(Pair.of(
-                                            ops.createString("item"),
-                                            ops.createString("umapyoi:blank_uma_soul")
+                        MapLike<V> newInput;
+                        if (input.get("result") == null) {
+                            var newMap = ops.mergeToMap(
+                                    ops.empty(),
+                                    input
+                            ).flatMap(map ->
+                                    ops.mergeToMap(map, ops.createString("result"), ops.createMap(
+                                            Stream.of(Pair.of(
+                                                    ops.createString("item"),
+                                                    ops.createString("umapyoi:support_card")
+                                            ))
                                     ))
-                            )).result().orElse(input);
+                            ).getOrThrow();
+
+                            newInput = ops.getMap(newMap).getOrThrow();
                         }
                         else {
                             newInput = input;
                         }
-                        var resultField = ops.get(newInput, "result").result();
+                        var resultField = newInput.get("result");
 
-                        var baseResult = compose().codec().decode(ops, newInput);
-                        return baseResult.flatMap(basePair -> {
-                            var extraResult = ResourceLocation.CODEC.optionalFieldOf("umasoul").codec().decode(ops, newInput);
-                            return extraResult.map(extraPair -> {
-                                var outputUma = extraPair.getFirst()
+                        var recipeResult = compose().codec().decode(ops, newInput);
+                        return recipeResult.flatMap(recipe -> {
+                            var outputResult = ResourceLocation.CODEC.optionalFieldOf("umasoul").decode(ops, newInput);
+                            return outputResult.map(outputOpt -> {
+                                var output = outputOpt
                                         .orElseGet(() -> // result.item MUST be present for the base recipe to even decode correctly
                                                 ResourceLocation.CODEC.fieldOf("item").codec()
-                                                        .decode(ops, resultField.orElseThrow())
+                                                        .decode(ops, resultField)
                                                         .result()
                                                         .orElseThrow()
                                                         .getFirst()
                                         );
 
-                                return Pair.of(converter.apply(basePair.getFirst(), outputUma), newInput);
+                                return converter.apply(recipe, output);
                             });
                         });
+                    }
+
+                    @Override
+                    public <V> KeyCompressor<V> compressor(DynamicOps<V> ops) {
+                        return new KeyCompressor<>(ops, keys(ops));
                     }
                 }
         );
     }
 
     @Override
-    @NotNull
-    public U fromNetwork(@NotNull FriendlyByteBuf buf) {
-        T recipe = compose().fromNetwork(buf);
-        if (buf.readBoolean())
-            return converter().apply(recipe, buf.readResourceLocation());
-        return converter().apply(recipe, null);
-    }
-
-    @Override
-    public void toNetwork(@NotNull FriendlyByteBuf buf, @NotNull U recipe) {
-        compose().toNetwork(buf, recipe);
-        if (recipe instanceof ShapedUmasoulRecipe umaRecipe) {
-            boolean hasName = umaRecipe.getOutputUma() != null;
-            buf.writeBoolean(hasName);
-            if (hasName)
-                buf.writeResourceLocation(umaRecipe.getOutputUma());
-        } else if (recipe instanceof ShapelessUmasoulRecipe umaRecipe) {
-            boolean hasName = umaRecipe.getOutputUma() != null;
-            buf.writeBoolean(hasName);
-            if (hasName)
-                buf.writeResourceLocation(umaRecipe.getOutputUma());
-        }else
-            buf.writeBoolean(false);
+    public StreamCodec<RegistryFriendlyByteBuf, U> streamCodec() {
+        return StreamCodec.composite(
+                compose().streamCodec(), recipe -> recipe,
+                ResourceLocation.STREAM_CODEC.apply(ByteBufCodecs::optional), recipe -> {
+                    if (recipe instanceof ShapedUmasoulRecipe bladeRecipe) {
+                        return Optional.ofNullable(bladeRecipe.getOutputUma());
+                    } else if (recipe instanceof ShapelessUmasoulRecipe bladeRecipe) {
+                        return Optional.ofNullable(bladeRecipe.getOutputUma());
+                    } else
+                        return Optional.empty();
+                },
+                (recipe, output) -> converter.apply(recipe, output.orElse(null))
+        );
     }
 }

@@ -10,6 +10,8 @@ import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.client.model.SimpleBedrockModel;
 import net.tracen.umapyoi.container.ThreeGoddessContainer;
 import net.tracen.umapyoi.data.builtin.UmaDataRegistry;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
+import net.tracen.umapyoi.registry.umadata.UmaData;
 import net.tracen.umapyoi.utils.ClientUtils;
 
 import org.joml.Quaternionf;
@@ -49,11 +51,13 @@ public class ThreeGoddessScreen extends AbstractContainerScreen<ThreeGoddessCont
         ItemStack fatherFactor = this.menu.tileEntity.getItem(1);
         ItemStack motherFactor = this.menu.tileEntity.getItem(2);
         if (!fatherFactor.isEmpty()) {
-            ResourceLocation name = new ResourceLocation(fatherFactor.getTag().getString("name"));
+            ResourceLocation name = fatherFactor
+                    .getOrDefault(DataComponentsTypeRegistry.DATA_LOCATION.get(), UmaData.DEFAULT_UMA_ID);
             renderModel(guiGraphics, this.leftPos + 33, this.topPos + 55, 25, fatherQuaternion, name);
         }
         if (!motherFactor.isEmpty()) {
-            ResourceLocation name = new ResourceLocation(motherFactor.getTag().getString("name"));
+            ResourceLocation name = motherFactor
+                    .getOrDefault(DataComponentsTypeRegistry.DATA_LOCATION.get(), UmaData.DEFAULT_UMA_ID);
             renderModel(guiGraphics, this.leftPos + 142, this.topPos + 55, 25, motherQuaternion, name);
         }
     }

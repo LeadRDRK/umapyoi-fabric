@@ -4,6 +4,7 @@ import com.google.common.collect.Multimap;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
@@ -16,8 +17,8 @@ public interface ApplyUmasoulAttributeCallback {
     class Context extends UmaSoulContext {
         private final SlotReference slotReference;
         private final UUID uuid;
-        private final Multimap<Attribute, AttributeModifier> atts;
-        public Context(ItemStack soul, SlotReference slotReference, UUID uuid, Multimap<Attribute, AttributeModifier> atts) {
+        private final Multimap<Holder<Attribute>, AttributeModifier> atts;
+        public Context(ItemStack soul, SlotReference slotReference, UUID uuid, Multimap<Holder<Attribute>, AttributeModifier> atts) {
             super(soul);
             this.uuid = uuid;
             this.slotReference = slotReference;
@@ -32,7 +33,7 @@ public interface ApplyUmasoulAttributeCallback {
             return uuid;
         }
 
-        public Multimap<Attribute, AttributeModifier> getAttributes() {
+        public Multimap<Holder<Attribute>, AttributeModifier> getAttributes() {
             return atts;
         }
 

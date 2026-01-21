@@ -99,7 +99,7 @@ public class UmapyoiAPI {
     }
 
     public static boolean isSpecifyUmamusume(ItemStack soul, ResourceLocation identifier, Level level) {
-        return UmapyoiAPI.getUmaDataRegistry(level).get(UmaSoulUtils.getName(soul)).getIdentifier().equals(identifier);
+        return UmapyoiAPI.getUmaDataRegistry(level).get(UmaSoulUtils.getName(soul)).identifier().equals(identifier);
     }
 
     public static Registry<UmaData> getUmaDataRegistry(Level level) {

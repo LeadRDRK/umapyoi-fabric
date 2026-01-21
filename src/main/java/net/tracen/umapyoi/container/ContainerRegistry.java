@@ -1,6 +1,7 @@
 package net.tracen.umapyoi.container;
 
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
@@ -13,10 +14,10 @@ public class ContainerRegistry {
             .create(Registries.MENU, Umapyoi.MODID);
 
     public static final RegistryObject<MenuType<ThreeGoddessContainer>> THREE_GODDESS = CONTAINER_TYPES
-            .register("three_goddess", () -> new ExtendedScreenHandlerType<>(ThreeGoddessContainer::new));
+            .register("three_goddess", () -> new ExtendedScreenHandlerType<>(ThreeGoddessContainer::new, BlockPos.STREAM_CODEC));
 
     public static final RegistryObject<MenuType<TrainingFacilityContainer>> TRAINING_FACILITY = CONTAINER_TYPES
-            .register("training_facility", () -> new ExtendedScreenHandlerType<>(TrainingFacilityContainer::new));
+            .register("training_facility", () -> new ExtendedScreenHandlerType<>(TrainingFacilityContainer::new, BlockPos.STREAM_CODEC));
 
     public static final RegistryObject<MenuType<SkillLearningMenu>> SKILL_LEARNING_TABLE = CONTAINER_TYPES
             .register("skill_learning_table", () -> new MenuType<>(SkillLearningMenu::new, FeatureFlags.DEFAULT_FLAGS));

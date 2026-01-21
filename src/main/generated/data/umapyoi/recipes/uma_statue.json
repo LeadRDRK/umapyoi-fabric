@@ -15,7 +15,7 @@
     "AAA"
   ],
   "result": {
-    "item": "umapyoi:uma_statue"
-  },
-  "show_notification": true
+    "count": 1,
+    "id": "umapyoi:uma_statue"
+  }
 }

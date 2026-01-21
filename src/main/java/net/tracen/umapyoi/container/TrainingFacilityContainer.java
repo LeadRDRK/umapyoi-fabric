@@ -2,7 +2,7 @@ package net.tracen.umapyoi.container;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -22,8 +22,8 @@ public class TrainingFacilityContainer extends AbstractContainerMenu {
     private final ContainerData containerData;
     private final ContainerLevelAccess canInteractWithCallable;
 
-    public TrainingFacilityContainer(final int windowId, final Inventory playerInventory, FriendlyByteBuf buf) {
-        this(windowId, playerInventory, getTileEntity(playerInventory, buf), new SimpleContainerData(4));
+    public TrainingFacilityContainer(final int windowId, final Inventory playerInventory, BlockPos pos) {
+        this(windowId, playerInventory, getTileEntity(playerInventory, pos), new SimpleContainerData(4));
     }
 
     public TrainingFacilityContainer(final int windowId, final Inventory playerInventory,
@@ -101,10 +101,10 @@ public class TrainingFacilityContainer extends AbstractContainerMenu {
         return itemStack;
     }
 
-    private static TrainingFacilityBlockEntity getTileEntity(final Inventory playerInventory, FriendlyByteBuf data) {
+    private static TrainingFacilityBlockEntity getTileEntity(final Inventory playerInventory, BlockPos pos) {
         Objects.requireNonNull(playerInventory, "playerInventory cannot be null");
         final Player player = playerInventory.player;
-        final BlockEntity tileAtPos = player.level().getBlockEntity(data.readBlockPos());
+        final BlockEntity tileAtPos = player.level().getBlockEntity(pos);
         if (tileAtPos instanceof TrainingFacilityBlockEntity) {
             return (TrainingFacilityBlockEntity) tileAtPos;
         }

@@ -1,32 +1,19 @@
 package net.tracen.umapyoi.recipe;
 
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.Decoder;
-import com.mojang.serialization.DynamicOps;
-import com.mojang.serialization.Encoder;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-
-import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.Registry;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
+import net.tracen.umapyoi.item.FadedUmaSoulItem;
 import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.registry.umadata.UmaData;
-
-import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.Optional;
 
@@ -56,26 +43,29 @@ public class ShapedUmasoulRecipe extends ShapedRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer pContainer, RegistryAccess pRegistryAccess) {
-        return this.getResultItem(pRegistryAccess).copy();
+    public ItemStack assemble(CraftingContainer craftingContainer, HolderLookup.Provider registries) {
+        return this.getResultItem(registries).copy();
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess access) {
-        ItemStack result = ShapedUmasoulRecipe.getResultItem(this.getOutputUma()).copy();
-        if(access == RegistryAccess.EMPTY)
+    public ItemStack getResultItem(HolderLookup.Provider registries) {
+        ItemStack result = getResultItem(outputUma).copy();
+        if(registries == RegistryAccess.EMPTY)
             return result;
-        Registry<UmaData> registry = access.registryOrThrow(UmaData.REGISTRY_KEY);
-        if (!BuiltInRegistries.ITEM.getKey(result.getItem()).equals(getOutputUma()))
-            result = ItemRegistry.BLANK_UMA_SOUL.get().getDefaultInstance();
-        UmaData data = registry.get(getOutputUma());
-        if(data == null)
-            return ItemStack.EMPTY;
-        result.getOrCreateTag().putString("name", this.outputUma.toString());
-        result.getOrCreateTag().putString("identifier", data.getIdentifier().toString());
-        result.getOrCreateTag().putString("ranking", data.getGachaRanking().toString().toLowerCase());
+
+        if (!BuiltInRegistries.ITEM.getKey(result.getItem()).equals(outputUma)) {
+            var dataOpt = registries
+                    .lookupOrThrow(UmaData.REGISTRY_KEY)
+                    .get(ResourceKey.create(UmaData.REGISTRY_KEY, outputUma));
+            if (dataOpt.isEmpty())
+                return ItemStack.EMPTY;
+
+            var data = dataOpt.get().value();
+            return FadedUmaSoulItem.genUmaSoul(outputUma, data);
+        }
         return result;
     }
+
     @Override
     public RecipeSerializer<?> getSerializer() {
         return SERIALIZER;

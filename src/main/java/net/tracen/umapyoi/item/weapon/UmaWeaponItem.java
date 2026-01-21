@@ -1,15 +1,14 @@
 package net.tracen.umapyoi.item.weapon;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-
+import net.fabricmc.fabric.api.item.v1.EnchantingContext;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -17,29 +16,24 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TieredItem;
-import net.minecraft.world.item.Vanishable;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 
-public class UmaWeaponItem extends TieredItem implements Vanishable {
-    private final float attackDamage;
-    /** Modifiers applied when the item is in the mainhand of a user. */
-    private final Multimap<Attribute, AttributeModifier> defaultModifiers;
-
+public class UmaWeaponItem extends TieredItem {
     public UmaWeaponItem(Tier pTier, int pAttackDamageModifier, float pAttackSpeedModifier, Item.Properties pProperties) {
-        super(pTier, pProperties);
-        this.attackDamage = (float) pAttackDamageModifier + pTier.getAttackDamageBonus();
-        Multimap<Attribute, AttributeModifier> result = ArrayListMultimap.create();
-        result.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier",
-                (double) this.attackDamage, AttributeModifier.Operation.ADDITION));
-        result.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier",
-                (double) pAttackSpeedModifier, AttributeModifier.Operation.ADDITION));
-        this.defaultModifiers = result;
-    }
-
-    public float getDamage() {
-        return this.attackDamage;
+        super(pTier, pProperties
+                .component(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.builder()
+                        .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier",
+                                (float) pAttackDamageModifier + pTier.getAttackDamageBonus(), AttributeModifier.Operation.ADD_VALUE),
+                                EquipmentSlotGroup.MAINHAND)
+                        .add(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier",
+                                pAttackSpeedModifier, AttributeModifier.Operation.ADD_VALUE),
+                                EquipmentSlotGroup.MAINHAND)
+                        .build()));
     }
 
     public boolean canAttackBlock(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer) {
@@ -71,9 +65,7 @@ public class UmaWeaponItem extends TieredItem implements Vanishable {
      * argument beside ev. They just raise the damage on the stack.
      */
     public boolean hurtEnemy(ItemStack pStack, LivingEntity pTarget, LivingEntity pAttacker) {
-        pStack.hurtAndBreak(1, pAttacker, (p_43296_) -> {
-            p_43296_.broadcastBreakEvent(EquipmentSlot.MAINHAND);
-        });
+        pStack.hurtAndBreak(1, pAttacker, EquipmentSlot.MAINHAND);
         return true;
     }
 
@@ -84,22 +76,15 @@ public class UmaWeaponItem extends TieredItem implements Vanishable {
     public boolean mineBlock(ItemStack pStack, Level pLevel, BlockState pState, BlockPos pPos,
                              LivingEntity pEntityLiving) {
         if (pState.getDestroySpeed(pLevel, pPos) != 0.0F) {
-            pStack.hurtAndBreak(2, pEntityLiving, (p_43276_) -> {
-                p_43276_.broadcastBreakEvent(EquipmentSlot.MAINHAND);
-            });
+            pStack.hurtAndBreak(2, pEntityLiving, EquipmentSlot.MAINHAND);
         }
 
         return true;
     }
 
-    /**
-     * Gets a map of item attribute modifiers, used by ItemSword to increase hit
-     * damage.
-     */
-
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(ItemStack stack, EquipmentSlot slot) {
-        return slot == EquipmentSlot.MAINHAND ? this.defaultModifiers
-                : super.getAttributeModifiers(stack, slot);
+    public boolean canBeEnchantedWith(ItemStack stack, Enchantment enchantment, EnchantingContext context) {
+        if (enchantment == Enchantments.VANISHING_CURSE) return true;
+        return super.canBeEnchantedWith(stack, enchantment, context);
     }
 }

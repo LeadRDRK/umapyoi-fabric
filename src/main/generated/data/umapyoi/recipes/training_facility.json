@@ -17,7 +17,7 @@
     "ILI"
   ],
   "result": {
-    "item": "umapyoi:training_facility"
-  },
-  "show_notification": true
+    "count": 1,
+    "id": "umapyoi:training_facility"
+  }
 }

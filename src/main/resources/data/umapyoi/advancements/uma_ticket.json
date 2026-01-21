@@ -2,7 +2,7 @@
   "parent": "umapyoi:summon_pedestal",
   "display": {
     "icon": {
-      "item": "umapyoi:blank_ticket"
+      "id": "umapyoi:blank_ticket"
     },
     "title": {
       "translate": "advancement.umapyoi.uma_ticket.title"

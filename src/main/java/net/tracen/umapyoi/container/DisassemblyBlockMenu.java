@@ -16,6 +16,7 @@ import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.item.SupportCardItem;
 import net.tracen.umapyoi.item.UmaSoulItem;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.training.SupportContainer;
 import net.tracen.umapyoi.utils.GachaRanking;
 
@@ -134,33 +135,33 @@ public class DisassemblyBlockMenu extends AbstractContainerMenu {
     }
 
     private ItemStack getResultItem() {
-        
+
         ItemStack inputSoul = this.inputSlots.getItem(0).copy();
         boolean isSupport = inputSoul.getItem() instanceof SupportContainer;
         if (!(inputSoul.getItem() instanceof UmaSoulItem || isSupport))
             return ItemStack.EMPTY;
-        if(!inputSoul.getOrCreateTag().contains("ranking")) 
+        if(!inputSoul.has(DataComponentsTypeRegistry.GACHA_RANKING.get()))
             return ItemStack.EMPTY;
-        
-        ItemStack result = ItemStack.EMPTY;
-        GachaRanking ranking = GachaRanking.valueOf(inputSoul.getOrCreateTag().getString("ranking").toUpperCase());
+
+        ItemStack result;
+        GachaRanking ranking = inputSoul.get(DataComponentsTypeRegistry.GACHA_RANKING.get()).ranking();
         switch(ranking) {
             case SR : {
                 result = isSupport
                         ? new ItemStack(ItemRegistry.HORSESHOE_GOLD.get())
-                        : new ItemStack(ItemRegistry.CRYSTAL_GOLD.get()); 
+                        : new ItemStack(ItemRegistry.CRYSTAL_GOLD.get());
                 break;
-                }
+            }
             case SSR : {
                 result = isSupport
                         ? new ItemStack(ItemRegistry.HORSESHOE_RAINBOW.get())
-                        : new ItemStack(ItemRegistry.CRYSTAL_RAINBOW.get()); 
+                        : new ItemStack(ItemRegistry.CRYSTAL_RAINBOW.get());
                 break;
-                }
+            }
             default:
                 result = isSupport
-                ? new ItemStack(ItemRegistry.HORSESHOE_SILVER.get())
-                : new ItemStack(ItemRegistry.CRYSTAL_SILVER.get()); 
+                        ? new ItemStack(ItemRegistry.HORSESHOE_SILVER.get())
+                        : new ItemStack(ItemRegistry.CRYSTAL_SILVER.get());
         }
         return result;
     }

@@ -2,7 +2,7 @@
   "parent": "umapyoi:uma_soul",
   "display": {
     "icon": {
-      "item": "umapyoi:training_facility"
+      "id": "umapyoi:training_facility"
     },
     "title": {
       "translate": "advancement.umapyoi.training.title"

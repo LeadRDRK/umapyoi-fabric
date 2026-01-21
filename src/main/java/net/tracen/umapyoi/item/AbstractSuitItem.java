@@ -71,7 +71,7 @@ public abstract class AbstractSuitItem extends TrinketItem implements TrinketRen
         }
 
         if (canEquip(player) && equipItem(player, stack)) {
-            player.playSound(SoundEvents.ARMOR_EQUIP_LEATHER, 1.0f, 1.0f);
+            player.playSound(SoundEvents.ARMOR_EQUIP_LEATHER.value(), 1.0f, 1.0f);
             return InteractionResultHolder.success(stack);
         }
         return super.use(level, player, usedHand);

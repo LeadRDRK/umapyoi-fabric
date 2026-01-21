@@ -1,13 +1,14 @@
 package net.tracen.umapyoi.item.weapon;
 
-import com.google.common.collect.Multimap;
-
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.item.ItemRegistry;
 
@@ -17,20 +18,20 @@ public class GrassNaginataItem extends UmaWeaponItem {
     private static final UUID REACH_UUID = UUID.fromString("1F199A02-626F-13A3-2365-3D4D6D075737");
 
     public GrassNaginataItem() {
-        super(new NaginataTier(), 7, -2.7F, Umapyoi.defaultItemProperties().stacksTo(1));
+        super(new NaginataTier(), 7, -2.7F, Umapyoi.defaultItemProperties()
+                .stacksTo(1)
+                .attributes(createAttributes()));
     }
 
-    @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(ItemStack stack, EquipmentSlot slot) {
-        Multimap<Attribute, AttributeModifier> attributeModifiers = super.getAttributeModifiers(stack, slot);
-//        FIXME: ENTITY_INTERACTION_RANGE is not builtin on 1.20.1
-//        if (slot == EquipmentSlot.MAINHAND) {
-//            AttributeModifier value = new AttributeModifier(REACH_UUID, "Weapon modifier", 2D,
-//                    AttributeModifier.Operation.ADDITION);
-//            if(!attributeModifiers.containsValue(value))
-//                attributeModifiers.put(Attributes.ENTITY_INTERACTION_RANGE, value);
-//        }
-        return attributeModifiers;
+    private static ItemAttributeModifiers createAttributes() {
+        return ItemAttributeModifiers.builder()
+                .add(
+                        Attributes.ENTITY_INTERACTION_RANGE,
+                        new AttributeModifier(REACH_UUID, "Weapon modifier", 2D,
+                                AttributeModifier.Operation.ADD_VALUE),
+                        EquipmentSlotGroup.MAINHAND
+                )
+                .build();
     }
 
     private static class NaginataTier implements Tier {
@@ -51,8 +52,8 @@ public class GrassNaginataItem extends UmaWeaponItem {
         }
 
         @Override
-        public int getLevel() {
-            return 0;
+        public TagKey<Block> getIncorrectBlocksForDrops() {
+            return BlockTags.INCORRECT_FOR_WOODEN_TOOL;
         }
 
         @Override

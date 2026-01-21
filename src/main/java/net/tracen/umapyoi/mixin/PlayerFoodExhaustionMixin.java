@@ -23,7 +23,7 @@ public class PlayerFoodExhaustionMixin {
         if (!umaSoul.isEmpty()) {
             if (!player.getAbilities().invulnerable) {
                 if (!player.level().isClientSide) {
-                    float exhaustionMultipler = 1.2F - this.getExactProperty(umaSoul, StatusType.STAMINA.getId(), 0.85F);
+                    float exhaustionMultipler = 1.2F - this.getExactProperty(umaSoul, StatusType.STAMINA, 0.85F);
                     player.getFoodData().addExhaustion(pExhaustion * exhaustionMultipler);
                 }
             }
@@ -31,14 +31,22 @@ public class PlayerFoodExhaustionMixin {
         }
     }
 
-    private float getExactProperty(ItemStack stack, int num, double limit) {
+    private float getExactProperty(ItemStack stack, StatusType type, double limit) {
         var retiredValue = UmaSoulUtils.getGrowth(stack) == Growth.RETIRED ? 1.0D : 0.25D;
-        var totalProperty = propertyPercentage(stack, num);
+        var totalProperty = propertyPercentage(stack, type);
         return (float) (UmaSoulUtils.getMotivation(stack).getMultiplier() * limit * retiredValue * totalProperty);
     }
 
-    private double propertyPercentage(ItemStack stack, int num) {
-        var x = UmaSoulUtils.getProperty(stack)[num];
+    private double propertyPercentage(ItemStack stack, StatusType type) {
+        int x = 0;
+        switch (type) {
+            case SPEED -> x = UmaSoulUtils.getProperty(stack).speed();
+            case STAMINA -> x = UmaSoulUtils.getProperty(stack).stamina();
+            case STRENGTH -> x = UmaSoulUtils.getProperty(stack).strength();
+            case GUTS -> x = UmaSoulUtils.getProperty(stack).guts();
+            case WISDOM -> x = UmaSoulUtils.getProperty(stack).wisdom();
+        }
+
         var statLimit = Umapyoi.CONFIG.STAT_LIMIT_VALUE();
         var denominator = 1 + Math.pow(Math.E,
                 (x > statLimit ? (-0.125 * Umapyoi.CONFIG.STAT_LIMIT_REDUCTION_RATE()) : -0.125) *

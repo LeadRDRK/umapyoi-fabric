@@ -2,6 +2,8 @@ package net.tracen.umapyoi.data;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
@@ -14,9 +16,11 @@ import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
 import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.item.UmaCostumeItem;
 
+import java.util.concurrent.CompletableFuture;
+
 public class UmapyoiRecipeProvider extends FabricRecipeProvider {
-    public UmapyoiRecipeProvider(FabricDataOutput output) {
-        super(output);
+    public UmapyoiRecipeProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+        super(output, registriesFuture);
     }
 
     @Override
@@ -86,7 +90,7 @@ public class UmapyoiRecipeProvider extends FabricRecipeProvider {
                 .define('J', ItemRegistry.JEWEL.get())
                 .unlockedBy("has_item", has(ItemRegistry.BLANK_TICKET.get())).save(consumer);
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, BlockRegistry.THREE_GODDESS.get()).pattern(" J ")
-                .pattern("JAJ").pattern("AAA").define('A', UmapyoiItemTags.STONES)
+                .pattern("JAJ").pattern("AAA").define('A', ConventionalItemTags.STONES)
                 .define('J', ItemRegistry.JEWEL.get())
                 .unlockedBy("has_item", has(ItemRegistry.JEWEL.get())).save(consumer);
 
@@ -95,7 +99,7 @@ public class UmapyoiRecipeProvider extends FabricRecipeProvider {
                 .unlockedBy("has_item", has(ItemRegistry.JEWEL.get())).save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, BlockRegistry.SILVER_UMA_PEDESTAL.get()).pattern("AJA").pattern("GAG").pattern("AAA")
-                .define('A', UmapyoiItemTags.STONES).define('G', Items.IRON_INGOT).define('J', ItemRegistry.JEWEL.get())
+                .define('A', ConventionalItemTags.STONES).define('G', Items.IRON_INGOT).define('J', ItemRegistry.JEWEL.get())
                 .unlockedBy("has_item", has(ItemRegistry.JEWEL.get())).save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, BlockRegistry.UMA_PEDESTAL.get()).pattern(" J ").pattern("GAG").pattern("GGG")
@@ -108,7 +112,7 @@ public class UmapyoiRecipeProvider extends FabricRecipeProvider {
 
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS,
                         BlockRegistry.UMA_STATUES.get()).pattern(" J ").pattern(" A ").pattern("AAA")
-                .define('A', UmapyoiItemTags.STONES)
+                .define('A', ConventionalItemTags.STONES)
                 .define('J', ItemRegistry.JEWEL.get()).unlockedBy("has_item", has(ItemRegistry.JEWEL.get()))
                 .save(consumer);
 
@@ -150,41 +154,41 @@ public class UmapyoiRecipeProvider extends FabricRecipeProvider {
                 .unlockedBy("has_item", has(ItemRegistry.JEWEL.get())).save(consumer);
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, ItemRegistry.HACHIMI_MID.get()).requires(Items.HONEY_BOTTLE)
-                .requires(UmapyoiItemTags.SUGAR).requires(UmapyoiItemTags.SUGAR).requires(UmapyoiItemTags.WATER)
+                .requires(UmapyoiItemTags.SUGAR).requires(UmapyoiItemTags.SUGAR).requires(ConventionalItemTags.WATER_BUCKETS)
                 .unlockedBy("has_item", has(Items.HONEY_BOTTLE)).save(consumer);
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, ItemRegistry.HACHIMI_BIG.get()).requires(Items.HONEY_BOTTLE)
                 .requires(Items.HONEY_BOTTLE).requires(UmapyoiItemTags.SUGAR).requires(UmapyoiItemTags.SUGAR)
-                .requires(UmapyoiItemTags.WATER).unlockedBy("has_item", has(Items.HONEY_BLOCK)).save(consumer);
+                .requires(ConventionalItemTags.WATER_BUCKETS).unlockedBy("has_item", has(Items.HONEY_BLOCK)).save(consumer);
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, ItemRegistry.SMALL_ENERGY_DRINK.get()).requires(Items.CARROT)
-                .requires(Items.NETHER_WART).requires(UmapyoiItemTags.SUGAR).requires(UmapyoiItemTags.WATER)
+                .requires(Items.NETHER_WART).requires(UmapyoiItemTags.SUGAR).requires(ConventionalItemTags.WATER_BUCKETS)
                 .unlockedBy("has_item", has(Items.NETHER_WART)).save(consumer);
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, ItemRegistry.MEDIUM_ENERGY_DRINK.get()).requires(Items.CARROT)
                 .requires(Items.CARROT).requires(Items.REDSTONE)
-                .requires(Items.NETHER_WART).requires(UmapyoiItemTags.SUGAR).requires(UmapyoiItemTags.WATER)
+                .requires(Items.NETHER_WART).requires(UmapyoiItemTags.SUGAR).requires(ConventionalItemTags.WATER_BUCKETS)
                 .unlockedBy("has_item", has(Items.NETHER_WART)).save(consumer);
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, ItemRegistry.LARGE_ENERGY_DRINK.get()).requires(Items.CARROT)
                 .requires(Items.CARROT).requires(Items.REDSTONE)
                 .requires(Items.GLOWSTONE_DUST).requires(Items.NETHER_WART)
-                .requires(UmapyoiItemTags.SUGAR).requires(UmapyoiItemTags.WATER)
+                .requires(UmapyoiItemTags.SUGAR).requires(ConventionalItemTags.WATER_BUCKETS)
                 .unlockedBy("has_item", has(Items.NETHER_WART)).save(consumer);
         
         ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, ItemRegistry.ROYAL_BITTER.get())
                 .requires(Items.WHEAT_SEEDS).requires(Items.GLISTERING_MELON_SLICE)
                 .requires(Items.REDSTONE).requires(Items.NETHER_WART)
-                .requires(UmapyoiItemTags.WATER)
+                .requires(ConventionalItemTags.WATER_BUCKETS)
                 .unlockedBy("has_item", has(Items.NETHER_WART)).save(consumer);
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, ItemRegistry.CUPCAKE.get()).requires(Items.CARROT)
                 .requires(Items.WHEAT).requires(Items.EGG).requires(UmapyoiItemTags.SUGAR)
-                .requires(UmapyoiItemTags.MILK).unlockedBy("has_item", has(Items.CARROT)).save(consumer);
+                .requires(ConventionalItemTags.MILK_BUCKETS).unlockedBy("has_item", has(Items.CARROT)).save(consumer);
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, ItemRegistry.SWEET_CUPCAKE.get()).requires(Items.CARROT)
                 .requires(Items.CARROT).requires(Items.WHEAT).requires(Items.EGG)
-                .requires(UmapyoiItemTags.SUGAR).requires(UmapyoiItemTags.SUGAR).requires(UmapyoiItemTags.MILK)
+                .requires(UmapyoiItemTags.SUGAR).requires(UmapyoiItemTags.SUGAR).requires(ConventionalItemTags.MILK_BUCKETS)
                 .unlockedBy("has_item", has(Items.CARROT)).save(consumer);
         
     }

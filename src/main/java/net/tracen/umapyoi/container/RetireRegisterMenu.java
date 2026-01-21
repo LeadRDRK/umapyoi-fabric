@@ -2,7 +2,6 @@ package net.tracen.umapyoi.container;
 
 import com.google.common.collect.Lists;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -19,6 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.item.UmaSoulItem;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.UmaFactorRegistry;
 import net.tracen.umapyoi.registry.UmaSkillRegistry;
 import net.tracen.umapyoi.registry.factors.FactorType;
@@ -166,8 +166,8 @@ public class RetireRegisterMenu extends AbstractContainerMenu {
         this.rand.setSeed(this.getFactorSeed().get());
         List<UmaFactorStack> stackList = createResultFactors(inputSoul, ranking);
 
-        result.getOrCreateTag().putString("name", UmaSoulUtils.getName(inputSoul).toString());
-        result.getOrCreateTag().put("factors", UmaFactorUtils.serializeNBT(stackList));
+        result.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), UmaSoulUtils.getName(inputSoul));
+        result.set(DataComponentsTypeRegistry.FACTOR_DATA.get(), UmaFactorUtils.serializeData(stackList));
         return result;
     }
 
@@ -179,7 +179,15 @@ public class RetireRegisterMenu extends AbstractContainerMenu {
                 .filter(fac -> fac.getFactorType() == FactorType.STATUS).count();
         StatusFactor statusFactor = (StatusFactor) status.skip(rand.nextLong(statusCount)).findFirst()
                 .orElse(UmaFactorRegistry.SPEED_FACTOR.get());
-        var statusProperty = UmaSoulUtils.getProperty(inputSoul)[statusFactor.getStatusType().getId()];
+
+        int statusProperty = 0;
+        switch (statusFactor.getStatusType()) {
+            case SPEED -> statusProperty = UmaSoulUtils.getProperty(inputSoul).speed();
+            case STAMINA -> statusProperty = UmaSoulUtils.getProperty(inputSoul).stamina();
+            case STRENGTH -> statusProperty = UmaSoulUtils.getProperty(inputSoul).strength();
+            case GUTS -> statusProperty = UmaSoulUtils.getProperty(inputSoul).guts();
+            case WISDOM -> statusProperty = UmaSoulUtils.getProperty(inputSoul).wisdom();
+        }
         var i = statusProperty > 18 ? statusFactor.getMaxLevel() + 1 :
                 statusProperty > 10 ? 3 :
                 2;
@@ -196,7 +204,7 @@ public class RetireRegisterMenu extends AbstractContainerMenu {
                 statusFactor.getMaxLevel() : 2) + 1);
 
         UmaFactorStack uniqueFactor = new UmaFactorStack(UmaFactorRegistry.UNIQUE_SKILL_FACTOR.get(), 1);
-        uniqueFactor.getOrCreateTag().putString("skill", UmaSoulUtils.getSkills(inputSoul).get(0).getAsString());
+        uniqueFactor.getOrCreateTag().putString("skill", UmaSoulUtils.getSkills(inputSoul).get(0).toString());
 
         List<UmaFactorStack> stackList = Lists.newArrayList(statusFactorStack, extraStatusFactorStack, uniqueFactor);
 
@@ -207,18 +215,18 @@ public class RetireRegisterMenu extends AbstractContainerMenu {
 
     public void createSkillFactors(ItemStack inputSoul, int ranking, List<UmaFactorStack> stackList) {
         UmaSoulUtils.getSkills(inputSoul).stream().skip(1).forEach(skillTag -> {
-            var name = skillTag.getAsString();
-            ResourceLocation skill = ResourceLocation.tryParse(name);
-            if (skill != null && UmaSkillRegistry.REGISTRY.get().containsKey(skill)) {
-                UmaSkill result = UmaSkillRegistry.REGISTRY.get().get(skill);
+            if (skillTag != null && UmaSkillRegistry.REGISTRY.get().containsKey(skillTag)) {
+                UmaSkill result = UmaSkillRegistry.REGISTRY.get().get(skillTag);
                 if(!result.isInheritable())
                     return;
 
                 int skillLevel = this.rand.nextInt(ranking > 18 ? 6 : 4);
                 if (skillLevel == 0)
                     return;
+
                 UmaFactorStack skillFactor = new UmaFactorStack(UmaFactorRegistry.SKILL_FACTOR.get(), skillLevel);
-                skillFactor.getOrCreateTag().putString("skill", name);
+
+                skillFactor.getOrCreateTag().putString("skill", skillTag.toString());
                 stackList.add(skillFactor);
             }
         });

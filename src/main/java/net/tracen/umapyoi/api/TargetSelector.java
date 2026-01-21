@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.item.PrimedTnt;
@@ -121,11 +123,10 @@ public class TargetSelector {
 
     public static double getResolvedReach(LivingEntity user) {
         double reach = 4.0D; /* 4 block */
-//        FIXME: ENTITY_INTERACTION_RANGE is not builtin on 1.20.1
-//        AttributeInstance attrib = user.getAttribute(Attributes.ENTITY_INTERACTION_RANGE);
-//        if (attrib != null) {
-//            reach = attrib.getValue() - 1;
-//        }
+        AttributeInstance attrib = user.getAttribute(Attributes.ENTITY_INTERACTION_RANGE);
+        if (attrib != null) {
+            reach = attrib.getValue() - 1;
+        }
         return reach;
     }
 }

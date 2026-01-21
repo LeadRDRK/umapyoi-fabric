@@ -1,14 +1,14 @@
 package net.tracen.umapyoi.network;
 
-import net.fabricmc.fabric.api.networking.v1.FabricPacket;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.api.networking.v1.PacketType;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Holder;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.Umapyoi;
@@ -19,26 +19,23 @@ import net.tracen.umapyoi.registry.UmaSkillRegistry;
 import net.tracen.umapyoi.registry.skills.UmaSkill;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
-public class UseSkillPacket implements FabricPacket {
-    public UseSkillPacket() {
-    }
+public record UseSkillPacket() implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<UseSkillPacket> TYPE =
+            new CustomPacketPayload.Type<>(new ResourceLocation(Umapyoi.MODID, "packet/use_skill"));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, UseSkillPacket> CODEC =
+            StreamCodec.unit(new UseSkillPacket());
 
     @Override
-    public void write(FriendlyByteBuf buf) {
-    }
-
-    public static final PacketType<UseSkillPacket> TYPE = PacketType.create(
-            new ResourceLocation(Umapyoi.MODID, "packet/use_skill"),
-            (buf) -> new UseSkillPacket()
-    );
-
-    @Override
-    public PacketType<UseSkillPacket> getType() {
+    @MethodsReturnNonnullByDefault
+    public Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 
-    public static void handler(UseSkillPacket packet, ServerPlayer player, PacketSender responseSender) {
+    public static void handler(UseSkillPacket packet, ServerPlayNetworking.Context context) {
+        var player = context.player();
         if (player.isSpectator()) return;
+
         ItemStack umaSoul = UmapyoiAPI.getUmaSoul(player);
 
         if (!umaSoul.isEmpty()) {

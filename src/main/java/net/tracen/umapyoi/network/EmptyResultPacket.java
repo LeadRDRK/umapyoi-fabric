@@ -1,33 +1,29 @@
 package net.tracen.umapyoi.network;
 
-import net.fabricmc.fabric.api.networking.v1.FabricPacket;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.api.networking.v1.PacketType;
-import net.minecraft.network.FriendlyByteBuf;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.container.UmaSelectMenu;
 
-public class EmptyResultPacket implements FabricPacket {
-    public EmptyResultPacket() {
-    }
+public record EmptyResultPacket() implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<EmptyResultPacket> TYPE =
+            new CustomPacketPayload.Type<>(new ResourceLocation(Umapyoi.MODID, "packet/empty_result"));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, EmptyResultPacket> CODEC =
+            StreamCodec.unit(new EmptyResultPacket());
 
     @Override
-    public void write(FriendlyByteBuf buf) {
-    }
-
-    public static final PacketType<EmptyResultPacket> TYPE = PacketType.create(
-            new ResourceLocation(Umapyoi.MODID, "packet/empty_result"),
-            (buf) -> new EmptyResultPacket()
-    );
-
-    @Override
-    public PacketType<EmptyResultPacket> getType() {
+    @MethodsReturnNonnullByDefault
+    public Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 
-    public static void handler(EmptyResultPacket packet, ServerPlayer player, PacketSender responseSender) {
+    public static void handler(EmptyResultPacket packet, ServerPlayNetworking.Context context) {
+        var player = context.player();
         if (player.containerMenu instanceof UmaSelectMenu menu) {
             menu.setItemName(null);
         }

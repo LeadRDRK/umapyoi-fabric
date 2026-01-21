@@ -1,8 +1,9 @@
 package net.tracen.umapyoi.recipe;
 
-import net.minecraft.core.Registry;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
@@ -41,24 +42,26 @@ public class ShapedSupportCardRecipe extends ShapedRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer pContainer, RegistryAccess pRegistryAccess) {
-        return this.getResultItem(pRegistryAccess).copy();
+    public ItemStack assemble(CraftingContainer craftingContainer, HolderLookup.Provider registries) {
+        return this.getResultItem(registries).copy();
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess access) {
-        ItemStack result = ShapedSupportCardRecipe.getResultItem(this.getOutput()).copy();
-        if(access == RegistryAccess.EMPTY)
+    public ItemStack getResultItem(HolderLookup.Provider registries) {
+        ItemStack result = getResultItem(outputUma).copy();
+        if(registries == RegistryAccess.EMPTY)
             return result;
-        Registry<SupportCard> registry = access.registryOrThrow(SupportCard.REGISTRY_KEY);
-        if (!BuiltInRegistries.ITEM.getKey(result.getItem()).equals(getOutput()))
-            result = ItemRegistry.SUPPORT_CARD.get().getDefaultInstance();
-        SupportCard supportCard = registry.get(this.outputUma);
-        if(supportCard == null)
-            return ItemStack.EMPTY;
-        result.getOrCreateTag().putString("support_card", this.outputUma.toString());
-        result.getOrCreateTag().putString("ranking", registry.get(this.outputUma).getGachaRanking().name().toLowerCase());
-        result.getOrCreateTag().putInt("maxDamage", registry.get(this.outputUma).getMaxDamage());
+
+        if (!BuiltInRegistries.ITEM.getKey(result.getItem()).equals(outputUma)) {
+            var supportCardOpt = registries
+                    .lookupOrThrow(SupportCard.REGISTRY_KEY)
+                    .get(ResourceKey.create(SupportCard.REGISTRY_KEY, outputUma));
+            if (supportCardOpt.isEmpty())
+                return ItemStack.EMPTY;
+
+            var supportCard = supportCardOpt.get().value();
+            return SupportCard.init(outputUma, supportCard);
+        }
         return result;
     }
     @Override

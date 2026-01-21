@@ -2,7 +2,6 @@ package net.tracen.umapyoi.utils;
 
 import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
-import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.fabricmc.api.EnvType;
@@ -10,6 +9,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.model.Model;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -29,7 +29,6 @@ import net.tracen.umapyoi.registry.cosmetics.CosmeticData;
 import net.tracen.umapyoi.registry.training.card.SupportCard;
 import net.tracen.umapyoi.registry.umadata.UmaData;
 
-import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
 import java.util.HashMap;
@@ -107,21 +106,22 @@ public class ClientUtils {
         }
     }
 
-    public static void renderModelInInventory(GuiGraphics guiGraphic, int pPosX, int pPosY, int pScale, Quaternionf pQuaternion, Model pModel,
+    public static void renderModelInInventory(GuiGraphics guiGraphic,
+                                              int x,
+                                              int y,
+                                              int scale,
+                                              Quaternionf pose, Model pModel,
                                               ResourceLocation texture) {
         guiGraphic.pose().pushPose();
-        guiGraphic.pose().translate((double)pPosX, (double)pPosY, 50.0D);
-        guiGraphic.pose().mulPoseMatrix((new Matrix4f()).scaling((float)pScale, (float)pScale, (float)(-pScale)));
-        guiGraphic.pose().mulPose(pQuaternion);
-        Lighting.setupForEntityInInventory();
-        MultiBufferSource.BufferSource multibuffersource$buffersource = Minecraft.getInstance().renderBuffers()
-                .bufferSource();
-        VertexConsumer vertexconsumer = multibuffersource$buffersource
+        guiGraphic.pose().translate(x, y, 50.0D);
+        guiGraphic.pose().scale(scale, scale, -scale);
+        guiGraphic.pose().mulPose(pose);
+        MultiBufferSource.BufferSource buffersource = guiGraphic.bufferSource();
+        VertexConsumer vertexconsumer = buffersource
                 .getBuffer(RenderType.entityTranslucent(ClientUtils.getTexture(texture)));
-        pModel.renderToBuffer(guiGraphic.pose(), vertexconsumer, 15728880, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
-        multibuffersource$buffersource.endBatch();
+        pModel.renderToBuffer(guiGraphic.pose(), vertexconsumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
+        guiGraphic.flush();
         guiGraphic.pose().popPose();
-        Lighting.setupFor3DItems();
     }
 
     /****** MMLib ******/

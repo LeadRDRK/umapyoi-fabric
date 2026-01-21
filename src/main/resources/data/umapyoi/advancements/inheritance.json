@@ -2,7 +2,7 @@
   "parent": "umapyoi:register_lectern",
   "display": {
     "icon": {
-      "item": "umapyoi:uma_factor_item"
+      "id": "umapyoi:uma_factor_item"
     },
     "title": {
       "translate": "advancement.umapyoi.inheritance.title"

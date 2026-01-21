@@ -3,6 +3,7 @@ package net.tracen.umapyoi.block.entity;
 import com.google.common.collect.Lists;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
@@ -21,6 +22,7 @@ import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.data.builtin.UmaDataRegistry;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
 import net.tracen.umapyoi.item.FadedUmaSoulItem;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.umadata.UmaData;
 import net.tracen.umapyoi.utils.ClientUtils;
 import net.tracen.umapyoi.utils.GachaRanking;
@@ -32,7 +34,7 @@ import java.util.Collection;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class SilverUmaPedestalBlockEntity extends SyncedInventoryEntity implements Gachable {
+public class SilverUmaPedestalBlockEntity extends AbstractPedestalBlockEntity implements Gachable {
 
     public static final int MAX_PROCESS_TIME = 200;
     private final NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
@@ -120,12 +122,7 @@ public class SilverUmaPedestalBlockEntity extends SyncedInventoryEntity implemen
         ResourceLocation holder = keys.stream().skip(keys.isEmpty() ? 0 : rand.nextInt(keys.size())).findFirst()
                 .orElse(UmaDataRegistry.COMMON_UMA.getId());
 
-//        ItemStack result = ItemRegistry.BLANK_UMA_SOUL.get().getDefaultInstance();
-//        UmaData data = registry.get(holder);
-//        result.getOrCreateTag().putString("name", holder.toString());
-//        result.getOrCreateTag().putString("identifier", data.getIdentifier().toString());
-//        result.getOrCreateTag().putString("ranking", data.getGachaRanking().toString().toLowerCase());
-        ItemStack result = FadedUmaSoulItem.genUmaSoul(holder.toString(), registry.get(holder));
+        ItemStack result = FadedUmaSoulItem.genUmaSoul(holder, registry.get(holder));
         return result;
     }
 
@@ -172,29 +169,29 @@ public class SilverUmaPedestalBlockEntity extends SyncedInventoryEntity implemen
     }
 
     @Override
-    public void load(CompoundTag compound) {
-        super.load(compound);
+    public void loadAdditional(CompoundTag compound, HolderLookup.Provider registries) {
+        super.loadAdditional(compound, registries);
         clearContent();
-        ContainerHelper.loadAllItems(compound, items);
+        ContainerHelper.loadAllItems(compound, items, registries);
         recipeTime = compound.getInt("RecipeTime");
     }
 
     @Override
-    public void saveAdditional(CompoundTag compound) {
-        super.saveAdditional(compound);
+    public void saveAdditional(CompoundTag compound, HolderLookup.Provider registries) {
+        super.saveAdditional(compound, registries);
         compound.putInt("RecipeTime", recipeTime);
-        ContainerHelper.saveAllItems(compound, items);
+        ContainerHelper.saveAllItems(compound, items, registries);
     }
 
-    private CompoundTag writeItems(CompoundTag compound) {
-        super.saveAdditional(compound);
-        ContainerHelper.saveAllItems(compound, items);
+    private CompoundTag writeItems(CompoundTag compound, HolderLookup.Provider registries) {
+        super.saveAdditional(compound, registries);
+        ContainerHelper.saveAllItems(compound, items, registries);
         return compound;
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        return writeItems(new CompoundTag());
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return writeItems(new CompoundTag(), registries);
     }
 
     private ContainerData createIntArray() {
@@ -228,13 +225,13 @@ public class SilverUmaPedestalBlockEntity extends SyncedInventoryEntity implemen
     @Override
     public Predicate<? super ResourceLocation> getFilter(Level level, ItemStack input) {
         return resloc -> {
-            if (!input.getOrCreateTag().getString("name").isBlank()) {
-                return resloc.equals(ResourceLocation.tryParse(input.getOrCreateTag().getString("name")));
+            if (input.has(DataComponentsTypeRegistry.DATA_LOCATION.get())) {
+                return resloc.equals(input.get(DataComponentsTypeRegistry.DATA_LOCATION.get()));
             }
             if (input.is(UmapyoiItemTags.SR_UMA_TICKET))
-                return UmapyoiAPI.getUmaDataRegistry(level).get(resloc).getGachaRanking() == GachaRanking.SR;
+                return UmapyoiAPI.getUmaDataRegistry(level).get(resloc).ranking() == GachaRanking.SR;
             if (input.is(UmapyoiItemTags.COMMON_GACHA_ITEM))
-                return UmapyoiAPI.getUmaDataRegistry(level).get(resloc).getGachaRanking() == GachaRanking.R;
+                return UmapyoiAPI.getUmaDataRegistry(level).get(resloc).ranking() == GachaRanking.R;
             boolean cfgFlag = GachaUtils.checkGachaConfig();
             int gacha_roll;
             int ssrHit = cfgFlag ? Umapyoi.CONFIG.GACHA_PROBABILITY_SSR()
@@ -243,7 +240,7 @@ public class SilverUmaPedestalBlockEntity extends SyncedInventoryEntity implemen
                     cfgFlag ? Umapyoi.CONFIG.GACHA_PROBABILITY_SUM() : UmapyoiConfigModel.DEFAULT_GACHA_PROBABILITY_SUM);
             int srHit = ssrHit + (cfgFlag ? Umapyoi.CONFIG.GACHA_PROBABILITY_SR() : UmapyoiConfigModel.DEFAULT_GACHA_PROBABILITY_SR);
             return UmapyoiAPI.getUmaDataRegistry(level).get(resloc)
-                    .getGachaRanking() == (gacha_roll < srHit ? GachaRanking.SR : GachaRanking.R);
+                    .ranking() == (gacha_roll < srHit ? GachaRanking.SR : GachaRanking.R);
         };
     }
 

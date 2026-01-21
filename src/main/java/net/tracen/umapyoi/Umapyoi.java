@@ -3,6 +3,7 @@ package net.tracen.umapyoi;
 import com.mojang.logging.LogUtils;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.world.item.Item;
 import net.tracen.umapyoi.block.BlockRegistry;
@@ -18,6 +19,7 @@ import net.tracen.umapyoi.events.handler.AnvilEvents;
 import net.tracen.umapyoi.events.handler.CommonEvents;
 import net.tracen.umapyoi.events.handler.PassiveSkillEvents;
 import net.tracen.umapyoi.item.ItemRegistry;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.network.EmptyResultPacket;
 import net.tracen.umapyoi.network.SelectSkillPacket;
 import net.tracen.umapyoi.network.SetupResultPacket;
@@ -57,6 +59,7 @@ public class Umapyoi implements ModInitializer {
         VillageRegistry.registerPoi();
         VillagerTradeRegistry.register();
         RecipeSerializerRegistry.RECIPE_SERIALIZER.register();
+        DataComponentsTypeRegistry.DATA_COMPONENTS.register();
 
         CommonEvents.register();
 
@@ -65,6 +68,11 @@ public class Umapyoi implements ModInitializer {
         AnvilUpdateCallback.EVENT.register(AnvilEvents::onAnvilEgg);
 
         PassiveSkillEvents.register();
+
+        PayloadTypeRegistry.playC2S().register(UseSkillPacket.TYPE, UseSkillPacket.CODEC);
+        PayloadTypeRegistry.playC2S().register(SelectSkillPacket.TYPE, SelectSkillPacket.CODEC);
+        PayloadTypeRegistry.playC2S().register(SetupResultPacket.TYPE, SetupResultPacket.CODEC);
+        PayloadTypeRegistry.playC2S().register(EmptyResultPacket.TYPE, EmptyResultPacket.CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(UseSkillPacket.TYPE, UseSkillPacket::handler);
         ServerPlayNetworking.registerGlobalReceiver(SelectSkillPacket.TYPE, SelectSkillPacket::handler);

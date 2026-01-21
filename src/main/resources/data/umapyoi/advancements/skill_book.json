@@ -2,7 +2,7 @@
   "parent": "umapyoi:skill_learning_table",
   "display": {
     "icon": {
-      "item": "umapyoi:skill_book"
+      "id": "umapyoi:skill_book"
     },
     "title": {
       "translate": "advancement.umapyoi.skill_book.title"

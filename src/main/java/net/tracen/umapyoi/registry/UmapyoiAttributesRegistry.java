@@ -1,5 +1,6 @@
 package net.tracen.umapyoi.registry;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -8,25 +9,33 @@ import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.tracen.umapyoi.Umapyoi;
 
 public class UmapyoiAttributesRegistry {
-    public static final Attribute SPRINT_SPEED = new RangedAttribute(
+    public static final Holder<Attribute> SPRINT_SPEED = register("sprint_speed",
             "attribute.umapyoi.generic.sprint_speed",
-            0.7D, 0.0D, 1024.0D).setSyncable(true);
+            0.7D, 0.0D, 1024.0D, true);
 
-    public static final Attribute STEP_HEIGHT_ADDITION = new RangedAttribute(
+    public static final Holder<Attribute> STEP_HEIGHT_ADDITION = register("step_height_addition",
             "attribute.umapyoi.generic.step_height_addition",
-            0.0D, -512.0D, 512.0D).setSyncable(true);
+            0.0D, -512.0D, 512.0D, true);
 
-    public static final Attribute SWIM_SPEED = new RangedAttribute(
+    public static final Holder<Attribute> SWIM_SPEED = register("swim_speed",
             "attribute.umapyoi.generic.swim_speed",
-            1.0D, 0.0D, 1024.0D).setSyncable(true);
+            1.0D, 0.0D, 1024.0D, true);
 
-    public static void register() {
-        register("sprint_speed", SPRINT_SPEED);
-        register("step_height_addition", STEP_HEIGHT_ADDITION);
-        register("swim_speed", SWIM_SPEED);
+    private static Holder<Attribute> register(
+            String path, String descriptionId, double defaultValue, double minValue, double maxValue, boolean syncedWithClient
+    ) {
+        var name = new ResourceLocation(Umapyoi.MODID, path);
+        Attribute entityAttribute = new RangedAttribute(
+                descriptionId,
+                defaultValue,
+                minValue,
+                maxValue
+        ).setSyncable(syncedWithClient);
+
+        return Registry.registerForHolder(BuiltInRegistries.ATTRIBUTE, name, entityAttribute);
     }
 
-    private static void register(String path, Attribute attribute) {
-        Registry.register(BuiltInRegistries.ATTRIBUTE, new ResourceLocation(Umapyoi.MODID, path), attribute);
+    public static void register() {
+        // dummy
     }
 }

@@ -4,9 +4,7 @@ import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -26,7 +24,6 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.tracen.umapyoi.block.entity.BlockEntityRegistry;
 import net.tracen.umapyoi.block.entity.ThreeGoddessBlockEntity;
-import net.tracen.umapyoi.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
@@ -88,13 +85,13 @@ public class ThreeGoddessBlock extends BaseEntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn,
-            BlockHitResult result) {
-        if (!world.isClientSide) {
-            BlockEntity tileEntity = world.getBlockEntity(pos);
+    public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (!level.isClientSide()) {
+            BlockEntity tileEntity = level.getBlockEntity(pos);
             if (tileEntity instanceof ThreeGoddessBlockEntity blockEntity) {
-                NetworkHooks.openScreen((ServerPlayer) player, blockEntity, pos);
+                player.openMenu(blockEntity);
             }
+            return InteractionResult.CONSUME;
         }
         return InteractionResult.SUCCESS;
     }

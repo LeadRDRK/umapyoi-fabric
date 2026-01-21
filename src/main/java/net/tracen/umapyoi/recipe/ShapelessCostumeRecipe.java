@@ -1,5 +1,6 @@
 package net.tracen.umapyoi.recipe;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -9,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.tracen.umapyoi.item.ItemRegistry;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 
 public class ShapelessCostumeRecipe extends ShapelessRecipe {
 
@@ -35,18 +37,20 @@ public class ShapelessCostumeRecipe extends ShapelessRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer pContainer, RegistryAccess pRegistryAccess) {
-        return this.getResultItem(pRegistryAccess).copy();
+    public ItemStack assemble(CraftingContainer craftingContainer, HolderLookup.Provider registries) {
+        return this.getResultItem(registries).copy();
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess access) {
-        ItemStack result = ShapelessCostumeRecipe.getResultItem(this.getOutput()).copy();
-        if(access == RegistryAccess.EMPTY)
+    public ItemStack getResultItem(HolderLookup.Provider registries) {
+        ItemStack result = ShapelessCostumeRecipe.getResultItem(output).copy();
+        if(registries == RegistryAccess.EMPTY)
             return result;
-        if (!BuiltInRegistries.ITEM.getKey(result.getItem()).equals(getOutput()))
+
+        if (!BuiltInRegistries.ITEM.getKey(result.getItem()).equals(output)) {
             result = ItemRegistry.UMA_COSTUME.get().getDefaultInstance();
-        result.getOrCreateTag().putString("cosmetic", this.output.toString());
+            result.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), output);
+        }
         return result;
     }
 

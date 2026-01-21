@@ -19,8 +19,10 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:set_nbt",
-              "tag": "{skill:\"umapyoi:last_leg\"}"
+              "function": "set_components",
+              "components": {
+                "umapyoi:data_location": "umapyoi:last_leg"
+              }
             }
           ],
           "name": "umapyoi:skill_book"
@@ -29,8 +31,10 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:set_nbt",
-              "tag": "{skill:\"umapyoi:deep_breaths\"}"
+              "function": "set_components",
+              "components": {
+                "umapyoi:data_location": "umapyoi:deep_breaths"
+              }
             }
           ],
           "name": "umapyoi:skill_book"
@@ -39,8 +43,10 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:set_nbt",
-              "tag": "{skill:\"umapyoi:nutritional_supplements\"}"
+              "function": "set_components",
+              "components": {
+                "umapyoi:data_location": "umapyoi:nutritional_supplements"
+              }
             }
           ],
           "name": "umapyoi:skill_book"
@@ -49,8 +55,10 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:set_nbt",
-              "tag": "{skill:\"umapyoi:serene\"}"
+              "function": "set_components",
+              "components": {
+                "umapyoi:data_location": "umapyoi:serene"
+              }
             }
           ],
           "name": "umapyoi:skill_book"
@@ -59,8 +67,10 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:set_nbt",
-              "tag": "{skill:\"umapyoi:low_health_buff\"}"
+              "function": "set_components",
+              "components": {
+                "umapyoi:data_location": "umapyoi:low_health_buff"
+              }
             }
           ],
           "name": "umapyoi:skill_book"
@@ -69,8 +79,10 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:set_nbt",
-              "tag": "{skill:\"umapyoi:low_health_heal\"}"
+              "function": "set_components",
+              "components": {
+                "umapyoi:data_location": "umapyoi:low_health_heal"
+              }
             }
           ],
           "name": "umapyoi:skill_book"
@@ -80,8 +92,10 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:set_nbt",
-              "tag": "{skill:\"umapyoi:mountain_climber\"}"
+              "function": "set_components",
+              "components": {
+                "umapyoi:data_location": "umapyoi:mountain_climber"
+              }
             }
           ],
           "name": "umapyoi:skill_book"
@@ -90,8 +104,10 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:set_nbt",
-              "tag": "{skill:\"umapyoi:dig_speed\"}"
+              "function": "set_components",
+              "components": {
+                "umapyoi:data_location": "umapyoi:dig_speed"
+              }
             }
           ],
           "name": "umapyoi:skill_book"

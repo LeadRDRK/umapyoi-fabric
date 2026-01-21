@@ -1,34 +1,31 @@
 package net.tracen.umapyoi.recipe;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ExtraCodecs;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.item.ItemRegistry;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class UmasoulIngredient implements CustomIngredient {
     private final Set<Item> items;
@@ -89,7 +86,7 @@ public class UmasoulIngredient implements CustomIngredient {
         }
 
         @Override
-        public Codec<UmasoulIngredient> getCodec(boolean allowEmpty) {
+        public MapCodec<UmasoulIngredient> getCodec(boolean allowEmpty) {
             Codec<Set<Item>> itemSetCodec = ResourceLocation.CODEC
                     .xmap(
                             BuiltInRegistries.ITEM::get,
@@ -113,7 +110,7 @@ public class UmasoulIngredient implements CustomIngredient {
                     );
 
             // Either single item or array of items
-            Codec<Set<Item>> itemsCodec = ExtraCodecs.either(
+            Codec<Set<Item>> itemsCodec = Codec.either(
                     singleItemCodec.fieldOf("item").codec(),
                     itemSetCodec.fieldOf("items").codec()
             ).xmap(
@@ -124,7 +121,7 @@ public class UmasoulIngredient implements CustomIngredient {
             );
 
             // Final codec with optional default
-            return RecordCodecBuilder.create(instance ->
+            return RecordCodecBuilder.mapCodec(instance ->
                     instance.group(
                             itemsCodec.optionalFieldOf("items", Set.of(ItemRegistry.BLANK_UMA_SOUL.get()))
                                     .forGetter(ingredient -> ingredient.items),
@@ -135,20 +132,15 @@ public class UmasoulIngredient implements CustomIngredient {
         }
 
         @Override
-        public UmasoulIngredient read(FriendlyByteBuf buffer) {
-            Set<Item> items = Stream.generate(() -> BuiltInRegistries.ITEM.byId(buffer.readVarInt()))
-                    .limit(buffer.readVarInt()).collect(Collectors.toSet());
-            RequestUma request = RequestUma.fromNetwork(buffer);
-            return new UmasoulIngredient(items, request);
+        public StreamCodec<RegistryFriendlyByteBuf, UmasoulIngredient> getPacketCodec() {
+            return StreamCodec.composite(
+                    ByteBufCodecs.collection(
+                            HashSet::new,
+                            ByteBufCodecs.idMapper(Item::byId, Item::getId)
+                    ), i -> i.items,
+                    RequestUma.STREAM_CODEC, i -> i.request,
+                    UmasoulIngredient::new
+            );
         }
-
-        @Override
-        public void write(FriendlyByteBuf buffer, UmasoulIngredient ingredient) {
-            buffer.writeVarInt(ingredient.items.size());
-            for (Item item : ingredient.items)
-                buffer.writeVarInt(BuiltInRegistries.ITEM.getId(item));
-            ingredient.request.toNetwork(buffer);
-        }
-
     }
 }

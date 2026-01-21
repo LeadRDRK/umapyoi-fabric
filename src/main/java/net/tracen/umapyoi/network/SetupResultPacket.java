@@ -1,43 +1,35 @@
 package net.tracen.umapyoi.network;
 
-import net.fabricmc.fabric.api.networking.v1.FabricPacket;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.api.networking.v1.PacketType;
-import net.minecraft.SharedConstants;
-import net.minecraft.network.FriendlyByteBuf;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.container.UmaSelectMenu;
 
-public class SetupResultPacket implements FabricPacket {
-    private final String message;
+public record SetupResultPacket(String message) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<SetupResultPacket> TYPE =
+            new CustomPacketPayload.Type<>(new ResourceLocation(Umapyoi.MODID, "packet/setup_result"));
 
-    public SetupResultPacket(String message) {
-        this.message = message;
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buf) {
-        buf.writeUtf(message);
-    }
-
-    public static final PacketType<SetupResultPacket> TYPE = PacketType.create(
-            new ResourceLocation(Umapyoi.MODID, "packet/setup_result"),
-            (buf) -> new SetupResultPacket(
-                    buf.readUtf()
-            )
+    public static final StreamCodec<RegistryFriendlyByteBuf, SetupResultPacket> CODEC = StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8,
+            SetupResultPacket::message,
+            SetupResultPacket::new
     );
 
     @Override
-    public PacketType<SetupResultPacket> getType() {
+    @MethodsReturnNonnullByDefault
+    public Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 
-    public static void handler(SetupResultPacket packet, ServerPlayer player, PacketSender responseSender) {
+    public static void handler(SetupResultPacket packet, ServerPlayNetworking.Context context) {
+        var player = context.player();
         if (player.containerMenu instanceof UmaSelectMenu menu) {
-            String s = SharedConstants.filterText(packet.message);
-            //Umapyoi.getLogger().info("Packet received:{}",s);
+            String s = packet.message;
             if (s.length() <= 50) {
                 menu.setItemName(ResourceLocation.tryParse(s));
             }

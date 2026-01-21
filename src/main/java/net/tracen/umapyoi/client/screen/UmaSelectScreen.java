@@ -12,6 +12,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -25,6 +26,8 @@ import net.tracen.umapyoi.container.UmaSelectMenu;
 import net.tracen.umapyoi.container.UmaSelectMenu.SelectComparator;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
 import net.tracen.umapyoi.item.ItemRegistry;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
+import net.tracen.umapyoi.item.data.GachaRankingData;
 import net.tracen.umapyoi.network.EmptyResultPacket;
 import net.tracen.umapyoi.network.SetupResultPacket;
 import net.tracen.umapyoi.registry.training.card.SupportCard;
@@ -267,16 +270,16 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
                 var uma = ClientUtils.getClientUmaDataRegistry().get(resloc);
                 boolean ssrRanking = input.is(UmapyoiItemTags.SSR_UMA_TICKET);
                 boolean srRanking = input.is(UmapyoiItemTags.SR_UMA_TICKET);
-                boolean rankingCheck = ssrRanking ? uma.getGachaRanking() == GachaRanking.SSR
-                        : srRanking ? uma.getGachaRanking() == GachaRanking.SR
-                        : uma.getGachaRanking() == GachaRanking.R;
+                boolean rankingCheck = ssrRanking ? uma.ranking() == GachaRanking.SSR
+                        : srRanking ? uma.ranking() == GachaRanking.SR
+                        : uma.ranking() == GachaRanking.R;
 
                 if (this.getName().isBlank())
                     return rankingCheck;
                 String s = this.getName().toLowerCase(Locale.ROOT);
                 if (s.startsWith("@")) {
                     s = s.substring(1);
-                    return uma.getIdentifier().equals(ResourceLocation.tryParse(s)) && rankingCheck;
+                    return uma.identifier().equals(ResourceLocation.tryParse(s)) && rankingCheck;
                 }
                 var localized = Component.translatable(Util.makeDescriptionId("umadata", resloc));
                 boolean nameCheck = resloc.toString().contains(s)
@@ -299,9 +302,10 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
         if (this.getMenu().getSlot(0).getItem().is(UmapyoiItemTags.CARD_TICKET)) {
             Registry<SupportCard> registry = ClientUtils.getClientSupportCardRegistry();
             ItemStack result = ItemRegistry.SUPPORT_CARD.get().getDefaultInstance();
-            result.getOrCreateTag().putString("support_card", name.toString());
-            result.getOrCreateTag().putString("ranking", registry.get(name).getGachaRanking().name().toLowerCase());
-            result.getOrCreateTag().putInt("maxDamage", registry.get(name).getMaxDamage());
+
+            result.set(DataComponents.MAX_DAMAGE, registry.get(name).getMaxDamage());
+            result.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), name);
+            result.set(DataComponentsTypeRegistry.GACHA_RANKING.get(), new GachaRankingData(registry.get(name).getGachaRanking()));
             return result;
         } else {
             Registry<UmaData> registry = ClientUtils.getClientUmaDataRegistry();

@@ -4,6 +4,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.VillagerTrades.ItemListing;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.registry.UmaSkillRegistry;
@@ -34,7 +35,7 @@ public class SkillBooksItemListing implements ItemListing {
             j = 64;
         }
 
-        return new MerchantOffer(new ItemStack(ItemRegistry.JEWEL.get(), j), ItemStack.EMPTY, itemstack, 12,
+        return new MerchantOffer(new ItemCost(ItemRegistry.JEWEL.get(), j), itemstack, 12,
                 this.villagerXp, 0.2F);
     }
 }

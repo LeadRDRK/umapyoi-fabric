@@ -12,10 +12,11 @@
       "tag": "c:sugar"
     },
     {
-      "tag": "c:water"
+      "tag": "c:buckets/water"
     }
   ],
   "result": {
-    "item": "umapyoi:small_energy_drink"
+    "count": 1,
+    "id": "umapyoi:small_energy_drink"
   }
 }

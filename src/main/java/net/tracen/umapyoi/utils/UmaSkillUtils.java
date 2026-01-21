@@ -1,11 +1,10 @@
 package net.tracen.umapyoi.utils;
 
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.events.LearnSkillCallback;
 import net.tracen.umapyoi.item.ItemRegistry;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.TrainingSupportRegistry;
 import net.tracen.umapyoi.registry.UmaSkillRegistry;
 import net.tracen.umapyoi.registry.skills.UmaSkill;
@@ -34,7 +33,8 @@ public class UmaSkillUtils {
         if (skill == null)
             return ItemStack.EMPTY;
         ItemStack result = new ItemStack(ItemRegistry.SKILL_BOOK.get());
-        result.getOrCreateTag().putString("skill", skill.getRegistryName().toString());
+        result.update(DataComponentsTypeRegistry.DATA_LOCATION.get(), UmaSkillRegistry.BASIC_PACE.getId(),
+                loc -> skill.getRegistryName());
         return result;
     }
 
@@ -46,35 +46,32 @@ public class UmaSkillUtils {
         if (!UmaSoulUtils.hasEmptySkillSlot(stack))
             return;
         if (skill != null && UmaSkillRegistry.REGISTRY.get().containsKey(skill)) {
-            ListTag skills = UmaSoulUtils.getSkills(stack);
             UmaSkill skillItem = UmaSkillRegistry.REGISTRY.get().get(skill);
             if(skillItem.getUpperSkill() !=null)
                 if (hasLearnedSkill(stack, skillItem.getUpperSkill()))
                     return;
-            
-            StringTag tag = StringTag.valueOf(skill.toString());
+
             int lowerSkillIndex = getLowerSkillIndex(stack, skill);
             if (lowerSkillIndex != -1)
-                skills.setTag(lowerSkillIndex, tag);
-            
+                UmaSoulUtils.setSkill(stack, lowerSkillIndex, skill);
+
             if (!hasLearnedSkill(stack, skill))
-                skills.add(tag);
+                UmaSoulUtils.addSkill(stack, skill);
         }
         var event = new LearnSkillCallback.Context(skill, stack);
         LearnSkillCallback.invoke(event);
     }
 
     public static boolean hasLearnedSkill(ItemStack stack, ResourceLocation skill) {
-        ListTag skills = UmaSoulUtils.getSkills(stack);
-        StringTag tag = StringTag.valueOf(skill.toString());
-        return skills.contains(tag);
+        var skills = UmaSoulUtils.getSkills(stack);
+        return skills.contains(skill);
     }
     
     public static int getLowerSkillIndex(ItemStack stack, ResourceLocation skill) {
-        ListTag skills = UmaSoulUtils.getSkills(stack);
+        var skills = UmaSoulUtils.getSkills(stack);
         UmaSkill target = null;
         for(int i = 0;i<skills.size();i++) {
-            target = UmaSkillRegistry.REGISTRY.get().get(ResourceLocation.tryParse(skills.get(i).getAsString()));
+            target = UmaSkillRegistry.REGISTRY.get().get(skills.get(i));
             if(target.getUpperSkill() == null)
                 continue;
             if(target !=null && target.getUpperSkill().equals(skill))

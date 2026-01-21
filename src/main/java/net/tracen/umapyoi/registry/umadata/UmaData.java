@@ -22,8 +22,8 @@ public class UmaData extends RegistryNameHolder {
     public static final UmaData DEFAULT_UMA = UmaData.createNewUmamusume("common_uma", GachaRanking.R);
 
     public static final Codec<UmaData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                    ResourceLocation.CODEC.fieldOf("identifier").forGetter(UmaData::getIdentifier),
-                    GachaRanking.CODEC.optionalFieldOf("ranking", GachaRanking.EASTER_EGG).forGetter(UmaData::getGachaRanking),
+                    ResourceLocation.CODEC.fieldOf("identifier").forGetter(UmaData::identifier),
+                    GachaRanking.CODEC.optionalFieldOf("ranking", GachaRanking.EASTER_EGG).forGetter(UmaData::ranking),
                     Codec.INT_STREAM.xmap(IntStream::toArray, Arrays::stream).optionalFieldOf("property", DEFAULT_PROPERTY).forGetter(UmaData::property),
                     Codec.INT_STREAM.xmap(IntStream::toArray, Arrays::stream).optionalFieldOf("maxProperty", DEFAULT_MAX_PROPERTY)
                             .forGetter(UmaData::maxProperty),
@@ -54,11 +54,11 @@ public class UmaData extends RegistryNameHolder {
         this.uniqueSkill = uniqueSkill;
     }
 
-    public ResourceLocation getIdentifier() {
+    public ResourceLocation identifier() {
         return identifier;
     }
 
-    public GachaRanking getGachaRanking() {
+    public GachaRanking ranking() {
         return ranking;
     }
 

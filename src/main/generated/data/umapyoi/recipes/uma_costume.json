@@ -15,7 +15,7 @@
     "III"
   ],
   "result": {
-    "item": "umapyoi:uma_costume"
-  },
-  "show_notification": true
+    "count": 1,
+    "id": "umapyoi:uma_costume"
+  }
 }

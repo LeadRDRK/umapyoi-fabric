@@ -1,6 +1,7 @@
 package net.tracen.umapyoi.block.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
@@ -21,14 +22,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.container.ThreeGoddessContainer;
-import net.tracen.umapyoi.data.builtin.UmaDataRegistry;
 import net.tracen.umapyoi.item.FadedUmaSoulItem;
 import net.tracen.umapyoi.item.ItemRegistry;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.umadata.UmaData;
 import net.tracen.umapyoi.utils.UmaFactorUtils;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ThreeGoddessBlockEntity extends SyncedInventoryEntity implements MenuProvider {
     public static final int MAX_PROCESS_TIME = 200;
@@ -58,39 +60,51 @@ public class ThreeGoddessBlockEntity extends SyncedInventoryEntity implements Me
 
     @Override
     public boolean isItemValid(int slot, ItemStack stack) {
-        if (slot == 0) {
+        ItemStack motherSlot = this.getItem(2);
+        ItemStack fatherSlot = this.getItem(1);
+        ResourceLocation fatherName = fatherSlot.getOrDefault(
+                DataComponentsTypeRegistry.DATA_LOCATION.get(),
+                UmaData.DEFAULT_UMA_ID
+        );
+        ResourceLocation motherName = motherSlot.getOrDefault(
+                DataComponentsTypeRegistry.DATA_LOCATION.get(),
+                UmaData.DEFAULT_UMA_ID
+        );
+        if(slot == 0) {
             if (stack.is(ItemRegistry.BLANK_UMA_SOUL.get())) {
-                String name = stack.getOrCreateTag().getString("name");
-                return !(name.equals(this.getItem(1).getOrCreateTag().getString("name"))
-                        || name.equals(this.getItem(2).getOrCreateTag().getString("name")));
+                ResourceLocation name = stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
+
+                return !((fatherSlot.isEmpty() ? false : name.equals(fatherName))
+                        || name.equals(motherName));
             }
             return false;
         }
-        else if (slot == 1) {
+        else if(slot == 1) {
             boolean result = stack.is(ItemRegistry.UMA_FACTOR_ITEM.get());
-            if (!result) return false;
-
             boolean factorFlag = false;
-            String name = stack.getOrCreateTag().getString("name");
+            ResourceLocation name = stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
             var soulStack = this.getItem(0);
-            boolean soulFlag = !soulStack.isEmpty() && stack.getOrCreateTag().getString("name")
-                    .equals(soulStack.getOrCreateTag().getString("name"));
-            factorFlag = name.equals(this.getItem(2).getOrCreateTag().getString("name"));
+            boolean soulFlag = !soulStack.isEmpty() && Objects.equals(
+                    stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get()),
+                    soulStack.get(DataComponentsTypeRegistry.DATA_LOCATION.get())
+            );
+            factorFlag = motherSlot.isEmpty() ? false : name.equals(motherName);
 
-            return !soulFlag && !factorFlag;
+            return result && !soulFlag && !factorFlag;
         }
-        else if (slot == 2) {
+        else if(slot == 2) {
             boolean result = stack.is(ItemRegistry.UMA_FACTOR_ITEM.get());
-            if (!result) return false;
-
             boolean factorFlag = false;
-            String name = stack.getOrCreateTag().getString("name");
+            ResourceLocation name = stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
             var soulStack = this.getItem(0);
-            boolean soulFlag = !soulStack.isEmpty() && stack.getOrCreateTag().getString("name")
-                    .equals(soulStack.getOrCreateTag().getString("name"));
-            factorFlag = name.equals(this.getItem(1).getOrCreateTag().getString("name"));
+            boolean soulFlag = !soulStack.isEmpty() && Objects.equals(
+                    stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get()),
+                    soulStack.get(DataComponentsTypeRegistry.DATA_LOCATION.get())
+            );
 
-            return !soulFlag && !factorFlag;
+            factorFlag = fatherSlot.isEmpty() ? false : name.equals(fatherName);
+
+            return result && !soulFlag && !factorFlag;
         }
         return super.isItemValid(slot, stack);
     }
@@ -167,22 +181,24 @@ public class ThreeGoddessBlockEntity extends SyncedInventoryEntity implements Me
         if (this.level == null)
             return ItemStack.EMPTY;
 
-        ItemStack left = getItem(1);
-        ItemStack right = getItem(2);
+        ItemStack left = this.getItem(1);
+        ItemStack right = this.getItem(2);
         Registry<UmaData> registry = UmapyoiAPI.getUmaDataRegistry(this.getLevel());
 
-        ResourceLocation name = ResourceLocation
-                .tryParse(getItem(0).getOrCreateTag().getString("name"));
-        name = registry.containsKey(name) ? name : UmaDataRegistry.COMMON_UMA.getId();
+        ResourceLocation name = this.getItem(0).getOrDefault(DataComponentsTypeRegistry.DATA_LOCATION.get(),
+                UmaData.DEFAULT_UMA_ID);
+        name = registry.containsKey(name) ? name : UmaData.DEFAULT_UMA_ID;
 
-        UmaData data = registry.getOptional(name).orElse(UmaDataRegistry.COMMON_UMA.get());
+        UmaData data = registry.getOptional(name).orElse(UmaData.DEFAULT_UMA);
 
         ItemStack result = UmaSoulUtils.initUmaSoul(ItemRegistry.UMA_SOUL.get().getDefaultInstance(), name, data)
                 .copy();
 
         if (!left.isEmpty() && !right.isEmpty()) {
-            UmaFactorUtils.deserializeNBT(left.getOrCreateTag()).forEach(fac -> fac.applyFactor(result));
-            UmaFactorUtils.deserializeNBT(right.getOrCreateTag()).forEach(fac -> fac.applyFactor(result));
+            UmaFactorUtils.deserializeData(left.get(DataComponentsTypeRegistry.FACTOR_DATA.get()))
+                    .forEach(fac -> fac.applyFactor(result));
+            UmaFactorUtils.deserializeData(right.get(DataComponentsTypeRegistry.FACTOR_DATA.get()))
+                    .forEach(fac -> fac.applyFactor(result));
         }
 
         return result;
@@ -220,29 +236,29 @@ public class ThreeGoddessBlockEntity extends SyncedInventoryEntity implements Me
     }
 
     @Override
-    public void load(CompoundTag compound) {
-        super.load(compound);
+    public void loadAdditional(CompoundTag compound, HolderLookup.Provider registries) {
+        super.loadAdditional(compound, registries);
         clearContent();
-        ContainerHelper.loadAllItems(compound, items);
+        ContainerHelper.loadAllItems(compound, items, registries);
         recipeTime = compound.getInt("RecipeTime");
     }
 
     @Override
-    public void saveAdditional(CompoundTag compound) {
-        super.saveAdditional(compound);
+    public void saveAdditional(CompoundTag compound, HolderLookup.Provider registries) {
+        super.saveAdditional(compound, registries);
         compound.putInt("RecipeTime", recipeTime);
-        ContainerHelper.saveAllItems(compound, items);
+        ContainerHelper.saveAllItems(compound, items, registries);
     }
 
-    private CompoundTag writeItems(CompoundTag compound) {
-        super.saveAdditional(compound);
-        ContainerHelper.saveAllItems(compound, items);
+    private CompoundTag writeItems(CompoundTag compound, HolderLookup.Provider registries) {
+        super.saveAdditional(compound, registries);
+        ContainerHelper.saveAllItems(compound, items, registries);
         return compound;
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        return writeItems(new CompoundTag());
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return writeItems(new CompoundTag(), registries);
     }
 
     private ContainerData createIntArray() {

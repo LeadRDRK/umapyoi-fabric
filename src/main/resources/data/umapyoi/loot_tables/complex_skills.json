@@ -19,8 +19,10 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:set_nbt",
-              "tag": "{skill:\"umapyoi:heart_and_soul\"}"
+              "function": "set_components",
+              "components": {
+                "umapyoi:data_location": "umapyoi:heart_and_soul"
+              }
             }
           ],
           "name": "umapyoi:skill_book"
@@ -29,8 +31,10 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:set_nbt",
-              "tag": "{skill:\"umapyoi:cooldown\"}"
+              "function": "set_components",
+              "components": {
+                "umapyoi:data_location": "umapyoi:cooldown"
+              }
             }
           ],
           "name": "umapyoi:skill_book"
@@ -39,8 +43,10 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:set_nbt",
-              "tag": "{skill:\"umapyoi:big_eater\"}"
+              "function": "set_components",
+              "components": {
+                "umapyoi:data_location": "umapyoi:big_eater"
+              }
             }
           ],
           "name": "umapyoi:skill_book"
@@ -49,8 +55,10 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:set_nbt",
-              "tag": "{skill:\"umapyoi:steel_will\"}"
+              "function": "set_components",
+              "components": {
+                "umapyoi:data_location": "umapyoi:steel_will"
+              }
             }
           ],
           "name": "umapyoi:skill_book"
@@ -59,8 +67,10 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:set_nbt",
-              "tag": "{skill:\"umapyoi:adv_low_health_buff\"}"
+              "function": "set_components",
+              "components": {
+                "umapyoi:data_location": "umapyoi:adv_low_health_buff"
+              }
             }
           ],
           "name": "umapyoi:skill_book"
@@ -69,8 +79,10 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:set_nbt",
-              "tag": "{skill:\"umapyoi:adv_low_health_heal\"}"
+              "function": "set_components",
+              "components": {
+                "umapyoi:data_location": "umapyoi:adv_low_health_heal"
+              }
             }
           ],
           "name": "umapyoi:skill_book"

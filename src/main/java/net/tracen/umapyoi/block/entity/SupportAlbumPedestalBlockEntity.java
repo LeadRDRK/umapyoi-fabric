@@ -3,6 +3,7 @@ package net.tracen.umapyoi.block.entity;
 import com.google.common.collect.Lists;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
@@ -20,9 +21,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.UmapyoiConfigModel;
 import net.tracen.umapyoi.api.UmapyoiAPI;
-import net.tracen.umapyoi.data.builtin.SupportCardRegistry;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
-import net.tracen.umapyoi.item.ItemRegistry;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.training.card.SupportCard;
 import net.tracen.umapyoi.utils.ClientUtils;
 import net.tracen.umapyoi.utils.GachaRanking;
@@ -35,7 +35,7 @@ import java.util.Random;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class SupportAlbumPedestalBlockEntity extends SyncedInventoryEntity implements Gachable {
+public class SupportAlbumPedestalBlockEntity extends AbstractPedestalBlockEntity implements Gachable {
 
     public int time;
     public float flip;
@@ -190,19 +190,16 @@ public class SupportAlbumPedestalBlockEntity extends SyncedInventoryEntity imple
 
         RandomSource rand = this.getLevel().getRandom();
         Registry<SupportCard> registry = UmapyoiAPI.getSupportCardRegistry(this.getLevel());
-        
+
         @NotNull
         Collection<ResourceLocation> keys = registry.keySet().stream()
                 .filter(this.getFilter(getLevel(), getStoredItem()))
                 .collect(Collectors.toCollection(Lists::newArrayList));
 
         ResourceLocation key = keys.stream().skip(keys.isEmpty() ? 0 : rand.nextInt(keys.size())).findFirst()
-                .orElse(SupportCardRegistry.BLANK_CARD.getId());
-        
-        ItemStack result = ItemRegistry.SUPPORT_CARD.get().getDefaultInstance();
-        result.getOrCreateTag().putString("support_card", key.toString());
-        result.getOrCreateTag().putString("ranking", registry.get(key).getGachaRanking().name().toLowerCase());
-        result.getOrCreateTag().putInt("maxDamage", registry.get(key).getMaxDamage());
+                .orElse(new ResourceLocation(Umapyoi.MODID, "blank_card"));
+
+        ItemStack result = SupportCard.init(key, registry.get(key));
         return result;
     }
 
@@ -248,29 +245,29 @@ public class SupportAlbumPedestalBlockEntity extends SyncedInventoryEntity imple
     }
 
     @Override
-    public void load(CompoundTag compound) {
-        super.load(compound);
+    public void loadAdditional(CompoundTag compound, HolderLookup.Provider registries) {
+        super.loadAdditional(compound, registries);
         clearContent();
-        ContainerHelper.loadAllItems(compound, items);
+        ContainerHelper.loadAllItems(compound, items, registries);
         recipeTime = compound.getInt("RecipeTime");
     }
 
     @Override
-    public void saveAdditional(CompoundTag compound) {
-        super.saveAdditional(compound);
+    public void saveAdditional(CompoundTag compound, HolderLookup.Provider registries) {
+        super.saveAdditional(compound, registries);
         compound.putInt("RecipeTime", recipeTime);
-        ContainerHelper.saveAllItems(compound, items);
+        ContainerHelper.saveAllItems(compound, items, registries);
     }
 
-    private CompoundTag writeItems(CompoundTag compound) {
-        super.saveAdditional(compound);
-        ContainerHelper.saveAllItems(compound, items);
+    private CompoundTag writeItems(CompoundTag compound, HolderLookup.Provider registries) {
+        super.saveAdditional(compound, registries);
+        ContainerHelper.saveAllItems(compound, items, registries);
         return compound;
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        return writeItems(new CompoundTag());
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return writeItems(new CompoundTag(), registries);
     }
 
     private ContainerData createIntArray() {
@@ -304,8 +301,8 @@ public class SupportAlbumPedestalBlockEntity extends SyncedInventoryEntity imple
     @Override
     public Predicate<? super ResourceLocation> getFilter(Level level, ItemStack input) {
         return resloc -> {
-            if (!input.getOrCreateTag().getString("name").isBlank()) {
-                return resloc.equals(ResourceLocation.tryParse(input.getOrCreateTag().getString("name")));
+            if (input.has(DataComponentsTypeRegistry.DATA_LOCATION.get())) {
+                return resloc.equals(input.get(DataComponentsTypeRegistry.DATA_LOCATION.get()));
             }
             if (input.is(UmapyoiItemTags.SSR_CARD_TICKET))
                 return UmapyoiAPI.getSupportCardRegistry(level).get(resloc).getGachaRanking() == GachaRanking.SSR;

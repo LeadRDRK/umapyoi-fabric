@@ -21,10 +21,11 @@
       "tag": "c:sugar"
     },
     {
-      "tag": "c:water"
+      "tag": "c:buckets/water"
     }
   ],
   "result": {
-    "item": "umapyoi:large_energy_drink"
+    "count": 1,
+    "id": "umapyoi:large_energy_drink"
   }
 }

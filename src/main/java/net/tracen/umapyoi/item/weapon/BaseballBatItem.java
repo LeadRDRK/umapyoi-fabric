@@ -1,15 +1,15 @@
 package net.tracen.umapyoi.item.weapon;
 
-import com.google.common.collect.Multimap;
-
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Block;
 import net.tracen.umapyoi.Umapyoi;
 
 import java.util.UUID;
@@ -18,20 +18,20 @@ public class BaseballBatItem extends UmaWeaponItem {
     private static final UUID KNOCKBACK_UUID = UUID.fromString("1F199A02-626F-13A3-2365-3D4D6D075737");
 
     public BaseballBatItem() {
-        super(new NaginataTier(), 6, -2.7F, Umapyoi.defaultItemProperties().stacksTo(1));
+        super(new NaginataTier(), 6, -2.7F, Umapyoi.defaultItemProperties()
+                .stacksTo(1)
+                .attributes(createAttributes()));
     }
 
-
-    @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(ItemStack stack, EquipmentSlot slot) {
-        Multimap<Attribute, AttributeModifier> attributeModifiers = super.getAttributeModifiers(stack, slot);
-        if (slot == EquipmentSlot.MAINHAND) {
-            AttributeModifier value = new AttributeModifier(KNOCKBACK_UUID, "Weapon modifier", 3D,
-                    AttributeModifier.Operation.ADDITION);
-            if(!attributeModifiers.containsValue(value))
-                attributeModifiers.put(Attributes.ATTACK_KNOCKBACK, value);
-        }
-        return attributeModifiers;
+    private static ItemAttributeModifiers createAttributes() {
+        return ItemAttributeModifiers.builder()
+                .add(
+                        Attributes.ATTACK_KNOCKBACK,
+                        new AttributeModifier(KNOCKBACK_UUID, "Weapon modifier", 3D,
+                                AttributeModifier.Operation.ADD_VALUE),
+                        EquipmentSlotGroup.MAINHAND
+                )
+                .build();
     }
 
     private static class NaginataTier implements Tier {
@@ -52,8 +52,8 @@ public class BaseballBatItem extends UmaWeaponItem {
         }
 
         @Override
-        public int getLevel() {
-            return 0;
+        public TagKey<Block> getIncorrectBlocksForDrops() {
+            return BlockTags.INCORRECT_FOR_WOODEN_TOOL;
         }
 
         @Override
@@ -63,8 +63,7 @@ public class BaseballBatItem extends UmaWeaponItem {
 
         @Override
         public Ingredient getRepairIngredient() {
-            // FIXME: fabric api for 1.20.1 lacks ConventionalBlockTags.STORAGE_BLOCKS_IRON
-            return Ingredient.of(Blocks.IRON_BLOCK);
+            return Ingredient.of(ConventionalItemTags.STORAGE_BLOCKS_IRON);
         }
 
     }

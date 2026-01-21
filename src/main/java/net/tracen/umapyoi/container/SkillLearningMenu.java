@@ -13,12 +13,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.item.SkillBookItem;
 import net.tracen.umapyoi.item.UmaSoulItem;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.UmaSkillRegistry;
 import net.tracen.umapyoi.registry.skills.UmaSkill;
 import net.tracen.umapyoi.registry.umadata.Growth;
 import net.tracen.umapyoi.utils.UmaSkillUtils;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
-import net.tracen.umapyoi.utils.UmaStatusUtils;
 
 import java.util.List;
 
@@ -40,7 +40,7 @@ public class SkillLearningMenu extends ItemCombinerMenu {
         ItemStack inputSoul = this.inputSlots.getItem(0);
         ItemStack inputSkill = this.inputSlots.getItem(1);
         if (isUmaSoul(inputSoul) && isSkillBook(inputSkill)) {
-            ResourceLocation skillRL = ResourceLocation.tryParse(inputSkill.getOrCreateTag().getString("skill"));
+            ResourceLocation skillRL = inputSkill.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
             if (UmaSkillRegistry.REGISTRY.get().containsKey(skillRL)) {
                 var upperSkill = UmaSkillRegistry.REGISTRY.get().get(skillRL).getUpperSkill();
                 if (upperSkill != null && UmaSkillUtils.hasLearnedSkill(inputSoul, upperSkill)) 
@@ -51,8 +51,7 @@ public class SkillLearningMenu extends ItemCombinerMenu {
 
                 UmaSkill skill = UmaSkillRegistry.REGISTRY.get().get(skillRL);
                 boolean result = UmaSkillUtils.hasLearnedSkill(inputSoul, skillRL);
-                return UmaSoulUtils.getProperty(inputSoul)[UmaStatusUtils.StatusType.WISDOM.getId()] >= skill
-                        .getRequiredWisdom() && !result;
+                return UmaSoulUtils.getProperty(inputSoul).wisdom() >= skill.getRequiredWisdom() && !result;
             }
         }
         return false;

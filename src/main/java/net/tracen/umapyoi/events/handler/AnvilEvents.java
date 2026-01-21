@@ -1,5 +1,6 @@
 package net.tracen.umapyoi.events.handler;
 
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -10,6 +11,7 @@ import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
 import net.tracen.umapyoi.events.AnvilUpdateCallback;
 import net.tracen.umapyoi.item.FadedUmaSoulItem;
 import net.tracen.umapyoi.item.ItemRegistry;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.utils.GachaRanking;
 
 import java.util.Optional;
@@ -61,13 +63,13 @@ public class AnvilEvents {
             if(!material.is(Items.DIAMOND_SWORD)) return Optional.empty();
             if(!itemName.equalsIgnoreCase("priconne")) return Optional.empty();
             var registry = UmapyoiAPI.getUmaDataRegistry(player.level());
-            ResourceLocation name = soul.getOrCreateTag().contains("name") ?
-                    ResourceLocation.tryParse(soul.getOrCreateTag().getString("name")) : UmaDataRegistry.COMMON_UMA.getId();
-            if(!registry.containsKey(name) || registry.get(name).getGachaRanking() != GachaRanking.R) return Optional.empty();
+            ResourceLocation name = soul.has(DataComponentsTypeRegistry.DATA_LOCATION.get()) ?
+        		soul.get(DataComponentsTypeRegistry.DATA_LOCATION.get()) : UmaDataRegistry.COMMON_UMA.getId();
+            if(!registry.containsKey(name) || registry.get(name).ranking() != GachaRanking.R) return Optional.empty();
 
             var id = UmaDataRegistry.SHENONE_SUZUNA.getId();
             if(!registry.containsKey(id)) return Optional.empty();
-            ItemStack egg = FadedUmaSoulItem.genUmaSoul(id.toString(), registry.get(id));
+            ItemStack egg = FadedUmaSoulItem.genUmaSoul(id, registry.get(id));
 
             return Optional.of(AnvilUpdateCallback.Result.pass(egg.copy(), 5, 1));
         }
@@ -77,13 +79,13 @@ public class AnvilEvents {
             if(!material.is(Items.FEATHER)) return Optional.empty();
             if(!itemName.equalsIgnoreCase("tyche")) return Optional.empty();
             var registry = UmapyoiAPI.getUmaDataRegistry(player.level());
-            ResourceLocation name = soul.getOrCreateTag().contains("name") ?
-                    ResourceLocation.tryParse(soul.getOrCreateTag().getString("name")) : UmaDataRegistry.COMMON_UMA.getId();
-            if(!registry.containsKey(name) || !registry.get(name).getIdentifier().equals(UmaDataRegistry.COMMON_UMA.getId())) return Optional.empty();
+            ResourceLocation name = soul.has(DataComponentsTypeRegistry.DATA_LOCATION.get()) ?
+        		soul.get(DataComponentsTypeRegistry.DATA_LOCATION.get()) : UmaDataRegistry.COMMON_UMA.getId();
+            if(!registry.containsKey(name) || !registry.get(name).identifier().equals(UmaDataRegistry.COMMON_UMA.getId())) return Optional.empty();
 
             var id = UmaDataRegistry.TYCHE.getId();
             if(!registry.containsKey(id)) return Optional.empty();
-            ItemStack egg = FadedUmaSoulItem.genUmaSoul(id.toString(), registry.get(id));
+            ItemStack egg = FadedUmaSoulItem.genUmaSoul(id, registry.get(id));
 
             return Optional.of(AnvilUpdateCallback.Result.pass(egg.copy(), 5, 1));
         }
@@ -92,31 +94,31 @@ public class AnvilEvents {
             if(!soul.is(ItemRegistry.BLANK_UMA_SOUL.get())) return Optional.empty();
             if(!material.is(UmapyoiItemTags.BAMBOO)) return Optional.empty();
             var registry = UmapyoiAPI.getUmaDataRegistry(player.level());
-            ResourceLocation name = soul.getOrCreateTag().contains("name") ?
-                    ResourceLocation.tryParse(soul.getOrCreateTag().getString("name")) : UmaDataRegistry.COMMON_UMA.getId();
-            if(!registry.containsKey(name) || registry.get(name).getGachaRanking() != GachaRanking.R) return Optional.empty();
+            ResourceLocation name = soul.has(DataComponentsTypeRegistry.DATA_LOCATION.get()) ?
+        		soul.get(DataComponentsTypeRegistry.DATA_LOCATION.get()) : UmaDataRegistry.COMMON_UMA.getId();
+            if(!registry.containsKey(name) || registry.get(name).ranking() != GachaRanking.R) return Optional.empty();
 
             var id = UmaDataRegistry.MIYA_YOMOGI.getId();
             if(!registry.containsKey(id)) return Optional.empty();
-            ItemStack egg = FadedUmaSoulItem.genUmaSoul(id.toString(), registry.get(id));
+            ItemStack egg = FadedUmaSoulItem.genUmaSoul(id, registry.get(id));
 
             return Optional.of(AnvilUpdateCallback.Result.pass(egg.copy(), 5, 1));
         }
 
         public Optional<AnvilUpdateCallback.Result> venusParkSoul() {
             if(!soul.is(ItemRegistry.BLANK_UMA_SOUL.get())) return Optional.empty();
-            if(!material.is(UmapyoiItemTags.BREAD)) return Optional.empty();
+            if(!material.is(ConventionalItemTags.BREADS_FOODS)) return Optional.empty();
             if(!itemName.equalsIgnoreCase("vivelafrance")) return Optional.empty();
 
             var registry = UmapyoiAPI.getUmaDataRegistry(player.level());
-            ResourceLocation name = soul.getOrCreateTag().contains("name") ?
-                    ResourceLocation.tryParse(soul.getOrCreateTag().getString("name")) : UmaDataRegistry.COMMON_UMA.getId();
-            if(!registry.containsKey(name) || registry.get(name).getGachaRanking() != GachaRanking.R) return Optional.empty();
+            ResourceLocation name = soul.has(DataComponentsTypeRegistry.DATA_LOCATION.get()) ?
+        		soul.get(DataComponentsTypeRegistry.DATA_LOCATION.get()) : UmaDataRegistry.COMMON_UMA.getId();
+            if(!registry.containsKey(name) || registry.get(name).ranking() != GachaRanking.R) return Optional.empty();
 
             var id = UmaDataRegistry.VENUS_PARK.getId();
             if(!registry.containsKey(id)) return Optional.empty();
             ItemStack egg = ItemRegistry.BLANK_UMA_SOUL.get().getDefaultInstance();
-            egg.getOrCreateTag().putString("name", id.toString());
+            egg.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), id);
 
             return Optional.of(AnvilUpdateCallback.Result.pass(egg.copy(), 5, 1));
         }
@@ -126,16 +128,16 @@ public class AnvilEvents {
             if(!material.is(Items.FEATHER)) return Optional.empty();
 
             var registry = UmapyoiAPI.getUmaDataRegistry(player.level());
-            ResourceLocation name = soul.getOrCreateTag().contains("name") ?
-                    ResourceLocation.tryParse(soul.getOrCreateTag().getString("name")) : UmaDataRegistry.COMMON_UMA.getId();
+            ResourceLocation name = soul.has(DataComponentsTypeRegistry.DATA_LOCATION.get()) ?
+        		soul.get(DataComponentsTypeRegistry.DATA_LOCATION.get()) : UmaDataRegistry.COMMON_UMA.getId();
             if(!registry.containsKey(name) ||
-                    !registry.get(name).getIdentifier().equals(UmaDataRegistry.AGNES_TACHYON.get().getIdentifier()))
+                    !registry.get(name).identifier().equals(UmaDataRegistry.AGNES_TACHYON.get().identifier()))
                 return Optional.empty();
 
             var id = UmaDataRegistry.SYAMEIMARU_ZHENG.getId();
             if(!registry.containsKey(id)) return Optional.empty();
             ItemStack egg = ItemRegistry.BLANK_UMA_SOUL.get().getDefaultInstance();
-            egg.getOrCreateTag().putString("name", id.toString());
+            egg.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), id);
 
             return Optional.of(AnvilUpdateCallback.Result.pass(egg.copy(), 5, 1));
         }
@@ -145,14 +147,14 @@ public class AnvilEvents {
             if(!material.is(Items.GUNPOWDER)) return Optional.empty();
             if(!itemName.equalsIgnoreCase("kino")) return Optional.empty();
             var registry = UmapyoiAPI.getUmaDataRegistry(player.level());
-            ResourceLocation name = soul.getOrCreateTag().contains("name") ?
-                    ResourceLocation.tryParse(soul.getOrCreateTag().getString("name")) : UmaDataRegistry.COMMON_UMA.getId();
-            if(!registry.containsKey(name) || registry.get(name).getGachaRanking() != GachaRanking.R) return Optional.empty();
+            ResourceLocation name = soul.has(DataComponentsTypeRegistry.DATA_LOCATION.get()) ?
+        		soul.get(DataComponentsTypeRegistry.DATA_LOCATION.get()) : UmaDataRegistry.COMMON_UMA.getId();
+            if(!registry.containsKey(name) || registry.get(name).ranking() != GachaRanking.R) return Optional.empty();
 
             var id = UmaDataRegistry.DUMNHEINT.getId();
             if(!registry.containsKey(id)) return Optional.empty();
             ItemStack egg = ItemRegistry.BLANK_UMA_SOUL.get().getDefaultInstance();
-            egg.getOrCreateTag().putString("name", id.toString());
+            egg.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), id);
 
             return Optional.of(AnvilUpdateCallback.Result.pass(egg.copy(), 5, 1));
         }
@@ -168,7 +170,7 @@ public class AnvilEvents {
             var id = UmaDataRegistry.DARLEY_ARABIAN.getId();
             if(!registry.containsKey(id)) return Optional.empty();
             ItemStack egg = ItemRegistry.BLANK_UMA_SOUL.get().getDefaultInstance();
-            egg.getOrCreateTag().putString("name", id.toString());
+            egg.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), id);
 
             return Optional.of(AnvilUpdateCallback.Result.pass(egg.copy(), 5, 1));
         }
@@ -184,7 +186,7 @@ public class AnvilEvents {
             var id = UmaDataRegistry.BYERLEY_TURK.getId();
             if(!registry.containsKey(id)) return Optional.empty();
             ItemStack egg = ItemRegistry.BLANK_UMA_SOUL.get().getDefaultInstance();
-            egg.getOrCreateTag().putString("name", id.toString());
+            egg.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), id);
 
             return Optional.of(AnvilUpdateCallback.Result.pass(egg.copy(), 5, 1));
         }
@@ -200,7 +202,7 @@ public class AnvilEvents {
             var id = UmaDataRegistry.GODOLPHIN_BARB.getId();
             if(!registry.containsKey(id)) return Optional.empty();
             ItemStack egg = ItemRegistry.BLANK_UMA_SOUL.get().getDefaultInstance();
-            egg.getOrCreateTag().putString("name", id.toString());
+            egg.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), id);
 
             return Optional.of(AnvilUpdateCallback.Result.pass(egg.copy(), 5, 1));
         }

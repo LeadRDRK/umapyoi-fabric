@@ -2,7 +2,7 @@
   "parent": "umapyoi:summon_pedestal",
   "display": {
     "icon": {
-      "item": "umapyoi:support_card"
+      "id": "umapyoi:support_card"
     },
     "title": {
       "translate": "advancement.umapyoi.support_pedestal.title"
@@ -19,16 +19,22 @@
     "buildSupport": {
       "trigger": "minecraft:item_used_on_block",
       "conditions": {
-        "location": {
-          "block": {
-            "tag": "umapyoi:pedestal/uma"
+        "location": [
+          {
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "items": "minecraft:book"
+            }
+          },
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": "#umapyoi:pedestal/uma"
+              }
+            }
           }
-        },
-        "item": {
-          "items": [
-            "minecraft:book"
-          ]
-        }
+        ]
       }
     }
   },

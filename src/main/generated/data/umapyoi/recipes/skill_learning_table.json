@@ -14,7 +14,7 @@
     " L"
   ],
   "result": {
-    "item": "umapyoi:skill_learning_table"
-  },
-  "show_notification": true
+    "count": 1,
+    "id": "umapyoi:skill_learning_table"
+  }
 }

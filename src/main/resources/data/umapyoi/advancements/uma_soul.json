@@ -2,7 +2,7 @@
   "parent": "umapyoi:three_goddesses",
   "display": {
     "icon": {
-      "item": "umapyoi:uma_soul"
+      "id": "umapyoi:uma_soul"
     },
     "title": {
       "translate": "advancement.umapyoi.uma_soul.title"

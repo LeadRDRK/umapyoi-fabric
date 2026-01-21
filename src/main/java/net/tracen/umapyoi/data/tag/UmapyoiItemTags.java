@@ -20,18 +20,7 @@ public class UmapyoiItemTags {
     public static final TagKey<Item> SR_CARD_TICKET = TagUtils.modItemTag(Umapyoi.MODID, "sr_card_ticket");
     public static final TagKey<Item> SSR_CARD_TICKET = TagUtils.modItemTag(Umapyoi.MODID, "ssr_card_ticket");
 
-    // FIXME: these tags are fabric api builtins on version >= 1.20.5
-
-    public static final TagKey<Item> WATER = TagUtils.cItemTag("water");
+    // additional conventional tags
     public static final TagKey<Item> SUGAR = TagUtils.cItemTag("sugar");
-    public static final TagKey<Item> MILK = TagUtils.cItemTag("milk");
-    
-    public static final TagKey<Item> BREAD = TagUtils.cItemTag("bread");
-    public static final TagKey<Item> BREAD_WHEAT = TagUtils.cItemTag("bread/wheat");
-
     public static final TagKey<Item> BAMBOO = TagUtils.cItemTag("bamboo");
-
-    public static final TagKey<Item> VEGETABLES_CARROT = TagUtils.cItemTag("vegetables/carrot");
-
-    public static final TagKey<Item> STONES = TagUtils.cItemTag("stones");
 }

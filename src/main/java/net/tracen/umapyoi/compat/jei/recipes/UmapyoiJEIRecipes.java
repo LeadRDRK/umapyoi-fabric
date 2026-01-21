@@ -6,6 +6,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.tracen.umapyoi.item.ItemRegistry;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
+import net.tracen.umapyoi.registry.training.card.SupportCard;
 import net.tracen.umapyoi.utils.ClientUtils;
 import net.tracen.umapyoi.utils.GachaRanking;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
@@ -24,7 +26,7 @@ public final class UmapyoiJEIRecipes {
         List<ItemStack> output = Lists.newArrayList();
         keys.stream().filter(UmapyoiJEIRecipes.umaSoulRanking(list)).forEach(key->{
             ItemStack result = ItemRegistry.BLANK_UMA_SOUL.get().getDefaultInstance();
-            result.getOrCreateTag().putString("name", key.toString());
+            result.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), key);
             output.add(result);
         });
         return new JEISimpleRecipe(input, output);
@@ -38,10 +40,7 @@ public final class UmapyoiJEIRecipes {
         Collections.addAll(input, ingredient.getItems());
         List<ItemStack> output = Lists.newArrayList();
         keys.stream().filter(UmapyoiJEIRecipes.supportCardRanking(list)).forEach(key->{
-            ItemStack result = ItemRegistry.SUPPORT_CARD.get().getDefaultInstance();
-            result.getOrCreateTag().putString("support_card", key.toString());
-            result.getOrCreateTag().putString("ranking", registry.get(key).getGachaRanking().name().toLowerCase());
-            result.getOrCreateTag().putInt("maxDamage", registry.get(key).getMaxDamage());
+            ItemStack result = SupportCard.init(key, registry.get(key));
             output.add(result);
         });
         return new JEISimpleRecipe(input, output);
@@ -53,7 +52,7 @@ public final class UmapyoiJEIRecipes {
         
         List<ItemStack> input = Lists.newArrayList();
         List<ItemStack> output = Lists.newArrayList(result);
-        keys.stream().filter(key->registry.get(key).getGachaRanking() == ranking).forEach(key->{
+        keys.stream().filter(key->registry.get(key).ranking() == ranking).forEach(key->{
             var initUmaSoul = UmaSoulUtils.initUmaSoul(ItemRegistry.UMA_SOUL.get().getDefaultInstance(), key, registry.get(key));
             UmaSoulUtils.setPhysique(initUmaSoul, 5);
             input.add(initUmaSoul);
@@ -68,10 +67,7 @@ public final class UmapyoiJEIRecipes {
         List<ItemStack> input = Lists.newArrayList();
         List<ItemStack> output = Lists.newArrayList(result);
         keys.stream().filter(key->registry.get(key).getGachaRanking() == ranking).forEach(key->{
-            ItemStack card = ItemRegistry.SUPPORT_CARD.get().getDefaultInstance();
-            card.getOrCreateTag().putString("support_card", key.toString());
-            card.getOrCreateTag().putString("ranking", registry.get(key).getGachaRanking().name().toLowerCase());
-            card.getOrCreateTag().putInt("maxDamage", registry.get(key).getMaxDamage());
+            ItemStack card = SupportCard.init(key, registry.get(key));
             input.add(card);
         });
         return new JEISimpleRecipe(input, output);
@@ -81,7 +77,7 @@ public final class UmapyoiJEIRecipes {
         return key ->{
             var registry = ClientUtils.getClientUmaDataRegistry();
             for (GachaRanking gachaRanking : list) {
-                if(registry.get(key).getGachaRanking() == gachaRanking) 
+                if(registry.get(key).ranking() == gachaRanking)
                     return true;
             }
             return false;

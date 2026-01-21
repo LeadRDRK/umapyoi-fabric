@@ -1,21 +1,22 @@
 package net.tracen.umapyoi.utils;
 
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.UmaSkillRegistry;
 
 public final class ResultRankingUtils {
     public static int getRanking(ItemStack soul) {
-        return soul.getOrCreateTag().getInt("resultRanking");
+        if(soul.has(DataComponentsTypeRegistry.UMADATA_EXTRA_STATUS.get()))
+            return soul.get(DataComponentsTypeRegistry.UMADATA_EXTRA_STATUS.get()).resultRanking();
+        return 0;
     }
 
     public static int generateRanking(ItemStack soul) {
-        int[] property = UmaSoulUtils.getProperty(soul);
+        int[] property = UmaSoulUtils.getProperty(soul).array();
         int skills = 0;
         
-        for(Tag tag : UmaSoulUtils.getSkills(soul)) {
-            skills += UmaSkillRegistry.REGISTRY.get().get(ResourceLocation.tryParse(tag.getAsString())).getSkillLevel();
+        for(var skill : UmaSoulUtils.getSkills(soul)) {
+            skills += UmaSkillRegistry.REGISTRY.get().get(skill).getSkillLevel();
         }
         
         return ResultRankingUtils

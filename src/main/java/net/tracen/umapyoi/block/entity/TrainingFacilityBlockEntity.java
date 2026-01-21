@@ -1,6 +1,7 @@
 package net.tracen.umapyoi.block.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -127,11 +128,11 @@ public class TrainingFacilityBlockEntity extends SyncedInventoryEntity implement
             if (supportItem.getItem() instanceof SupportContainer supports) {
                 if (supports.isConsumable(this.getLevel(), supportItem))
                     supportItem.shrink(1);
-                else if (supportItem.hurt(1, this.getLevel().getRandom(), null)) {
-                    this.getLevel().playSound(null, this.getBlockPos(), SoundEvents.AMETHYST_CLUSTER_BREAK, SoundSource.BLOCKS, 1F, 1F);
-                    supportItem.shrink(1);
-                    supportItem.setDamageValue(0);
-                }
+                else
+                    supportItem.hurtAndBreak(1, this.getLevel().getRandom(), null, () -> {
+                        this.getLevel().playSound(null, this.getBlockPos(),
+                                SoundEvents.AMETHYST_CLUSTER_BREAK, SoundSource.BLOCKS, 1F, 1F);
+                    });
             }
         }
         
@@ -193,29 +194,29 @@ public class TrainingFacilityBlockEntity extends SyncedInventoryEntity implement
     }
 
     @Override
-    public void load(CompoundTag compound) {
-        super.load(compound);
+    public void loadAdditional(CompoundTag compound, HolderLookup.Provider registries) {
+        super.loadAdditional(compound, registries);
         clearContent();
-        ContainerHelper.loadAllItems(compound, items);
+        ContainerHelper.loadAllItems(compound, items, registries);
         recipeTime = compound.getInt("RecipeTime");
     }
 
     @Override
-    public void saveAdditional(CompoundTag compound) {
-        super.saveAdditional(compound);
+    public void saveAdditional(CompoundTag compound, HolderLookup.Provider registries) {
+        super.saveAdditional(compound, registries);
         compound.putInt("RecipeTime", recipeTime);
-        ContainerHelper.saveAllItems(compound, items);
+        ContainerHelper.saveAllItems(compound, items, registries);
     }
 
-    private CompoundTag writeItems(CompoundTag compound) {
-        super.saveAdditional(compound);
-        ContainerHelper.saveAllItems(compound, items);
+    private CompoundTag writeItems(CompoundTag compound, HolderLookup.Provider registries) {
+        super.saveAdditional(compound, registries);
+        ContainerHelper.saveAllItems(compound, items, registries);
         return compound;
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        return writeItems(new CompoundTag());
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return writeItems(new CompoundTag(), registries);
     }
 
     private ContainerData createIntArray() {

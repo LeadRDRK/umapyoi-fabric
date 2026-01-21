@@ -15,10 +15,11 @@
       "tag": "c:sugar"
     },
     {
-      "tag": "c:water"
+      "tag": "c:buckets/water"
     }
   ],
   "result": {
-    "item": "umapyoi:hachimi_big"
+    "count": 1,
+    "id": "umapyoi:hachimi_big"
   }
 }

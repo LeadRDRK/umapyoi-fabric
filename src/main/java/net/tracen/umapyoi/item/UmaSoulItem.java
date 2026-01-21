@@ -33,7 +33,6 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
@@ -47,6 +46,7 @@ import net.tracen.umapyoi.events.client.RenderingUmaSoulCallback;
 import net.tracen.umapyoi.registry.UmapyoiAttributesRegistry;
 import net.tracen.umapyoi.registry.umadata.Growth;
 import net.tracen.umapyoi.registry.umadata.UmaData;
+import net.tracen.umapyoi.registry.umadata.UmaDataBasicStatus;
 import net.tracen.umapyoi.utils.ClientUtils;
 import net.tracen.umapyoi.utils.GachaRanking;
 import net.tracen.umapyoi.utils.ResultRankingUtils;
@@ -58,8 +58,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
-
-import javax.annotation.Nullable;
 
 import dev.emi.trinkets.api.SlotAttributes;
 import dev.emi.trinkets.api.SlotReference;
@@ -102,12 +100,6 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
     }
 
     @Override
-    public Rarity getRarity(ItemStack pStack) {
-        GachaRanking ranking = GachaRanking.getGachaRanking(pStack);
-        return ranking == GachaRanking.SSR || ranking == GachaRanking.EASTER_EGG ? Rarity.EPIC : ranking == GachaRanking.SR ? Rarity.UNCOMMON : Rarity.COMMON;
-    }
-
-    @Override
     public String getDescriptionId(ItemStack pStack) {
         return Util.makeDescriptionId("umadata", UmaSoulUtils.getName(pStack));
     }
@@ -141,8 +133,9 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip,
+                                TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltip, tooltipFlag);
         int ranking = ResultRankingUtils.getRanking(stack);
         if(UmaSoulUtils.getGrowth(stack) == Growth.TRAINED && UmaSoulUtils.getPhysique(stack) <= 0)
             tooltip.add(Component.translatable("tooltip.umapyoi.uma_soul.should_retire", UmaStatusUtils.getStatusLevel(ranking))
@@ -154,29 +147,29 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
         if (Screen.hasShiftDown() || !Umapyoi.CONFIG.TOOLTIP_SWITCH()) {
             tooltip.add(
                     Component.translatable("tooltip.umapyoi.uma_soul.soul_details").withStyle(ChatFormatting.AQUA));
-            int[] property = UmaSoulUtils.getProperty(stack);
-            int[] maxProperty = UmaSoulUtils.getMaxProperty(stack);
+            UmaDataBasicStatus property = UmaSoulUtils.getProperty(stack);
+            UmaDataBasicStatus maxProperty = UmaSoulUtils.getMaxProperty(stack);
 
             tooltip.add(Component.translatable("tooltip.umapyoi.uma_soul.speed_details",
-                    UmaStatusUtils.getStatusLevel(property[StatusType.SPEED.getId()]),
-                    UmaStatusUtils.getStatusLevel(maxProperty[StatusType.SPEED.getId()]))
-                            .withStyle(ChatFormatting.DARK_GREEN));
+                            UmaStatusUtils.getStatusLevel(property.speed()),
+                            UmaStatusUtils.getStatusLevel(maxProperty.speed()))
+                    .withStyle(ChatFormatting.DARK_GREEN));
             tooltip.add(Component.translatable("tooltip.umapyoi.uma_soul.stamina_details",
-                    UmaStatusUtils.getStatusLevel(property[StatusType.STAMINA.getId()]),
-                    UmaStatusUtils.getStatusLevel(maxProperty[StatusType.STAMINA.getId()]))
-                            .withStyle(ChatFormatting.DARK_GREEN));
+                            UmaStatusUtils.getStatusLevel(property.stamina()),
+                            UmaStatusUtils.getStatusLevel(maxProperty.stamina()))
+                    .withStyle(ChatFormatting.DARK_GREEN));
             tooltip.add(Component.translatable("tooltip.umapyoi.uma_soul.strength_details",
-                    UmaStatusUtils.getStatusLevel(property[StatusType.STRENGTH.getId()]),
-                    UmaStatusUtils.getStatusLevel(maxProperty[StatusType.STRENGTH.getId()]))
-                            .withStyle(ChatFormatting.DARK_GREEN));
+                            UmaStatusUtils.getStatusLevel(property.strength()),
+                            UmaStatusUtils.getStatusLevel(maxProperty.strength()))
+                    .withStyle(ChatFormatting.DARK_GREEN));
             tooltip.add(Component.translatable("tooltip.umapyoi.uma_soul.guts_details",
-                    UmaStatusUtils.getStatusLevel(property[StatusType.GUTS.getId()]),
-                    UmaStatusUtils.getStatusLevel(maxProperty[StatusType.GUTS.getId()]))
-                            .withStyle(ChatFormatting.DARK_GREEN));
+                            UmaStatusUtils.getStatusLevel(property.guts()),
+                            UmaStatusUtils.getStatusLevel(maxProperty.guts()))
+                    .withStyle(ChatFormatting.DARK_GREEN));
             tooltip.add(Component.translatable("tooltip.umapyoi.uma_soul.wisdom_details",
-                    UmaStatusUtils.getStatusLevel(property[StatusType.WISDOM.getId()]),
-                    UmaStatusUtils.getStatusLevel(maxProperty[StatusType.WISDOM.getId()]))
-                            .withStyle(ChatFormatting.DARK_GREEN));
+                            UmaStatusUtils.getStatusLevel(property.wisdom()),
+                            UmaStatusUtils.getStatusLevel(maxProperty.wisdom()))
+                    .withStyle(ChatFormatting.DARK_GREEN));
         } else {
             tooltip.add(Component.translatable("tooltip.umapyoi.press_shift_for_details")
                     .withStyle(ChatFormatting.AQUA));
@@ -191,72 +184,87 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
         }
 
         if (equipItem(player, stack)) {
-            player.playSound(SoundEvents.ARMOR_EQUIP_LEATHER, 1.0f, 1.0f);
+            player.playSound(SoundEvents.ARMOR_EQUIP_LEATHER.value(), 1.0f, 1.0f);
             return InteractionResultHolder.success(stack);
         }
         return super.use(level, player, usedHand);
     }
 
     @Override
-    public Multimap<Attribute, AttributeModifier> getModifiers(ItemStack stack, SlotReference slot, LivingEntity entity, UUID uuid) {
-        Multimap<Attribute, AttributeModifier> atts = LinkedHashMultimap.create();
-        SlotAttributes.addSlotModifier(atts, "umapyoi/uma_suit", uuid, 1.0, AttributeModifier.Operation.ADDITION);
+    public Multimap<Holder<Attribute>, AttributeModifier> getModifiers(ItemStack stack, SlotReference slot, LivingEntity entity, UUID uuid) {
+        Multimap<Holder<Attribute>, AttributeModifier> atts = LinkedHashMultimap.create();
+        SlotAttributes.addSlotModifier(atts, "umapyoi/uma_suit", uuid, 1.0, AttributeModifier.Operation.ADD_VALUE);
         if (UmaSoulUtils.getGrowth(stack) == Growth.UNTRAINED)
             return atts;
 
         atts.put(UmapyoiAttributesRegistry.SPRINT_SPEED,
                 new AttributeModifier(uuid, "sprint_speed_running_bonus",
                         getExactProperty(stack, entity, StatusType.SPEED, Umapyoi.CONFIG.UMASOUL_MAX_SPEED()),
-                        Umapyoi.CONFIG.UMASOUL_SPEED_PRECENT_ENABLE() ? AttributeModifier.Operation.MULTIPLY_TOTAL
-                                : AttributeModifier.Operation.ADDITION));
+                        Umapyoi.CONFIG.UMASOUL_SPEED_PRECENT_ENABLE() ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                                : AttributeModifier.Operation.ADD_VALUE));
 
         atts.put(UmapyoiAttributesRegistry.SWIM_SPEED,
                 new AttributeModifier(uuid, "speed_swiming_bonus",
                         getExactProperty(stack, entity, StatusType.SPEED, Umapyoi.CONFIG.UMASOUL_MAX_SPEED()),
-                        Umapyoi.CONFIG.UMASOUL_SPEED_PRECENT_ENABLE() ? AttributeModifier.Operation.MULTIPLY_TOTAL
-                                : AttributeModifier.Operation.ADDITION));
+                        Umapyoi.CONFIG.UMASOUL_SPEED_PRECENT_ENABLE() ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                                : AttributeModifier.Operation.ADD_VALUE));
 
         atts.put(Attributes.ATTACK_DAMAGE,
                 new AttributeModifier(uuid, "strength_attack_bonus",
                         getExactProperty(stack, entity, StatusType.STRENGTH, Umapyoi.CONFIG.UMASOUL_MAX_STRENGTH_ATTACK()),
-                        Umapyoi.CONFIG.UMASOUL_STRENGTH_PRECENT_ENABLE() ? AttributeModifier.Operation.MULTIPLY_TOTAL
-                                : AttributeModifier.Operation.ADDITION));
+                        Umapyoi.CONFIG.UMASOUL_STRENGTH_PRECENT_ENABLE() ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                                : AttributeModifier.Operation.ADD_VALUE));
 
         atts.put(Attributes.MAX_HEALTH,
                 new AttributeModifier(uuid, "strength_attack_bonus",
                         getExactProperty(stack, entity, StatusType.STAMINA, Umapyoi.CONFIG.UMASOUL_MAX_STAMINA_HEALTH()),
-                        Umapyoi.CONFIG.UMASOUL_STAMINA_PRECENT_ENABLE() ? AttributeModifier.Operation.MULTIPLY_TOTAL
-                                : AttributeModifier.Operation.ADDITION));
+                        Umapyoi.CONFIG.UMASOUL_STAMINA_PRECENT_ENABLE() ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                                : AttributeModifier.Operation.ADD_VALUE));
 
         atts.put(Attributes.ARMOR,
                 new AttributeModifier(uuid, "guts_armor_bonus",
                         getExactProperty(stack, entity, StatusType.GUTS, Umapyoi.CONFIG.UMASOUL_MAX_GUTS_ARMOR()),
-                        Umapyoi.CONFIG.UMASOUL_GUTS_PRECENT_ENABLE() ? AttributeModifier.Operation.MULTIPLY_TOTAL
-                                : AttributeModifier.Operation.ADDITION));
+                        Umapyoi.CONFIG.UMASOUL_GUTS_PRECENT_ENABLE() ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                                : AttributeModifier.Operation.ADD_VALUE));
 
         atts.put(Attributes.ARMOR_TOUGHNESS,
                 new AttributeModifier(uuid, "guts_armor_toughness_bonus",
                         getExactProperty(stack, entity, StatusType.GUTS, Umapyoi.CONFIG.UMASOUL_MAX_GUTS_ARMOR_TOUGHNESS()),
-                        Umapyoi.CONFIG.UMASOUL_GUTS_PRECENT_ENABLE() ? AttributeModifier.Operation.MULTIPLY_TOTAL
-                                : AttributeModifier.Operation.ADDITION));
+                        Umapyoi.CONFIG.UMASOUL_GUTS_PRECENT_ENABLE() ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                                : AttributeModifier.Operation.ADD_VALUE));
 
         var event = new ApplyUmasoulAttributeCallback.Context(stack, slot, uuid, atts);
         ApplyUmasoulAttributeCallback.invoke(event);
         return event.getAttributes();
     }
 
-    public double getExactProperty(ItemStack stack, LivingEntity user, StatusType status, double limit) {
-        int num = status.getId();
+    public double getExactProperty(ItemStack stack, LivingEntity user, StatusType type, double limit) {
         var retiredValue = UmaSoulUtils.getGrowth(stack) == Growth.RETIRED ? 1.0D : 0.25D;
-        var propertyRate = 1.0D + (UmaSoulUtils.getPropertyRate(stack)[num] / 100.0D);
-        var totalProperty = propertyPercentage(stack, num);
+        int rate = 0;
+        switch (type) {
+            case SPEED -> rate = UmaSoulUtils.getPropertyRate(stack).speed();
+            case STAMINA -> rate = UmaSoulUtils.getPropertyRate(stack).stamina();
+            case STRENGTH -> rate = UmaSoulUtils.getPropertyRate(stack).strength();
+            case GUTS -> rate = UmaSoulUtils.getPropertyRate(stack).guts();
+            case WISDOM -> rate = UmaSoulUtils.getPropertyRate(stack).wisdom();
+        }
+        var propertyRate = 1.0D + (rate / 100.0D);
+        var totalProperty = propertyPercentage(stack, type);
         var event = new SettingPropertyCallback.Context(user, stack, retiredValue, propertyRate, totalProperty);
         SettingPropertyCallback.invoke(event);
         return event.getResultProperty() * limit;
     }
 
-    private double propertyPercentage(ItemStack stack, int num) {
-        var x = UmaSoulUtils.getProperty(stack)[num];
+    private double propertyPercentage(ItemStack stack, StatusType type) {
+        int x = 0;
+        switch (type) {
+            case SPEED -> x = UmaSoulUtils.getProperty(stack).speed();
+            case STAMINA -> x = UmaSoulUtils.getProperty(stack).stamina();
+            case STRENGTH -> x = UmaSoulUtils.getProperty(stack).strength();
+            case GUTS -> x = UmaSoulUtils.getProperty(stack).guts();
+            case WISDOM -> x = UmaSoulUtils.getProperty(stack).wisdom();
+        }
+
         var statLimit = Umapyoi.CONFIG.STAT_LIMIT_VALUE();
         var denominator = 1 + Math.pow(Math.E,
                 (x > statLimit ? (-0.125 * Umapyoi.CONFIG.STAT_LIMIT_REDUCTION_RATE()) : -0.125) *
@@ -357,7 +365,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
     }
 
     private static ResourceLocation getSuitTarget(ItemStack stack, boolean alter) {
-        ResourceLocation identifier = ClientUtils.getClientUmaDataRegistry().get(UmaSoulUtils.getName(stack)).getIdentifier();
+        ResourceLocation identifier = ClientUtils.getClientUmaDataRegistry().get(UmaSoulUtils.getName(stack)).identifier();
         if(alter)
             identifier = new ResourceLocation(identifier.getNamespace(), identifier.getPath()+"_alter");
         return identifier;
@@ -372,8 +380,8 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
     private static class UmaDataComparator implements Comparator<Holder.Reference<UmaData>> {
         @Override
         public int compare(Holder.Reference<UmaData> left, Holder.Reference<UmaData> right) {
-            var leftRanking = left.value().getGachaRanking();
-            var rightRanking = right.value().getGachaRanking();
+            var leftRanking = left.value().ranking();
+            var rightRanking = right.value().ranking();
             if(leftRanking == rightRanking) {
                 String leftName = left.key().location().toString();
                 String rightName = right.key().location().toString();

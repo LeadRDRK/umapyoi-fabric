@@ -74,7 +74,7 @@ public record CostumeRecipeSerializer<T extends Recipe<?>, U extends T> (RecipeS
                             ).flatMap(map ->
                                     ops.mergeToMap(map, ops.createString("result"), ops.createMap(
                                             Stream.of(Pair.of(
-                                                    ops.createString("item"),
+                                                    ops.createString("id"),
                                                     ops.createString("umapyoi:support_card")
                                             ))
                                     ))
@@ -92,8 +92,8 @@ public record CostumeRecipeSerializer<T extends Recipe<?>, U extends T> (RecipeS
                             var outputResult = ResourceLocation.CODEC.optionalFieldOf("cosmetic").decode(ops, newInput);
                             return outputResult.map(outputOpt -> {
                                 var output = outputOpt
-                                        .orElseGet(() -> // result.item MUST be present for the base recipe to even decode correctly
-                                                ResourceLocation.CODEC.fieldOf("item").codec()
+                                        .orElseGet(() -> // result.id MUST be present for the base recipe to even decode correctly
+                                                ResourceLocation.CODEC.fieldOf("id").codec()
                                                         .decode(ops, resultField)
                                                         .result()
                                                         .orElseThrow()

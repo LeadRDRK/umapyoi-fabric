@@ -35,7 +35,7 @@ public class UmaTicketItem extends Item {
     }
 
     public ResourceLocation getUmaName(ItemStack stack) {
-        return stack.getOrDefault(DataComponentsTypeRegistry.DATA_LOCATION.get(), UmaDataRegistry.COMMON_UMA.getId());
+        return stack.getOrDefault(DataComponentsTypeRegistry.DATA_LOCATION.get(), UmaDataRegistry.COMMON_UMA.location());
     }
 
     @Override

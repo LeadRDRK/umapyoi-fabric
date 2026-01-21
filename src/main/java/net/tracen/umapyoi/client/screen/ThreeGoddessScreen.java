@@ -63,7 +63,7 @@ public class ThreeGoddessScreen extends AbstractContainerScreen<ThreeGoddessCont
 
     protected void renderModel(GuiGraphics guiGraphics, int pPosX, int pPosY, int pScale, Quaternionf pQuaternion, ResourceLocation name) {
         if (!ClientUtils.getClientUmaDataRegistry().containsKey(name)) {
-            name = UmaDataRegistry.COMMON_UMA.getId();
+            name = UmaDataRegistry.COMMON_UMA.location();
         }
         SimpleBedrockModel model = new SimpleBedrockModel(ClientUtils.getModelPOJO(name));
         ClientUtils.renderModelInInventory(guiGraphics, pPosX, pPosY, pScale, pQuaternion, model, name);

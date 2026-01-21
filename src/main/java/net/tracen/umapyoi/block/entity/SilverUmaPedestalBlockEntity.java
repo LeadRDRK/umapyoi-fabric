@@ -120,7 +120,7 @@ public class SilverUmaPedestalBlockEntity extends AbstractPedestalBlockEntity im
                 .collect(Collectors.toCollection(Lists::newArrayList));
 
         ResourceLocation holder = keys.stream().skip(keys.isEmpty() ? 0 : rand.nextInt(keys.size())).findFirst()
-                .orElse(UmaDataRegistry.COMMON_UMA.getId());
+                .orElse(UmaDataRegistry.COMMON_UMA.location());
 
         ItemStack result = FadedUmaSoulItem.genUmaSoul(holder, registry.get(holder));
         return result;

@@ -112,7 +112,7 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
     public SupportCard getSupportCard(HolderLookup.Provider registries, ItemStack stack) {
         ResourceLocation cardID = this.getSupportCardID(stack);
         if (isEmptyCard(registries, cardID))
-            return SupportCardRegistry.BLANK_CARD.get();
+            return SupportCard.EMPTY;
         return UmapyoiAPI.getSupportCardRegistry(registries)
                 .get(ResourceKey.create(SupportCard.REGISTRY_KEY, cardID))
                 .map(Holder.Reference::value)

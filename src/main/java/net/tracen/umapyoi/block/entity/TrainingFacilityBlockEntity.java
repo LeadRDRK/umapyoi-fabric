@@ -1,14 +1,16 @@
 package net.tracen.umapyoi.block.entity;
 
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.ContainerHelper;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -23,7 +25,7 @@ import net.tracen.umapyoi.registry.training.SupportContainer;
 import net.tracen.umapyoi.registry.umadata.Growth;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
-public class TrainingFacilityBlockEntity extends SyncedInventoryEntity implements MenuProvider {
+public class TrainingFacilityBlockEntity extends SyncedInventoryEntity implements ExtendedScreenHandlerFactory {
 
     public static final int MAX_PROCESS_TIME = 260;
     private final NonNullList<ItemStack> items = NonNullList.withSize(7, ItemStack.EMPTY);
@@ -257,4 +259,8 @@ public class TrainingFacilityBlockEntity extends SyncedInventoryEntity implement
         return Component.translatable("container.umapyoi.training_facility");
     }
 
+    @Override
+    public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
+        buf.writeBlockPos(getBlockPos());
+    }
 }

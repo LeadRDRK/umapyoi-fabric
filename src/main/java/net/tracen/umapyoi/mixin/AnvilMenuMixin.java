@@ -31,7 +31,7 @@ public abstract class AnvilMenuMixin extends ItemCombinerMenu {
     @Accessor("repairItemCountCost")
     abstract void setRepairItemCountCost(int value);
 
-    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isEmpty()Z", ordinal = 2), method = "createResult", cancellable = true)
+    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isEmpty()Z", ordinal = 1), method = "createResult", cancellable = true)
     public void createResult(CallbackInfo callback) {
         var left = inputSlots.getItem(0);
         var right = inputSlots.getItem(1);
@@ -46,7 +46,6 @@ public abstract class AnvilMenuMixin extends ItemCombinerMenu {
             resultSlots.setItem(0, result.output);
             getCost_().set(result.cost);
             setRepairItemCountCost(result.materialCost);
-            broadcastChanges();
             callback.cancel();
         }
     }

@@ -35,8 +35,8 @@ public class JEIGachaCategory implements IRecipeCategory<JEISimpleRecipe> {
 
     public JEIGachaCategory(IGuiHelper helper) {
         title = Component.translatable("umapyoi.jei.gacha");
-        ResourceLocation backgroundImage = new ResourceLocation(Umapyoi.MODID, "textures/gui/jei_compat.png");
-        UID = new ResourceLocation(Umapyoi.MODID, "gacha");
+        ResourceLocation backgroundImage = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/gui/jei_compat.png");
+        UID = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "gacha");
         background = helper.createDrawable(backgroundImage, 0, 0, 93, 46);
         chancedSlot = helper.createDrawable(backgroundImage, 93, 0, 18, 18);
         icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK,
@@ -51,6 +51,7 @@ public class JEIGachaCategory implements IRecipeCategory<JEISimpleRecipe> {
     @Override
     public void draw(JEISimpleRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX,
                      double mouseY) {
+        background.draw(guiGraphics);
         Optional<ItemStack> outputStack = recipeSlotsView.findSlotByName("outputSlot")
                 .flatMap(slot -> slot.getDisplayedIngredient(VanillaTypes.ITEM_STACK));
         outputStack.ifPresent(output -> {
@@ -80,8 +81,13 @@ public class JEIGachaCategory implements IRecipeCategory<JEISimpleRecipe> {
     }
 
     @Override
-    public IDrawable getBackground() {
-        return background;
+    public int getWidth() {
+        return background.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return background.getHeight();
     }
 
     @Override

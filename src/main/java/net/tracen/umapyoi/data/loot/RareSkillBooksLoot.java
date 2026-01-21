@@ -40,7 +40,7 @@ public class RareSkillBooksLoot implements AddLootTableModifier {
     public ResourceKey<LootTable> lootTable() {
         return ResourceKey.create(
                 Registries.LOOT_TABLE,
-                new ResourceLocation(Umapyoi.MODID, "complex_skills")
+                ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "complex_skills")
         );
     }
 }

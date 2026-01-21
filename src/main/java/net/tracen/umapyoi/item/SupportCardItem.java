@@ -19,7 +19,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
-import net.tracen.umapyoi.data.builtin.SupportCardRegistry;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
 import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.training.SupportContainer;
@@ -51,7 +50,7 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
     @Override
     public void fillItemCategory(FabricItemGroupEntries entries) {
         SupportCardItem.sortedCardDataList(entries.getContext().holders()).forEach(card -> {
-            if (card.key().location().equals(new ResourceLocation(Umapyoi.MODID, "blank_card")))
+            if (card.key().location().equals(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "blank_card")))
                 return;
             ItemStack result = SupportCard.init(card.key().location(), card.value());
             entries.accept(result);

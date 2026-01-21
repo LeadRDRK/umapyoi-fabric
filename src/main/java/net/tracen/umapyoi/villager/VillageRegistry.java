@@ -17,7 +17,7 @@ public class VillageRegistry {
     public static final LazyRegistrar<VillagerProfession> PROFESSIONS = LazyRegistrar
             .create(Registries.VILLAGER_PROFESSION, Umapyoi.MODID);
 
-    public static final ResourceLocation TRAINER_POI = new ResourceLocation(Umapyoi.MODID, "trainer_poi");
+    public static final ResourceLocation TRAINER_POI = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "trainer_poi");
 
     public static final RegistryObject<VillagerProfession> TRAINER = PROFESSIONS.register("trainer",
             () -> createProf("trainer", TRAINER_POI, SoundEvents.VILLAGER_WORK_LIBRARIAN));

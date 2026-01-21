@@ -26,7 +26,7 @@ import net.tracen.umapyoi.utils.ClientUtils;
 import org.joml.Quaternionf;
 
 public class ThreeGoddessBlockRender implements BlockEntityRenderer<ThreeGoddessBlockEntity> {
-    public static final ResourceLocation TEXTURE = new ResourceLocation(Umapyoi.MODID, "textures/model/three_goddesses.png");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/three_goddesses.png");
     private final SimpleBedrockModel model;
 
     public ThreeGoddessBlockRender(BlockEntityRendererProvider.Context context) {
@@ -60,7 +60,7 @@ public class ThreeGoddessBlockRender implements BlockEntityRenderer<ThreeGoddess
         var pojo = ClientUtils.getModelPOJO(ClientUtils.THREE_GODDESS);
         if(model.needRefresh(pojo))
             model.loadModel(pojo);
-        model.renderToBuffer(poseStack, vertexconsumer, combinedLight, combinedOverlay, 1, 1, 1, 1);
+        model.renderToBuffer(poseStack, vertexconsumer, combinedLight, combinedOverlay, -1);
         poseStack.popPose();
     }
 

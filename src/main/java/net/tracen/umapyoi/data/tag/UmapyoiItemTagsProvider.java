@@ -17,8 +17,8 @@ public class UmapyoiItemTagsProvider extends ItemTagProvider {
     @Override
     protected void addTags(HolderLookup.Provider arg) {
         getOrCreateTagBuilder(UmapyoiItemTags.SHOULD_RENDER).add(Items.ELYTRA)
-                .addOptional(new ResourceLocation("corn_delight:cob_pipe"))
-                .addOptional(new ResourceLocation("create:goggles"));
+                .addOptional(ResourceLocation.parse("corn_delight:cob_pipe"))
+                .addOptional(ResourceLocation.parse("create:goggles"));
 
         getOrCreateTagBuilder(UmapyoiItemTags.COMMON_GACHA_ITEM)
                 .add(ItemRegistry.JEWEL.get()).add(ItemRegistry.BLANK_TICKET.get());

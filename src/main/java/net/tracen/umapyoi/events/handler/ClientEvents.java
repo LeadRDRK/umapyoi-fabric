@@ -160,7 +160,7 @@ public class ClientEvents {
                 VertexConsumer emissiveConsumer = event.getMultiBufferSource()
                         .getBuffer(RenderType.entityTranslucentEmissive(ClientUtils.getEmissiveTexture(name)));
                 baseModel.rightArm.renderEmissive(event.getPoseStack(), emissiveConsumer, event.getPackedLight(),
-                        OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
+                        OverlayTexture.NO_OVERLAY, -1);
             }
             baseModel.rightArm.x +=1F;
         } else {
@@ -172,13 +172,13 @@ public class ClientEvents {
                 VertexConsumer emissiveConsumer = event.getMultiBufferSource()
                         .getBuffer(RenderType.entityTranslucentEmissive(ClientUtils.getEmissiveTexture(name)));
                 baseModel.leftArm.renderEmissive(event.getPoseStack(), emissiveConsumer, event.getPackedLight(),
-                        OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
+                        OverlayTexture.NO_OVERLAY, -1);
             }
             baseModel.leftArm.x -=1F;
         }
     }
 
     private static ResourceLocation getTexture(ResourceLocation name) {
-        return new ResourceLocation(name.getNamespace(), "textures/model/" + name.getPath() + ".png");
+        return ResourceLocation.fromNamespaceAndPath(name.getNamespace(), "textures/model/" + name.getPath() + ".png");
     }
 }

@@ -23,7 +23,7 @@ public class UmaSkill extends RegistryNameHolder {
     private String descriptionId;
 
     public static final ResourceKey<Registry<UmaSkill>> REGISTRY_KEY = ResourceKey
-            .createRegistryKey(new ResourceLocation(Umapyoi.MODID, "skill"));
+            .createRegistryKey(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "skill"));
 
     public UmaSkill(Builder builder) {
         this.type = builder.type;

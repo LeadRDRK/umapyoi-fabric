@@ -56,15 +56,15 @@ public class ClientUtils {
     }
 
     public static ResourceLocation getModel(String modid, String name) {
-        return new ResourceLocation(modid, name);
+        return ResourceLocation.fromNamespaceAndPath(modid, name);
     }
 
     public static ResourceLocation getTexture(ResourceLocation name) {
-        return new ResourceLocation(name.getNamespace(), "textures/model/" + name.getPath() + ".png");
+        return ResourceLocation.fromNamespaceAndPath(name.getNamespace(), "textures/model/" + name.getPath() + ".png");
     }
     
     public static ResourceLocation getEmissiveTexture(ResourceLocation name) {
-        return new ResourceLocation(name.getNamespace(), "textures/model/" + name.getPath() + "_emissive.png");
+        return ResourceLocation.fromNamespaceAndPath(name.getNamespace(), "textures/model/" + name.getPath() + "_emissive.png");
     }
 
     public static Registry<UmaData> getClientUmaDataRegistry() {
@@ -119,7 +119,7 @@ public class ClientUtils {
         MultiBufferSource.BufferSource buffersource = guiGraphic.bufferSource();
         VertexConsumer vertexconsumer = buffersource
                 .getBuffer(RenderType.entityTranslucent(ClientUtils.getTexture(texture)));
-        pModel.renderToBuffer(guiGraphic.pose(), vertexconsumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
+        pModel.renderToBuffer(guiGraphic.pose(), vertexconsumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, -1);
         guiGraphic.flush();
         guiGraphic.pose().popPose();
     }

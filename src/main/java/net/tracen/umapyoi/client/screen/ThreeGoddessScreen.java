@@ -18,7 +18,7 @@ import org.joml.Quaternionf;
 
 public class ThreeGoddessScreen extends AbstractContainerScreen<ThreeGoddessContainer> {
 
-    private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation(Umapyoi.MODID,
+    private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID,
             "textures/gui/three_goddess.png");
 
     public ThreeGoddessScreen(ThreeGoddessContainer screenContainer, Inventory inv, Component titleIn) {

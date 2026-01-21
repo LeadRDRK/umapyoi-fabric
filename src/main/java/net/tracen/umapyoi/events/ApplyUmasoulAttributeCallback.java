@@ -5,22 +5,21 @@ import com.google.common.collect.Multimap;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.UUID;
 
 import dev.emi.trinkets.api.SlotReference;
 
 public interface ApplyUmasoulAttributeCallback {
     class Context extends UmaSoulContext {
         private final SlotReference slotReference;
-        private final UUID uuid;
+        private final ResourceLocation slotIdentifier;
         private final Multimap<Holder<Attribute>, AttributeModifier> atts;
-        public Context(ItemStack soul, SlotReference slotReference, UUID uuid, Multimap<Holder<Attribute>, AttributeModifier> atts) {
+        public Context(ItemStack soul, SlotReference slotReference, ResourceLocation slotIdentifier, Multimap<Holder<Attribute>, AttributeModifier> atts) {
             super(soul);
-            this.uuid = uuid;
+            this.slotIdentifier = slotIdentifier;
             this.slotReference = slotReference;
             this.atts = atts;
         }
@@ -29,8 +28,8 @@ public interface ApplyUmasoulAttributeCallback {
             return slotReference;
         }
 
-        public UUID getUUID() {
-            return uuid;
+        public ResourceLocation getSlotIdentifier() {
+            return slotIdentifier;
         }
 
         public Multimap<Holder<Attribute>, AttributeModifier> getAttributes() {

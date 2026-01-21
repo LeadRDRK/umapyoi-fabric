@@ -16,20 +16,20 @@ public class CostumeDataRegistry {
 
     public static final RegistryObject<CosmeticData> STARTING_FUTURE = COSTUME_DATA.register("starting_future",
             () -> new CosmeticData(
-                    new ResourceLocation(Umapyoi.MODID, "common_uma"),
-                    new ResourceLocation(Umapyoi.MODID, "common_uma_flat"),
-                    new ResourceLocation(Umapyoi.MODID, "common_uma"),
-                    new ResourceLocation(Umapyoi.MODID, "common_uma_flat")
+                    ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "common_uma"),
+                    ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "common_uma_flat"),
+                    ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "common_uma"),
+                    ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "common_uma_flat")
             ));
 
     public static final RegistryObject<CosmeticData> KINDERGARTEN_UNIFORM = COSTUME_DATA.register("kindergarten_uniform",
-            () -> new CosmeticData(new ResourceLocation(Umapyoi.MODID, "kindergarten_uniform")));
+            () -> new CosmeticData(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "kindergarten_uniform")));
 
     public static final RegistryObject<CosmeticData> KASAMATSU_TRAINING_UNIFORM = COSTUME_DATA.register("kasamatsu_training_uniform",
             () -> new CosmeticData(
-                    new ResourceLocation(Umapyoi.MODID, "kasamatsu_training_uniform"),
-                    new ResourceLocation(Umapyoi.MODID, "kasamatsu_training_uniform_flat"),
-                    new ResourceLocation(Umapyoi.MODID, "kasamatsu_training_uniform"),
-                    new ResourceLocation(Umapyoi.MODID, "kasamatsu_training_uniform")
+                    ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "kasamatsu_training_uniform"),
+                    ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "kasamatsu_training_uniform_flat"),
+                    ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "kasamatsu_training_uniform"),
+                    ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "kasamatsu_training_uniform")
             ));
 }

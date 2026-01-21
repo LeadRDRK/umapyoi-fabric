@@ -197,7 +197,7 @@ public class SupportAlbumPedestalBlockEntity extends AbstractPedestalBlockEntity
                 .collect(Collectors.toCollection(Lists::newArrayList));
 
         ResourceLocation key = keys.stream().skip(keys.isEmpty() ? 0 : rand.nextInt(keys.size())).findFirst()
-                .orElse(new ResourceLocation(Umapyoi.MODID, "blank_card"));
+                .orElse(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "blank_card"));
 
         ItemStack result = SupportCard.init(key, registry.get(key));
         return result;

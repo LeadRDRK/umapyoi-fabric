@@ -31,7 +31,7 @@ public class SkillBooksLoot implements AddLootTableModifier {
     public ResourceKey<LootTable> lootTable() {
         return ResourceKey.create(
                 Registries.LOOT_TABLE,
-                new ResourceLocation(Umapyoi.MODID, "simple_skills")
+                ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "simple_skills")
         );
     }
 }

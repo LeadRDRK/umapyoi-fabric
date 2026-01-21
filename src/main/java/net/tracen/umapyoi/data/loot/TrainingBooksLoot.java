@@ -40,7 +40,7 @@ public class TrainingBooksLoot implements AddLootTableModifier {
     public ResourceKey<LootTable> lootTable() {
         return ResourceKey.create(
                 Registries.LOOT_TABLE,
-                new ResourceLocation(Umapyoi.MODID, "supply_book")
+                ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "supply_book")
         );
     }
 }

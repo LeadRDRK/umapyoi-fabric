@@ -21,7 +21,7 @@ public record CosmeticData(ResourceLocation model, Optional<ResourceLocation> fl
                     ResourceLocation.CODEC.optionalFieldOf("flatTexture").forGetter(CosmeticData::flatTexture))
             .apply(instance, CosmeticData::new));
 
-    public static final ResourceLocation COMMON_COSTUME = new ResourceLocation(Umapyoi.MODID, "common_costume");
+    public static final ResourceLocation COMMON_COSTUME = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "common_costume");
 
     public static final CosmeticData DEFAULT_COSTUME = new CosmeticData(COMMON_COSTUME);
 
@@ -39,7 +39,7 @@ public record CosmeticData(ResourceLocation model, Optional<ResourceLocation> fl
     }
 
     public static final ResourceKey<Registry<CosmeticData>> REGISTRY_KEY = ResourceKey
-            .createRegistryKey(new ResourceLocation(Umapyoi.MODID, "cosmetic_data"));
+            .createRegistryKey(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "cosmetic_data"));
 
     public ResourceLocation getFlatModel() {
         return this.flatModel.orElse(this.model);
@@ -48,7 +48,7 @@ public record CosmeticData(ResourceLocation model, Optional<ResourceLocation> fl
     public ResourceLocation getTexture(boolean tanned) {
         ResourceLocation result = this.texture.orElse(this.model);
         if(tanned)
-            result = new ResourceLocation(result.getNamespace(), result.getPath()+"_tanned");
+            result = ResourceLocation.fromNamespaceAndPath(result.getNamespace(), result.getPath()+"_tanned");
 
         return ClientUtils.getTexture(result);
     }
@@ -56,7 +56,7 @@ public record CosmeticData(ResourceLocation model, Optional<ResourceLocation> fl
     public ResourceLocation getFlatTexture(boolean tanned) {
         ResourceLocation result = this.flatTexture.orElse(this.texture.orElse(this.model));
         if(tanned)
-            result = new ResourceLocation(result.getNamespace(), result.getPath()+"_tanned");
+            result = ResourceLocation.fromNamespaceAndPath(result.getNamespace(), result.getPath()+"_tanned");
 
         return ClientUtils.getTexture(result);
     }

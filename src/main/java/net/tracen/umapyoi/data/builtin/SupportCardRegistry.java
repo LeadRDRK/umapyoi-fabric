@@ -68,7 +68,7 @@ public class SupportCardRegistry {
     public static final ResourceKey<SupportCard> SSR_KIRYUUIN_AOI = register("ssr_kiryuuin_aoi");
 
     private static ResourceKey<SupportCard> register(String id) {
-        ResourceKey<SupportCard> loc = ResourceKey.create(SupportCard.REGISTRY_KEY, new ResourceLocation(Umapyoi.MODID, id));
+        ResourceKey<SupportCard> loc = ResourceKey.create(SupportCard.REGISTRY_KEY, ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, id));
         return loc;
     }
 }

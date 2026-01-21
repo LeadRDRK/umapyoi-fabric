@@ -56,7 +56,6 @@ import net.tracen.umapyoi.utils.UmaStatusUtils.StatusType;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Stream;
 
 import dev.emi.trinkets.api.SlotAttributes;
@@ -191,49 +190,49 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
     }
 
     @Override
-    public Multimap<Holder<Attribute>, AttributeModifier> getModifiers(ItemStack stack, SlotReference slot, LivingEntity entity, UUID uuid) {
+    public Multimap<Holder<Attribute>, AttributeModifier> getModifiers(ItemStack stack, SlotReference slot, LivingEntity entity, ResourceLocation slotIdentifier) {
         Multimap<Holder<Attribute>, AttributeModifier> atts = LinkedHashMultimap.create();
-        SlotAttributes.addSlotModifier(atts, "umapyoi/uma_suit", uuid, 1.0, AttributeModifier.Operation.ADD_VALUE);
+        SlotAttributes.addSlotModifier(atts, "umapyoi/uma_suit", slotIdentifier, 1.0, AttributeModifier.Operation.ADD_VALUE);
         if (UmaSoulUtils.getGrowth(stack) == Growth.UNTRAINED)
             return atts;
 
         atts.put(UmapyoiAttributesRegistry.SPRINT_SPEED,
-                new AttributeModifier(uuid, "sprint_speed_running_bonus",
+                new AttributeModifier(slotIdentifier,
                         getExactProperty(stack, entity, StatusType.SPEED, Umapyoi.CONFIG.UMASOUL_MAX_SPEED()),
                         Umapyoi.CONFIG.UMASOUL_SPEED_PRECENT_ENABLE() ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
                                 : AttributeModifier.Operation.ADD_VALUE));
 
         atts.put(UmapyoiAttributesRegistry.SWIM_SPEED,
-                new AttributeModifier(uuid, "speed_swiming_bonus",
+                new AttributeModifier(slotIdentifier,
                         getExactProperty(stack, entity, StatusType.SPEED, Umapyoi.CONFIG.UMASOUL_MAX_SPEED()),
                         Umapyoi.CONFIG.UMASOUL_SPEED_PRECENT_ENABLE() ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
                                 : AttributeModifier.Operation.ADD_VALUE));
 
         atts.put(Attributes.ATTACK_DAMAGE,
-                new AttributeModifier(uuid, "strength_attack_bonus",
+                new AttributeModifier(slotIdentifier,
                         getExactProperty(stack, entity, StatusType.STRENGTH, Umapyoi.CONFIG.UMASOUL_MAX_STRENGTH_ATTACK()),
                         Umapyoi.CONFIG.UMASOUL_STRENGTH_PRECENT_ENABLE() ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
                                 : AttributeModifier.Operation.ADD_VALUE));
 
         atts.put(Attributes.MAX_HEALTH,
-                new AttributeModifier(uuid, "strength_attack_bonus",
+                new AttributeModifier(slotIdentifier,
                         getExactProperty(stack, entity, StatusType.STAMINA, Umapyoi.CONFIG.UMASOUL_MAX_STAMINA_HEALTH()),
                         Umapyoi.CONFIG.UMASOUL_STAMINA_PRECENT_ENABLE() ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
                                 : AttributeModifier.Operation.ADD_VALUE));
 
         atts.put(Attributes.ARMOR,
-                new AttributeModifier(uuid, "guts_armor_bonus",
+                new AttributeModifier(slotIdentifier,
                         getExactProperty(stack, entity, StatusType.GUTS, Umapyoi.CONFIG.UMASOUL_MAX_GUTS_ARMOR()),
                         Umapyoi.CONFIG.UMASOUL_GUTS_PRECENT_ENABLE() ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
                                 : AttributeModifier.Operation.ADD_VALUE));
 
         atts.put(Attributes.ARMOR_TOUGHNESS,
-                new AttributeModifier(uuid, "guts_armor_toughness_bonus",
+                new AttributeModifier(slotIdentifier,
                         getExactProperty(stack, entity, StatusType.GUTS, Umapyoi.CONFIG.UMASOUL_MAX_GUTS_ARMOR_TOUGHNESS()),
                         Umapyoi.CONFIG.UMASOUL_GUTS_PRECENT_ENABLE() ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
                                 : AttributeModifier.Operation.ADD_VALUE));
 
-        var event = new ApplyUmasoulAttributeCallback.Context(stack, slot, uuid, atts);
+        var event = new ApplyUmasoulAttributeCallback.Context(stack, slot, slotIdentifier, atts);
         ApplyUmasoulAttributeCallback.invoke(event);
         return event.getAttributes();
     }
@@ -326,12 +325,12 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
         }
         baseModel.setupAnim(entity, limbAngle, limbDistance, animationProgress, headYaw, headPitch);
         baseModel.renderToBuffer(poseStack, vertexConsumer, light,
-                LivingEntityRenderer.getOverlayCoords(entity, 0.0F), 1, 1, 1, 1);
+                LivingEntityRenderer.getOverlayCoords(entity, 0.0F), -1);
         if (baseModel.isEmissive()) {
             VertexConsumer emissiveConsumer = multiBufferSource
                     .getBuffer(RenderType.entityTranslucentEmissive(ClientUtils.getEmissiveTexture(renderTarget)));
             baseModel.renderEmissiveParts(poseStack, emissiveConsumer, light,
-                    LivingEntityRenderer.getOverlayCoords(entity, 0.0F), 1, 1, 1, 1);
+                    LivingEntityRenderer.getOverlayCoords(entity, 0.0F), -1);
         }
 
         RenderingUmaSoulCallback.Post.invoke(callbackContext);
@@ -367,7 +366,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
     private static ResourceLocation getSuitTarget(ItemStack stack, boolean alter) {
         ResourceLocation identifier = ClientUtils.getClientUmaDataRegistry().get(UmaSoulUtils.getName(stack)).identifier();
         if(alter)
-            identifier = new ResourceLocation(identifier.getNamespace(), identifier.getPath()+"_alter");
+            identifier = ResourceLocation.fromNamespaceAndPath(identifier.getNamespace(), identifier.getPath()+"_alter");
         return identifier;
     }
 

@@ -46,7 +46,7 @@ public class BedrockModelResourceLoader implements SimpleResourceReloadListener<
         });
     }
 
-    public static final ResourceLocation ID = new ResourceLocation(Umapyoi.MODID, "bmrl");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "bmrl");
     @Override
     public ResourceLocation getFabricId() {
         return ID;

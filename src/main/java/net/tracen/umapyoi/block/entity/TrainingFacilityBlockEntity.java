@@ -6,6 +6,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -130,7 +131,7 @@ public class TrainingFacilityBlockEntity extends SyncedInventoryEntity implement
                 if (supports.isConsumable(this.getLevel(), supportItem))
                     supportItem.shrink(1);
                 else
-                    supportItem.hurtAndBreak(1, this.getLevel().getRandom(), null, () -> {
+                    supportItem.hurtAndBreak(1, (ServerLevel) this.getLevel(), null, item -> {
                         this.getLevel().playSound(null, this.getBlockPos(),
                                 SoundEvents.AMETHYST_CLUSTER_BREAK, SoundSource.BLOCKS, 1F, 1F);
                     });

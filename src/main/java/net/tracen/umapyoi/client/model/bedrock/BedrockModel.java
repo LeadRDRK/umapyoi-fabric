@@ -31,15 +31,15 @@ public interface BedrockModel {
         return this.getBedrockModelPOJO() != pojo;
     }
 
-    default void renderBedrockModel(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
+    default void renderBedrockModel(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color){
         for (BedrockPart model : this.getShouldRender()) {
-            model.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+            model.render(poseStack, buffer, packedLight, packedOverlay, color);
         }
     }
 
-    default void renderEmissiveParts(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
+    default void renderEmissiveParts(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color){
         for (BedrockPart model : this.getShouldRender()) {
-            model.renderEmissive(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+            model.renderEmissive(poseStack, buffer, packedLight, packedOverlay, color);
         }
     }
 

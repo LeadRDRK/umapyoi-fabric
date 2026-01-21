@@ -18,7 +18,7 @@ public class UmaData extends RegistryNameHolder {
     private static final int[] EMPTY_PROPERTY_RATE = new int[] { 0, 0, 0, 0, 0 };
     private static final int[] DEFAULT_MAX_PROPERTY = new int[] { 18, 18, 18, 18, 18 };
     private static final int[] DEFAULT_PROPERTY = new int[] { 1, 1, 1, 1, 1 };
-    public static final ResourceLocation DEFAULT_UMA_ID = new ResourceLocation(Umapyoi.MODID, "common_uma");
+    public static final ResourceLocation DEFAULT_UMA_ID = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "common_uma");
     public static final UmaData DEFAULT_UMA = UmaData.createNewUmamusume("common_uma", GachaRanking.R);
 
     public static final Codec<UmaData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -34,7 +34,7 @@ public class UmaData extends RegistryNameHolder {
             .apply(instance, UmaData::new));
 
     public static final ResourceKey<Registry<UmaData>> REGISTRY_KEY = ResourceKey
-            .createRegistryKey(new ResourceLocation(Umapyoi.MODID, "umadata"));
+            .createRegistryKey(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "umadata"));
 
     private final ResourceLocation identifier;
     private final GachaRanking ranking;
@@ -79,13 +79,13 @@ public class UmaData extends RegistryNameHolder {
     }
 
     public static UmaData createNewUmamusume(String name, GachaRanking ranking) {
-        return new UmaData(new ResourceLocation(Umapyoi.MODID, name), ranking, DEFAULT_PROPERTY,
+        return new UmaData(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, name), ranking, DEFAULT_PROPERTY,
                 DEFAULT_MAX_PROPERTY, EMPTY_PROPERTY_RATE,
-                new ResourceLocation(Umapyoi.MODID, "basic_pace"));
+                ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "basic_pace"));
     }
 
     public static UmaData createNewUmamusume(String name, GachaRanking ranking, int[] rate) {
-        return new UmaData(new ResourceLocation(Umapyoi.MODID, name), ranking, DEFAULT_PROPERTY,
-                DEFAULT_MAX_PROPERTY, rate, new ResourceLocation(Umapyoi.MODID, "basic_pace"));
+        return new UmaData(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, name), ranking, DEFAULT_PROPERTY,
+                DEFAULT_MAX_PROPERTY, rate, ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "basic_pace"));
     }
 }

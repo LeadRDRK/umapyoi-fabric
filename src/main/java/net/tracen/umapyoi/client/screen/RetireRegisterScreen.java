@@ -14,7 +14,7 @@ import net.tracen.umapyoi.utils.UmaStatusUtils;
 
 public class RetireRegisterScreen extends AbstractContainerScreen<RetireRegisterMenu> {
 
-    private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation(Umapyoi.MODID,
+    private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID,
             "textures/gui/retire_gui.png");
 
     public RetireRegisterScreen(RetireRegisterMenu screenContainer, Inventory inv, Component titleIn) {

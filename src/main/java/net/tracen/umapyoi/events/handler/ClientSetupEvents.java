@@ -89,14 +89,15 @@ public class ClientSetupEvents {
         });
     }
 
-    private static ModelResourceLocation resolveCostumeLocation(ResourceLocation location) {
-        return new ModelResourceLocation(location.getNamespace(),
-                "costume/" + location.getPath().substring(20,location.getPath().length()-5), "inventory");
+    private static ResourceLocation resolveCostumeLocation(ResourceLocation location) {
+        return ResourceLocation.fromNamespaceAndPath(location.getNamespace(),
+                "umapyoi/" + location.getPath().substring(20,location.getPath().length()-5));
     }
 
     public static BakedModel onBakedModel(BakedModel bakedModel, ModelModifier.AfterBake.Context context) {
         ModelResourceLocation origin = new ModelResourceLocation(ItemRegistry.UMA_COSTUME.getId(), "inventory");
-        if (Objects.equals(context.id(), origin)) {
+        // what?
+        if (Objects.equals(context.topLevelId(), origin) || Objects.equals(context.resourceId(), origin.id())) {
             return new UmaCostumeItemModel(bakedModel, context.loader());
         }
 

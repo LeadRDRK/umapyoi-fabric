@@ -82,7 +82,7 @@ public class UmasoulIngredient implements CustomIngredient {
 
         @Override
         public ResourceLocation getIdentifier() {
-            return new ResourceLocation(Umapyoi.MODID, "umasoul");
+            return ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "umasoul");
         }
 
         @Override

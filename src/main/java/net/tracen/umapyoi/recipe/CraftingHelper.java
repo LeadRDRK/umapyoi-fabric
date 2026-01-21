@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public class CraftingHelper {
     public static Item getItem(String itemName, boolean disallowsAirInRecipe) {
-        ResourceLocation itemKey = new ResourceLocation(itemName);
+        ResourceLocation itemKey = ResourceLocation.parse(itemName);
         if (!BuiltInRegistries.ITEM.containsKey(itemKey))
             throw new JsonSyntaxException("Unknown item '" + itemName + "'");
 

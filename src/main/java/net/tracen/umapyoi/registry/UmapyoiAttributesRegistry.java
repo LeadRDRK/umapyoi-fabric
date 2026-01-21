@@ -24,7 +24,7 @@ public class UmapyoiAttributesRegistry {
     private static Holder<Attribute> register(
             String path, String descriptionId, double defaultValue, double minValue, double maxValue, boolean syncedWithClient
     ) {
-        var name = new ResourceLocation(Umapyoi.MODID, path);
+        var name = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, path);
         Attribute entityAttribute = new RangedAttribute(
                 descriptionId,
                 defaultValue,

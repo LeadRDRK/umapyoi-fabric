@@ -3,6 +3,7 @@ package net.tracen.umapyoi.client;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
@@ -20,10 +21,10 @@ public class ActionBarOverlay implements HudRenderCallback {
     public ActionBarOverlay() {
     }
 
-    private static final ResourceLocation HUD = new ResourceLocation(Umapyoi.MODID, "textures/gui/actionbar.png");
+    private static final ResourceLocation HUD = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/gui/actionbar.png");
 
     @Override
-    public void onHudRender(GuiGraphics drawContext, float tickDelta) {
+    public void onHudRender(GuiGraphics drawContext, DeltaTracker tickCounter) {
         if (!Umapyoi.CONFIG.OVERLAY_SWITCH())
             return;
 

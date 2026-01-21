@@ -11,7 +11,7 @@ import net.tracen.umapyoi.container.UmaSelectMenu;
 
 public record EmptyResultPacket() implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<EmptyResultPacket> TYPE =
-            new CustomPacketPayload.Type<>(new ResourceLocation(Umapyoi.MODID, "packet/empty_result"));
+            new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "packet/empty_result"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, EmptyResultPacket> CODEC =
             StreamCodec.unit(new EmptyResultPacket());

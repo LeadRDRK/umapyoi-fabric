@@ -45,8 +45,8 @@ public class BedrockEntityModel<T extends Entity> extends EntityModel<T> impleme
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        this.renderBedrockModel(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
+        this.renderBedrockModel(poseStack, buffer, packedLight, packedOverlay, color);
     }
 
     @Override

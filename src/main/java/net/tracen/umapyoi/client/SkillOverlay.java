@@ -3,6 +3,7 @@ package net.tracen.umapyoi.client;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
@@ -22,10 +23,10 @@ public class SkillOverlay implements HudRenderCallback {
     public SkillOverlay() {
     }
 
-    private static final ResourceLocation HUD = new ResourceLocation(Umapyoi.MODID, "textures/gui/skill_hud.png");
+    private static final ResourceLocation HUD = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/gui/skill_hud.png");
 
     @Override
-    public void onHudRender(GuiGraphics guiGraphics, float tickDelta) {
+    public void onHudRender(GuiGraphics guiGraphics, DeltaTracker tickCounter) {
         if (!Umapyoi.CONFIG.OVERLAY_SWITCH())
             return;
 

@@ -21,7 +21,7 @@ import net.tracen.umapyoi.utils.UmaSoulUtils;
 
 public record UseSkillPacket() implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<UseSkillPacket> TYPE =
-            new CustomPacketPayload.Type<>(new ResourceLocation(Umapyoi.MODID, "packet/use_skill"));
+            new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "packet/use_skill"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, UseSkillPacket> CODEC =
             StreamCodec.unit(new UseSkillPacket());

@@ -23,7 +23,7 @@ import mezz.jei.api.registration.IRecipeRegistration;
 
 @JeiPlugin
 public class JEIPlugin implements IModPlugin {
-    public static final ResourceLocation PLUGIN_ID = new ResourceLocation(Umapyoi.MODID, "jei_plugin");
+    public static final ResourceLocation PLUGIN_ID = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "jei_plugin");
 
     public static final mezz.jei.api.recipe.RecipeType<JEISimpleRecipe> GACHA_JEI_TYPE = mezz.jei.api.recipe.RecipeType
             .create(Umapyoi.MODID, "gacha_recipe", JEISimpleRecipe.class);

@@ -29,7 +29,7 @@ public class LazyRegistrar<T> {
     }
 
     public <B extends T> RegistryObject<B> register(String path, final Supplier<? extends B> entry) {
-        return register(new ResourceLocation(namespace, path), entry);
+        return register(ResourceLocation.fromNamespaceAndPath(namespace, path), entry);
     }
 
     @SuppressWarnings("unchecked")

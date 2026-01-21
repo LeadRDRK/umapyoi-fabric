@@ -140,7 +140,7 @@ public abstract class AbstractSuitItem extends TrinketItem implements TrinketRen
             baseModel.setupAnim(entity, limbAngle, limbDistance, animationProgress, headYaw, headPitch);
 
             baseModel.renderToBuffer(poseStack, vertexconsumer, light,
-                    LivingEntityRenderer.getOverlayCoords(entity, 0.0F), 1, 1, 1, 1);
+                    LivingEntityRenderer.getOverlayCoords(entity, 0.0F), -1);
             RenderingUmaSuitCallback.Post.invoke(callbackContext);
         });
     }

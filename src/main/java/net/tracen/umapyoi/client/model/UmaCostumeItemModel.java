@@ -36,6 +36,6 @@ public class UmaCostumeItemModel extends DynamicItemBakedModel {
     }
 
     private ResourceLocation getModelLocation(ResourceLocation id) {
-        return new ResourceLocation(id.getNamespace(), "costume/" + id.getPath());
+        return ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "costume/" + id.getPath());
     }
 }

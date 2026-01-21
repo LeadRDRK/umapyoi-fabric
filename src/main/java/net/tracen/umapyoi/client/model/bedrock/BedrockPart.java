@@ -85,40 +85,37 @@ public final class BedrockPart {
     }
 
     public void render(PoseStack poseStack, VertexConsumer consumer, int texU, int texV) {
-        this.render(poseStack, consumer, texU, texV, 1.0F, 1.0F, 1.0F, 1.0F);
+        this.render(poseStack, consumer, texU, texV, -1);
     }
 
-    public void render(PoseStack poseStack, VertexConsumer consumer, int texU, int texV, float red, float green,
-            float blue, float alpha) {
+    public void render(PoseStack poseStack, VertexConsumer consumer, int texU, int texV, int color) {
         if (this.visible) {
-            renderCubes(false, poseStack, consumer, texU, texV, red, green, blue, alpha);
+            renderCubes(false, poseStack, consumer, texU, texV, color);
         }
     }
     
     public void renderEmissive(PoseStack poseStack, VertexConsumer consumer, int texU, int texV) {
-        this.renderEmissive(poseStack, consumer, texU, texV, 1.0F, 1.0F, 1.0F, 1.0F);
+        this.renderEmissive(poseStack, consumer, texU, texV, -1);
     }
 
-    public void renderEmissive(PoseStack poseStack, VertexConsumer consumer, int texU, int texV, float red, float green,
-            float blue, float alpha) {
+    public void renderEmissive(PoseStack poseStack, VertexConsumer consumer, int texU, int texV, int color) {
         if (this.visible) {
-            renderCubes(true, poseStack, consumer, texU, texV, red, green, blue, alpha);
+            renderCubes(true, poseStack, consumer, texU, texV, color);
         }
     }
 
-    public void renderCubes(boolean renderEmissive, PoseStack poseStack, VertexConsumer consumer, int texU, int texV, float red, float green,
-            float blue, float alpha) {
+    public void renderCubes(boolean renderEmissive, PoseStack poseStack, VertexConsumer consumer, int texU, int texV, int color) {
         if (!this.isEmpty()) {
             poseStack.pushPose();
             this.translateAndRotate(poseStack);
             if(this.emissive == renderEmissive)
-                this.compile(poseStack.last(), consumer, texU, texV, red, green, blue, alpha);
+                this.compile(poseStack.last(), consumer, texU, texV, color);
             
             for (BedrockPart part : this.children.values()) {
                 if(renderEmissive)
-                    part.renderEmissive(poseStack, consumer, texU, texV, red, green, blue, alpha);
+                    part.renderEmissive(poseStack, consumer, texU, texV, color);
                 else
-                    part.render(poseStack, consumer, texU, texV, red, green, blue, alpha);
+                    part.render(poseStack, consumer, texU, texV, color);
             }
 
             poseStack.popPose();
@@ -132,10 +129,9 @@ public final class BedrockPart {
         }
      }
 
-    public void compile(PoseStack.Pose pose, VertexConsumer consumer, int texU, int texV, float red, float green,
-            float blue, float alpha) {
+    public void compile(PoseStack.Pose pose, VertexConsumer consumer, int texU, int texV, int color) {
         for (BedrockCube bedrockCube : this.getCubes()) {
-            bedrockCube.compile(pose, consumer, texU, texV, red, green, blue, alpha);
+            bedrockCube.compile(pose, consumer, texU, texV, color);
         }
     }
     

@@ -142,7 +142,7 @@ public class UmaDataRegistry {
     public static final ResourceKey<UmaData> DANTSU_FLAME = register("dantsu_flame");
 
     private static ResourceKey<UmaData> register(String id) {
-        ResourceKey<UmaData> loc = ResourceKey.create(UmaData.REGISTRY_KEY, new ResourceLocation(Umapyoi.MODID, id));
+        ResourceKey<UmaData> loc = ResourceKey.create(UmaData.REGISTRY_KEY, ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, id));
         return loc;
     }
 }

@@ -1,6 +1,7 @@
 package net.tracen.umapyoi.item.weapon;
 
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlotGroup;
@@ -12,10 +13,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.tracen.umapyoi.Umapyoi;
 
-import java.util.UUID;
-
 public class BaseballBatItem extends UmaWeaponItem {
-    private static final UUID KNOCKBACK_UUID = UUID.fromString("1F199A02-626F-13A3-2365-3D4D6D075737");
+    private static final ResourceLocation KNOCKBACK_ID = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "knockback");
 
     public BaseballBatItem() {
         super(new NaginataTier(), 6, -2.7F, Umapyoi.defaultItemProperties()
@@ -27,7 +26,7 @@ public class BaseballBatItem extends UmaWeaponItem {
         return ItemAttributeModifiers.builder()
                 .add(
                         Attributes.ATTACK_KNOCKBACK,
-                        new AttributeModifier(KNOCKBACK_UUID, "Weapon modifier", 3D,
+                        new AttributeModifier(KNOCKBACK_ID, 3D,
                                 AttributeModifier.Operation.ADD_VALUE),
                         EquipmentSlotGroup.MAINHAND
                 )

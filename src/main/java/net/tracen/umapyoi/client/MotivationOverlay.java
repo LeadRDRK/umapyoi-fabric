@@ -3,6 +3,7 @@ package net.tracen.umapyoi.client;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -20,10 +21,10 @@ public class MotivationOverlay implements HudRenderCallback {
     public MotivationOverlay() {
     }
 
-    private static final ResourceLocation HUD = new ResourceLocation(Umapyoi.MODID, "textures/gui/motivations.png");
+    private static final ResourceLocation HUD = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/gui/motivations.png");
 
     @Override
-    public void onHudRender(GuiGraphics guiGraphics, float tickDelta) {
+    public void onHudRender(GuiGraphics guiGraphics, DeltaTracker tickCounter) {
         if (!Umapyoi.CONFIG.OVERLAY_SWITCH())
             return;
 

@@ -22,7 +22,7 @@ public class TrainingSupport extends RegistryNameHolder {
             .xmap(loc -> TrainingSupportRegistry.REGISTRY.get().get(loc), RegistryNameHolder::getRegistryName);
 
     public static final ResourceKey<Registry<TrainingSupport>> REGISTRY_KEY = ResourceKey
-            .createRegistryKey(new ResourceLocation(Umapyoi.MODID, "training_support"));
+            .createRegistryKey(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "training_support"));
 
     public TrainingSupport() {
     }

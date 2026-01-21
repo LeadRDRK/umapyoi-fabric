@@ -62,10 +62,10 @@ public class ItemFoodBase extends Item implements IFoodLike {
     }
 
     @Override
-    public int getUseDuration(ItemStack stack) {
+    public int getUseDuration(ItemStack stack, LivingEntity entity) {
         if (this.getFoodInfo() != null)
             return this.getFoodInfo().getEatTime();
-        return super.getUseDuration(stack);
+        return super.getUseDuration(stack, entity);
     }
 
     @Override

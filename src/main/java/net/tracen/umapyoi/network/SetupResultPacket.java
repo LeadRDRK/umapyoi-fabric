@@ -12,7 +12,7 @@ import net.tracen.umapyoi.container.UmaSelectMenu;
 
 public record SetupResultPacket(String message) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<SetupResultPacket> TYPE =
-            new CustomPacketPayload.Type<>(new ResourceLocation(Umapyoi.MODID, "packet/setup_result"));
+            new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "packet/setup_result"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SetupResultPacket> CODEC = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8,

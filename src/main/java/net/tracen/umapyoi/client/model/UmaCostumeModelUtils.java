@@ -11,17 +11,17 @@ import net.tracen.umapyoi.utils.ClientUtils;
 public class UmaCostumeModelUtils {
     public static ResourceLocation getCostumeTexture(ItemStack stack, boolean tanned) {
         if(stack.is(ItemRegistry.SUMMER_UNIFORM.get()))
-            return tanned ? new ResourceLocation(Umapyoi.MODID, "textures/model/summer_uniform_tanned.png")
-                    : new ResourceLocation(Umapyoi.MODID, "textures/model/summer_uniform.png");
+            return tanned ? ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/summer_uniform_tanned.png")
+                    : ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/summer_uniform.png");
         if(stack.is(ItemRegistry.WINTER_UNIFORM.get()))
-            return tanned ? new ResourceLocation(Umapyoi.MODID, "textures/model/winter_uniform_tanned.png")
-                    : new ResourceLocation(Umapyoi.MODID, "textures/model/winter_uniform.png");
+            return tanned ? ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/winter_uniform_tanned.png")
+                    : ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/winter_uniform.png");
         if(stack.is(ItemRegistry.TRAINING_SUIT.get()))
-            return tanned ? new ResourceLocation(Umapyoi.MODID, "textures/model/trainning_suit_tanned.png")
-                    : new ResourceLocation(Umapyoi.MODID, "textures/model/trainning_suit.png");
+            return tanned ? ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/trainning_suit_tanned.png")
+                    : ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/trainning_suit.png");
         if(stack.is(ItemRegistry.SWIMSUIT.get()))
-            return tanned ? new ResourceLocation(Umapyoi.MODID, "textures/model/swimsuit_tanned.png")
-                    : new ResourceLocation(Umapyoi.MODID, "textures/model/swimsuit.png");
+            return tanned ? ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/swimsuit_tanned.png")
+                    : ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/swimsuit.png");
 
         ResourceLocation loc = UmaCostumeItem.getCostumeID(stack);
         CosmeticData data = ClientUtils.getClientCosmeticDataRegistry().get(loc);

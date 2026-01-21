@@ -13,8 +13,8 @@ public class TrainingSuitItem extends AbstractSuitItem {
 
     @Override
     protected ResourceLocation getTexture(ItemStack stack, boolean tanned) {
-        return tanned ? new ResourceLocation(Umapyoi.MODID, "textures/model/trainning_suit_tanned.png")
-                : new ResourceLocation(Umapyoi.MODID, "textures/model/trainning_suit.png");
+        return tanned ? ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/trainning_suit_tanned.png")
+                : ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/trainning_suit.png");
     }
 
     @Override
@@ -24,7 +24,7 @@ public class TrainingSuitItem extends AbstractSuitItem {
 
     @Override
     protected ResourceLocation getFlatTexture(ItemStack stack, boolean tanned) {
-        return tanned ? new ResourceLocation(Umapyoi.MODID, "textures/model/trainning_suit_tanned.png")
-                : new ResourceLocation(Umapyoi.MODID, "textures/model/trainning_suit.png");
+        return tanned ? ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/trainning_suit_tanned.png")
+                : ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/trainning_suit.png");
     }
 }

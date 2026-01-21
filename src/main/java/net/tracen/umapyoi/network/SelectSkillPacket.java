@@ -17,7 +17,7 @@ public record SelectSkillPacket(int slot) implements CustomPacketPayload {
     public static int FORMER_SLOT = 0;
 
     public static final CustomPacketPayload.Type<SelectSkillPacket> TYPE =
-            new CustomPacketPayload.Type<>(new ResourceLocation(Umapyoi.MODID, "packet/select_skill"));
+            new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "packet/select_skill"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SelectSkillPacket> CODEC = StreamCodec.composite(
             ByteBufCodecs.INT,

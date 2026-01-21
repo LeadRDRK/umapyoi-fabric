@@ -1,5 +1,6 @@
 package net.tracen.umapyoi.item.weapon;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlotGroup;
@@ -12,10 +13,8 @@ import net.minecraft.world.level.block.Block;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.item.ItemRegistry;
 
-import java.util.UUID;
-
 public class GrassNaginataItem extends UmaWeaponItem {
-    private static final UUID REACH_UUID = UUID.fromString("1F199A02-626F-13A3-2365-3D4D6D075737");
+    private static final ResourceLocation REACH_ID = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "reach");
 
     public GrassNaginataItem() {
         super(new NaginataTier(), 7, -2.7F, Umapyoi.defaultItemProperties()
@@ -27,7 +26,7 @@ public class GrassNaginataItem extends UmaWeaponItem {
         return ItemAttributeModifiers.builder()
                 .add(
                         Attributes.ENTITY_INTERACTION_RANGE,
-                        new AttributeModifier(REACH_UUID, "Weapon modifier", 2D,
+                        new AttributeModifier(REACH_ID, 2D,
                                 AttributeModifier.Operation.ADD_VALUE),
                         EquipmentSlotGroup.MAINHAND
                 )

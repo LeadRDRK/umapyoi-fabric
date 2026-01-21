@@ -10,22 +10,22 @@ import net.minecraft.world.level.material.Fluid;
 
 public class TagUtils {
     public static TagKey<Item> modItemTag(String modid, String path) {
-        return TagKey.create(Registries.ITEM, new ResourceLocation(modid, path));
+        return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(modid, path));
     }
 
     public static TagKey<Block> modBlockTag(String modid, String path) {
-        return TagKey.create(Registries.BLOCK, new ResourceLocation(modid, path));
+        return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(modid, path));
     }
 
     public static TagKey<EntityType<?>> modEntityTag(String modid, String path) {
-        return TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(modid, path));
+        return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(modid, path));
     }
 
     public static TagKey<Fluid> modFluidTag(String modid, String path) {
-        return TagKey.create(Registries.FLUID, new ResourceLocation(modid, path));
+        return TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath(modid, path));
     }
 
     public static TagKey<Item> cItemTag(String path) {
-        return TagKey.create(Registries.ITEM, new ResourceLocation("c", path));
+        return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", path));
     }
 }

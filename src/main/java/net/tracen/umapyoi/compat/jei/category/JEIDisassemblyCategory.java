@@ -1,5 +1,6 @@
 package net.tracen.umapyoi.compat.jei.category;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -11,6 +12,7 @@ import net.tracen.umapyoi.compat.jei.recipes.JEISimpleRecipe;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
@@ -25,8 +27,8 @@ public class JEIDisassemblyCategory implements IRecipeCategory<JEISimpleRecipe> 
 
     public JEIDisassemblyCategory(IGuiHelper helper) {
         title = Component.translatable("umapyoi.jei.disassembly");
-        ResourceLocation backgroundImage = new ResourceLocation(Umapyoi.MODID, "textures/gui/jei_compat.png");
-        UID = new ResourceLocation(Umapyoi.MODID, "disassembly");
+        ResourceLocation backgroundImage = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/gui/jei_compat.png");
+        UID = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "disassembly");
         background = helper.createDrawable(backgroundImage, 0, 0, 93, 46);
         icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK,
                 new ItemStack(BlockRegistry.DISASSEMBLY_BLOCK.get()));
@@ -35,6 +37,12 @@ public class JEIDisassemblyCategory implements IRecipeCategory<JEISimpleRecipe> 
     @Override
     public RecipeType<JEISimpleRecipe> getRecipeType() {
         return JEIPlugin.DISASSEMBLY_JEI_TYPE;
+    }
+
+    @Override
+    public void draw(JEISimpleRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX,
+                     double mouseY) {
+        background.draw(guiGraphics);
     }
 
     @Override
@@ -49,8 +57,13 @@ public class JEIDisassemblyCategory implements IRecipeCategory<JEISimpleRecipe> 
     }
 
     @Override
-    public IDrawable getBackground() {
-        return background;
+    public int getWidth() {
+        return background.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return background.getHeight();
     }
 
     @Override

@@ -20,7 +20,7 @@ public class UmaFactor extends RegistryNameHolder {
     private String detailId;
 
     public static final ResourceKey<Registry<UmaFactor>> REGISTRY_KEY = ResourceKey
-            .createRegistryKey(new ResourceLocation(Umapyoi.MODID, "factor"));
+            .createRegistryKey(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "factor"));
 
     public static final Codec<UmaFactor> CODEC = ResourceLocation.CODEC
             .xmap(loc -> UmaFactorRegistry.REGISTRY.get().get(loc), RegistryNameHolder::getRegistryName);

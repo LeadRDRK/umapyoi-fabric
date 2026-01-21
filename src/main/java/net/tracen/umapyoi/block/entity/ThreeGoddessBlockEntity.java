@@ -175,9 +175,9 @@ public class ThreeGoddessBlockEntity extends SyncedInventoryEntity implements Ex
 
         ResourceLocation name = ResourceLocation
                 .tryParse(getItem(0).getOrCreateTag().getString("name"));
-        name = registry.containsKey(name) ? name : UmaDataRegistry.COMMON_UMA.getId();
+        name = registry.containsKey(name) ? name : UmaDataRegistry.COMMON_UMA.location();
 
-        UmaData data = registry.getOptional(name).orElse(UmaDataRegistry.COMMON_UMA.get());
+        UmaData data = registry.getOptional(name).orElseGet(() -> registry.get(UmaDataRegistry.COMMON_UMA));
 
         ItemStack result = UmaSoulUtils.initUmaSoul(ItemRegistry.UMA_SOUL.get().getDefaultInstance(), name, data)
                 .copy();

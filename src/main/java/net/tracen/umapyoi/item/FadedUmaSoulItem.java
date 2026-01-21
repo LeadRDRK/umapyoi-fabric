@@ -34,9 +34,9 @@ public class FadedUmaSoulItem extends Item implements CreativeModeTabFiller {
 
     public ResourceLocation getUmaName(ItemStack pStack) {
         if (pStack.getOrCreateTag().getString("name").isBlank())
-            return UmaDataRegistry.COMMON_UMA.getId();
+            return UmaDataRegistry.COMMON_UMA.location();
         return Optional.ofNullable(ResourceLocation.tryParse(pStack.getOrCreateTag().getString("name")))
-                .orElse(UmaDataRegistry.COMMON_UMA.getId());
+                .orElse(UmaDataRegistry.COMMON_UMA.location());
     }
 
     @Override

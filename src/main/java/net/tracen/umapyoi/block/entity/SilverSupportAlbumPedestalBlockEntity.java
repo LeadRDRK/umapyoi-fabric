@@ -20,7 +20,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.UmapyoiConfigModel;
 import net.tracen.umapyoi.api.UmapyoiAPI;
-import net.tracen.umapyoi.data.builtin.SupportCardRegistry;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
 import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.registry.training.card.SupportCard;
@@ -197,7 +196,7 @@ public class SilverSupportAlbumPedestalBlockEntity extends SyncedInventoryEntity
                 .collect(Collectors.toCollection(Lists::newArrayList));
 
         ResourceLocation key = keys.stream().skip(keys.isEmpty() ? 0 : rand.nextInt(keys.size())).findFirst()
-                .orElse(SupportCardRegistry.BLANK_CARD.getId());
+                .orElse(SupportCard.EMPTY_ID);
         
         ItemStack result = ItemRegistry.SUPPORT_CARD.get().getDefaultInstance();
         result.getOrCreateTag().putString("support_card", key.toString());

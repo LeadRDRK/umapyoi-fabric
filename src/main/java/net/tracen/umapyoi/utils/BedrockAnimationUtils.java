@@ -2,11 +2,10 @@ package net.tracen.umapyoi.utils;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.item.CrossbowItem;
 import net.tracen.umapyoi.client.model.bedrock.BedrockPart;
 
 @Environment(EnvType.CLIENT)
@@ -20,14 +19,14 @@ public class BedrockAnimationUtils {
       BedrockPart1.xRot = -1.5F + p_102100_.xRot;
    }
 
-   public static void animateCrossbowCharge(BedrockPart p_102087_, BedrockPart p_102088_, LivingEntity p_102089_, boolean p_102090_) {
+   public static void animateCrossbowCharge(BedrockPart p_102087_, BedrockPart p_102088_, HumanoidRenderState p_102089_, boolean p_102090_) {
       BedrockPart BedrockPart = p_102090_ ? p_102087_ : p_102088_;
       BedrockPart BedrockPart1 = p_102090_ ? p_102088_ : p_102087_;
       BedrockPart.yRot = p_102090_ ? -0.8F : 0.8F;
       BedrockPart.xRot = -0.97079635F;
       BedrockPart1.xRot = BedrockPart.xRot;
-      float f = (float)CrossbowItem.getChargeDuration(p_102089_.getUseItem(), p_102089_);
-      float f1 = Mth.clamp((float)p_102089_.getTicksUsingItem(), 0.0F, f);
+      float f = p_102089_.maxCrossbowChargeDuration;
+      float f1 = Mth.clamp((float)p_102089_.ticksUsingItem, 0.0F, f);
       float f2 = f1 / f;
       BedrockPart1.yRot = Mth.lerp(f2, 0.4F, 0.85F) * (float)(p_102090_ ? 1 : -1);
       BedrockPart1.xRot = Mth.lerp(f2, BedrockPart1.xRot, (-(float)Math.PI / 2F));

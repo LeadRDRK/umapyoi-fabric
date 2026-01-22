@@ -8,7 +8,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -23,7 +23,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -32,7 +32,7 @@ import net.tracen.umapyoi.block.entity.UmaStatueBlockEntity;
 
 public class UmaStatueBlock extends BaseEntityBlock {
     public static final MapCodec<UmaStatueBlock> CODEC = simpleCodec(p -> new UmaStatueBlock());
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final VoxelShape SHAPE = Block.box(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D);
 
     public UmaStatueBlock() {
@@ -47,7 +47,7 @@ public class UmaStatueBlock extends BaseEntityBlock {
 
     @Override
     public RenderShape getRenderShape(BlockState pState) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.MODEL;
     }
 
     @Override
@@ -71,18 +71,18 @@ public class UmaStatueBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         BlockEntity tileEntity = level.getBlockEntity(pos);
         if (tileEntity instanceof UmaStatueBlockEntity obon) {
             if (obon.isEmpty()) {
                 if (stack.isEmpty()) {
-                    return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+                    return InteractionResult.PASS;
                 }
                 else if (obon.addItem(player.getAbilities().instabuild ? stack.copy() : stack)) {
                     level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.STONE_PLACE,
                             SoundSource.BLOCKS, 1.0F, 0.8F
                     );
-                    return ItemInteractionResult.sidedSuccess(level.isClientSide);
+                    return level.isClientSide ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
                 }
 
             }
@@ -98,11 +98,11 @@ public class UmaStatueBlock extends BaseEntityBlock {
                 level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.WOOD_HIT, SoundSource.BLOCKS,
                         0.25F, 0.5F
                 );
-                return ItemInteractionResult.sidedSuccess(level.isClientSide);
+                return level.isClientSide ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
             }
         }
         // Maybe no need to pass to default interaction
-        return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.PASS;
     }
 
     @SuppressWarnings("deprecation")
@@ -122,7 +122,7 @@ public class UmaStatueBlock extends BaseEntityBlock {
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockPos blockpos = context.getClickedPos();
         Level level = context.getLevel();
-        if (blockpos.getY() < level.getMaxBuildHeight() - 1
+        if (blockpos.getY() < level.getMaxY()
                 && level.getBlockState(blockpos.above()).canBeReplaced(context)) {
             return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
         } else {

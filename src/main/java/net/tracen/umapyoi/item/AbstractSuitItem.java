@@ -11,10 +11,12 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -35,9 +37,9 @@ import dev.emi.trinkets.api.client.TrinketRenderer;
 import dev.emi.trinkets.api.client.TrinketRendererRegistry;
 
 public abstract class AbstractSuitItem extends TrinketItem implements TrinketRenderer {
-    private final UmaPlayerModel<LivingEntity> baseModel;
+    private final UmaPlayerModel<HumanoidRenderState> baseModel;
 
-    public UmaPlayerModel<LivingEntity> getBaseModel() {
+    public UmaPlayerModel<HumanoidRenderState> getBaseModel() {
         return baseModel;
     }
 
@@ -64,7 +66,7 @@ public abstract class AbstractSuitItem extends TrinketItem implements TrinketRen
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+    public InteractionResult use(Level level, Player player, InteractionHand usedHand) {
         ItemStack stack = player.getItemInHand(usedHand);
         if (UmaSoulUtils.getGrowth(stack) == Growth.UNTRAINED) {
             return super.use(level, player, usedHand);
@@ -72,77 +74,77 @@ public abstract class AbstractSuitItem extends TrinketItem implements TrinketRen
 
         if (canEquip(player) && equipItem(player, stack)) {
             player.playSound(SoundEvents.ARMOR_EQUIP_LEATHER.value(), 1.0f, 1.0f);
-            return InteractionResultHolder.success(stack);
+            return InteractionResult.SUCCESS;
         }
         return super.use(level, player, usedHand);
     }
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void render(ItemStack itemStack, SlotReference slotReference, EntityModel<? extends LivingEntity> entityModel,
-                       PoseStack poseStack, MultiBufferSource multiBufferSource, int light, LivingEntity entity,
-                       float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw,
-                       float headPitch)
+    public void render(ItemStack itemStack, SlotReference slotReference, EntityModel<? extends LivingEntityRenderState> entityModel,
+                       PoseStack poseStack, MultiBufferSource multiBufferSource, int light, LivingEntityRenderState entityState,
+                       float limbAngle, float limbDistance)
     {
-        if (entity.isInvisible())
+        if (!(entityState instanceof HumanoidRenderState state) || state.isInvisible)
             return;
 
-        TrinketsApi.getTrinketComponent(entity).ifPresent(comp -> {
-            var entityInventory = comp.getInventory();
-            TrinketInventory inventory = null;
-            if (entityInventory.containsKey("umapyoi")) {
-                var group = entityInventory.get("umapyoi");
-                if (group.containsKey("uma_soul")) {
-                    inventory = group.get("uma_soul");
-                }
+        var comp = slotReference.inventory().getComponent();
+        var entity = comp.getEntity();
+        var entityInventory = comp.getInventory();
+        TrinketInventory inventory = null;
+        if (entityInventory.containsKey("umapyoi")) {
+            var group = entityInventory.get("umapyoi");
+            if (group.containsKey("uma_soul")) {
+                inventory = group.get("uma_soul");
             }
-            if (inventory == null) return;
+        }
+        if (inventory == null) return;
 
-            boolean flat_flag = false;
-            boolean tanned = false;
-            if (inventory.getContainerSize() > 0) {
-                ItemStack stackInSlot = inventory.getItem(0);
-                if (stackInSlot.isEmpty() || !(stackInSlot.getItem() instanceof UmaSoulItem))
-                    return;
-
-                flat_flag = ClientUtils.isFlatUmamusume(stackInSlot);
-
-                tanned = ClientUtils.isTannedSkin(stackInSlot);
-            }
-
-            VertexConsumer vertexconsumer = multiBufferSource.getBuffer(
-                    RenderType.entityTranslucentCull(flat_flag ? getFlatTexture(itemStack, tanned) : getTexture(itemStack, tanned)));
-
-            var pojo = ClientUtils.getModelPOJO(flat_flag ? getFlatModel(itemStack) : getModel(itemStack));
-            if (baseModel.needRefresh(pojo))
-                baseModel.loadModel(pojo);
-            baseModel.setModelProperties(entity);
-            baseModel.head.visible = false;
-            baseModel.tail.visible = false;
-            baseModel.prepareMobModel(entity, limbAngle, limbDistance, tickDelta);
-            var callbackContext = new RenderingUmaSuitCallback.Context(entity, baseModel, tickDelta,
-                    poseStack, multiBufferSource, light);
-            if (RenderingUmaSuitCallback.Pre.invoke(callbackContext))
+        boolean flat_flag = false;
+        boolean tanned = false;
+        if (inventory.getContainerSize() > 0) {
+            ItemStack stackInSlot = inventory.getItem(0);
+            if (stackInSlot.isEmpty() || !(stackInSlot.getItem() instanceof UmaSoulItem))
                 return;
 
-            if (entityModel instanceof HumanoidModel) {
-                @SuppressWarnings("unchecked")
-                var model = (HumanoidModel<LivingEntity>)entityModel;
+            flat_flag = ClientUtils.isFlatUmamusume(stackInSlot);
 
-                baseModel.copyAnim(baseModel.head, model.head);
-                baseModel.copyAnim(baseModel.body, model.body);
-                baseModel.copyAnim(baseModel.leftArm, model.leftArm);
-                baseModel.copyAnim(baseModel.leftLeg, model.leftLeg);
-                baseModel.copyAnim(baseModel.rightArm, model.rightArm);
-                baseModel.copyAnim(baseModel.rightLeg, model.rightLeg);
-            }
+            tanned = ClientUtils.isTannedSkin(stackInSlot);
+        }
 
-            baseModel.setupAnim(entity, limbAngle, limbDistance, animationProgress, headYaw, headPitch);
+        VertexConsumer vertexconsumer = multiBufferSource.getBuffer(
+                RenderType.entityTranslucent(flat_flag ? getFlatTexture(itemStack, tanned) : getTexture(itemStack, tanned)));
 
-            baseModel.renderToBuffer(poseStack, vertexconsumer, light,
-                    LivingEntityRenderer.getOverlayCoords(entity, 0.0F), -1);
-            RenderingUmaSuitCallback.Post.invoke(callbackContext);
-        });
+        var pojo = ClientUtils.getModelPOJO(flat_flag ? getFlatModel(itemStack) : getModel(itemStack));
+        if (baseModel.needRefresh(pojo))
+            baseModel.loadModel(pojo);
+        baseModel.setModelProperties(state);
+        baseModel.head.visible = false;
+        baseModel.tail.visible = false;
+        baseModel.prepareMobModel(state, limbAngle, limbDistance);
+        var callbackContext = new RenderingUmaSuitCallback.Context(entity, state, baseModel,
+                poseStack, multiBufferSource, light);
+        if (RenderingUmaSuitCallback.Pre.invoke(callbackContext))
+            return;
+
+        if (entityModel instanceof HumanoidModel) {
+            @SuppressWarnings("unchecked")
+            var model = (HumanoidModel<HumanoidRenderState>)entityModel;
+
+            baseModel.copyAnim(baseModel.head, model.head);
+            baseModel.copyAnim(baseModel.body, model.body);
+            baseModel.copyAnim(baseModel.leftArm, model.leftArm);
+            baseModel.copyAnim(baseModel.leftLeg, model.leftLeg);
+            baseModel.copyAnim(baseModel.rightArm, model.rightArm);
+            baseModel.copyAnim(baseModel.rightLeg, model.rightLeg);
+        }
+
+        baseModel.setEntityProperties(entity);
+        baseModel.setupAnim(state, limbAngle, limbDistance);
+
+        baseModel.renderToBuffer(poseStack, vertexconsumer, light,
+                LivingEntityRenderer.getOverlayCoords(state, 0.0F), -1);
+        RenderingUmaSuitCallback.Post.invoke(callbackContext);
     }
 
     public static void registerRenderer(Item item) {

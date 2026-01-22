@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 import net.tracen.umapyoi.client.model.bedrock.BedrockModel;
@@ -21,7 +22,7 @@ import java.util.List;
  * Simple Bedrock Entity Model, No need for other change.
  * Ported from MMLib
  */
-public class BedrockEntityModel<T extends Entity> extends EntityModel<T> implements BedrockModel {
+public class BedrockEntityModel<T extends EntityRenderState> implements BedrockModel {
 
     protected final HashMap<String, BedrockPart> modelMap;
     private final HashMap<String, BonesItem> indexBones;
@@ -31,7 +32,6 @@ public class BedrockEntityModel<T extends Entity> extends EntityModel<T> impleme
     private boolean emissive;
 
     public BedrockEntityModel() {
-        super(RenderType::entityTranslucent);
         modelMap = Maps.newHashMap();
         indexBones = Maps.newHashMap();
         shouldRender = Lists.newLinkedList();
@@ -44,9 +44,12 @@ public class BedrockEntityModel<T extends Entity> extends EntityModel<T> impleme
         loadModel(pojo);
     }
 
-    @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
         this.renderBedrockModel(poseStack, buffer, packedLight, packedOverlay, color);
+    }
+
+    public void prepareMobModel(T entity, float limbSwing, float limbSwingAmount) {
+
     }
 
     @Override
@@ -74,12 +77,10 @@ public class BedrockEntityModel<T extends Entity> extends EntityModel<T> impleme
         this.renderBoundingBox = aabb;
     }
 
-    @Override
-    public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks,
-            float netHeadYaw, float headPitch) {
+    public void setupAnim(T entity, float limbSwing, float limbSwingAmount) {
         
     }
-    
+
     @Override
     public BedrockModelPOJO getBedrockModelPOJO() {
         return this.modelPOJO;

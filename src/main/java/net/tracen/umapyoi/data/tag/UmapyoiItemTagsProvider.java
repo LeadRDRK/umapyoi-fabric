@@ -39,6 +39,7 @@ public class UmapyoiItemTagsProvider extends ItemTagProvider {
 
         getOrCreateTagBuilder(UmapyoiItemTags.HORSESHOE).add(ItemRegistry.HORSESHOE_GOLD.get())
             .add(ItemRegistry.HORSESHOE_SILVER.get()).add(ItemRegistry.HORSESHOE_RAINBOW.get());
+        getOrCreateTagBuilder(UmapyoiItemTags.HORSESHOE_RAINBOW).add(ItemRegistry.HORSESHOE_RAINBOW.get());
     }
 
 }

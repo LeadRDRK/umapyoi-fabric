@@ -9,6 +9,8 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 
 /**
  * Replacement for Forge's RenderPlayerEvent
@@ -17,20 +19,19 @@ import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 public interface RenderPlayerCallback {
     class Context {
         private final PlayerRenderer renderer;
-        private final AbstractClientPlayer entity;
-        private final float entityYaw;
-        private final float partialTicks;
+        private final AbstractClientPlayer player;
+        private final PlayerRenderState state;
         private final PoseStack poseStack;
-        private final MultiBufferSource buffer;
+        private final MultiBufferSource bufferSource;
         private final int packedLight;
 
-        public Context(PlayerRenderer renderer, AbstractClientPlayer entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+        public Context(PlayerRenderer renderer, AbstractClientPlayer player, PlayerRenderState state,
+                       PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
             this.renderer = renderer;
-            this.entity = entity;
-            this.entityYaw = entityYaw;
-            this.partialTicks = partialTicks;
+            this.player = player;
+            this.state = state;
             this.poseStack = poseStack;
-            this.buffer = buffer;
+            this.bufferSource = bufferSource;
             this.packedLight = packedLight;
         }
 
@@ -38,24 +39,20 @@ public interface RenderPlayerCallback {
             return renderer;
         }
 
-        public AbstractClientPlayer getEntity() {
-            return entity;
+        public AbstractClientPlayer getPlayer() {
+            return player;
         }
 
-        public float getEntityYaw() {
-            return entityYaw;
-        }
-
-        public float getPartialTicks() {
-            return partialTicks;
+        public PlayerRenderState getState() {
+            return state;
         }
 
         public PoseStack getPoseStack() {
             return poseStack;
         }
 
-        public MultiBufferSource getBuffer() {
-            return buffer;
+        public MultiBufferSource getBufferSource() {
+            return bufferSource;
         }
 
         public int getPackedLight() {

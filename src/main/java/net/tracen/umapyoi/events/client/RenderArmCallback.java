@@ -8,6 +8,8 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
 
 /**
@@ -16,34 +18,54 @@ import net.minecraft.world.entity.HumanoidArm;
 @Environment(EnvType.CLIENT)
 public interface RenderArmCallback {
     class Context {
-        private final PoseStack poseStack;
-        private final MultiBufferSource multiBufferSource;
-        private final int packedLight;
         private final AbstractClientPlayer player;
+        private final PlayerRenderState state;
+        private final PoseStack poseStack;
+        private final MultiBufferSource bufferSource;
+        private final int packedLight;
+        private final ResourceLocation skinTexture;
+        private final boolean isSleeveVisible;
         private final HumanoidArm arm;
 
-        public Context(PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, AbstractClientPlayer player, HumanoidArm arm) {
-            this.poseStack = poseStack;
-            this.multiBufferSource = multiBufferSource;
-            this.packedLight = packedLight;
+        public Context(AbstractClientPlayer player, PlayerRenderState state, PoseStack poseStack,
+                       MultiBufferSource bufferSource, int packedLight, ResourceLocation skinTexture,
+                       boolean isSleeveVisible, HumanoidArm arm) {
             this.player = player;
+            this.state = state;
+            this.poseStack = poseStack;
+            this.bufferSource = bufferSource;
+            this.packedLight = packedLight;
+            this.skinTexture = skinTexture;
+            this.isSleeveVisible = isSleeveVisible;
             this.arm = arm;
+        }
+
+        public AbstractClientPlayer getPlayer() {
+            return player;
+        }
+
+        public PlayerRenderState getState() {
+            return state;
         }
 
         public PoseStack getPoseStack() {
             return poseStack;
         }
 
-        public MultiBufferSource getMultiBufferSource() {
-            return multiBufferSource;
+        public MultiBufferSource getBufferSource() {
+            return bufferSource;
         }
 
         public int getPackedLight() {
             return packedLight;
         }
 
-        public AbstractClientPlayer getPlayer() {
-            return player;
+        public ResourceLocation getSkinTexture() {
+            return skinTexture;
+        }
+
+        public boolean isSleeveVisible() {
+            return isSleeveVisible;
         }
 
         public HumanoidArm getArm() {

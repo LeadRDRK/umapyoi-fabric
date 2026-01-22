@@ -20,7 +20,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.tracen.umapyoi.block.entity.BlockEntityRegistry;
 import net.tracen.umapyoi.block.entity.ThreeGoddessBlockEntity;
@@ -29,7 +29,7 @@ import javax.annotation.Nullable;
 
 public class ThreeGoddessBlock extends BaseEntityBlock {
     public static final MapCodec<ThreeGoddessBlock> CODEC = simpleCodec(p -> new ThreeGoddessBlock());
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     public ThreeGoddessBlock() {
         super(Properties.ofLegacyCopy(Blocks.POLISHED_ANDESITE).noOcclusion());
@@ -43,7 +43,7 @@ public class ThreeGoddessBlock extends BaseEntityBlock {
 
     @Override
     public RenderShape getRenderShape(BlockState pState) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.MODEL;
     }
 
     @Override
@@ -74,7 +74,7 @@ public class ThreeGoddessBlock extends BaseEntityBlock {
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockPos blockpos = context.getClickedPos();
         Level level = context.getLevel();
-        if (blockpos.getY() < level.getMaxBuildHeight() - 1
+        if (blockpos.getY() < level.getMaxY()
                 && level.getBlockState(blockpos.above()).canBeReplaced(context)) {
             BlockState state = this.defaultBlockState().setValue(FACING,
                     context.getHorizontalDirection().getOpposite());

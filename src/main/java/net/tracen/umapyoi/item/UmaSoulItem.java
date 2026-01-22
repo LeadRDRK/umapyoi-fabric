@@ -17,6 +17,9 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
@@ -24,12 +27,11 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -68,7 +70,7 @@ import dev.emi.trinkets.api.client.TrinketRendererRegistry;
 public class UmaSoulItem extends TrinketItem implements TrinketRenderer, CreativeModeTabFiller {
     private static final Comparator<Holder.Reference<UmaData>> COMPARATOR = new UmaDataComparator();
 
-    private final UmaPlayerModel<LivingEntity> baseModel;
+    private final UmaPlayerModel<HumanoidRenderState> baseModel;
 
     public UmaSoulItem() {
         super(Umapyoi.defaultItemProperties().stacksTo(1));
@@ -93,14 +95,10 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
     
     @Override
     public Component getName(ItemStack pStack) {
+        var name = Component.translatable(Util.makeDescriptionId("umadata", UmaSoulUtils.getName(pStack)));
         GachaRanking ranking = GachaRanking.getGachaRanking(pStack);
-        if(ranking == GachaRanking.EASTER_EGG) return super.getName(pStack).copy().withStyle(ChatFormatting.GREEN);
-        return super.getName(pStack);
-    }
-
-    @Override
-    public String getDescriptionId(ItemStack pStack) {
-        return Util.makeDescriptionId("umadata", UmaSoulUtils.getName(pStack));
+        if(ranking == GachaRanking.EASTER_EGG) return name.withStyle(ChatFormatting.GREEN);
+        return name;
     }
     
     @Override
@@ -176,7 +174,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+    public InteractionResult use(Level level, Player player, InteractionHand usedHand) {
         ItemStack stack = player.getItemInHand(usedHand);
         if (UmaSoulUtils.getGrowth(stack) == Growth.UNTRAINED) {
             return super.use(level, player, usedHand);
@@ -184,7 +182,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
 
         if (equipItem(player, stack)) {
             player.playSound(SoundEvents.ARMOR_EQUIP_LEATHER.value(), 1.0f, 1.0f);
-            return InteractionResultHolder.success(stack);
+            return InteractionResult.SUCCESS;
         }
         return super.use(level, player, usedHand);
     }
@@ -292,13 +290,16 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void render(ItemStack itemStack, SlotReference slotReference, EntityModel<? extends LivingEntity> entityModel,
-                       PoseStack poseStack, MultiBufferSource multiBufferSource, int light, LivingEntity entity,
-                       float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw,
-                       float headPitch)
+    public void render(ItemStack itemStack, SlotReference slotReference, EntityModel<? extends LivingEntityRenderState> entityModel,
+                       PoseStack poseStack, MultiBufferSource multiBufferSource, int light, LivingEntityRenderState entityState,
+                       float limbAngle, float limbDistance)
     {
-        if ((entity instanceof ArmorStand) || (entity.isInvisible() && !entity.isSpectator()))
+        // match PlayerRenderState directly (disallow ArmorStandRenderState)
+        if (!(entityState instanceof PlayerRenderState state) || (state.isInvisible && !state.isSpectator))
             return;
+
+        var comp = slotReference.inventory().getComponent();
+        var entity = comp.getEntity();
 
         ResourceLocation renderTarget = getRenderTarget(itemStack, entity);
         var pojo = ClientUtils.getModelPOJO(renderTarget);
@@ -306,11 +307,11 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
             baseModel.loadModel(pojo);
 
         VertexConsumer vertexConsumer = multiBufferSource
-                .getBuffer(RenderType.entityTranslucentCull(ClientUtils.getTexture(renderTarget)));
-        baseModel.setModelProperties(entity);
-        baseModel.prepareMobModel(entity, limbAngle, limbDistance, tickDelta);
+                .getBuffer(RenderType.entityTranslucent(ClientUtils.getTexture(renderTarget)));
+        baseModel.setModelProperties(state);
+        baseModel.prepareMobModel(state, limbAngle, limbDistance);
 
-        var callbackContext = new RenderingUmaSoulCallback.Context(entity, baseModel, tickDelta,
+        var callbackContext = new RenderingUmaSoulCallback.Context(entity, state, baseModel,
                 poseStack, multiBufferSource, light);
         if (RenderingUmaSoulCallback.Pre.invoke(callbackContext))
             return;
@@ -323,14 +324,15 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
             baseModel.copyAnim(baseModel.rightArm, humanoidModel.rightArm);
             baseModel.copyAnim(baseModel.rightLeg, humanoidModel.rightLeg);
         }
-        baseModel.setupAnim(entity, limbAngle, limbDistance, animationProgress, headYaw, headPitch);
+        baseModel.setEntityProperties(entity);
+        baseModel.setupAnim(state, limbAngle, limbDistance);
         baseModel.renderToBuffer(poseStack, vertexConsumer, light,
-                LivingEntityRenderer.getOverlayCoords(entity, 0.0F), -1);
+                LivingEntityRenderer.getOverlayCoords(state, 0.0F), -1);
         if (baseModel.isEmissive()) {
             VertexConsumer emissiveConsumer = multiBufferSource
                     .getBuffer(RenderType.entityTranslucentEmissive(ClientUtils.getEmissiveTexture(renderTarget)));
             baseModel.renderEmissiveParts(poseStack, emissiveConsumer, light,
-                    LivingEntityRenderer.getOverlayCoords(entity, 0.0F), -1);
+                    LivingEntityRenderer.getOverlayCoords(state, 0.0F), -1);
         }
 
         RenderingUmaSoulCallback.Post.invoke(callbackContext);
@@ -352,8 +354,9 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
                         suit_flag = true;
 
                         alter_flag = ClientUtils.getClientUmaDataRegistry()
-                                .getHolder(ResourceKey.create(UmaData.REGISTRY_KEY, UmaSoulUtils.getName(stack)))
-                                .get().is(UmapyoiUmaDataTags.ALTER_MODEL);
+                                .get(ResourceKey.create(UmaData.REGISTRY_KEY, UmaSoulUtils.getName(stack)))
+                                .map(uma -> uma.is(UmapyoiUmaDataTags.ALTER_MODEL))
+                                .orElse(false);
                     }
                 }
             }
@@ -364,7 +367,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
     }
 
     private static ResourceLocation getSuitTarget(ItemStack stack, boolean alter) {
-        ResourceLocation identifier = ClientUtils.getClientUmaDataRegistry().get(UmaSoulUtils.getName(stack)).identifier();
+        ResourceLocation identifier = ClientUtils.getClientUmaDataRegistry().get(UmaSoulUtils.getName(stack)).get().value().identifier();
         if(alter)
             identifier = ResourceLocation.fromNamespaceAndPath(identifier.getNamespace(), identifier.getPath()+"_alter");
         return identifier;

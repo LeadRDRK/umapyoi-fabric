@@ -9,7 +9,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -45,15 +44,15 @@ public abstract class AbstractPedestalBlock extends BaseEntityBlock
         }
     }
 
-    protected ItemInteractionResult interactBEWithItem(ItemStack stack, Level level, BlockPos pos, Player player, InteractionHand hand, AbstractPedestalBlockEntity blockEntity, boolean checkBook) {
+    protected InteractionResult interactBEWithItem(ItemStack stack, Level level, BlockPos pos, Player player, InteractionHand hand, AbstractPedestalBlockEntity blockEntity, boolean checkBook) {
         // Wtf why useItemOn can use EMPTY item???
         // sbmj
         if (stack.isEmpty()) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
         }
         if (blockEntity.isEmpty()) {
             if (hand == InteractionHand.MAIN_HAND && !player.getOffhandItem().isEmpty() && stack.getItem() instanceof BlockItem) {
-                return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+                return InteractionResult.PASS;
             }
 
             if (checkBook && stack.is(Items.BOOK)) {
@@ -62,19 +61,19 @@ public abstract class AbstractPedestalBlock extends BaseEntityBlock
                     CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, pos, stack);
                 }
                 transformOnBook(level, pos);
-                return ItemInteractionResult.CONSUME;
+                return InteractionResult.CONSUME;
             }
             else if (blockEntity.addItem(player.getAbilities().instabuild ? stack.copy() : stack)) {
                 level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.END_PORTAL_FRAME_FILL,
                         SoundSource.BLOCKS, 1.0F, 0.8F
                 );
-                return ItemInteractionResult.CONSUME;
+                return InteractionResult.CONSUME;
             }
-            return ItemInteractionResult.FAIL;
+            return InteractionResult.FAIL;
         }
         else {
             player.displayClientMessage(Component.translatable("umapyoi.uma_pedestal.cannot_add_item"), true);
-            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
         }
     }
 

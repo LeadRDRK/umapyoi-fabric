@@ -9,7 +9,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
@@ -43,7 +42,7 @@ public class TrainingItem extends Item implements SupportContainer {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
+    public InteractionResult use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
         if (pLevel.isClientSide())
             return super.use(pLevel, pPlayer, pUsedHand);
         ItemStack soul = UmapyoiAPI.getUmaSoul(pPlayer);
@@ -51,27 +50,27 @@ public class TrainingItem extends Item implements SupportContainer {
         return learning(pLevel, pPlayer, soul, itemInHand);
     }
 
-    private InteractionResultHolder<ItemStack> learning(Level pLevel, Player pPlayer, ItemStack soul,
+    private InteractionResult learning(Level pLevel, Player pPlayer, ItemStack soul,
                                                         ItemStack training) {
         if (soul.isEmpty()) {
             pPlayer.displayClientMessage(Component.translatable("umapyoi.no_umasoul_equiped"), true);
-            return InteractionResultHolder.fail(training);
+            return InteractionResult.FAIL;
         }
 
         if (UmaSoulUtils.getLearningTimes(soul) <= 0) {
             pPlayer.displayClientMessage(Component.translatable("umapyoi.learning.no_learning_time"), true);
-            return InteractionResultHolder.fail(training);
+            return InteractionResult.FAIL;
         }
 
         if (this.getSupport().applySupport(soul, pLevel.getRandom())) {
             UmaSoulUtils.downLearningTimes(soul);
             pPlayer.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP, 0.8F, 0.8F + pLevel.getRandom().nextFloat() * 0.4F);
-            pPlayer.getCooldowns().addCooldown(training.getItem(), 30);
+            pPlayer.getCooldowns().addCooldown(training, 30);
             training.shrink(1);
-            return InteractionResultHolder.success(training);
+            return InteractionResult.SUCCESS;
         } else {
             pPlayer.displayClientMessage(Component.translatable("umapyoi.learning.can_not_learn"), true);
-            return InteractionResultHolder.fail(training);
+            return InteractionResult.FAIL;
         }
     }
 
@@ -79,10 +78,10 @@ public class TrainingItem extends Item implements SupportContainer {
     public boolean overrideStackedOnOther(ItemStack pStack, Slot pSlot, ClickAction pAction, Player pPlayer) {
         if (pPlayer.level().isClientSide())
             return super.overrideStackedOnOther(pStack, pSlot, pAction, pPlayer);
-        if(pAction != ClickAction.SECONDARY || pPlayer.getCooldowns().isOnCooldown(pStack.getItem())) return false;
+        if(pAction != ClickAction.SECONDARY || pPlayer.getCooldowns().isOnCooldown(pStack)) return false;
 
         ItemStack soul = pSlot.getItem();
-        if(this.learning(pPlayer.level(), pPlayer, soul, pStack).getResult() == InteractionResult.SUCCESS)
+        if(this.learning(pPlayer.level(), pPlayer, soul, pStack) == InteractionResult.SUCCESS)
             return true;
         return false;
     }

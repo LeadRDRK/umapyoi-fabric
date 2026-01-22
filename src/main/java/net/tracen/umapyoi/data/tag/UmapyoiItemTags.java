@@ -11,6 +11,7 @@ public class UmapyoiItemTags {
     public static final TagKey<Item> COMMON_GACHA_ITEM = TagUtils.modItemTag(Umapyoi.MODID, "common_gacha_item");
     
     public static final TagKey<Item> HORSESHOE = TagUtils.modItemTag(Umapyoi.MODID, "horseshoe");
+    public static final TagKey<Item> HORSESHOE_RAINBOW = TagUtils.modItemTag(Umapyoi.MODID, "horseshoe_rainbow");
     
     public static final TagKey<Item> UMA_TICKET = TagUtils.modItemTag(Umapyoi.MODID, "uma_ticket");
     public static final TagKey<Item> SR_UMA_TICKET = TagUtils.modItemTag(Umapyoi.MODID, "sr_uma_ticket");

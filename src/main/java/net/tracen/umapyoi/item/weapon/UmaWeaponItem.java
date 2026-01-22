@@ -15,8 +15,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -24,17 +23,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 
-public class UmaWeaponItem extends TieredItem {
-    public UmaWeaponItem(Tier pTier, int pAttackDamageModifier, float pAttackSpeedModifier, Item.Properties pProperties) {
-        super(pTier, pProperties
-                .component(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.builder()
-                        .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_ID,
-                                (float) pAttackDamageModifier + pTier.getAttackDamageBonus(), AttributeModifier.Operation.ADD_VALUE),
-                                EquipmentSlotGroup.MAINHAND)
-                        .add(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_ID,
-                                pAttackSpeedModifier, AttributeModifier.Operation.ADD_VALUE),
-                                EquipmentSlotGroup.MAINHAND)
-                        .build()));
+public class UmaWeaponItem extends Item {
+    public UmaWeaponItem(ToolMaterial material, int pAttackDamageModifier, float pAttackSpeedModifier, Item.Properties pProperties) {
+        super(material.applySwordProperties(pProperties, (float) pAttackDamageModifier, pAttackSpeedModifier));
     }
 
     public boolean canAttackBlock(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer) {

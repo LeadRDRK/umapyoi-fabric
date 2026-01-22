@@ -4,16 +4,18 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.tracen.umapyoi.client.model.bedrock.BedrockPart;
 import net.tracen.umapyoi.client.model.pojo.BedrockModelPOJO;
 import net.tracen.umapyoi.utils.BedrockAnimationUtils;
 
 /** Ported from MMLib **/
-public class BedrockHumanoidModel<T extends LivingEntity> extends BedrockEntityModel<T> {
+public class BedrockHumanoidModel<T extends HumanoidRenderState> extends BedrockEntityModel<T> {
     public static final float OVERLAY_SCALE = 0.25F;
     public static final float HAT_OVERLAY_SCALE = 0.5F;
     public BedrockPart head;
@@ -60,26 +62,29 @@ public class BedrockHumanoidModel<T extends LivingEntity> extends BedrockEntityM
         return ImmutableList.of(this.body, this.rightArm, this.leftArm, this.rightLeg, this.leftLeg);
     }
 
-    public void prepareMobModel(T entity, float p_102862_, float p_102863_, float p_102864_) {
-        this.swimAmount = entity.getSwimAmount(p_102864_);
-        super.prepareMobModel(entity, p_102862_, p_102863_, p_102864_);
+    @Override
+    public void prepareMobModel(T entity, float limbSwing, float limbSwingAmount) {
+        this.swimAmount = entity.swimAmount;
+        super.prepareMobModel(entity, limbSwing, limbSwingAmount);
     }
 
-    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw,
-                          float headPitch) {
-        boolean flag = entity.getFallFlyingTicks() > 4;
-        boolean flag1 = entity.isVisuallySwimming();
-        this.head.yRot = netHeadYaw * ((float) Math.PI / 180F);
+    public void setupAnim(T entity, float limbSwing, float limbSwingAmount) {
+        boolean flag = false;
+        if (entity instanceof PlayerRenderState player) {
+            flag = player.fallFlyingTimeInTicks > 4;
+        }
+        boolean flag1 = entity.isVisuallySwimming;
+        this.head.yRot = entity.yRot * ((float) Math.PI / 180F);
         if (flag) {
             this.head.xRot = (-(float) Math.PI / 4F);
         } else if (this.swimAmount > 0.0F) {
             if (flag1) {
                 this.head.xRot = this.rotlerpRad(this.swimAmount, this.head.xRot, (-(float) Math.PI / 4F));
             } else {
-                this.head.xRot = this.rotlerpRad(this.swimAmount, this.head.xRot, headPitch * ((float) Math.PI / 180F));
+                this.head.xRot = this.rotlerpRad(this.swimAmount, this.head.xRot, entity.xRot * ((float) Math.PI / 180F));
             }
         } else {
-            this.head.xRot = headPitch * ((float) Math.PI / 180F);
+            this.head.xRot = entity.xRot * ((float) Math.PI / 180F);
         }
 
         this.body.yRot = 0.0F;
@@ -87,28 +92,18 @@ public class BedrockHumanoidModel<T extends LivingEntity> extends BedrockEntityM
         this.rightArm.x = -5.0F;
         this.leftArm.z = 0.0F;
         this.leftArm.x = 5.0F;
-        float f = 1.0F;
-        if (flag) {
-            f = (float) entity.getDeltaMovement().lengthSqr();
-            f /= 0.2F;
-            f *= f * f;
-        }
 
-        if (f < 1.0F) {
-            f = 1.0F;
-        }
-
-        this.rightArm.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F / f;
-        this.leftArm.xRot = Mth.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F / f;
+        this.rightArm.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F;
+        this.leftArm.xRot = Mth.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F;
         this.rightArm.zRot = 0.0F;
         this.leftArm.zRot = 0.0F;
-        this.rightLeg.xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount / f;
-        this.leftLeg.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount / f;
+        this.rightLeg.xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+        this.leftLeg.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
         this.rightLeg.yRot = 0.0F;
         this.leftLeg.yRot = 0.0F;
         this.rightLeg.zRot = 0.0F;
         this.leftLeg.zRot = 0.0F;
-        if (this.riding) {
+        if (entity.pose == Pose.SITTING) {
             this.rightArm.xRot += (-(float) Math.PI / 5F);
             this.leftArm.xRot += (-(float) Math.PI / 5F);
             this.rightLeg.xRot = -1.4137167F;
@@ -121,9 +116,9 @@ public class BedrockHumanoidModel<T extends LivingEntity> extends BedrockEntityM
 
         this.rightArm.yRot = 0.0F;
         this.leftArm.yRot = 0.0F;
-        boolean flag2 = entity.getMainArm() == HumanoidArm.RIGHT;
-        if (entity.isUsingItem()) {
-            boolean flag3 = entity.getUsedItemHand() == InteractionHand.MAIN_HAND;
+        boolean flag2 = entity.mainArm == HumanoidArm.RIGHT;
+        if (entity.isUsingItem) {
+            boolean flag3 = entity.useItemHand == InteractionHand.MAIN_HAND;
             if (flag3 == flag2) {
                 this.poseRightArm(entity);
             } else {
@@ -140,7 +135,7 @@ public class BedrockHumanoidModel<T extends LivingEntity> extends BedrockEntityM
             }
         }
 
-        this.setupAttackAnimation(entity, ageInTicks);
+        this.setupAttackAnimation(entity, entity.ageInTicks);
         if (this.crouching) {
             this.body.xRot = 0.5F;
             this.rightArm.xRot += 0.4F;
@@ -166,19 +161,19 @@ public class BedrockHumanoidModel<T extends LivingEntity> extends BedrockEntityM
         }
 
         if (this.rightArmPose != HumanoidModel.ArmPose.SPYGLASS) {
-            BedrockAnimationUtils.bobBedrockPart(this.rightArm, ageInTicks, 1.0F);
+            BedrockAnimationUtils.bobBedrockPart(this.rightArm, entity.ageInTicks, 1.0F);
         }
 
         if (this.leftArmPose != HumanoidModel.ArmPose.SPYGLASS) {
-            BedrockAnimationUtils.bobBedrockPart(this.leftArm, ageInTicks, -1.0F);
+            BedrockAnimationUtils.bobBedrockPart(this.leftArm, entity.ageInTicks, -1.0F);
         }
 
         if (this.swimAmount > 0.0F) {
             float f5 = limbSwing % 26.0F;
-            HumanoidArm humanoidarm = this.getAttackArm(entity);
-            float f1 = humanoidarm == HumanoidArm.RIGHT && this.attackTime > 0.0F ? 0.0F : this.swimAmount;
-            float f2 = humanoidarm == HumanoidArm.LEFT && this.attackTime > 0.0F ? 0.0F : this.swimAmount;
-            if (!entity.isUsingItem()) {
+            HumanoidArm humanoidarm = entity.attackArm;
+            float f1 = humanoidarm == HumanoidArm.RIGHT && entity.attackTime > 0.0F ? 0.0F : this.swimAmount;
+            float f2 = humanoidarm == HumanoidArm.LEFT && entity.attackTime > 0.0F ? 0.0F : this.swimAmount;
+            if (!entity.isUsingItem) {
                 if (f5 < 14.0F) {
                     this.leftArm.xRot = this.rotlerpRad(f2, this.leftArm.xRot, 0.0F);
                     this.rightArm.xRot = Mth.lerp(f1, this.rightArm.xRot, 0.0F);
@@ -245,7 +240,7 @@ public class BedrockHumanoidModel<T extends LivingEntity> extends BedrockEntityM
                 BedrockAnimationUtils.animateCrossbowHold(this.rightArm, this.leftArm, this.head, true);
                 break;
             case SPYGLASS:
-                this.rightArm.xRot = Mth.clamp(this.head.xRot - 1.9198622F - (p_102876_.isCrouching() ? 0.2617994F : 0.0F),
+                this.rightArm.xRot = Mth.clamp(this.head.xRot - 1.9198622F - (p_102876_.isCrouching ? 0.2617994F : 0.0F),
                         -2.4F, 3.3F);
                 this.rightArm.yRot = this.head.yRot - 0.2617994F;
             default:
@@ -284,7 +279,7 @@ public class BedrockHumanoidModel<T extends LivingEntity> extends BedrockEntityM
                 BedrockAnimationUtils.animateCrossbowHold(this.rightArm, this.leftArm, this.head, false);
                 break;
             case SPYGLASS:
-                this.leftArm.xRot = Mth.clamp(this.head.xRot - 1.9198622F - (p_102879_.isCrouching() ? 0.2617994F : 0.0F),
+                this.leftArm.xRot = Mth.clamp(this.head.xRot - 1.9198622F - (p_102879_.isCrouching ? 0.2617994F : 0.0F),
                         -2.4F, 3.3F);
                 this.leftArm.yRot = this.head.yRot + 0.2617994F;
             default:
@@ -294,10 +289,10 @@ public class BedrockHumanoidModel<T extends LivingEntity> extends BedrockEntityM
     }
 
     protected void setupAttackAnimation(T p_102858_, float p_102859_) {
-        if (!(this.attackTime <= 0.0F)) {
-            HumanoidArm humanoidarm = this.getAttackArm(p_102858_);
+        if (!(p_102858_.attackTime <= 0.0F)) {
+            HumanoidArm humanoidarm = p_102858_.attackArm;
             BedrockPart modelpart = this.getArm(humanoidarm);
-            float f = this.attackTime;
+            float f = p_102858_.attackTime;
             this.body.yRot = Mth.sin(Mth.sqrt(f) * ((float) Math.PI * 2F)) * 0.2F;
             if (humanoidarm == HumanoidArm.LEFT) {
                 this.body.yRot *= -1.0F;
@@ -310,15 +305,15 @@ public class BedrockHumanoidModel<T extends LivingEntity> extends BedrockEntityM
             this.rightArm.yRot += this.body.yRot;
             this.leftArm.yRot += this.body.yRot;
             this.leftArm.xRot += this.body.yRot;
-            f = 1.0F - this.attackTime;
+            f = 1.0F - p_102858_.attackTime;
             f *= f;
             f *= f;
             f = 1.0F - f;
             float f1 = Mth.sin(f * (float) Math.PI);
-            float f2 = Mth.sin(this.attackTime * (float) Math.PI) * -(this.head.xRot - 0.7F) * 0.75F;
+            float f2 = Mth.sin(p_102858_.attackTime * (float) Math.PI) * -(this.head.xRot - 0.7F) * 0.75F;
             modelpart.xRot -= f1 * 1.2F + f2;
             modelpart.yRot += this.body.yRot * 2.0F;
-            modelpart.zRot += Mth.sin(this.attackTime * (float) Math.PI) * -0.4F;
+            modelpart.zRot += Mth.sin(p_102858_.attackTime * (float) Math.PI) * -0.4F;
         }
     }
 
@@ -340,7 +335,6 @@ public class BedrockHumanoidModel<T extends LivingEntity> extends BedrockEntityM
     }
 
     public void copyPropertiesTo(BedrockHumanoidModel<T> p_102873_) {
-        super.copyPropertiesTo(p_102873_);
         p_102873_.leftArmPose = this.leftArmPose;
         p_102873_.rightArmPose = this.rightArmPose;
         p_102873_.crouching = this.crouching;
@@ -371,10 +365,5 @@ public class BedrockHumanoidModel<T extends LivingEntity> extends BedrockEntityM
 
     public BedrockPart getHead() {
         return this.head;
-    }
-
-    protected HumanoidArm getAttackArm(T p_102857_) {
-        HumanoidArm humanoidarm = p_102857_.getMainArm();
-        return p_102857_.swingingArm == InteractionHand.MAIN_HAND ? humanoidarm : humanoidarm.getOpposite();
     }
 }

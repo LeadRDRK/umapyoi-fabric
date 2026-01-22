@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -13,8 +14,8 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ElytraItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.client.model.UmaCostumeModelUtils;
@@ -46,7 +47,7 @@ public class ClientEvents {
             model.tail.visible = true;
             if(UmapyoiAPI.isUmaSuitHasHat(entity)) {
                 ResourceLocation loc = UmaCostumeItem.getCostumeID(UmapyoiAPI.getUmaSuit(entity));
-                var costumeData = ClientUtils.getClientCosmeticDataRegistry().getHolder(
+                var costumeData = ClientUtils.getClientCosmeticDataRegistry().get(
                         ResourceKey.create(CosmeticData.REGISTRY_KEY, loc)
                 );
                 if(costumeData.get().is(UmapyoiCostumeDataTags.HAT_HIDEHAIR)) {
@@ -76,8 +77,8 @@ public class ClientEvents {
     }
 
     public static void onPlayerRendering(RenderPlayerCallback.Context event) {
-        LivingEntity player = event.getEntity();
-        ItemStack umasoul = UmapyoiAPI.getRenderingUmaSoul(event.getEntity());
+        LivingEntity player = event.getPlayer();
+        ItemStack umasoul = UmapyoiAPI.getRenderingUmaSoul(event.getPlayer());
         if (!umasoul.isEmpty()) {
             var humanoid = event.getRenderer().getModel();
             humanoid.setAllVisible(false);
@@ -93,7 +94,7 @@ public class ClientEvents {
                     armor.put(slot, itemBySlot);
 
                     boolean renderElytry = Umapyoi.CONFIG.ELYTRA_RENDER()
-                            && itemBySlot.getItem() instanceof ElytraItem;
+                            && itemBySlot.getItem() == Items.ELYTRA;
                     boolean shouldRender = itemBySlot.is(UmapyoiItemTags.SHOULD_RENDER);
                     if (renderElytry || shouldRender)
                         player.setItemSlot(slot, itemBySlot);
@@ -105,8 +106,8 @@ public class ClientEvents {
     }
 
     public static void onPlayerRenderingPost(RenderPlayerCallback.Context event) {
-        LivingEntity player = event.getEntity();
-        ItemStack umasoul = UmapyoiAPI.getRenderingUmaSoul(event.getEntity());
+        LivingEntity player = event.getPlayer();
+        ItemStack umasoul = UmapyoiAPI.getRenderingUmaSoul(event.getPlayer());
         if (!Umapyoi.CONFIG.VANILLA_ARMOR_RENDER() && armor != null && !umasoul.isEmpty()) {
             for(EquipmentSlot slot : EquipmentSlot.values()) {
                 if(slot.getType() == EquipmentSlot.Type.HAND)
@@ -117,20 +118,20 @@ public class ClientEvents {
         }
     }
 
-    private static final UmaPlayerModel<LivingEntity> baseModel = new UmaPlayerModel<>();
+    private static final UmaPlayerModel<HumanoidRenderState> baseModel = new UmaPlayerModel<>();
 
     public static boolean onPlayerArmRendering(RenderArmCallback.Context event) {
-        Player player = event.getPlayer();
+        var player = event.getPlayer();
         ItemStack umasoul = UmapyoiAPI.getRenderingUmaSoul(player);
         ItemStack umasuit = UmapyoiAPI.getUmaSuit(player);
         if (!umasoul.isEmpty()) {
             ResourceLocation name = UmaSoulUtils.getName(umasoul);
-            VertexConsumer vertexconsumer = event.getMultiBufferSource()
+            VertexConsumer vertexconsumer = event.getBufferSource()
                     .getBuffer(RenderType.entityTranslucent(getTexture(name)));
             var pojo = ClientUtils.getModelPOJO(name);
             if(!umasuit.isEmpty()) {
                 boolean tanned = ClientUtils.isTannedSkin(umasoul);
-                vertexconsumer = event.getMultiBufferSource()
+                vertexconsumer = event.getBufferSource()
                         .getBuffer(RenderType.entityTranslucent(UmaCostumeModelUtils.getCostumeTexture(umasuit, tanned)));
                 pojo = ClientUtils.getModelPOJO(UmaCostumeModelUtils.getCostumeModel(umasuit));
             }
@@ -145,11 +146,11 @@ public class ClientEvents {
         if(baseModel.needRefresh(pojo))
             baseModel.loadModel(pojo);
 
-        baseModel.setModelProperties(event.getPlayer());
-        baseModel.attackTime = 0.0F;
+        baseModel.setModelProperties(event.getState());
+        //baseModel.attackTime = 0.0F;
         baseModel.crouching = false;
         baseModel.swimAmount = 0.0F;
-        baseModel.setupAnim(event.getPlayer(), 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
+        baseModel.setupAnim(event.getState(), 0.0F, 0.0F);
 
         if (event.getArm() == HumanoidArm.RIGHT) {
             baseModel.rightArm.xRot = 0.0F;
@@ -157,7 +158,7 @@ public class ClientEvents {
             baseModel.rightArm.render(event.getPoseStack(), vertexconsumer, event.getPackedLight(),
                     OverlayTexture.NO_OVERLAY);
             if(baseModel.isEmissive()) {
-                VertexConsumer emissiveConsumer = event.getMultiBufferSource()
+                VertexConsumer emissiveConsumer = event.getBufferSource()
                         .getBuffer(RenderType.entityTranslucentEmissive(ClientUtils.getEmissiveTexture(name)));
                 baseModel.rightArm.renderEmissive(event.getPoseStack(), emissiveConsumer, event.getPackedLight(),
                         OverlayTexture.NO_OVERLAY, -1);
@@ -169,7 +170,7 @@ public class ClientEvents {
             baseModel.leftArm.render(event.getPoseStack(), vertexconsumer, event.getPackedLight(),
                     OverlayTexture.NO_OVERLAY);
             if(baseModel.isEmissive()) {
-                VertexConsumer emissiveConsumer = event.getMultiBufferSource()
+                VertexConsumer emissiveConsumer = event.getBufferSource()
                         .getBuffer(RenderType.entityTranslucentEmissive(ClientUtils.getEmissiveTexture(name)));
                 baseModel.leftArm.renderEmissive(event.getPoseStack(), emissiveConsumer, event.getPackedLight(),
                         OverlayTexture.NO_OVERLAY, -1);

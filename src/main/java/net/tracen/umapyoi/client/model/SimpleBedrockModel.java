@@ -20,7 +20,7 @@ import java.util.List;
 
 /** Ported from MMLib **/
 @Environment(EnvType.CLIENT)
-public class SimpleBedrockModel extends Model implements BedrockModel {
+public class SimpleBedrockModel implements BedrockModel {
     protected final HashMap<String, BedrockPart> modelMap;
     private final HashMap<String, BonesItem> indexBones;
     private final List<BedrockPart> shouldRender;
@@ -29,7 +29,6 @@ public class SimpleBedrockModel extends Model implements BedrockModel {
     private boolean emissive;
 
     public SimpleBedrockModel() {
-        super(RenderType::entityTranslucent);
         modelMap = Maps.newHashMap();
         indexBones = Maps.newHashMap();
         shouldRender = Lists.newLinkedList();
@@ -43,7 +42,6 @@ public class SimpleBedrockModel extends Model implements BedrockModel {
         loadModel(pojo);
     }
 
-    @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
         this.renderBedrockModel(poseStack, buffer, packedLight, packedOverlay, color);
     }

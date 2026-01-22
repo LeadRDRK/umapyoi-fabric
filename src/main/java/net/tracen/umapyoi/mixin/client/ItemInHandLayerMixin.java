@@ -30,8 +30,8 @@ public class ItemInHandLayerMixin {
             boolean leftArmFlag = pArm == HumanoidArm.LEFT;
             boolean slimArmFlag = false;
             // 1 / 16 = 0.0625D, right arm direction is the X positive direction
-            PlayerItemInHandLayer<?, ?> layer = (PlayerItemInHandLayer<?, ?>) (Object) this;
-            if (layer.getParentModel()instanceof PlayerModel<?> playerModel)
+            var layer = (PlayerItemInHandLayer<?, ?>) (Object) this;
+            if (layer.getParentModel() instanceof PlayerModel playerModel)
                 if (playerModel.slim)
                     slimArmFlag = true;
             pPoseStack.translate((slimArmFlag ? 0.5 : 1) * (leftArmFlag ? -0.125D : 0.0625D), 0D, 0D);

@@ -2,7 +2,7 @@ package net.tracen.umapyoi.item;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.tracen.umapyoi.item.info.FoodInfo;
 
 public class ItemDrinkBase extends ItemFoodBase {
@@ -12,8 +12,8 @@ public class ItemDrinkBase extends ItemFoodBase {
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.DRINK;
+    public ItemUseAnimation getUseAnimation(ItemStack stack) {
+        return ItemUseAnimation.DRINK;
     }
 
     @Override

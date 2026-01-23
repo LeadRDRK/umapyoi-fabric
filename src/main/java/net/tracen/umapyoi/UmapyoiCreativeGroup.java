@@ -41,6 +41,12 @@ public class UmapyoiCreativeGroup {
                     .title(Component.translatable("itemGroup.umapyoi.cards"))
                     .build());
 
+    public static final RegistryObject<CreativeModeTab> RACE_TICKETS = CREATIVE_MODE_TABS.register("race_tickets",
+            () -> FabricItemGroup.builder()
+                    .icon(() -> new ItemStack(ItemRegistry.UMA_RACE_TICKET.get()))
+                    .title(Component.translatable("itemGroup.umapyoi.race_tickets"))
+                    .build());
+
     public static void register() {
         CREATIVE_MODE_TABS.register();
 
@@ -49,7 +55,8 @@ public class UmapyoiCreativeGroup {
                 .register(entries -> {
                     for (RegistryObject<Item> object : ItemRegistry.ITEMS.getEntries()) {
                         if (object == ItemRegistry.BLANK_UMA_SOUL || object == ItemRegistry.UMA_SOUL
-                                || object == ItemRegistry.UMA_SOUL_DISPLAY || object == ItemRegistry.SUPPORT_CARD)
+                                || object == ItemRegistry.UMA_SOUL_DISPLAY || object == ItemRegistry.SUPPORT_CARD
+                                || object == ItemRegistry.UMA_RACE_TICKET)
                             continue;
 
                         Item item = object.get();
@@ -77,6 +84,12 @@ public class UmapyoiCreativeGroup {
                 .modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, UMAPYOI_CARDS.getId()))
                 .register(entries -> {
                     ((CreativeModeTabFiller) ItemRegistry.SUPPORT_CARD.get()).fillItemCategory(entries);
+                });
+
+        ItemGroupEvents
+                .modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, RACE_TICKETS.getId()))
+                .register(entries -> {
+                    ((CreativeModeTabFiller) ItemRegistry.UMA_RACE_TICKET.get()).fillItemCategory(entries);
                 });
     }
 }

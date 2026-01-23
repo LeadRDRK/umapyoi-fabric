@@ -46,6 +46,7 @@ public class Umapyoi implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        DataComponentsTypeRegistry.DATA_COMPONENTS.register();
         TrainingSupportRegistry.SUPPORTS.register();
         UmaSkillRegistry.SKILLS.register();
         UmaFactorRegistry.FACTORS.register();
@@ -59,7 +60,6 @@ public class Umapyoi implements ModInitializer {
         VillageRegistry.registerPoi();
         VillagerTradeRegistry.register();
         RecipeSerializerRegistry.RECIPE_SERIALIZER.register();
-        DataComponentsTypeRegistry.DATA_COMPONENTS.register();
 
         CommonEvents.register();
 

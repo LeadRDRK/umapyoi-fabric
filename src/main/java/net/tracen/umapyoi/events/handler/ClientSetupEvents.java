@@ -91,7 +91,7 @@ public class ClientSetupEvents {
 
     private static ResourceLocation resolveCostumeLocation(ResourceLocation location) {
         return ResourceLocation.fromNamespaceAndPath(location.getNamespace(),
-                "umapyoi/" + location.getPath().substring(20,location.getPath().length()-5));
+                "item/costume/" + location.getPath().substring(20,location.getPath().length()-5));
     }
 
     public static BakedModel onBakedModel(BakedModel bakedModel, ModelModifier.AfterBake.Context context) {

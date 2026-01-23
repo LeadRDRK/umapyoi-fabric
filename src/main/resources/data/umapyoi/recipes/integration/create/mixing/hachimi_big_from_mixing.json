@@ -1,14 +1,16 @@
 {
-  "conditions": [
+  "fabric:load_conditions": [
     {
-      "type": "forge:mod_loaded",
-      "modid": "create"
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "create"
+      ]
     }
   ],
   "type": "create:mixing",
   "ingredients": [
     {
-      "fluidTag": "forge:honey",
+      "fluidTag": "c:honey",
       "amount": 500
     },
     {
@@ -17,10 +19,10 @@
       "amount": 500
     },
     {
-      "tag": "forge:sugar"
+      "tag": "fabric:sugar"
     },
     {
-      "tag": "forge:sugar"
+      "tag": "fabric:sugar"
     }
   ],
   "results": [

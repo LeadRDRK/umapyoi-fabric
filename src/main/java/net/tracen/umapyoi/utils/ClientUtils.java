@@ -26,6 +26,9 @@ import net.tracen.umapyoi.client.model.bedrock.BedrockVersion;
 import net.tracen.umapyoi.client.model.pojo.BedrockModelPOJO;
 import net.tracen.umapyoi.data.tag.UmapyoiUmaDataTags;
 import net.tracen.umapyoi.registry.cosmetics.CosmeticData;
+import net.tracen.umapyoi.registry.races.Field.RaceField;
+import net.tracen.umapyoi.registry.races.Race;
+import net.tracen.umapyoi.registry.races.Tags.RaceTag;
 import net.tracen.umapyoi.registry.training.card.SupportCard;
 import net.tracen.umapyoi.registry.umadata.UmaData;
 
@@ -78,6 +81,18 @@ public class ClientUtils {
 
     public static Registry<CosmeticData> getClientCosmeticDataRegistry() {
         return Minecraft.getInstance().getConnection().registryAccess().registryOrThrow(CosmeticData.REGISTRY_KEY);
+    }
+
+    public static Registry<Race> getRaceRegistry() {
+        return Minecraft.getInstance().getConnection().registryAccess().registryOrThrow(Race.REGISTRY_KEY);
+    }
+
+    public static Registry<RaceTag> getRaceTagRegistry() {
+        return Minecraft.getInstance().getConnection().registryAccess().registryOrThrow(RaceTag.REGISTRY_KEY);
+    }
+
+    public static Registry<RaceField> getRaceFieldRegistry() {
+        return Minecraft.getInstance().getConnection().registryAccess().registryOrThrow(RaceField.REGISTRY_KEY);
     }
 
     public static boolean isFlatUmamusume(ItemStack stack) {

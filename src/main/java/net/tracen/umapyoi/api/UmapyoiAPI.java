@@ -12,6 +12,9 @@ import net.tracen.umapyoi.events.FindUmaSoulCallback;
 import net.tracen.umapyoi.item.AbstractSuitItem;
 import net.tracen.umapyoi.item.UmaSoulItem;
 import net.tracen.umapyoi.registry.cosmetics.CosmeticData;
+import net.tracen.umapyoi.registry.races.Field.RaceField;
+import net.tracen.umapyoi.registry.races.Race;
+import net.tracen.umapyoi.registry.races.Tags.RaceTag;
 import net.tracen.umapyoi.registry.training.card.SupportCard;
 import net.tracen.umapyoi.registry.umadata.UmaData;
 import net.tracen.umapyoi.utils.ClientUtils;
@@ -124,5 +127,24 @@ public class UmapyoiAPI {
 
     public static HolderLookup.RegistryLookup<CosmeticData> getCosmeticDataRegistry(HolderLookup.Provider provider) {
         return provider.lookupOrThrow(CosmeticData.REGISTRY_KEY);
+    }
+
+    public static Registry<Race> getRaceRegistry(Level level) {
+        if (level.isClientSide()) return ClientUtils.getRaceRegistry();
+        return level.registryAccess().registryOrThrow(Race.REGISTRY_KEY);
+    }
+
+    public static Registry<RaceTag> getRaceTagRegistry(Level level) {
+        if (level.isClientSide()) return ClientUtils.getRaceTagRegistry();
+        return level.registryAccess().registryOrThrow(RaceTag.REGISTRY_KEY);
+    }
+
+    public static Registry<RaceField> getRaceFieldRegistry(Level level) {
+        if (level.isClientSide()) return ClientUtils.getRaceFieldRegistry();
+        return level.registryAccess().registryOrThrow(RaceField.REGISTRY_KEY);
+    }
+
+    public static HolderLookup.RegistryLookup<Race> getRaceRegistry(HolderLookup.Provider provider) {
+        return provider.lookupOrThrow(Race.REGISTRY_KEY);
     }
 }

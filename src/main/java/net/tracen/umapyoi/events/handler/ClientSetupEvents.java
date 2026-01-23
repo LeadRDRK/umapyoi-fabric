@@ -13,6 +13,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
@@ -24,8 +26,7 @@ import net.tracen.umapyoi.client.ActionBarOverlay;
 import net.tracen.umapyoi.client.MotivationOverlay;
 import net.tracen.umapyoi.client.SkillOverlay;
 import net.tracen.umapyoi.client.key.SkillKeyMapping;
-import net.tracen.umapyoi.client.model.BedrockModelResourceLoader;
-import net.tracen.umapyoi.client.model.UmaCostumeItemModel;
+import net.tracen.umapyoi.client.model.*;
 import net.tracen.umapyoi.client.renderer.blockentity.SilverSupportAlbumPedestalBlockRender;
 import net.tracen.umapyoi.client.renderer.blockentity.SilverUmaPedestalBlockRender;
 import net.tracen.umapyoi.client.renderer.blockentity.SupportAlbumPedestalBlockRender;
@@ -37,6 +38,8 @@ import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.item.UmaSoulItem;
 
 import java.util.Objects;
+import java.util.function.BiFunction;
+import java.util.stream.Stream;
 
 @Environment(EnvType.CLIENT)
 public class ClientSetupEvents {
@@ -87,11 +90,47 @@ public class ClientSetupEvents {
                     .forEach(pluginContext::addModels);
             pluginContext.modifyModelAfterBake().register(ClientSetupEvents::onBakedModel);
         });
+
+        ModelLoadingPlugin.register(pluginContext -> {
+            Stream.of("race_ticket", "support_card").forEachOrdered((suffix) -> {
+                FileToIdConverter.json("models/item/" + suffix)
+                        .listMatchingResources(Minecraft.getInstance().getResourceManager())
+                        .keySet()
+                        .stream()
+                        .map(loc -> resolveLocationGeneric(suffix, loc))
+                        .forEach(pluginContext::addModels);
+            });
+
+            pluginContext.modifyModelAfterBake().register((model, ctx) -> onBakedModelGeneric(
+                    new ModelResourceLocation(ItemRegistry.UMA_RACE_TICKET.getId(), "inventory"),
+                    model, ctx, UmaRaceTicketItemModel::new
+            ));
+
+            pluginContext.modifyModelAfterBake().register((model, ctx) -> onBakedModelGeneric(
+                    new ModelResourceLocation(ItemRegistry.SUPPORT_CARD.getId(), "inventory"),
+                    model, ctx, SupportCardItemModel::new
+            ));
+        });
+    }
+
+    private static ModelResourceLocation resolveLocationGeneric(String name, ResourceLocation location) {
+        return new ModelResourceLocation(location.getNamespace(),
+                name + "/" + location.getPath().substring(13 + name.length() ,location.getPath().length() - 5), "inventory");
     }
 
     private static ModelResourceLocation resolveCostumeLocation(ResourceLocation location) {
         return new ModelResourceLocation(location.getNamespace(),
                 "costume/" + location.getPath().substring(20,location.getPath().length()-5), "inventory");
+    }
+
+    public static BakedModel onBakedModelGeneric(ModelResourceLocation origin, BakedModel bakedModel,
+                                                 ModelModifier.AfterBake.Context context,
+                                                 BiFunction<BakedModel, ModelBakery, DynamicItemBakedModel> constructor) {
+        if (Objects.equals(context.id(), origin)) {
+            return constructor.apply(bakedModel, context.loader());
+        }
+
+        return bakedModel;
     }
 
     public static BakedModel onBakedModel(BakedModel bakedModel, ModelModifier.AfterBake.Context context) {

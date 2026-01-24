@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "I": {
+      "item": "minecraft:white_wool"
+    },
+    "J": {
+      "item": "umapyoi:jewel"
+    }
+  },
+  "pattern": [
+    "IJI",
+    "III",
+    " I "
+  ],
+  "result": {
+    "count": 1,
+    "id": "umapyoi:uma_costume"
+  },
+  "show_notification": false
+}

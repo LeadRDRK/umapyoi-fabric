@@ -45,10 +45,10 @@ public class LazyRegistrar<T> {
         Registry<T> registry = makeRegistry().get();
         entries.forEach((obj, supplier) -> {
             T value = supplier.get();
-            Registry.register(registry, obj.getId(), value);
-            obj.setValue(value);
-            if (value instanceof RegistryNameHolder holder) {
-                holder.setRegistryName(obj.getId());
+            var holder = Registry.registerForHolder(registry, obj.getId(), value);
+            obj.bindHolder(holder);
+            if (value instanceof RegistryNameHolder nameHolder) {
+                nameHolder.setRegistryName(obj.getId());
             }
         });
     }

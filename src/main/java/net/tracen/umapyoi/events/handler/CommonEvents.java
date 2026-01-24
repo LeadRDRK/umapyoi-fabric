@@ -41,7 +41,7 @@ public class CommonEvents {
             return true;
         if (Umapyoi.CONFIG.CHANCE_MOTIVATION_EFFECT() > 0) {
             if (entity.level().getRandom().nextDouble() <= Umapyoi.CONFIG.CHANCE_MOTIVATION_EFFECT())
-                entity.addEffect(new MobEffectInstance(MobEffectRegistry.PANICKING, 3600));
+                entity.addEffect(new MobEffectInstance(MobEffectRegistry.PANICKING.getHolder(), 3600));
         }
         return true;
     }

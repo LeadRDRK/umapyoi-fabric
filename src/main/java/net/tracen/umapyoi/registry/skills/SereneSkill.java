@@ -1,5 +1,6 @@
 package net.tracen.umapyoi.registry.skills;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -17,8 +18,8 @@ public class SereneSkill extends UmaSkill {
     public void applySkill(Level level, LivingEntity user) {
         
         user.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 160, 0));
-        if (user.hasEffect(MobEffectRegistry.PANICKING))
-            user.removeEffect(MobEffectRegistry.PANICKING);
+        if (user.hasEffect(MobEffectRegistry.PANICKING.getHolder()))
+            user.removeEffect(MobEffectRegistry.PANICKING.getHolder());
     }
 
     @Override

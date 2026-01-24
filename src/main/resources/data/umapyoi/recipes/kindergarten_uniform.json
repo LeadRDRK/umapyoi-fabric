@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "c:cyan_dyes"
+      "tag": "c:dyes/cyan"
     },
     {
       "item": "umapyoi:uma_costume"

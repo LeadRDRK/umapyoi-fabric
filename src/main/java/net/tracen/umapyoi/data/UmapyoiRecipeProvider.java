@@ -145,13 +145,6 @@ public class UmapyoiRecipeProvider extends FabricRecipeProvider {
                 .define('I', Items.RED_WOOL).define('L', Items.WHITE_WOOL).define('J', ItemRegistry.JEWEL.get())
                 .unlockedBy("has_item", has(ItemRegistry.JEWEL.get())).save(consumer);
 
-        var kindergartenUniform = UmaCostumeItem
-                .getCostume(CostumeDataRegistry.KINDERGARTEN_UNIFORM.getId())
-                .getItem();
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, kindergartenUniform).pattern("IJI").pattern("III").pattern("III")
-                .define('I', Items.LIGHT_BLUE_WOOL).define('J', ItemRegistry.JEWEL.get())
-                .unlockedBy("has_item", has(ItemRegistry.JEWEL.get())).save(consumer);
-
         ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, ItemRegistry.HACHIMI_MID.get()).requires(Items.HONEY_BOTTLE)
                 .requires(UmapyoiItemTags.SUGAR).requires(UmapyoiItemTags.SUGAR).requires(UmapyoiItemTags.WATER)
                 .unlockedBy("has_item", has(Items.HONEY_BOTTLE)).save(consumer);

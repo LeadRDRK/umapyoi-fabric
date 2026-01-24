@@ -3,7 +3,7 @@
   "category": "equipment",
   "key": {
     "I": {
-      "item": "minecraft:light_blue_wool"
+      "item": "minecraft:white_wool"
     },
     "J": {
       "item": "umapyoi:jewel"
@@ -12,10 +12,10 @@
   "pattern": [
     "IJI",
     "III",
-    "III"
+    " I "
   ],
   "result": {
     "item": "umapyoi:uma_costume"
   },
-  "show_notification": true
+  "show_notification": false
 }

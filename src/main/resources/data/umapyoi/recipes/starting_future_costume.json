@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "type": "umapyoi:umasoul",
+      "fabric:type": "umapyoi:umasoul",
       "request": {
         "ranking": ["r"]
       }

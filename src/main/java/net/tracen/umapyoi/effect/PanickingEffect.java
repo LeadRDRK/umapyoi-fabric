@@ -11,6 +11,6 @@ public class PanickingEffect extends MobEffect {
     }
 
     public static boolean onResumeAP(LivingEntity entity, ItemStack soul) {
-        return entity.hasEffect(MobEffectRegistry.PANICKING);
+        return entity.hasEffect(MobEffectRegistry.PANICKING.getHolder());
     }
 }

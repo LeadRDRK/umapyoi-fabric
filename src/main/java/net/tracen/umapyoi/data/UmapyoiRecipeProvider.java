@@ -11,10 +11,8 @@ import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.tracen.umapyoi.block.BlockRegistry;
-import net.tracen.umapyoi.data.builtin.CostumeDataRegistry;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
 import net.tracen.umapyoi.item.ItemRegistry;
-import net.tracen.umapyoi.item.UmaCostumeItem;
 
 import java.util.concurrent.CompletableFuture;
 

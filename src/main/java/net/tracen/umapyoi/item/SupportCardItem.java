@@ -19,7 +19,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
-import net.tracen.umapyoi.data.builtin.SupportCardRegistry;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
 import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.training.SupportContainer;

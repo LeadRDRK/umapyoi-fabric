@@ -1,9 +1,9 @@
 package net.tracen.umapyoi.registry.skills;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.Level;
 
 public class DivineSpeedSkill extends UmaSkill {
     private final int life;
@@ -14,9 +14,9 @@ public class DivineSpeedSkill extends UmaSkill {
     }
 
     @Override
-    public void applySkill(Level level, LivingEntity user) {
+    public void applySkill(ServerLevel level, LivingEntity user) {
         int skillLevel = this.getSkillLevel() - 1;
-        user.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, this.getSpeedTime(), skillLevel));
+        user.addEffect(new MobEffectInstance(MobEffects.SPEED, this.getSpeedTime(), skillLevel));
         user.addEffect(new MobEffectInstance(MobEffects.SATURATION, this.getSkillLevel() * 10, skillLevel));
     }
 

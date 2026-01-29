@@ -1,8 +1,16 @@
 package net.tracen.umapyoi.item;
 
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.enchantment.Repairable;
+import net.minecraft.world.level.block.Block;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.item.factor.UmaFactorContainerItem;
@@ -12,184 +20,251 @@ import net.tracen.umapyoi.item.food.UmaFoodItem;
 import net.tracen.umapyoi.item.info.FoodInfo;
 import net.tracen.umapyoi.item.weapon.BaseballBatItem;
 import net.tracen.umapyoi.item.weapon.GrassNaginataItem;
-import net.tracen.umapyoi.registry.LazyRegistrar;
-import net.tracen.umapyoi.registry.RegistryObject;
 import net.tracen.umapyoi.registry.TrainingSupportRegistry;
 import net.tracen.umapyoi.registry.training.SupportType;
 import net.tracen.umapyoi.utils.UmaStatusUtils;
 
-import java.util.function.Supplier;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public class ItemRegistry {
-    public static final LazyRegistrar<Item> ITEMS = LazyRegistrar.create(Registries.ITEM, Umapyoi.MODID);
+    public static final List<Item> ITEMS = new ArrayList<>();
 
-    public static final RegistryObject<Item> SILVER_UMA_PEDESTAL = register("silver_uma_pedestal",
-            () -> new BlockItem(BlockRegistry.SILVER_UMA_PEDESTAL.get(), Umapyoi.defaultItemProperties()));
+    public static final Item SILVER_UMA_PEDESTAL = registerBlock("silver_uma_pedestal",
+            BlockRegistry.SILVER_UMA_PEDESTAL);
     
-    public static final RegistryObject<Item> UMA_PEDESTAL = register("uma_pedestal",
-            () -> new BlockItem(BlockRegistry.UMA_PEDESTAL.get(), Umapyoi.defaultItemProperties()));
+    public static final Item UMA_PEDESTAL = registerBlock("uma_pedestal",
+            BlockRegistry.UMA_PEDESTAL);
 
-    public static final RegistryObject<Item> UMA_STATUE = register("uma_statue",
-            () -> new BlockItem(BlockRegistry.UMA_STATUES.get(), Umapyoi.defaultItemProperties()));
+    public static final Item UMA_STATUE = registerBlock("uma_statue",
+            BlockRegistry.UMA_STATUES);
     
-    public static final RegistryObject<Item> THREE_GODDESS = register("three_goddess",
-            () -> new BlockItem(BlockRegistry.THREE_GODDESS.get(), Umapyoi.defaultItemProperties()));
+    public static final Item THREE_GODDESS = registerBlock("three_goddess",
+            BlockRegistry.THREE_GODDESS);
 
-    public static final RegistryObject<Item> TRAINING_FACILITY = register("training_facility",
-            () -> new BlockItem(BlockRegistry.TRAINING_FACILITY.get(), Umapyoi.defaultItemProperties()));
+    public static final Item TRAINING_FACILITY = registerBlock("training_facility",
+            BlockRegistry.TRAINING_FACILITY);
 
-    public static final RegistryObject<Item> SKILL_LEARNING_TABLE = register("skill_learning_table",
-            () -> new BlockItem(BlockRegistry.SKILL_LEARNING_TABLE.get(), Umapyoi.defaultItemProperties()));
+    public static final Item SKILL_LEARNING_TABLE = registerBlock("skill_learning_table",
+            BlockRegistry.SKILL_LEARNING_TABLE);
 
-    public static final RegistryObject<Item> REGISTER_LECTERN = register("register_lectern",
-            () -> new BlockItem(BlockRegistry.REGISTER_LECTERN.get(), Umapyoi.defaultItemProperties()));
+    public static final Item REGISTER_LECTERN = registerBlock("register_lectern",
+            BlockRegistry.REGISTER_LECTERN);
     
-    public static final RegistryObject<Item> DISASSEMBLY_BLOCK = register("disassembly_block",
-            () -> new BlockItem(BlockRegistry.DISASSEMBLY_BLOCK.get(), Umapyoi.defaultItemProperties()));
+    public static final Item DISASSEMBLY_BLOCK = registerBlock("disassembly_block",
+            BlockRegistry.DISASSEMBLY_BLOCK);
 
-    public static final RegistryObject<Item> UMA_SELECT_BLOCK = register("uma_select_block",
-            () -> new BlockItem(BlockRegistry.UMA_SELECT_BLOCK.get(), Umapyoi.defaultItemProperties()));
+    public static final Item UMA_SELECT_BLOCK = registerBlock("uma_select_block",
+            BlockRegistry.UMA_SELECT_BLOCK);
 
-    public static final RegistryObject<Item> BLANK_UMA_SOUL = register("blank_uma_soul", FadedUmaSoulItem::new);
-    public static final RegistryObject<Item> UMA_SOUL_DISPLAY = register("uma_soul_display", ItemRegistry::newMaterial);
-    public static final RegistryObject<Item> UMA_SOUL = register("uma_soul", UmaSoulItem::new);
-    public static final RegistryObject<Item> UMA_FACTOR_ITEM = register("uma_factor_item", UmaFactorContainerItem::new);
+    public static final Item BLANK_UMA_SOUL = registerItem("blank_uma_soul",
+            FadedUmaSoulItem::new,
+            Umapyoi.defaultItemProperties().stacksTo(1));
+    public static final Item UMA_SOUL_DISPLAY = registerItem("uma_soul_display");
+    public static final Item UMA_SOUL = registerItem("uma_soul",
+            UmaSoulItem::new,
+            Umapyoi.defaultItemProperties().stacksTo(1));
+    public static final Item UMA_FACTOR_ITEM = registerItem("uma_factor_item",
+            UmaFactorContainerItem::new,
+            Umapyoi.defaultItemProperties().stacksTo(1));
 
-    public static final RegistryObject<Item> SUMMER_UNIFORM = register("summer_uniform", SummerUniformItem::new);
-    public static final RegistryObject<Item> WINTER_UNIFORM = register("winter_uniform", WinterUniformItem::new);
-    public static final RegistryObject<Item> TRAINING_SUIT = register("trainning_suit", TrainingSuitItem::new);
-    public static final RegistryObject<Item> SWIMSUIT = register("swimsuit", SwimsuitItem::new);
+    public static final Item SUMMER_UNIFORM = registerItem("summer_uniform",
+            SummerUniformItem::new,
+            Umapyoi.defaultItemProperties().stacksTo(1));
+    public static final Item WINTER_UNIFORM = registerItem("winter_uniform",
+            WinterUniformItem::new,
+            Umapyoi.defaultItemProperties().stacksTo(1));
+    public static final Item TRAINING_SUIT = registerItem("trainning_suit",
+            TrainingSuitItem::new,
+            Umapyoi.defaultItemProperties().stacksTo(1));
+    public static final Item SWIMSUIT = registerItem("swimsuit",
+            SwimsuitItem::new,
+            Umapyoi.defaultItemProperties().stacksTo(1));
 
-    public static final RegistryObject<Item> UMA_COSTUME = register("uma_costume", UmaCostumeItem::new);
+    public static final Item UMA_COSTUME = registerItem("uma_costume",
+            UmaCostumeItem::new,
+            Umapyoi.defaultItemProperties().stacksTo(1));
 
-    public static final RegistryObject<Item> JEWEL = register("jewel", ItemRegistry::newMaterial);
+    public static final Item JEWEL = registerItem("jewel");
 
-    public static final RegistryObject<Item> BLANK_TICKET = register("blank_ticket", ItemRegistry::newMaterial);
-    public static final RegistryObject<Item> UMA_TICKET = register("uma_ticket", UmaTicketItem::new);
-    public static final RegistryObject<Item> SR_UMA_TICKET = register("sr_uma_ticket", UmaTicketItem::new);
-    public static final RegistryObject<Item> SSR_UMA_TICKET = register("ssr_uma_ticket", UmaTicketItem::new);
-    public static final RegistryObject<Item> CARD_TICKET = register("card_ticket", UmaTicketItem::new);
-    public static final RegistryObject<Item> SR_CARD_TICKET = register("sr_card_ticket", UmaTicketItem::new);
-    public static final RegistryObject<Item> SSR_CARD_TICKET = register("ssr_card_ticket", UmaTicketItem::new);
+    public static final Item BLANK_TICKET = registerItem("blank_ticket");
+    public static final Item UMA_TICKET = registerItem("uma_ticket", UmaTicketItem::new);
+    public static final Item SR_UMA_TICKET = registerItem("sr_uma_ticket", UmaTicketItem::new);
+    public static final Item SSR_UMA_TICKET = registerItem("ssr_uma_ticket", UmaTicketItem::new);
+    public static final Item CARD_TICKET = registerItem("card_ticket", UmaTicketItem::new);
+    public static final Item SR_CARD_TICKET = registerItem("sr_card_ticket", UmaTicketItem::new);
+    public static final Item SSR_CARD_TICKET = registerItem("ssr_card_ticket", UmaTicketItem::new);
     
-    public static final RegistryObject<Item> CRYSTAL_SILVER = register("crystal_silver", ItemRegistry::newMaterial);
-    public static final RegistryObject<Item> CRYSTAL_GOLD = register("crystal_gold", ItemRegistry::newMaterial);
-    public static final RegistryObject<Item> CRYSTAL_RAINBOW = register("crystal_rainbow", ItemRegistry::newMaterial);
-    public static final RegistryObject<Item> HORSESHOE_SILVER = register("horseshoe_silver", ItemRegistry::newMaterial);
-    public static final RegistryObject<Item> HORSESHOE_GOLD = register("horseshoe_gold", ItemRegistry::newMaterial);
-    public static final RegistryObject<Item> HORSESHOE_RAINBOW = register("horseshoe_rainbow", ItemRegistry::newMaterial);
+    public static final Item CRYSTAL_SILVER = registerItem("crystal_silver");
+    public static final Item CRYSTAL_GOLD = registerItem("crystal_gold");
+    public static final Item CRYSTAL_RAINBOW = registerItem("crystal_rainbow");
+    public static final Item HORSESHOE_SILVER = registerItem("horseshoe_silver");
+    public static final Item HORSESHOE_GOLD = registerItem("horseshoe_gold");
+    public static final Item HORSESHOE_RAINBOW = registerItem("horseshoe_rainbow");
 
-    public static final RegistryObject<Item> SPEED_LOW_ITEM = register("speed_low_item", () -> {
-        return new TrainingItem(SupportType.SPEED, TrainingSupportRegistry.SPEED_SUPPORT, 1);
-    });
-    public static final RegistryObject<Item> SPEED_MID_ITEM = register("speed_mid_item", () -> {
-        return new TrainingItem(SupportType.SPEED, TrainingSupportRegistry.SPEED_SUPPORT, 2);
-    });
-    public static final RegistryObject<Item> SPEED_HIGH_ITEM = register("speed_high_item", () -> {
-        return new TrainingItem(SupportType.SPEED, TrainingSupportRegistry.SPEED_SUPPORT, 3);
-    });
+    public static final Item SPEED_LOW_ITEM = registerItem("speed_low_item",
+            p -> new TrainingItem(SupportType.SPEED, TrainingSupportRegistry.SPEED_SUPPORT, 1, p));
+    public static final Item SPEED_MID_ITEM = registerItem("speed_mid_item",
+            p -> new TrainingItem(SupportType.SPEED, TrainingSupportRegistry.SPEED_SUPPORT, 2, p));
+    public static final Item SPEED_HIGH_ITEM = registerItem("speed_high_item",
+            p -> new TrainingItem(SupportType.SPEED, TrainingSupportRegistry.SPEED_SUPPORT, 3, p));
 
-    public static final RegistryObject<Item> STAMINA_LOW_ITEM = register("stamina_low_item", () -> {
-        return new TrainingItem(SupportType.STAMINA, TrainingSupportRegistry.STAMINA_SUPPORT, 1);
-    });
-    public static final RegistryObject<Item> STAMINA_MID_ITEM = register("stamina_mid_item", () -> {
-        return new TrainingItem(SupportType.STAMINA, TrainingSupportRegistry.STAMINA_SUPPORT, 2);
-    });
-    public static final RegistryObject<Item> STAMINA_HIGH_ITEM = register("stamina_high_item", () -> {
-        return new TrainingItem(SupportType.STAMINA, TrainingSupportRegistry.STAMINA_SUPPORT, 3);
-    });
+    public static final Item STAMINA_LOW_ITEM = registerItem("stamina_low_item",
+            p -> new TrainingItem(SupportType.STAMINA, TrainingSupportRegistry.STAMINA_SUPPORT, 1, p));
+    public static final Item STAMINA_MID_ITEM = registerItem("stamina_mid_item",
+            p -> new TrainingItem(SupportType.STAMINA, TrainingSupportRegistry.STAMINA_SUPPORT, 2, p));
+    public static final Item STAMINA_HIGH_ITEM = registerItem("stamina_high_item",
+            p -> new TrainingItem(SupportType.STAMINA, TrainingSupportRegistry.STAMINA_SUPPORT, 3, p));
 
-    public static final RegistryObject<Item> STRENGTH_LOW_ITEM = register("strength_low_item", () -> {
-        return new TrainingItem(SupportType.STRENGTH, TrainingSupportRegistry.STRENGTH_SUPPORT, 1);
-    });
-    public static final RegistryObject<Item> STRENGTH_MID_ITEM = register("strength_mid_item", () -> {
-        return new TrainingItem(SupportType.STRENGTH, TrainingSupportRegistry.STRENGTH_SUPPORT, 2);
-    });
-    public static final RegistryObject<Item> STRENGTH_HIGH_ITEM = register("strength_high_item", () -> {
-        return new TrainingItem(SupportType.STRENGTH, TrainingSupportRegistry.STRENGTH_SUPPORT, 3);
-    });
+    public static final Item STRENGTH_LOW_ITEM = registerItem("strength_low_item",
+            p -> new TrainingItem(SupportType.STRENGTH, TrainingSupportRegistry.STRENGTH_SUPPORT, 1, p));
+    public static final Item STRENGTH_MID_ITEM = registerItem("strength_mid_item",
+            p -> new TrainingItem(SupportType.STRENGTH, TrainingSupportRegistry.STRENGTH_SUPPORT, 2, p));
+    public static final Item STRENGTH_HIGH_ITEM = registerItem("strength_high_item",
+            p -> new TrainingItem(SupportType.STRENGTH, TrainingSupportRegistry.STRENGTH_SUPPORT, 3, p));
 
-    public static final RegistryObject<Item> MENTALITY_LOW_ITEM = register("mentality_low_item", () -> {
-        return new TrainingItem(SupportType.GUTS, TrainingSupportRegistry.GUTS_SUPPORT, 1);
-    });
-    public static final RegistryObject<Item> MENTALITY_MID_ITEM = register("mentality_mid_item", () -> {
-        return new TrainingItem(SupportType.GUTS, TrainingSupportRegistry.GUTS_SUPPORT, 2);
-    });
-    public static final RegistryObject<Item> MENTALITY_HIGH_ITEM = register("mentality_high_item", () -> {
-        return new TrainingItem(SupportType.GUTS, TrainingSupportRegistry.GUTS_SUPPORT, 3);
-    });
+    public static final Item MENTALITY_LOW_ITEM = registerItem("mentality_low_item",
+            p -> new TrainingItem(SupportType.GUTS, TrainingSupportRegistry.GUTS_SUPPORT, 1, p));
+    public static final Item MENTALITY_MID_ITEM = registerItem("mentality_mid_item",
+            p -> new TrainingItem(SupportType.GUTS, TrainingSupportRegistry.GUTS_SUPPORT, 2, p));
+    public static final Item MENTALITY_HIGH_ITEM = registerItem("mentality_high_item",
+            p -> new TrainingItem(SupportType.GUTS, TrainingSupportRegistry.GUTS_SUPPORT, 3, p));
 
-    public static final RegistryObject<Item> WISDOM_LOW_ITEM = register("wisdom_low_item", () -> {
-        return new TrainingItem(SupportType.WISDOM, TrainingSupportRegistry.WISDOM_SUPPORT, 1);
-    });
-    public static final RegistryObject<Item> WISDOM_MID_ITEM = register("wisdom_mid_item", () -> {
-        return new TrainingItem(SupportType.WISDOM, TrainingSupportRegistry.WISDOM_SUPPORT, 2);
-    });
-    public static final RegistryObject<Item> WISDOM_HIGH_ITEM = register("wisdom_high_item", () -> {
-        return new TrainingItem(SupportType.WISDOM, TrainingSupportRegistry.WISDOM_SUPPORT, 3);
-    });
+    public static final Item WISDOM_LOW_ITEM = registerItem("wisdom_low_item",
+            p -> new TrainingItem(SupportType.WISDOM, TrainingSupportRegistry.WISDOM_SUPPORT, 1, p));
+    public static final Item WISDOM_MID_ITEM = registerItem("wisdom_mid_item",
+            p -> new TrainingItem(SupportType.WISDOM, TrainingSupportRegistry.WISDOM_SUPPORT, 2, p));
+    public static final Item WISDOM_HIGH_ITEM = registerItem("wisdom_high_item",
+            p -> new TrainingItem(SupportType.WISDOM, TrainingSupportRegistry.WISDOM_SUPPORT, 3, p));
 
-    public static final RegistryObject<Item> SKILL_BOOK = register("skill_book", SkillBookItem::new);
+    public static final Item SKILL_BOOK = registerItem("skill_book",
+            SkillBookItem::new,
+            Umapyoi.defaultItemProperties().stacksTo(1));
 
-    public static final RegistryObject<Item> SUPPORT_CARD = register("support_card", SupportCardItem::new);
+    public static final Item SUPPORT_CARD = registerItem("support_card",
+            SupportCardItem::new,
+            Umapyoi.defaultItemProperties()
+                    .stacksTo(1)
+                    .component(DataComponents.REPAIRABLE, new Repairable(HolderSet.direct(
+                            ItemRegistry.HORSESHOE_GOLD.builtInRegistryHolder(),
+                            ItemRegistry.HORSESHOE_SILVER.builtInRegistryHolder(),
+                            ItemRegistry.HORSESHOE_RAINBOW.builtInRegistryHolder()
+                    ))));
 
-    public static final RegistryObject<Item> HACHIMI_MID = register("hachimi_mid",
-            () -> new UmaDrinkItem(UmaStatusUtils::addMotivation,
+    public static final Item HACHIMI_MID = registerItem("hachimi_mid",
+            p -> new UmaDrinkItem(p, UmaStatusUtils::addMotivation,
                     FoodInfo.builder().name("hachimi_mid").alwaysEat().amountAndCalories(2, 0.6F).water(30F)
                             .nutrients(2F, 2F, 0F, 0F, 0F).decayModifier(1.0F).heatCapacity(1F).cookingTemp(480F)
                             .build()));
 
-    public static final RegistryObject<Item> HACHIMI_BIG = register("hachimi_big", () -> new UmaDrinkItem(status -> {
+    public static final Item HACHIMI_BIG = registerItem("hachimi_big", p -> new UmaDrinkItem(p, status -> {
         UmaStatusUtils.addMotivation(status);
         UmaStatusUtils.addMotivation(status);
     }, FoodInfo.builder().name("hachimi_big").alwaysEat().amountAndCalories(4, 0.8F).water(60F)
             .nutrients(4F, 4F, 0F, 0F, 0F).decayModifier(1.0F).heatCapacity(1F).cookingTemp(480F).build()));
 
-    public static final RegistryObject<Item> ROYAL_BITTER = register("royal_bitter",
-            () -> new UmaDrinkItem(EnergyDrinkMethods::royalBitter,
+    public static final Item ROYAL_BITTER = registerItem("royal_bitter",
+            p -> new UmaDrinkItem(p, EnergyDrinkMethods::royalBitter,
                     FoodInfo.builder().name("royal_bitter").alwaysEat().amountAndCalories(2, 0.6F).water(50F)
                             .nutrients(0F, 2F, 2F, 0F, 0F)
                             .heatCapacity(1F).cookingTemp(480F).build()));
 
-    public static final RegistryObject<Item> CUPCAKE = register("cupcake",
-            () -> new UmaFoodItem(UmaStatusUtils::addMotivation,
+    public static final Item CUPCAKE = registerItem("cupcake",
+            p -> new UmaFoodItem(p, UmaStatusUtils::addMotivation,
                     FoodInfo.builder().name("cupcake").amountAndCalories(5, 0.6F).water(0F)
                             .nutrients(2F, 2F, 2F, 0F, 2F).decayModifier(1.5F).heatCapacity(1F).cookingTemp(480F)
                             .build()));
 
-    public static final RegistryObject<Item> SWEET_CUPCAKE = register("sweet_cupcake", () -> new UmaFoodItem(status -> {
+    public static final Item SWEET_CUPCAKE = registerItem("sweet_cupcake", p -> new UmaFoodItem(p, status -> {
         UmaStatusUtils.addMotivation(status);
         UmaStatusUtils.addMotivation(status);
     }, FoodInfo.builder().name("sweet_cupcake").amountAndCalories(7, 0.6F).water(0F).nutrients(4F, 4F, 2F, 0F, 4F)
             .decayModifier(1.5F).heatCapacity(1F).cookingTemp(480F).build()));
 
-    public static final RegistryObject<Item> SMALL_ENERGY_DRINK = register("small_energy_drink",
-            () -> new UmaDrinkItem(EnergyDrinkMethods::smallEnergy,
+    public static final Item SMALL_ENERGY_DRINK = registerItem("small_energy_drink",
+            p -> new UmaDrinkItem(p, EnergyDrinkMethods::smallEnergy,
                     FoodInfo.builder().name("small_energy_drink").alwaysEat().amountAndCalories(2, 0.6F).water(30F)
                             .nutrients(0F, 1F, 1F, 0F, 0F)
                             .heatCapacity(1F).cookingTemp(480F).build()));
 
-    public static final RegistryObject<Item> MEDIUM_ENERGY_DRINK = register("medium_energy_drink",
-            () -> new UmaDrinkItem(EnergyDrinkMethods::mediumEnergy,
+    public static final Item MEDIUM_ENERGY_DRINK = registerItem("medium_energy_drink",
+            p -> new UmaDrinkItem(p, EnergyDrinkMethods::mediumEnergy,
                     FoodInfo.builder().name("medium_energy_drink").alwaysEat().amountAndCalories(2, 0.6F).water(50F)
                             .nutrients(0F, 2F, 2F, 0F, 0F)
                             .heatCapacity(1F).cookingTemp(480F).build()));
 
-    public static final RegistryObject<Item> LARGE_ENERGY_DRINK = register("large_energy_drink",
-            () -> new UmaDrinkItem(EnergyDrinkMethods::largeEnergy,
+    public static final Item LARGE_ENERGY_DRINK = registerItem("large_energy_drink",
+            p -> new UmaDrinkItem(p, EnergyDrinkMethods::largeEnergy,
                     FoodInfo.builder().name("large_energy_drink").alwaysEat().amountAndCalories(2, 0.6F).water(70F)
                             .nutrients(0F, 3F, 3F, 0F, 0F)
                             .heatCapacity(1F).cookingTemp(480F).build()));
 
-    public static final RegistryObject<Item> NAGINATA = register("naginata", GrassNaginataItem::new);
+    public static final Item NAGINATA = registerItem("naginata",
+            GrassNaginataItem::new,
+            GrassNaginataItem.createProperties());
 
-    public static final RegistryObject<Item> BASEBALL_BAT = register("baseball_bat", BaseballBatItem::new);
+    public static final Item BASEBALL_BAT = registerItem("baseball_bat",
+            BaseballBatItem::new,
+            BaseballBatItem.createProperties());
 
-    private static <V extends Item> RegistryObject<V> register(String name, Supplier<V> item) {
-        return ITEMS.register(name, item);
+    private static ResourceKey<Item> modItemId(String name) {
+        return ResourceKey.create(Registries.ITEM,
+                ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, name));
     }
 
-    private static Item newMaterial() {
-        return new Item(Umapyoi.defaultItemProperties());
+    public static Item registerBlock(String name, Block block) {
+        return registerBlock(name, block, BlockItem::new);
+    }
+
+    public static Item registerBlock(String name, Block block, Item.Properties properties) {
+        return registerBlock(name, block, BlockItem::new, properties);
+    }
+
+    public static Item registerBlock(String name, Block block, BiFunction<Block, Item.Properties, Item> factory) {
+        return registerBlock(modItemId(name), block, factory, Umapyoi.defaultItemProperties());
+    }
+
+    public static Item registerBlock(String name, Block block, BiFunction<Block, Item.Properties, Item> factory, Item.Properties properties) {
+        return registerItem(modItemId(name), (propertiesx) -> (Item)factory.apply(block, propertiesx), properties.useBlockDescriptionPrefix());
+    }
+
+    public static Item registerBlock(ResourceKey<Item> key, Block block, BiFunction<Block, Item.Properties, Item> factory) {
+        return registerBlock(key, block, factory, Umapyoi.defaultItemProperties());
+    }
+
+    public static Item registerBlock(ResourceKey<Item> key, Block block, BiFunction<Block, Item.Properties, Item> factory, Item.Properties properties) {
+        return registerItem(key, (propertiesx) -> (Item)factory.apply(block, propertiesx), properties.useBlockDescriptionPrefix());
+    }
+
+    public static Item registerItem(String name, Function<Item.Properties, Item> factory) {
+        return registerItem(modItemId(name), factory, Umapyoi.defaultItemProperties());
+    }
+
+    public static Item registerItem(String name, Function<Item.Properties, Item> factory, Item.Properties properties) {
+        return registerItem(modItemId(name), factory, properties);
+    }
+
+    public static Item registerItem(String name, Item.Properties properties) {
+        return registerItem(modItemId(name), Item::new, properties);
+    }
+
+    public static Item registerItem(String name) {
+        return registerItem(modItemId(name), Item::new, Umapyoi.defaultItemProperties());
+    }
+
+    public static Item registerItem(ResourceKey<Item> key, Function<Item.Properties, Item> factory) {
+        return registerItem(key, factory, Umapyoi.defaultItemProperties());
+    }
+
+    public static Item registerItem(ResourceKey<Item> key, Function<Item.Properties, Item> factory, Item.Properties properties) {
+        Item item = factory.apply(properties.setId(key));
+        if (item instanceof BlockItem blockItem) {
+            blockItem.registerBlocks(Item.BY_BLOCK, item);
+        }
+
+        ITEMS.add(item);
+        return Registry.register(BuiltInRegistries.ITEM, key, item);
     }
 }

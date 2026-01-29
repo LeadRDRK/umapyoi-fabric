@@ -16,14 +16,14 @@ public class UmapyoiBlockTagProvider extends BlockTagProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider arg) {
-        getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_PICKAXE).add(BlockRegistry.THREE_GODDESS.get())
-                .add(BlockRegistry.SUPPORT_ALBUM_PEDESTAL.get()).add(BlockRegistry.UMA_PEDESTAL.get())
-                .add(BlockRegistry.SILVER_SUPPORT_ALBUM_PEDESTAL.get()).add(BlockRegistry.SILVER_UMA_PEDESTAL.get())
-                .add(BlockRegistry.UMA_STATUES.get())
-                .add(BlockRegistry.THREE_GODDESS_UPPER.get()).add(BlockRegistry.TRAINING_FACILITY.get());
+        getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_PICKAXE).add(BlockRegistry.THREE_GODDESS)
+                .add(BlockRegistry.SUPPORT_ALBUM_PEDESTAL).add(BlockRegistry.UMA_PEDESTAL)
+                .add(BlockRegistry.SILVER_SUPPORT_ALBUM_PEDESTAL).add(BlockRegistry.SILVER_UMA_PEDESTAL)
+                .add(BlockRegistry.UMA_STATUES)
+                .add(BlockRegistry.THREE_GODDESS_UPPER).add(BlockRegistry.TRAINING_FACILITY);
 
-        getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_AXE).add(BlockRegistry.DISASSEMBLY_BLOCK.get()).add(BlockRegistry.SKILL_LEARNING_TABLE.get())
-                .add(BlockRegistry.REGISTER_LECTERN.get()).add(BlockRegistry.UMA_SELECT_BLOCK.get());
+        getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_AXE).add(BlockRegistry.DISASSEMBLY_BLOCK).add(BlockRegistry.SKILL_LEARNING_TABLE)
+                .add(BlockRegistry.REGISTER_LECTERN).add(BlockRegistry.UMA_SELECT_BLOCK);
 
         getOrCreateTagBuilder(UmapyoiBlockTags.TRACK_TURF)
                 .add(Blocks.GRASS_BLOCK)

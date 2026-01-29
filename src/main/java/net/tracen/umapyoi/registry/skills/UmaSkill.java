@@ -5,10 +5,10 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.registry.RegistryNameHolder;
 
@@ -82,7 +82,7 @@ public class UmaSkill extends RegistryNameHolder {
         return this.getOrCreateDescriptionDetail();
     }
 
-    public void applySkill(Level level, LivingEntity user) {
+    public void applySkill(ServerLevel level, LivingEntity user) {
         Umapyoi.getLogger().error(String.format("Wait, %s is an empty skill! Call the dev!", this.toString()));
     }
 

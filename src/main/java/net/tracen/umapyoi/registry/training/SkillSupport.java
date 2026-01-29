@@ -15,7 +15,7 @@ public class SkillSupport extends TrainingSupport {
 
     @Override
     public boolean applySupport(ItemStack soul, RandomSource rand, SupportStack stack) {
-        ResourceLocation skill = ResourceLocation.tryParse(stack.getOrCreateTag().getString("skill"));
+        ResourceLocation skill = ResourceLocation.tryParse(stack.getOrCreateTag().getString("skill").orElseThrow());
         if (rand.nextFloat() < (stack.getLevel() * 0.33)) {
                 UmaSkillUtils.learnSkill(soul, skill);
                 return true;
@@ -25,9 +25,9 @@ public class SkillSupport extends TrainingSupport {
 
     @Override
     public Component getDescription(SupportStack stack) {
-        ResourceLocation skill = ResourceLocation.tryParse(stack.getOrCreateTag().getString("skill"));
+        ResourceLocation skill = ResourceLocation.tryParse(stack.getOrCreateTag().getString("skill").orElseThrow());
         if (skill != null && UmaSkillRegistry.REGISTRY.get().containsKey(skill)) {
-            UmaSkill result = UmaSkillRegistry.REGISTRY.get().get(skill);
+            UmaSkill result = UmaSkillRegistry.REGISTRY.get().get(skill).orElseThrow().value();
             return result.getDescription();
         }
         return super.getDescription(stack);

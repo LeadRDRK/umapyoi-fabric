@@ -18,21 +18,22 @@ import java.util.Optional;
 
 public class ShapedSupportCardRecipe extends ShapedRecipe {
 
-    public static final RecipeSerializer<ShapedSupportCardRecipe> SERIALIZER = new SupportCardRecipeSerializer<>(
+    public static final RecipeSerializer<ShapedRecipe> SERIALIZER = new SupportCardRecipeSerializer<>(
             RecipeSerializer.SHAPED_RECIPE, ShapedSupportCardRecipe::new);
 
     private final ResourceLocation outputUma;
 
     public ShapedSupportCardRecipe(ShapedRecipe compose, ResourceLocation outputBlade) {
-        super(compose.getGroup(), compose.category(),
+        super(compose.group(), compose.category(),
                 new ShapedRecipePattern(compose.getWidth(), compose.getHeight(), compose.getIngredients(), Optional.empty()),
                 getResultItem(outputBlade));
         this.outputUma = outputBlade;
     }
 
     private static ItemStack getResultItem(ResourceLocation outputBlade) {
-        Item bladeItem = BuiltInRegistries.ITEM.containsKey(outputBlade) ? BuiltInRegistries.ITEM.get(outputBlade)
-                : ItemRegistry.SUPPORT_CARD.get();
+        Item bladeItem = BuiltInRegistries.ITEM.containsKey(outputBlade)
+                ? BuiltInRegistries.ITEM.get(outputBlade).orElseThrow().value()
+                : ItemRegistry.SUPPORT_CARD;
 
         return bladeItem.getDefaultInstance();
     }
@@ -43,11 +44,6 @@ public class ShapedSupportCardRecipe extends ShapedRecipe {
 
     @Override
     public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
-        return this.getResultItem(registries).copy();
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
         ItemStack result = getResultItem(outputUma).copy();
         if(registries == RegistryAccess.EMPTY)
             return result;
@@ -64,8 +60,9 @@ public class ShapedSupportCardRecipe extends ShapedRecipe {
         }
         return result;
     }
+
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<ShapedRecipe> getSerializer() {
         return SERIALIZER;
     }
 

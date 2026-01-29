@@ -1,6 +1,5 @@
 package net.tracen.umapyoi.recipe;
 
-import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -9,6 +8,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -16,43 +16,26 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.item.ItemRegistry;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class UmasoulIngredient implements CustomIngredient {
-    private final Set<Item> items;
+    private final Set<Holder<Item>> items;
     private final RequestUma request;
-    private final List<ItemStack> stacks;
 
-    public UmasoulIngredient(Set<Item> items, RequestUma request) {
-        this.stacks = items.stream().map(item -> {
-            ItemStack stack = new ItemStack(item);
-            // copy NBT to prevent the stack from modifying the original, as capabilities or
-            // vanilla item durability will modify the tag
-            request.initItemStack(stack);
-            return stack;
-        }).toList();
+    public UmasoulIngredient(Set<Holder<Item>> items, RequestUma request) {
         if (items.isEmpty()) {
             throw new IllegalArgumentException("Cannot create a UmasoulIngredient with no items");
         }
         this.items = Collections.unmodifiableSet(items);
         this.request = request;
-    }
-
-    public static UmasoulIngredient of(ItemLike item, RequestUma request) {
-        return new UmasoulIngredient(Set.of(item.asItem()), request);
-    }
-
-    public static UmasoulIngredient of(RequestUma request) {
-        return new UmasoulIngredient(Set.of(ItemRegistry.BLANK_UMA_SOUL.get()), request);
     }
 
     @Override
@@ -63,8 +46,8 @@ public class UmasoulIngredient implements CustomIngredient {
     }
 
     @Override
-    public List<ItemStack> getMatchingStacks() {
-        return stacks;
+    public Stream<Holder<Item>> getMatchingItems() {
+        return items.stream();
     }
 
     @Override
@@ -86,23 +69,24 @@ public class UmasoulIngredient implements CustomIngredient {
         }
 
         @Override
-        public MapCodec<UmasoulIngredient> getCodec(boolean allowEmpty) {
-            Codec<Set<Item>> itemSetCodec = ResourceLocation.CODEC
+        public MapCodec<UmasoulIngredient> getCodec() {
+            Codec<Set<Holder<Item>>> itemSetCodec = ResourceLocation.CODEC
                     .xmap(
-                            BuiltInRegistries.ITEM::get,
-                            BuiltInRegistries.ITEM::getKey
+                            loc -> (Holder<Item>) BuiltInRegistries.ITEM.get(loc).orElseThrow(),
+                            holder -> BuiltInRegistries.ITEM.getKey(holder.value())
                     )
                     .listOf()
                     .comapFlatMap(
-                            list -> DataResult.success(ImmutableSet.copyOf(list)),
-                            set -> set.stream().sorted(Comparator.comparing(BuiltInRegistries.ITEM::getKey)).toList()
+                            list -> DataResult.success(Set.copyOf(list)),
+                            set -> set.stream().sorted(Comparator.comparing(holder ->
+                                    BuiltInRegistries.ITEM.getKey(holder.value()))).toList()
                     );
 
             // Codec for a single item
-            Codec<Set<Item>> singleItemCodec = ResourceLocation.CODEC
+            Codec<Set<Holder<Item>>> singleItemCodec = ResourceLocation.CODEC
                     .xmap(
-                            BuiltInRegistries.ITEM::get,
-                            BuiltInRegistries.ITEM::getKey
+                            loc -> (Holder<Item>) BuiltInRegistries.ITEM.get(loc).orElseThrow(),
+                            holder -> BuiltInRegistries.ITEM.getKey(holder.value())
                     )
                     .xmap(
                             Set::of,
@@ -110,7 +94,7 @@ public class UmasoulIngredient implements CustomIngredient {
                     );
 
             // Either single item or array of items
-            Codec<Set<Item>> itemsCodec = Codec.either(
+            Codec<Set<Holder<Item>>> itemsCodec = Codec.either(
                     singleItemCodec.fieldOf("item").codec(),
                     itemSetCodec.fieldOf("items").codec()
             ).xmap(
@@ -123,7 +107,7 @@ public class UmasoulIngredient implements CustomIngredient {
             // Final codec with optional default
             return RecordCodecBuilder.mapCodec(instance ->
                     instance.group(
-                            itemsCodec.optionalFieldOf("items", Set.of(ItemRegistry.BLANK_UMA_SOUL.get()))
+                            itemsCodec.optionalFieldOf("items", Set.of(ItemRegistry.BLANK_UMA_SOUL.builtInRegistryHolder()))
                                     .forGetter(ingredient -> ingredient.items),
                             RequestUma.CODEC.fieldOf("request")
                                     .forGetter(ingredient -> ingredient.request)
@@ -136,7 +120,8 @@ public class UmasoulIngredient implements CustomIngredient {
             return StreamCodec.composite(
                     ByteBufCodecs.collection(
                             HashSet::new,
-                            ByteBufCodecs.idMapper(Item::byId, Item::getId)
+                            ByteBufCodecs.idMapper(id -> BuiltInRegistries.ITEM.get(id).orElseThrow(),
+                                    holder -> BuiltInRegistries.ITEM.getId(holder.value()))
                     ), i -> i.items,
                     RequestUma.STREAM_CODEC, i -> i.request,
                     UmasoulIngredient::new

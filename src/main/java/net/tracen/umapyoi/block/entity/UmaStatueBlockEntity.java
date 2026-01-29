@@ -37,7 +37,7 @@ public class UmaStatueBlockEntity extends SyncedInventoryEntity {
     }
 
     public boolean addItem(ItemStack itemStack) {
-        if (isEmpty() && itemStack.is(ItemRegistry.UMA_SOUL.get())) {
+        if (isEmpty() && itemStack.is(ItemRegistry.UMA_SOUL)) {
             setItem(0, itemStack.split(1));
             setChanged();
             return true;

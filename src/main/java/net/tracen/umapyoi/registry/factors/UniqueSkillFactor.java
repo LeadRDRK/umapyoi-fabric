@@ -15,15 +15,15 @@ public class UniqueSkillFactor extends UmaFactor {
 
     @Override
     public void applyFactor(ItemStack soul, UmaFactorStack stack) {
-        ResourceLocation skill = ResourceLocation.tryParse(stack.getOrCreateTag().getString("skill"));
+        ResourceLocation skill = ResourceLocation.tryParse(stack.getOrCreateTag().getString("skill").orElseThrow());
         UmaSkillUtils.learnSkill(soul, skill);
     }
 
     @Override
     public Component getDescription(UmaFactorStack stack) {
-        ResourceLocation skill = ResourceLocation.tryParse(stack.getOrCreateTag().getString("skill"));
+        ResourceLocation skill = ResourceLocation.tryParse(stack.getOrCreateTag().getString("skill").orElseThrow());
         if (skill != null && UmaSkillRegistry.REGISTRY.get().containsKey(skill)) {
-            UmaSkill result = UmaSkillRegistry.REGISTRY.get().get(skill);
+            UmaSkill result = UmaSkillRegistry.REGISTRY.get().get(skill).orElseThrow().value();
             return result.getDescription();
         }
         return super.getDescription(stack);
@@ -31,9 +31,9 @@ public class UniqueSkillFactor extends UmaFactor {
 
     @Override
     public Component getDescriptionDetail(UmaFactorStack stack) {
-        ResourceLocation skill = ResourceLocation.tryParse(stack.getOrCreateTag().getString("skill"));
+        ResourceLocation skill = ResourceLocation.tryParse(stack.getOrCreateTag().getString("skill").orElseThrow());
         if (skill != null && UmaSkillRegistry.REGISTRY.get().containsKey(skill)) {
-            UmaSkill result = UmaSkillRegistry.REGISTRY.get().get(skill);
+            UmaSkill result = UmaSkillRegistry.REGISTRY.get().get(skill).orElseThrow().value();
             return result.getDescriptionDetail();
         }
         return Component.empty();

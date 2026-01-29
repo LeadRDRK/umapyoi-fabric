@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "umapyoi:blank_ticket"
-    },
-    {
-      "item": "umapyoi:crystal_silver"
-    }
+    "umapyoi:blank_ticket",
+    "umapyoi:crystal_silver"
   ],
   "result": {
     "count": 1,

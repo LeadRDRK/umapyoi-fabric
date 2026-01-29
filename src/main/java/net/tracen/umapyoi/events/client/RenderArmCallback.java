@@ -8,7 +8,6 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
 
@@ -19,7 +18,6 @@ import net.minecraft.world.entity.HumanoidArm;
 public interface RenderArmCallback {
     class Context {
         private final AbstractClientPlayer player;
-        private final PlayerRenderState state;
         private final PoseStack poseStack;
         private final MultiBufferSource bufferSource;
         private final int packedLight;
@@ -27,11 +25,10 @@ public interface RenderArmCallback {
         private final boolean isSleeveVisible;
         private final HumanoidArm arm;
 
-        public Context(AbstractClientPlayer player, PlayerRenderState state, PoseStack poseStack,
+        public Context(AbstractClientPlayer player, PoseStack poseStack,
                        MultiBufferSource bufferSource, int packedLight, ResourceLocation skinTexture,
                        boolean isSleeveVisible, HumanoidArm arm) {
             this.player = player;
-            this.state = state;
             this.poseStack = poseStack;
             this.bufferSource = bufferSource;
             this.packedLight = packedLight;
@@ -42,10 +39,6 @@ public interface RenderArmCallback {
 
         public AbstractClientPlayer getPlayer() {
             return player;
-        }
-
-        public PlayerRenderState getState() {
-            return state;
         }
 
         public PoseStack getPoseStack() {

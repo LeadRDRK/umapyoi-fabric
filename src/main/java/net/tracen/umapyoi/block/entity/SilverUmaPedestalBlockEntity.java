@@ -122,7 +122,7 @@ public class SilverUmaPedestalBlockEntity extends AbstractPedestalBlockEntity im
         ResourceLocation holder = keys.stream().skip(keys.isEmpty() ? 0 : rand.nextInt(keys.size())).findFirst()
                 .orElse(UmaDataRegistry.COMMON_UMA.location());
 
-        ItemStack result = FadedUmaSoulItem.genUmaSoul(holder, registry.get(holder));
+        ItemStack result = FadedUmaSoulItem.genUmaSoul(holder, registry.get(holder).orElseThrow().value());
         return result;
     }
 
@@ -173,7 +173,7 @@ public class SilverUmaPedestalBlockEntity extends AbstractPedestalBlockEntity im
         super.loadAdditional(compound, registries);
         clearContent();
         ContainerHelper.loadAllItems(compound, items, registries);
-        recipeTime = compound.getInt("RecipeTime");
+        recipeTime = compound.getInt("RecipeTime").orElse(0);
     }
 
     @Override
@@ -229,9 +229,9 @@ public class SilverUmaPedestalBlockEntity extends AbstractPedestalBlockEntity im
                 return resloc.equals(input.get(DataComponentsTypeRegistry.DATA_LOCATION.get()));
             }
             if (input.is(UmapyoiItemTags.SR_UMA_TICKET))
-                return UmapyoiAPI.getUmaDataRegistry(level).get(resloc).ranking() == GachaRanking.SR;
+                return UmapyoiAPI.getUmaDataRegistry(level).get(resloc).orElseThrow().value().ranking() == GachaRanking.SR;
             if (input.is(UmapyoiItemTags.COMMON_GACHA_ITEM))
-                return UmapyoiAPI.getUmaDataRegistry(level).get(resloc).ranking() == GachaRanking.R;
+                return UmapyoiAPI.getUmaDataRegistry(level).get(resloc).orElseThrow().value().ranking() == GachaRanking.R;
             boolean cfgFlag = GachaUtils.checkGachaConfig();
             int gacha_roll;
             int ssrHit = cfgFlag ? Umapyoi.CONFIG.GACHA_PROBABILITY_SSR()
@@ -239,7 +239,7 @@ public class SilverUmaPedestalBlockEntity extends AbstractPedestalBlockEntity im
             gacha_roll = level.getRandom().nextInt(
                     cfgFlag ? Umapyoi.CONFIG.GACHA_PROBABILITY_SUM() : UmapyoiConfigModel.DEFAULT_GACHA_PROBABILITY_SUM);
             int srHit = ssrHit + (cfgFlag ? Umapyoi.CONFIG.GACHA_PROBABILITY_SR() : UmapyoiConfigModel.DEFAULT_GACHA_PROBABILITY_SR);
-            return UmapyoiAPI.getUmaDataRegistry(level).get(resloc)
+            return UmapyoiAPI.getUmaDataRegistry(level).get(resloc).orElseThrow().value()
                     .ranking() == (gacha_roll < srHit ? GachaRanking.SR : GachaRanking.R);
         };
     }

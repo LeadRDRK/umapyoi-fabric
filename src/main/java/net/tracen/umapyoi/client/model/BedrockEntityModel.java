@@ -5,10 +5,7 @@ import com.google.common.collect.Maps;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 import net.tracen.umapyoi.client.model.bedrock.BedrockModel;
 import net.tracen.umapyoi.client.model.bedrock.BedrockPart;
@@ -77,7 +74,7 @@ public class BedrockEntityModel<T extends EntityRenderState> implements BedrockM
         this.renderBoundingBox = aabb;
     }
 
-    public void setupAnim(T entity, float limbSwing, float limbSwingAmount) {
+    public void setupAnim(T state) {
         
     }
 

@@ -16,7 +16,7 @@ public final class ResultRankingUtils {
         int skills = 0;
         
         for(var skill : UmaSoulUtils.getSkills(soul)) {
-            skills += UmaSkillRegistry.REGISTRY.get().get(skill).getSkillLevel();
+            skills += UmaSkillRegistry.REGISTRY.get().get(skill).orElseThrow().value().getSkillLevel();
         }
         
         return ResultRankingUtils

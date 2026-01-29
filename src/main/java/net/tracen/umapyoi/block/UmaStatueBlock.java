@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
@@ -17,7 +18,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -31,12 +31,12 @@ import net.tracen.umapyoi.block.entity.BlockEntityRegistry;
 import net.tracen.umapyoi.block.entity.UmaStatueBlockEntity;
 
 public class UmaStatueBlock extends BaseEntityBlock {
-    public static final MapCodec<UmaStatueBlock> CODEC = simpleCodec(p -> new UmaStatueBlock());
+    public static final MapCodec<UmaStatueBlock> CODEC = simpleCodec(UmaStatueBlock::new);
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final VoxelShape SHAPE = Block.box(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D);
 
-    public UmaStatueBlock() {
-        super(Properties.ofLegacyCopy(Blocks.STONE).noOcclusion());
+    public UmaStatueBlock(Properties p) {
+        super(p);
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
@@ -59,14 +59,14 @@ public class UmaStatueBlock extends BaseEntityBlock {
     @Override
     public boolean canSurvive(BlockState pState, LevelReader pLevel, BlockPos pPos) {
         return super.canSurvive(pState, pLevel, pPos)
-                && (pLevel.getBlockState(pPos.above()).is(BlockRegistry.UMA_STATUES_UPPER.get())
+                && (pLevel.getBlockState(pPos.above()).is(BlockRegistry.UMA_STATUES_UPPER)
                 || pLevel.getBlockState(pPos.above()).isAir());
     }
 
     @SuppressWarnings("deprecation")
     @Override
     public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pIsMoving) {
-        pLevel.setBlock(pPos.above(), BlockRegistry.UMA_STATUES_UPPER.get().defaultBlockState(), UPDATE_ALL);
+        pLevel.setBlock(pPos.above(), BlockRegistry.UMA_STATUES_UPPER.defaultBlockState(), UPDATE_ALL);
         super.onPlace(pState, pLevel, pPos, pOldState, pIsMoving);
     }
 
@@ -105,17 +105,14 @@ public class UmaStatueBlock extends BaseEntityBlock {
         return InteractionResult.PASS;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (state.getBlock() != newState.getBlock()) {
-            BlockEntity tileEntity = worldIn.getBlockEntity(pos);
-            if (tileEntity instanceof UmaStatueBlockEntity obon) {
-                Containers.dropItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), obon.getStoredItem());
-                worldIn.updateNeighbourForOutputSignal(pos, this);
-            }
-            super.onRemove(state, worldIn, pos, newState, isMoving);
+    public void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        BlockEntity tileEntity = level.getBlockEntity(pos);
+        if (tileEntity instanceof UmaStatueBlockEntity obon) {
+            Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), obon.getStoredItem());
+            Containers.updateNeighboursAfterDestroy(state, level, pos);
         }
+        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
     }
 
     @Override

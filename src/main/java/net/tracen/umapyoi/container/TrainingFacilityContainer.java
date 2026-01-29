@@ -113,7 +113,7 @@ public class TrainingFacilityContainer extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player playerIn) {
-        return stillValid(canInteractWithCallable, playerIn, BlockRegistry.TRAINING_FACILITY.get());
+        return stillValid(canInteractWithCallable, playerIn, BlockRegistry.TRAINING_FACILITY);
     }
 
     @Environment(EnvType.CLIENT)

@@ -19,7 +19,11 @@ public class TrainingSupport extends RegistryNameHolder {
     private String descriptionId;
 
     public static final Codec<TrainingSupport> CODEC = ResourceLocation.CODEC
-            .xmap(loc -> TrainingSupportRegistry.REGISTRY.get().get(loc), RegistryNameHolder::getRegistryName);
+            .xmap(
+                    loc -> TrainingSupportRegistry.REGISTRY.get()
+                            .get(loc).orElseThrow().value(),
+                    RegistryNameHolder::getRegistryName
+            );
 
     public static final ResourceKey<Registry<TrainingSupport>> REGISTRY_KEY = ResourceKey
             .createRegistryKey(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "training_support"));

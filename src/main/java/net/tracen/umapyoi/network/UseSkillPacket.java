@@ -9,6 +9,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.Umapyoi;
@@ -40,7 +41,8 @@ public record UseSkillPacket() implements CustomPacketPayload {
 
         if (!umaSoul.isEmpty()) {
             ResourceLocation selectedSkillName = UmaSoulUtils.getSelectedSkill(umaSoul);
-            UmaSkill selectedSkill = UmaSkillRegistry.REGISTRY.get().get(selectedSkillName);
+            UmaSkill selectedSkill = UmaSkillRegistry.REGISTRY.get().get(selectedSkillName)
+                    .map(Holder::value).orElse(null);
             if (selectedSkill == null) {
                 player.displayClientMessage(Component.translatable("umapyoi.unknown_skill"), true);
                 return;
@@ -51,10 +53,10 @@ public record UseSkillPacket() implements CustomPacketPayload {
                 return;
 
             int ap = UmaSoulUtils.getActionPoint(umaSoul);
-            if (ap >= selectedSkill.getActionPoint()) {
+            if (ap >= selectedSkill.getActionPoint() && player.level() instanceof ServerLevel level) {
                 player.connection.send(new ClientboundSoundPacket(Holder.direct(selectedSkill.getSound()), SoundSource.PLAYERS,
                         player.getX(), player.getY(), player.getZ(), 1F, 1F, 0L));
-                selectedSkill.applySkill(player.level(), player);
+                selectedSkill.applySkill(level, player);
                 UmaSoulUtils.setActionPoint(umaSoul, ap - selectedSkill.getActionPoint());
 
                 var applyEvent = new ApplySkillCallback.Context(UmaSkillRegistry.REGISTRY.get().getKey(selectedSkill), player.level(), player);

@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:stones"
-    },
-    "G": {
-      "item": "minecraft:iron_ingot"
-    },
-    "J": {
-      "item": "umapyoi:jewel"
-    }
+    "A": "#c:stones",
+    "G": "minecraft:iron_ingot",
+    "J": "umapyoi:jewel"
   },
   "pattern": [
     "AJA",

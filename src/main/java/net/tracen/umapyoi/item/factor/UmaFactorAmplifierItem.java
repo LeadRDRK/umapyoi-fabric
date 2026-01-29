@@ -9,10 +9,11 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.registry.factors.FactorType;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class UmaFactorAmplifierItem extends Item {
     // TODO: 实现overrideStackedOnOther对指定FactorType的因子进行随机等级增长。
@@ -35,8 +36,8 @@ public class UmaFactorAmplifierItem extends Item {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
 //        CompoundTag tag = stack.getOrCreateTag();
 //        StringBuffer buffer = new StringBuffer("umadata.").append(tag.getString("name").toString().replace(':', '.'));
 //        tooltip.add(Component.translatable("tooltip.umapyoi.umadata.name", I18n.get(buffer.toString()))

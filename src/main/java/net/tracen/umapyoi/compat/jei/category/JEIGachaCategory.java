@@ -23,8 +23,8 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import mezz.jei.api.recipe.types.IRecipeType;
 
 public class JEIGachaCategory implements IRecipeCategory<JEISimpleRecipe> {
     private final Component title;
@@ -40,11 +40,11 @@ public class JEIGachaCategory implements IRecipeCategory<JEISimpleRecipe> {
         background = helper.createDrawable(backgroundImage, 0, 0, 93, 46);
         chancedSlot = helper.createDrawable(backgroundImage, 93, 0, 18, 18);
         icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK,
-                new ItemStack(BlockRegistry.UMA_PEDESTAL.get()));
+                new ItemStack(BlockRegistry.UMA_PEDESTAL));
     }
     
     @Override
-    public RecipeType<JEISimpleRecipe> getRecipeType() {
+    public IRecipeType<JEISimpleRecipe> getRecipeType() {
         return JEIPlugin.GACHA_JEI_TYPE;
     }
 
@@ -55,7 +55,7 @@ public class JEIGachaCategory implements IRecipeCategory<JEISimpleRecipe> {
         Optional<ItemStack> outputStack = recipeSlotsView.findSlotByName("outputSlot")
                 .flatMap(slot -> slot.getDisplayedIngredient(VanillaTypes.ITEM_STACK));
         outputStack.ifPresent(output -> {
-            if (output.is(ItemRegistry.SUPPORT_CARD.get())) {
+            if (output.is(ItemRegistry.SUPPORT_CARD)) {
                 Minecraft minecraft = Minecraft.getInstance();
                 Font font = minecraft.font;
                 var needBookText = Component.translatable("umapyoi.jei.gacha.need_book");

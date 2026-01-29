@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:wheat_seeds"
-    },
-    {
-      "item": "minecraft:glistering_melon_slice"
-    },
-    {
-      "item": "minecraft:redstone"
-    },
-    {
-      "item": "minecraft:nether_wart"
-    },
-    {
-      "tag": "c:buckets/water"
-    }
+    "minecraft:wheat_seeds",
+    "minecraft:glistering_melon_slice",
+    "minecraft:redstone",
+    "minecraft:nether_wart",
+    "#c:buckets/water"
   ],
   "result": {
     "count": 1,

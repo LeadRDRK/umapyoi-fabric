@@ -50,7 +50,7 @@ public class RandomPriceOrderItemListing implements ItemListing {
        int count = Math.min(pRand.nextInt(minCount, maxCount + 1), 64);
        itemstack.setCount(count);
        int j = Math.min(this.baseEmeraldCost + i, 64);
-       ItemCost itemstack1 = new ItemCost(ItemRegistry.JEWEL.get(), j);
+       ItemCost itemstack1 = new ItemCost(ItemRegistry.JEWEL, j);
        return new MerchantOffer(itemstack1, itemstack, this.maxUses, this.villagerXp, this.priceMultiplier);
     }
 }

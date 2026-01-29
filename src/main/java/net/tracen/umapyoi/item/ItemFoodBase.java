@@ -1,11 +1,14 @@
 package net.tracen.umapyoi.item;
 
-import net.minecraft.sounds.SoundEvent;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUseAnimation;
+import net.minecraft.world.item.component.Consumable;
+import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.item.info.FoodInfo;
 
@@ -13,7 +16,8 @@ public class ItemFoodBase extends Item implements IFoodLike {
     private final FoodInfo info;
 
     public ItemFoodBase(Item.Properties prop, FoodInfo info) {
-        super(prop.food(buildProperties(info)));
+        super(prop.food(buildProperties(info))
+                .component(DataComponents.CONSUMABLE, buildConsumable(info)));
         this.info = info;
     }
 
@@ -35,16 +39,6 @@ public class ItemFoodBase extends Item implements IFoodLike {
     }
 
     @Override
-    public SoundEvent getDrinkingSound() {
-        return super.getDrinkingSound();
-    }
-
-    @Override
-    public SoundEvent getEatingSound() {
-        return super.getEatingSound();
-    }
-
-    @Override
     public FoodInfo getFoodInfo() {
         return info;
     }
@@ -54,9 +48,18 @@ public class ItemFoodBase extends Item implements IFoodLike {
                 .saturationModifier(info.getCalories());
         if (info.isAlwaysEat())
             food.alwaysEdible();
-        if (info.getEatTime() <= 16)
-            food.fast();
-        info.getEffects().forEach((k) -> food.effect(k.getFirst().get(), k.getSecond()));
+
+        return food.build();
+    }
+
+    public static Consumable buildConsumable(FoodInfo info) {
+        var food = Consumable.builder();
+        if (info.getEatTime() <= 16) {
+            food.consumeSeconds(0f);
+            food.animation(ItemUseAnimation.NONE);
+        }
+        info.getEffects().forEach((k) ->
+                food.onConsume(new ApplyStatusEffectsConsumeEffect(k.getFirst().get(), k.getSecond())));
 
         return food.build();
     }

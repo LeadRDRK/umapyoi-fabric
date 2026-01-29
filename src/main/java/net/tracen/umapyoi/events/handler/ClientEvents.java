@@ -1,6 +1,5 @@
 package net.tracen.umapyoi.events.handler;
 
-import com.google.common.collect.Maps;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.fabricmc.api.EnvType;
@@ -10,33 +9,23 @@ import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.client.model.UmaCostumeModelUtils;
 import net.tracen.umapyoi.client.model.UmaPlayerModel;
 import net.tracen.umapyoi.client.model.pojo.BedrockModelPOJO;
 import net.tracen.umapyoi.data.tag.UmapyoiCostumeDataTags;
-import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
 import net.tracen.umapyoi.events.client.RenderArmCallback;
-import net.tracen.umapyoi.events.client.RenderPlayerCallback;
 import net.tracen.umapyoi.events.client.RenderingModelCallback;
 import net.tracen.umapyoi.item.UmaCostumeItem;
 import net.tracen.umapyoi.registry.cosmetics.CosmeticData;
 import net.tracen.umapyoi.utils.ClientUtils;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
-import java.util.Map;
-
 @Environment(EnvType.CLIENT)
 public class ClientEvents {
-    private static Map<EquipmentSlot, ItemStack> armor;
-
     public static boolean preUmaSoulRendering(RenderingModelCallback.Context event) {
         LivingEntity entity = event.getWearer();
         var model = event.getModel();
@@ -76,48 +65,6 @@ public class ClientEvents {
         return false;
     }
 
-    public static void onPlayerRendering(RenderPlayerCallback.Context event) {
-        LivingEntity player = event.getPlayer();
-        ItemStack umasoul = UmapyoiAPI.getRenderingUmaSoul(event.getPlayer());
-        if (!umasoul.isEmpty()) {
-            var humanoid = event.getRenderer().getModel();
-            humanoid.setAllVisible(false);
-            if (!Umapyoi.CONFIG.VANILLA_ARMOR_RENDER() && !umasoul.isEmpty()) {
-                //TODO: 重写这个方法以适配不同实体
-
-                armor = Maps.newHashMap();
-
-                for(EquipmentSlot slot : EquipmentSlot.values()) {
-                    if(slot.getType() == EquipmentSlot.Type.HAND)
-                        continue;
-                    ItemStack itemBySlot = player.getItemBySlot(slot);
-                    armor.put(slot, itemBySlot);
-
-                    boolean renderElytry = Umapyoi.CONFIG.ELYTRA_RENDER()
-                            && itemBySlot.getItem() == Items.ELYTRA;
-                    boolean shouldRender = itemBySlot.is(UmapyoiItemTags.SHOULD_RENDER);
-                    if (renderElytry || shouldRender)
-                        player.setItemSlot(slot, itemBySlot);
-                    else
-                        player.setItemSlot(slot, ItemStack.EMPTY);
-                }
-            }
-        }
-    }
-
-    public static void onPlayerRenderingPost(RenderPlayerCallback.Context event) {
-        LivingEntity player = event.getPlayer();
-        ItemStack umasoul = UmapyoiAPI.getRenderingUmaSoul(event.getPlayer());
-        if (!Umapyoi.CONFIG.VANILLA_ARMOR_RENDER() && armor != null && !umasoul.isEmpty()) {
-            for(EquipmentSlot slot : EquipmentSlot.values()) {
-                if(slot.getType() == EquipmentSlot.Type.HAND)
-                    continue;
-
-                player.setItemSlot(slot, armor.get(slot));
-            }
-        }
-    }
-
     private static final UmaPlayerModel<HumanoidRenderState> baseModel = new UmaPlayerModel<>();
 
     public static boolean onPlayerArmRendering(RenderArmCallback.Context event) {
@@ -146,11 +93,11 @@ public class ClientEvents {
         if(baseModel.needRefresh(pojo))
             baseModel.loadModel(pojo);
 
-        baseModel.setModelProperties(event.getState());
+        //baseModel.setModelProperties(event.getState());
         //baseModel.attackTime = 0.0F;
         baseModel.crouching = false;
         baseModel.swimAmount = 0.0F;
-        baseModel.setupAnim(event.getState(), 0.0F, 0.0F);
+        //baseModel.setupAnim(event.getState(), 0.0F, 0.0F);
 
         if (event.getArm() == HumanoidArm.RIGHT) {
             baseModel.rightArm.xRot = 0.0F;

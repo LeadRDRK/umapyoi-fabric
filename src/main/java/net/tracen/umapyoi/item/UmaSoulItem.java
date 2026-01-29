@@ -36,6 +36,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
@@ -57,7 +58,7 @@ import net.tracen.umapyoi.utils.UmaStatusUtils;
 import net.tracen.umapyoi.utils.UmaStatusUtils.StatusType;
 
 import java.util.Comparator;
-import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import dev.emi.trinkets.api.SlotAttributes;
@@ -72,8 +73,8 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
 
     private final UmaPlayerModel<HumanoidRenderState> baseModel;
 
-    public UmaSoulItem() {
-        super(Umapyoi.defaultItemProperties().stacksTo(1));
+    public UmaSoulItem(Properties p) {
+        super(p);
         baseModel = FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT ? new UmaPlayerModel<>() : null;
     }
 
@@ -130,45 +131,44 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip,
-                                TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, tooltip, tooltipFlag);
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         int ranking = ResultRankingUtils.getRanking(stack);
         if(UmaSoulUtils.getGrowth(stack) == Growth.TRAINED && UmaSoulUtils.getPhysique(stack) <= 0)
-            tooltip.add(Component.translatable("tooltip.umapyoi.uma_soul.should_retire", UmaStatusUtils.getStatusLevel(ranking))
+            tooltipAdder.accept(Component.translatable("tooltip.umapyoi.uma_soul.should_retire", UmaStatusUtils.getStatusLevel(ranking))
                     .withStyle(ChatFormatting.GRAY));
 
         if(UmaSoulUtils.getGrowth(stack) == Growth.RETIRED)
-            tooltip.add(Component.translatable("tooltip.umapyoi.uma_soul.ranking", UmaStatusUtils.getStatusLevel(ranking))
+            tooltipAdder.accept(Component.translatable("tooltip.umapyoi.uma_soul.ranking", UmaStatusUtils.getStatusLevel(ranking))
                     .withStyle(ChatFormatting.GOLD));
         if (Screen.hasShiftDown() || !Umapyoi.CONFIG.TOOLTIP_SWITCH()) {
-            tooltip.add(
+            tooltipAdder.accept(
                     Component.translatable("tooltip.umapyoi.uma_soul.soul_details").withStyle(ChatFormatting.AQUA));
             UmaDataBasicStatus property = UmaSoulUtils.getProperty(stack);
             UmaDataBasicStatus maxProperty = UmaSoulUtils.getMaxProperty(stack);
 
-            tooltip.add(Component.translatable("tooltip.umapyoi.uma_soul.speed_details",
+            tooltipAdder.accept(Component.translatable("tooltip.umapyoi.uma_soul.speed_details",
                             UmaStatusUtils.getStatusLevel(property.speed()),
                             UmaStatusUtils.getStatusLevel(maxProperty.speed()))
                     .withStyle(ChatFormatting.DARK_GREEN));
-            tooltip.add(Component.translatable("tooltip.umapyoi.uma_soul.stamina_details",
+            tooltipAdder.accept(Component.translatable("tooltip.umapyoi.uma_soul.stamina_details",
                             UmaStatusUtils.getStatusLevel(property.stamina()),
                             UmaStatusUtils.getStatusLevel(maxProperty.stamina()))
                     .withStyle(ChatFormatting.DARK_GREEN));
-            tooltip.add(Component.translatable("tooltip.umapyoi.uma_soul.strength_details",
+            tooltipAdder.accept(Component.translatable("tooltip.umapyoi.uma_soul.strength_details",
                             UmaStatusUtils.getStatusLevel(property.strength()),
                             UmaStatusUtils.getStatusLevel(maxProperty.strength()))
                     .withStyle(ChatFormatting.DARK_GREEN));
-            tooltip.add(Component.translatable("tooltip.umapyoi.uma_soul.guts_details",
+            tooltipAdder.accept(Component.translatable("tooltip.umapyoi.uma_soul.guts_details",
                             UmaStatusUtils.getStatusLevel(property.guts()),
                             UmaStatusUtils.getStatusLevel(maxProperty.guts()))
                     .withStyle(ChatFormatting.DARK_GREEN));
-            tooltip.add(Component.translatable("tooltip.umapyoi.uma_soul.wisdom_details",
+            tooltipAdder.accept(Component.translatable("tooltip.umapyoi.uma_soul.wisdom_details",
                             UmaStatusUtils.getStatusLevel(property.wisdom()),
                             UmaStatusUtils.getStatusLevel(maxProperty.wisdom()))
                     .withStyle(ChatFormatting.DARK_GREEN));
         } else {
-            tooltip.add(Component.translatable("tooltip.umapyoi.press_shift_for_details")
+            tooltipAdder.accept(Component.translatable("tooltip.umapyoi.press_shift_for_details")
                     .withStyle(ChatFormatting.AQUA));
         }
     }
@@ -200,7 +200,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
                         Umapyoi.CONFIG.UMASOUL_SPEED_PRECENT_ENABLE() ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
                                 : AttributeModifier.Operation.ADD_VALUE));
 
-        atts.put(UmapyoiAttributesRegistry.SWIM_SPEED,
+        atts.put(Attributes.WATER_MOVEMENT_EFFICIENCY,
                 new AttributeModifier(slotIdentifier,
                         getExactProperty(stack, entity, StatusType.SPEED, Umapyoi.CONFIG.UMASOUL_MAX_SPEED()),
                         Umapyoi.CONFIG.UMASOUL_SPEED_PRECENT_ENABLE() ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
@@ -324,8 +324,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
             baseModel.copyAnim(baseModel.rightArm, humanoidModel.rightArm);
             baseModel.copyAnim(baseModel.rightLeg, humanoidModel.rightLeg);
         }
-        baseModel.setEntityProperties(entity);
-        baseModel.setupAnim(state, limbAngle, limbDistance);
+        baseModel.setupAnim(state);
         baseModel.renderToBuffer(poseStack, vertexConsumer, light,
                 LivingEntityRenderer.getOverlayCoords(state, 0.0F), -1);
         if (baseModel.isEmissive()) {
@@ -375,7 +374,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
 
 
     public static void registerRenderer() {
-        Item item = ItemRegistry.UMA_SOUL.get();
+        Item item = ItemRegistry.UMA_SOUL;
         TrinketRendererRegistry.registerRenderer(item, (TrinketRenderer) item);
     }
 

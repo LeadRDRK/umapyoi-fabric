@@ -1,6 +1,7 @@
 package net.tracen.umapyoi.registry;
 
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -41,6 +42,10 @@ public class LazyRegistrar<T> {
         return obj;
     }
 
+    public <B extends T> RegistryObject<B> register(ResourceKey<T> key, final Supplier<? extends B> entry) {
+        return register(key.location(), entry);
+    }
+
     public void register() {
         Registry<T> registry = makeRegistry().get();
         entries.forEach((obj, supplier) -> {
@@ -74,12 +79,13 @@ public class LazyRegistrar<T> {
         public Registry<T> get() {
             if (this.registry == null) {
                 // Check if reg is built in, else create registry
-                if (BuiltInRegistries.REGISTRY.containsKey(key.location()))
-                    this.registry = (Registry<T>) BuiltInRegistries.REGISTRY.get(key.location());
-                else
-                    this.registry = FabricRegistryBuilder
-                            .createSimple((ResourceKey<Registry<T>>) key)
-                            .buildAndRegister();
+                this.registry = BuiltInRegistries.REGISTRY
+                        .get(key.location())
+                        .map(Holder.Reference::value)
+                        .map(Registry.class::cast)
+                        .orElseGet(() -> FabricRegistryBuilder
+                                .createSimple((ResourceKey<Registry<T>>) key)
+                                .buildAndRegister());
             }
             return this.registry;
         }

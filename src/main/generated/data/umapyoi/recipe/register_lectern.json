@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "minecraft:lectern"
-    },
-    "G": {
-      "item": "minecraft:gold_ingot"
-    },
-    "J": {
-      "item": "umapyoi:jewel"
-    }
+    "A": "minecraft:lectern",
+    "G": "minecraft:gold_ingot",
+    "J": "umapyoi:jewel"
   },
   "pattern": [
     " J ",

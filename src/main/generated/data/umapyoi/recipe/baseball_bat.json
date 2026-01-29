@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "A": {
-      "item": "minecraft:iron_block"
-    },
-    "J": {
-      "item": "umapyoi:horseshoe_silver"
-    },
-    "L": {
-      "item": "minecraft:iron_ingot"
-    }
+    "A": "minecraft:iron_block",
+    "J": "umapyoi:horseshoe_silver",
+    "L": "minecraft:iron_ingot"
   },
   "pattern": [
     "  A",

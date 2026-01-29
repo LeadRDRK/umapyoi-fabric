@@ -6,6 +6,10 @@ import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.utils.ClientUtils;
 
 public class TrainingSuitItem extends AbstractSuitItem {
+    public TrainingSuitItem(Properties p) {
+        super(p);
+    }
+
     @Override
     protected ResourceLocation getModel(ItemStack stack) {
         return ClientUtils.TRAINING_SUIT;

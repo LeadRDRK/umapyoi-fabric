@@ -16,21 +16,22 @@ import java.util.Optional;
 
 public class ShapedCostumeRecipe extends ShapedRecipe {
 
-    public static final RecipeSerializer<ShapedCostumeRecipe> SERIALIZER = new CostumeRecipeSerializer<>(
+    public static final RecipeSerializer<ShapedRecipe> SERIALIZER = new CostumeRecipeSerializer<>(
             RecipeSerializer.SHAPED_RECIPE, ShapedCostumeRecipe::new);
 
     private final ResourceLocation output;
 
     public ShapedCostumeRecipe(ShapedRecipe compose, ResourceLocation outputBlade) {
-        super(compose.getGroup(), compose.category(),
+        super(compose.group(), compose.category(),
                 new ShapedRecipePattern(compose.getWidth(), compose.getHeight(), compose.getIngredients(), Optional.empty()),
                 getResultItem(outputBlade));
         this.output = outputBlade;
     }
 
     private static ItemStack getResultItem(ResourceLocation output) {
-        Item bladeItem = BuiltInRegistries.ITEM.containsKey(output) ? BuiltInRegistries.ITEM.get(output)
-                : ItemRegistry.UMA_COSTUME.get();
+        Item bladeItem = BuiltInRegistries.ITEM.containsKey(output)
+                ? BuiltInRegistries.ITEM.get(output).orElseThrow().value()
+                : ItemRegistry.UMA_COSTUME;
 
         return bladeItem.getDefaultInstance();
     }
@@ -41,21 +42,16 @@ public class ShapedCostumeRecipe extends ShapedRecipe {
 
     @Override
     public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
-        return this.getResultItem(registries).copy();
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
         ItemStack result = ShapedCostumeRecipe.getResultItem(output).copy();
         if (!BuiltInRegistries.ITEM.getKey(result.getItem()).equals(getOutput())) {
-            result = ItemRegistry.UMA_COSTUME.get().getDefaultInstance();
+            result = ItemRegistry.UMA_COSTUME.getDefaultInstance();
             result.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), output);
         }
         return result;
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<ShapedRecipe> getSerializer() {
         return SERIALIZER;
     }
 

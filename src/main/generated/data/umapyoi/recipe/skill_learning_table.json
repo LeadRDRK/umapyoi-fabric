@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "J": {
-      "item": "umapyoi:jewel"
-    },
-    "L": {
-      "item": "minecraft:bookshelf"
-    }
+    "J": "umapyoi:jewel",
+    "L": "minecraft:bookshelf"
   },
   "pattern": [
     " J",

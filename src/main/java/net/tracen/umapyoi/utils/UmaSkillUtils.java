@@ -1,5 +1,6 @@
 package net.tracen.umapyoi.utils;
 
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.events.LearnSkillCallback;
@@ -32,7 +33,7 @@ public class UmaSkillUtils {
     public static ItemStack getSkillBook(UmaSkill skill) {
         if (skill == null)
             return ItemStack.EMPTY;
-        ItemStack result = new ItemStack(ItemRegistry.SKILL_BOOK.get());
+        ItemStack result = new ItemStack(ItemRegistry.SKILL_BOOK);
         result.update(DataComponentsTypeRegistry.DATA_LOCATION.get(), UmaSkillRegistry.BASIC_PACE.getId(),
                 loc -> skill.getRegistryName());
         return result;
@@ -45,8 +46,9 @@ public class UmaSkillUtils {
     public static void learnSkill(ItemStack stack, ResourceLocation skill) {
         if (!UmaSoulUtils.hasEmptySkillSlot(stack))
             return;
-        if (skill != null && UmaSkillRegistry.REGISTRY.get().containsKey(skill)) {
-            UmaSkill skillItem = UmaSkillRegistry.REGISTRY.get().get(skill);
+        var skillItemOpt = UmaSkillRegistry.REGISTRY.get().get(skill);
+        if (skillItemOpt.isPresent()) {
+            UmaSkill skillItem = skillItemOpt.get().value();
             if(skillItem.getUpperSkill() !=null)
                 if (hasLearnedSkill(stack, skillItem.getUpperSkill()))
                     return;
@@ -57,9 +59,10 @@ public class UmaSkillUtils {
 
             if (!hasLearnedSkill(stack, skill))
                 UmaSoulUtils.addSkill(stack, skill);
+
+            var event = new LearnSkillCallback.Context(skill, stack);
+            LearnSkillCallback.invoke(event);
         }
-        var event = new LearnSkillCallback.Context(skill, stack);
-        LearnSkillCallback.invoke(event);
     }
 
     public static boolean hasLearnedSkill(ItemStack stack, ResourceLocation skill) {
@@ -71,10 +74,10 @@ public class UmaSkillUtils {
         var skills = UmaSoulUtils.getSkills(stack);
         UmaSkill target = null;
         for(int i = 0;i<skills.size();i++) {
-            target = UmaSkillRegistry.REGISTRY.get().get(skills.get(i));
-            if(target.getUpperSkill() == null)
+            target = UmaSkillRegistry.REGISTRY.get().get(skills.get(i)).map(Holder::value).orElse(null);
+            if(target == null || target.getUpperSkill() == null)
                 continue;
-            if(target !=null && target.getUpperSkill().equals(skill))
+            if(target.getUpperSkill().equals(skill))
                 return i;
         }
         // if doesn't have lower skill, return -1 for mark.

@@ -6,7 +6,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.item.ItemDrinkBase;
 import net.tracen.umapyoi.item.info.FoodInfo;
@@ -15,11 +14,6 @@ import java.util.function.Consumer;
 
 public class UmaDrinkItem extends ItemDrinkBase {
     private final Consumer<ItemStack> consumer;
-
-    public UmaDrinkItem(Consumer<ItemStack> consumer, FoodInfo info) {
-        super(Umapyoi.defaultItemProperties(), info);
-        this.consumer = consumer;
-    }
 
     public UmaDrinkItem(Item.Properties properties, Consumer<ItemStack> consumer, FoodInfo info) {
         super(properties, info);
@@ -55,7 +49,7 @@ public class UmaDrinkItem extends ItemDrinkBase {
                 this.consumer.accept(UmapyoiAPI.getUmaSoul(player));
             }
         }
-        return entity.eat(level, stack);
+        return stack.finishUsingItem(level, entity);
     }
 
 }

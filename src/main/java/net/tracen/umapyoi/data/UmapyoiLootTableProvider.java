@@ -15,16 +15,16 @@ public class UmapyoiLootTableProvider extends FabricBlockLootTableProvider {
 
     @Override
     public void generate() {
-        dropSelf(BlockRegistry.THREE_GODDESS.get());
-        dropSelf(BlockRegistry.REGISTER_LECTERN.get());
-        dropSelf(BlockRegistry.SKILL_LEARNING_TABLE.get());
-        dropSelf(BlockRegistry.TRAINING_FACILITY.get());
-        dropSelf(BlockRegistry.UMA_PEDESTAL.get());
-        dropSelf(BlockRegistry.SILVER_UMA_PEDESTAL.get());
-        dropSelf(BlockRegistry.DISASSEMBLY_BLOCK.get());
-        dropSelf(BlockRegistry.UMA_SELECT_BLOCK.get());
-        dropSelf(BlockRegistry.UMA_STATUES.get());
-        dropOther(BlockRegistry.SUPPORT_ALBUM_PEDESTAL.get(), ItemRegistry.UMA_PEDESTAL.get());
-        dropOther(BlockRegistry.SILVER_SUPPORT_ALBUM_PEDESTAL.get(), ItemRegistry.SILVER_UMA_PEDESTAL.get());
+        dropSelf(BlockRegistry.THREE_GODDESS);
+        dropSelf(BlockRegistry.REGISTER_LECTERN);
+        dropSelf(BlockRegistry.SKILL_LEARNING_TABLE);
+        dropSelf(BlockRegistry.TRAINING_FACILITY);
+        dropSelf(BlockRegistry.UMA_PEDESTAL);
+        dropSelf(BlockRegistry.SILVER_UMA_PEDESTAL);
+        dropSelf(BlockRegistry.DISASSEMBLY_BLOCK);
+        dropSelf(BlockRegistry.UMA_SELECT_BLOCK);
+        dropSelf(BlockRegistry.UMA_STATUES);
+        dropOther(BlockRegistry.SUPPORT_ALBUM_PEDESTAL, ItemRegistry.UMA_PEDESTAL);
+        dropOther(BlockRegistry.SILVER_SUPPORT_ALBUM_PEDESTAL, ItemRegistry.SILVER_UMA_PEDESTAL);
     }
 }

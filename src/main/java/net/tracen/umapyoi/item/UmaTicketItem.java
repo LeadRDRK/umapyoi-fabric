@@ -6,7 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.tracen.umapyoi.Umapyoi;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.tracen.umapyoi.data.builtin.UmaDataRegistry;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
 import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
@@ -14,21 +14,21 @@ import net.tracen.umapyoi.registry.training.card.SupportCard;
 import net.tracen.umapyoi.utils.TrainingSupportUtils;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class UmaTicketItem extends Item {
-    public UmaTicketItem() {
-        super(Umapyoi.defaultItemProperties());
+    public UmaTicketItem(Properties p) {
+        super(p);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         if (stack.has(DataComponentsTypeRegistry.DATA_LOCATION.get())) {
             if(stack.is(UmapyoiItemTags.CARD_TICKET))
-                tooltipComponents.add(Component.translatable("tooltip.umapyoi.support_card.name",
+                tooltipAdder.accept(Component.translatable("tooltip.umapyoi.support_card.name",
                         TrainingSupportUtils.getTranslatedSupportCardName(this.getSupportCardID(stack))).withStyle(ChatFormatting.GRAY));
-            else{tooltipComponents.add(Component.translatable("tooltip.umapyoi.umadata.name",
+            else{tooltipAdder.accept(Component.translatable("tooltip.umapyoi.umadata.name",
                     UmaSoulUtils.getTranslatedUmaName(this.getUmaName(stack))).withStyle(ChatFormatting.GRAY));
             }
         }

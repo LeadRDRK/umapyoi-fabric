@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
@@ -102,13 +101,6 @@ public class SupportStack {
 
     // Copied from ItemStack, for Tags.
 
-    /**
-     * Returns true if the SupportStack has an NBTTagCompound.
-     */
-    public boolean hasTag() {
-        return this.tag != null && !this.tag.isEmpty();
-    }
-
     @Nullable
     public CompoundTag getTag() {
         return this.tag;
@@ -119,37 +111,6 @@ public class SupportStack {
             this.setTag(new CompoundTag());
         }
         return this.tag;
-    }
-
-    public CompoundTag getOrCreateTagElement(String pKey) {
-        if (this.tag != null && this.tag.contains(pKey, 10)) {
-            return this.tag.getCompound(pKey);
-        } else {
-            CompoundTag compoundtag = new CompoundTag();
-            this.addTagElement(pKey, compoundtag);
-            return compoundtag;
-        }
-    }
-
-    /**
-     * Get an NBTTagCompound from this stack's NBT data.
-     */
-    @Nullable
-    public CompoundTag getTagElement(String pKey) {
-        return this.tag != null && this.tag.contains(pKey, 10) ? this.tag.getCompound(pKey) : null;
-    }
-
-    public void addTagElement(String pKey, Tag pTag) {
-        this.getOrCreateTag().put(pKey, pTag);
-    }
-
-    public void removeTagKey(String pKey) {
-        if (this.tag != null && this.tag.contains(pKey)) {
-            this.tag.remove(pKey);
-            if (this.tag.isEmpty()) {
-                this.tag = null;
-            }
-        }
     }
 
     /**

@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -12,7 +13,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -28,11 +28,11 @@ import net.tracen.umapyoi.block.entity.ThreeGoddessBlockEntity;
 import javax.annotation.Nullable;
 
 public class ThreeGoddessBlock extends BaseEntityBlock {
-    public static final MapCodec<ThreeGoddessBlock> CODEC = simpleCodec(p -> new ThreeGoddessBlock());
+    public static final MapCodec<ThreeGoddessBlock> CODEC = simpleCodec(ThreeGoddessBlock::new);
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-    public ThreeGoddessBlock() {
-        super(Properties.ofLegacyCopy(Blocks.POLISHED_ANDESITE).noOcclusion());
+    public ThreeGoddessBlock(Properties p) {
+        super(p);
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
@@ -48,7 +48,7 @@ public class ThreeGoddessBlock extends BaseEntityBlock {
 
     @Override
     public boolean canSurvive(BlockState pState, LevelReader pLevel, BlockPos pPos) {
-        return pLevel.getBlockState(pPos.above()).is(BlockRegistry.THREE_GODDESS_UPPER.get())
+        return pLevel.getBlockState(pPos.above()).is(BlockRegistry.THREE_GODDESS_UPPER)
                 || pLevel.getBlockState(pPos.above()).isAir();
     }
 
@@ -61,7 +61,7 @@ public class ThreeGoddessBlock extends BaseEntityBlock {
     @SuppressWarnings("deprecation")
     @Override
     public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pIsMoving) {
-        pLevel.setBlock(pPos.above(), BlockRegistry.THREE_GODDESS_UPPER.get().defaultBlockState(), UPDATE_ALL);
+        pLevel.setBlock(pPos.above(), BlockRegistry.THREE_GODDESS_UPPER.defaultBlockState(), UPDATE_ALL);
         super.onPlace(pState, pLevel, pPos, pOldState, pIsMoving);
     }
 
@@ -96,20 +96,17 @@ public class ThreeGoddessBlock extends BaseEntityBlock {
         return InteractionResult.SUCCESS;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (state.getBlock() != newState.getBlock()) {
-            BlockEntity tileEntity = worldIn.getBlockEntity(pos);
-            if (tileEntity instanceof ThreeGoddessBlockEntity blockEntity) {
-                Containers.dropContents(worldIn, pos, blockEntity.getDroppableItems());
-                worldIn.updateNeighbourForOutputSignal(pos, this);
-            }
-            if (worldIn.getBlockState(pos.above()).is(BlockRegistry.THREE_GODDESS_UPPER.get())) {
-                worldIn.removeBlock(pos.above(), false);
-            }
-            super.onRemove(state, worldIn, pos, newState, isMoving);
+    public void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        BlockEntity tileEntity = level.getBlockEntity(pos);
+        if (tileEntity instanceof ThreeGoddessBlockEntity blockEntity) {
+            Containers.dropContents(level, pos, blockEntity.getDroppableItems());
+            Containers.updateNeighboursAfterDestroy(state, level, pos);
         }
+        if (level.getBlockState(pos.above()).is(BlockRegistry.THREE_GODDESS_UPPER)) {
+            level.removeBlock(pos.above(), false);
+        }
+        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
     }
 
     @Override

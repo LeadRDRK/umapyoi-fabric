@@ -16,20 +16,21 @@ import net.tracen.umapyoi.registry.umadata.UmaData;
 
 public class ShapelessUmasoulRecipe extends ShapelessRecipe {
 
-    public static final RecipeSerializer<ShapelessUmasoulRecipe> SERIALIZER = new UmasoulRecipeSerializer<>(
+    public static final RecipeSerializer<ShapelessRecipe> SERIALIZER = new UmasoulRecipeSerializer<>(
             RecipeSerializer.SHAPELESS_RECIPE, ShapelessUmasoulRecipe::new);
 
     private final ResourceLocation outputUma;
 
     public ShapelessUmasoulRecipe(ShapelessRecipe compose, ResourceLocation output) {
-        super(compose.getGroup(), compose.category(),
-                getResultItem(output), compose.getIngredients());
+        super(compose.group(), compose.category(),
+                getResultItem(output), compose.placementInfo().ingredients());
         this.outputUma = output;
     }
 
     private static ItemStack getResultItem(ResourceLocation output) {
-        Item bladeItem = BuiltInRegistries.ITEM.containsKey(output) ? BuiltInRegistries.ITEM.get(output)
-                : ItemRegistry.BLANK_UMA_SOUL.get();
+        Item bladeItem = BuiltInRegistries.ITEM.containsKey(output)
+                ? BuiltInRegistries.ITEM.get(output).orElseThrow().value()
+                : ItemRegistry.BLANK_UMA_SOUL;
 
         return bladeItem.getDefaultInstance();
     }
@@ -40,11 +41,6 @@ public class ShapelessUmasoulRecipe extends ShapelessRecipe {
 
     @Override
     public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
-        return this.getResultItem(registries).copy();
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
         ItemStack result = getResultItem(outputUma).copy();
         if(registries == RegistryAccess.EMPTY)
             return result;
@@ -63,7 +59,7 @@ public class ShapelessUmasoulRecipe extends ShapelessRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<ShapelessRecipe> getSerializer() {
         return SERIALIZER;
     }
 

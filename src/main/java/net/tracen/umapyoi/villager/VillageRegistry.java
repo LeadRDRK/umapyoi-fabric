@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSet;
 
 import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -23,11 +24,12 @@ public class VillageRegistry {
             () -> createProf("trainer", TRAINER_POI, SoundEvents.VILLAGER_WORK_LIBRARIAN));
 
     private static VillagerProfession createProf(String name, ResourceLocation poi, SoundEvent sound) {
-        return new VillagerProfession(name, e -> e.is(poi), e -> e.is(poi),
+        return new VillagerProfession(Component.translatable("entity.minecraft.villager.umapyoi." + name),
+                e -> e.is(poi), e -> e.is(poi),
                 ImmutableSet.of(), ImmutableSet.of(), sound);
     }
 
     public static void registerPoi() {
-        PointOfInterestHelper.register(TRAINER_POI, 1, 1, BlockRegistry.TRAINING_FACILITY.get());
+        PointOfInterestHelper.register(TRAINER_POI, 1, 1, BlockRegistry.TRAINING_FACILITY);
     }
 }

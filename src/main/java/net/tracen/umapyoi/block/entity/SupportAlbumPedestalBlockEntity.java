@@ -199,7 +199,7 @@ public class SupportAlbumPedestalBlockEntity extends AbstractPedestalBlockEntity
         ResourceLocation key = keys.stream().skip(keys.isEmpty() ? 0 : rand.nextInt(keys.size())).findFirst()
                 .orElse(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "blank_card"));
 
-        ItemStack result = SupportCard.init(key, registry.get(key));
+        ItemStack result = SupportCard.init(key, registry.get(key).orElseThrow().value());
         return result;
     }
 
@@ -249,7 +249,7 @@ public class SupportAlbumPedestalBlockEntity extends AbstractPedestalBlockEntity
         super.loadAdditional(compound, registries);
         clearContent();
         ContainerHelper.loadAllItems(compound, items, registries);
-        recipeTime = compound.getInt("RecipeTime");
+        recipeTime = compound.getInt("RecipeTime").orElse(0);
     }
 
     @Override
@@ -305,9 +305,9 @@ public class SupportAlbumPedestalBlockEntity extends AbstractPedestalBlockEntity
                 return resloc.equals(input.get(DataComponentsTypeRegistry.DATA_LOCATION.get()));
             }
             if (input.is(UmapyoiItemTags.SSR_CARD_TICKET))
-                return UmapyoiAPI.getSupportCardRegistry(level).get(resloc).getGachaRanking() == GachaRanking.SSR;
+                return UmapyoiAPI.getSupportCardRegistry(level).get(resloc).orElseThrow().value().getGachaRanking() == GachaRanking.SSR;
             if (input.is(UmapyoiItemTags.COMMON_GACHA_ITEM))
-                return UmapyoiAPI.getSupportCardRegistry(level).get(resloc).getGachaRanking() == GachaRanking.R;
+                return UmapyoiAPI.getSupportCardRegistry(level).get(resloc).orElseThrow().value().getGachaRanking() == GachaRanking.R;
             boolean cfgFlag = GachaUtils.checkGachaConfig();
             int gacha_roll;
             int ssrHit = cfgFlag ? Umapyoi.CONFIG.GACHA_PROBABILITY_SSR()
@@ -319,13 +319,13 @@ public class SupportAlbumPedestalBlockEntity extends AbstractPedestalBlockEntity
                                 ? Umapyoi.CONFIG.GACHA_PROBABILITY_SUM() - Umapyoi.CONFIG.GACHA_PROBABILITY_R()
                                 : 30);
 
-                return UmapyoiAPI.getSupportCardRegistry(level).get(resloc)
+                return UmapyoiAPI.getSupportCardRegistry(level).get(resloc).orElseThrow().value()
                         .getGachaRanking() == (gacha_roll < ssrHit ? GachaRanking.SSR : GachaRanking.SR);
             }
             gacha_roll = level.getRandom().nextInt(
                     cfgFlag ? Umapyoi.CONFIG.GACHA_PROBABILITY_SUM() : UmapyoiConfigModel.DEFAULT_GACHA_PROBABILITY_SUM);
             int srHit = ssrHit + (cfgFlag ? Umapyoi.CONFIG.GACHA_PROBABILITY_SR() : UmapyoiConfigModel.DEFAULT_GACHA_PROBABILITY_SR);
-            return UmapyoiAPI.getSupportCardRegistry(level).get(resloc)
+            return UmapyoiAPI.getSupportCardRegistry(level).get(resloc).orElseThrow().value()
                     .getGachaRanking() == (gacha_roll < ssrHit ? GachaRanking.SSR
                             : gacha_roll < srHit ? GachaRanking.SR : GachaRanking.R);
         };

@@ -1,51 +1,35 @@
 package net.tracen.umapyoi.mixin.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.entity.state.PlayerRenderState;
-import net.tracen.umapyoi.events.client.RenderPlayerCallback;
+import net.minecraft.world.entity.LivingEntity;
+import net.tracen.umapyoi.api.UmapyoiAPI;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Environment(EnvType.CLIENT)
 @Mixin(LivingEntityRenderer.class)
 public class LivingEntityRendererMixin {
-    public static PlayerRenderState lastPlayerRenderState = null;
-
-    @Inject(at = @At("HEAD"), method = "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;render(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V")
-    private void preRender(LivingEntityRenderState state, PoseStack poseStack,
-                           MultiBufferSource multiBufferSource, int packedLight,
-                           CallbackInfo info) {
-        if (!((Object)this instanceof PlayerRenderer renderer)
-                || !(state instanceof PlayerRenderState playerRenderState))
-            return;
-
-        lastPlayerRenderState = playerRenderState;
-        RenderPlayerCallback.Pre.invoke(new RenderPlayerCallback.Context(
-                renderer, EntityRenderDispatcherMixin.lastClientPlayer, playerRenderState,
-                poseStack, multiBufferSource, packedLight));
+    @Inject(at = @At("HEAD"), method = "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;extractRenderState(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;F)V")
+    private void preExtractRenderState(LivingEntity entity, LivingEntityRenderState state, float f,
+                                       CallbackInfo info) {
+        state.umapyoi$setUmaSoul(UmapyoiAPI.getRenderingUmaSoul(entity));
+        if (state.umapyoi$getEarTailAnimationOffset() == -1)
+            state.umapyoi$setEarTailAnimationOffset((int)Math.abs(entity.getUUID().getLeastSignificantBits()) % 10);
     }
 
-    @Inject(at = @At("TAIL"), method = "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;render(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V")
-    private void postRender(LivingEntityRenderState state, PoseStack poseStack,
-                            MultiBufferSource multiBufferSource, int packedLight,
-                            CallbackInfo info) {
-        if (!((Object)this instanceof PlayerRenderer renderer)
-                || !(state instanceof PlayerRenderState playerRenderState))
-            return;
-
-        RenderPlayerCallback.Post.invoke(new RenderPlayerCallback.Context(
-                renderer, EntityRenderDispatcherMixin.lastClientPlayer, playerRenderState,
-                poseStack, multiBufferSource, packedLight));
+    @Inject(at = @At("HEAD"), cancellable = true, method = "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;getRenderType(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;ZZZ)Lnet/minecraft/client/renderer/RenderType;")
+    private void getRenderType(LivingEntityRenderState state, boolean isVisible, boolean renderTranslucent,
+                               boolean appearsGlowing, CallbackInfoReturnable<RenderType> ci) {
+        if (!state.umapyoi$getUmaSoul().isEmpty()) {
+            ci.setReturnValue(null);
+        }
     }
 }

@@ -47,7 +47,7 @@ public class TrainingFacilityBlockEntity extends SyncedInventoryEntity implement
     @Override
     public boolean isItemValid(int slot, ItemStack stack) {
         if (slot == 0) {
-            if(!(stack.is(ItemRegistry.UMA_SOUL.get()) && UmaSoulUtils.getGrowth(stack) != Growth.RETIRED))
+            if(!(stack.is(ItemRegistry.UMA_SOUL) && UmaSoulUtils.getGrowth(stack) != Growth.RETIRED))
                 return false;
             for (int i = 1; i < 7; i++) {
                 ItemStack other = this.getItem(i);
@@ -200,7 +200,7 @@ public class TrainingFacilityBlockEntity extends SyncedInventoryEntity implement
         super.loadAdditional(compound, registries);
         clearContent();
         ContainerHelper.loadAllItems(compound, items, registries);
-        recipeTime = compound.getInt("RecipeTime");
+        recipeTime = compound.getInt("RecipeTime").orElse(0);
     }
 
     @Override

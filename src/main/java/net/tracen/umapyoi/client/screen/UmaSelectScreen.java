@@ -1,7 +1,6 @@
 package net.tracen.umapyoi.client.screen;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
@@ -10,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
@@ -83,7 +83,6 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
 
     public void render(GuiGraphics pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
-        RenderSystem.disableBlend();
         this.renderFg(pPoseStack, pMouseX, pMouseY, pPartialTick);
         this.renderTooltip(pPoseStack, pMouseX, pMouseY);
     }
@@ -165,18 +164,18 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
         return this.menu.getSlot(0).hasItem() && this.menu.getSlot(1).hasItem();
     }
 
-    protected void renderBg(GuiGraphics pPoseStack, float pPartialTick, int pX, int pY) {
+    protected void renderBg(GuiGraphics guiGraphics, float pPartialTick, int pX, int pY) {
         int i = this.leftPos;
         int j = this.topPos;
-        pPoseStack.blit(BACKGROUND_TEXTURE, i, j, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, i, j, 0, 0, this.imageWidth, this.imageHeight, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
         int k = (int) (41.0F * this.scrollOffs);
-        pPoseStack.blit(BACKGROUND_TEXTURE, i + 116, j + 31 + k, 176 + (this.isScrollBarActive() ? 0 : SCROLLER_WIDTH), 0,
-                SCROLLER_WIDTH, SCROLLER_HEIGHT);
+        guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, i + 116, j + 31 + k, 176 + (this.isScrollBarActive() ? 0 : SCROLLER_WIDTH), 0,
+                SCROLLER_WIDTH, SCROLLER_HEIGHT, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
         int l = this.leftPos + RECIPES_X;
         int i1 = this.topPos + RECIPES_Y;
         int j1 = this.startIndex + SCROLLER_WIDTH;
-        this.renderButtons(pPoseStack, pX, pY, l, i1, j1);
-        this.renderRecipes(pPoseStack, l, i1, j1);
+        this.renderButtons(guiGraphics, pX, pY, l, i1, j1);
+        this.renderRecipes(guiGraphics, l, i1, j1);
     }
 
     protected void renderTooltip(GuiGraphics pPoseStack, int pX, int pY) {
@@ -198,7 +197,7 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
         }
     }
 
-    private void renderButtons(GuiGraphics pPoseStack, int pMouseX, int pMouseY, int pX, int pY,
+    private void renderButtons(GuiGraphics guiGraphics, int pMouseX, int pMouseY, int pX, int pY,
                                int pLastVisibleElementIndex) {
         if (this.displayRecipes) {
             for (int i = this.startIndex; i < pLastVisibleElementIndex && i < this.getResults().size(); ++i) {
@@ -214,7 +213,7 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
                     j1 += 36;
                 }
 
-                pPoseStack.blit(BACKGROUND_TEXTURE, k, i1 - 1, 176, j1, RECIPES_IMAGE_SIZE_WIDTH, RECIPES_IMAGE_SIZE_HEIGHT);
+                guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, k, i1 - 1, 176, j1, RECIPES_IMAGE_SIZE_WIDTH, RECIPES_IMAGE_SIZE_HEIGHT, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
             }
         }
     }
@@ -245,7 +244,7 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
 
             if (input.is(UmapyoiItemTags.CARD_TICKET)) {
 
-                var card = ClientUtils.getClientSupportCardRegistry().get(resloc);
+                var card = ClientUtils.getClientSupportCardRegistry().get(resloc).orElseThrow().value();
 
                 boolean ssrRanking = input.is(UmapyoiItemTags.SSR_CARD_TICKET);
                 boolean srRanking = input.is(UmapyoiItemTags.SR_CARD_TICKET);
@@ -267,7 +266,7 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
 
                 return nameCheck && rankingCheck;
             } else {
-                var uma = ClientUtils.getClientUmaDataRegistry().get(resloc);
+                var uma = ClientUtils.getClientUmaDataRegistry().get(resloc).orElseThrow().value();
                 boolean ssrRanking = input.is(UmapyoiItemTags.SSR_UMA_TICKET);
                 boolean srRanking = input.is(UmapyoiItemTags.SR_UMA_TICKET);
                 boolean rankingCheck = ssrRanking ? uma.ranking() == GachaRanking.SSR
@@ -301,16 +300,17 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
     private ItemStack getResultItem(ResourceLocation name) {
         if (this.getMenu().getSlot(0).getItem().is(UmapyoiItemTags.CARD_TICKET)) {
             Registry<SupportCard> registry = ClientUtils.getClientSupportCardRegistry();
-            ItemStack result = ItemRegistry.SUPPORT_CARD.get().getDefaultInstance();
+            ItemStack result = ItemRegistry.SUPPORT_CARD.getDefaultInstance();
+            var card = registry.get(name).orElseThrow().value();
 
-            result.set(DataComponents.MAX_DAMAGE, registry.get(name).getMaxDamage());
+            result.set(DataComponents.MAX_DAMAGE, card.getMaxDamage());
             result.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), name);
-            result.set(DataComponentsTypeRegistry.GACHA_RANKING.get(), new GachaRankingData(registry.get(name).getGachaRanking()));
+            result.set(DataComponentsTypeRegistry.GACHA_RANKING.get(), new GachaRankingData(card.getGachaRanking()));
             return result;
         } else {
             Registry<UmaData> registry = ClientUtils.getClientUmaDataRegistry();
-            var initUmaSoul = UmaSoulUtils.initUmaSoul(ItemRegistry.UMA_SOUL.get().getDefaultInstance(), name,
-                    registry.get(name));
+            var initUmaSoul = UmaSoulUtils.initUmaSoul(ItemRegistry.UMA_SOUL.getDefaultInstance(), name,
+                    registry.get(name).orElseThrow().value());
             UmaSoulUtils.setPhysique(initUmaSoul, 5);
             return initUmaSoul;
         }

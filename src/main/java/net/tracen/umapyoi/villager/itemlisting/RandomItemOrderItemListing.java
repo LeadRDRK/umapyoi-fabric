@@ -54,7 +54,7 @@ public class RandomItemOrderItemListing implements ItemListing {
         ItemStack itemstack = itemStacks.get(pRand.nextInt(itemStacks.size())).copy();
         int count = Math.min(pRand.nextInt(minCount, maxCount + 1), 64);
         itemstack.setCount(count);
-        ItemCost itemstack1 = new ItemCost(ItemRegistry.JEWEL.get(), j);
+        ItemCost itemstack1 = new ItemCost(ItemRegistry.JEWEL, j);
         return new MerchantOffer(itemstack1, itemstack, this.maxUses, this.villagerXp, this.priceMultiplier);
     }
 }

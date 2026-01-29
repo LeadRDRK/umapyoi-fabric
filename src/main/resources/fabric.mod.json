@@ -28,10 +28,10 @@
   "mixins": [
     "umapyoi.mixins.json"
   ],
-  "accessWidener" : "umapyoi.accesswidener",
+  "accessWidener" : "umapyoi.classtweaker",
   "depends": {
     "fabricloader": ">=0.18.0",
-    "minecraft": ">=1.21",
+    "minecraft": ">=1.21.5",
     "java": ">=21",
     "fabric-api": "*",
     "trinkets": "*",

@@ -19,25 +19,25 @@ public class UmapyoiCreativeGroup {
 
     public static final RegistryObject<CreativeModeTab> UMAPYOI_ITEMS = CREATIVE_MODE_TABS.register("umapyoi",
             () -> FabricItemGroup.builder()
-                    .icon(() -> new ItemStack(ItemRegistry.HACHIMI_MID.get()))
+                    .icon(() -> new ItemStack(ItemRegistry.HACHIMI_MID))
                     .title(Component.translatable("itemGroup.umapyoi"))
                     .build());
 
     public static final RegistryObject<CreativeModeTab> UMAPYOI_BLANK_SOULS = CREATIVE_MODE_TABS.register("umapyoi_blank_souls",
             () -> FabricItemGroup.builder()
-                    .icon(() -> new ItemStack(ItemRegistry.BLANK_UMA_SOUL.get()))
+                    .icon(() -> new ItemStack(ItemRegistry.BLANK_UMA_SOUL))
                     .title(Component.translatable("itemGroup.umapyoi.blank_souls"))
                     .build());
 
     public static final RegistryObject<CreativeModeTab> UMAPYOI_SOULS = CREATIVE_MODE_TABS.register("umapyoi_souls",
             () -> FabricItemGroup.builder()
-                    .icon(() -> new ItemStack(ItemRegistry.UMA_SOUL_DISPLAY.get()))
+                    .icon(() -> new ItemStack(ItemRegistry.UMA_SOUL_DISPLAY))
                     .title(Component.translatable("itemGroup.umapyoi.souls"))
                     .build());
 
     public static final RegistryObject<CreativeModeTab> UMAPYOI_CARDS = CREATIVE_MODE_TABS.register("umapyoi_cards",
             () -> FabricItemGroup.builder()
-                    .icon(() -> new ItemStack(ItemRegistry.SUPPORT_CARD.get()))
+                    .icon(() -> new ItemStack(ItemRegistry.SUPPORT_CARD))
                     .title(Component.translatable("itemGroup.umapyoi.cards"))
                     .build());
 
@@ -47,12 +47,10 @@ public class UmapyoiCreativeGroup {
         ItemGroupEvents
                 .modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, UMAPYOI_ITEMS.getId()))
                 .register(entries -> {
-                    for (RegistryObject<Item> object : ItemRegistry.ITEMS.getEntries()) {
-                        if (object == ItemRegistry.BLANK_UMA_SOUL || object == ItemRegistry.UMA_SOUL
-                                || object == ItemRegistry.UMA_SOUL_DISPLAY || object == ItemRegistry.SUPPORT_CARD)
+                    for (Item item : ItemRegistry.ITEMS) {
+                        if (item == ItemRegistry.BLANK_UMA_SOUL || item == ItemRegistry.UMA_SOUL
+                                || item == ItemRegistry.UMA_SOUL_DISPLAY || item == ItemRegistry.SUPPORT_CARD)
                             continue;
-
-                        Item item = object.get();
 
                         if (item instanceof CreativeModeTabFiller filler)
                             filler.fillItemCategory(entries);
@@ -64,19 +62,19 @@ public class UmapyoiCreativeGroup {
         ItemGroupEvents
                 .modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, UMAPYOI_BLANK_SOULS.getId()))
                 .register(entries -> {
-                    ((CreativeModeTabFiller) ItemRegistry.BLANK_UMA_SOUL.get()).fillItemCategory(entries);
+                    ((CreativeModeTabFiller) ItemRegistry.BLANK_UMA_SOUL).fillItemCategory(entries);
                 });
 
         ItemGroupEvents
                 .modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, UMAPYOI_SOULS.getId()))
                 .register(entries -> {
-                    ((CreativeModeTabFiller) ItemRegistry.UMA_SOUL.get()).fillItemCategory(entries);
+                    ((CreativeModeTabFiller) ItemRegistry.UMA_SOUL).fillItemCategory(entries);
                 });
 
         ItemGroupEvents
                 .modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, UMAPYOI_CARDS.getId()))
                 .register(entries -> {
-                    ((CreativeModeTabFiller) ItemRegistry.SUPPORT_CARD.get()).fillItemCategory(entries);
+                    ((CreativeModeTabFiller) ItemRegistry.SUPPORT_CARD).fillItemCategory(entries);
                 });
     }
 }

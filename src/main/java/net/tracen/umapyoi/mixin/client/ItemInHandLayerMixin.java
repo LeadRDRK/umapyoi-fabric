@@ -7,11 +7,9 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.layers.PlayerItemInHandLayer;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
-import net.tracen.umapyoi.api.UmapyoiAPI;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,18 +21,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ItemInHandLayerMixin {
     // Correct coordinates by Mixin method
     @Inject(method = "renderArmWithItem", at = @At(value = "HEAD"))
-    private void renderArmWithItemHead(LivingEntity pLivingEntity, ItemStack pItemStack,
-                                       ItemDisplayContext pTransformType, HumanoidArm pArm, PoseStack pPoseStack, MultiBufferSource pBuffer,
-                                       int pPackedLight, CallbackInfo ci) {
-        if (!UmapyoiAPI.getRenderingUmaSoul(pLivingEntity).isEmpty()) {
-            boolean leftArmFlag = pArm == HumanoidArm.LEFT;
+    private void renderArmWithItemHead(PlayerRenderState playerRenderState,
+                                       ItemStackRenderState itemStackRenderState,
+                                       HumanoidArm humanoidArm, PoseStack poseStack,
+                                       MultiBufferSource multiBufferSource, int i, CallbackInfo ci) {
+        if (!playerRenderState.umapyoi$getUmaSoul().isEmpty()) {
+            boolean leftArmFlag = humanoidArm == HumanoidArm.LEFT;
             boolean slimArmFlag = false;
             // 1 / 16 = 0.0625D, right arm direction is the X positive direction
             var layer = (PlayerItemInHandLayer<?, ?>) (Object) this;
             if (layer.getParentModel() instanceof PlayerModel playerModel)
                 if (playerModel.slim)
                     slimArmFlag = true;
-            pPoseStack.translate((slimArmFlag ? 0.5 : 1) * (leftArmFlag ? -0.125D : 0.0625D), 0D, 0D);
+            poseStack.translate((slimArmFlag ? 0.5 : 1) * (leftArmFlag ? -0.125D : 0.0625D), 0D, 0D);
         }
     }
 }

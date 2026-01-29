@@ -19,21 +19,22 @@ import java.util.Optional;
 
 public class ShapedUmasoulRecipe extends ShapedRecipe {
 
-    public static final RecipeSerializer<ShapedUmasoulRecipe> SERIALIZER = new UmasoulRecipeSerializer<>(
+    public static final RecipeSerializer<ShapedRecipe> SERIALIZER = new UmasoulRecipeSerializer<>(
             RecipeSerializer.SHAPED_RECIPE, ShapedUmasoulRecipe::new);
 
     private final ResourceLocation outputUma;
 
     public ShapedUmasoulRecipe(ShapedRecipe compose, ResourceLocation outputBlade) {
-        super(compose.getGroup(), compose.category(),
+        super(compose.group(), compose.category(),
                 new ShapedRecipePattern(compose.getWidth(), compose.getHeight(), compose.getIngredients(), Optional.empty()),
                 getResultItem(outputBlade));
         this.outputUma = outputBlade;
     }
 
     private static ItemStack getResultItem(ResourceLocation outputBlade) {
-        Item bladeItem = BuiltInRegistries.ITEM.containsKey(outputBlade) ? BuiltInRegistries.ITEM.get(outputBlade)
-                : ItemRegistry.BLANK_UMA_SOUL.get();
+        Item bladeItem = BuiltInRegistries.ITEM.containsKey(outputBlade)
+                ? BuiltInRegistries.ITEM.get(outputBlade).orElseThrow().value()
+                : ItemRegistry.BLANK_UMA_SOUL;
 
         return bladeItem.getDefaultInstance();
     }
@@ -44,11 +45,6 @@ public class ShapedUmasoulRecipe extends ShapedRecipe {
 
     @Override
     public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
-        return this.getResultItem(registries).copy();
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
         ItemStack result = getResultItem(outputUma).copy();
         if(registries == RegistryAccess.EMPTY)
             return result;
@@ -67,7 +63,7 @@ public class ShapedUmasoulRecipe extends ShapedRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<ShapedRecipe> getSerializer() {
         return SERIALIZER;
     }
 

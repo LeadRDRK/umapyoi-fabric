@@ -56,7 +56,7 @@ public class DisassemblyBlockMenu extends AbstractContainerMenu {
     }
 
     protected void onTake(Player player, ItemStack resultStack) {
-        resultStack.onCraftedBy(player.level(), player, resultStack.getCount());
+        resultStack.onCraftedBy(player, resultStack.getCount());
         this.resultSlots.awardUsedRecipes(player, List.of(resultStack));
         this.shrinkStackInSlot(0);
         this.access.execute((level, pos) -> {
@@ -72,7 +72,7 @@ public class DisassemblyBlockMenu extends AbstractContainerMenu {
     }
     
     protected boolean isValidBlock(BlockState pState) {
-        return pState.is(BlockRegistry.DISASSEMBLY_BLOCK.get());
+        return pState.is(BlockRegistry.DISASSEMBLY_BLOCK);
     }
 
     public DisassemblyBlockMenu(int pContainerId, Inventory pPlayerInventory) {
@@ -148,20 +148,20 @@ public class DisassemblyBlockMenu extends AbstractContainerMenu {
         switch(ranking) {
             case SR : {
                 result = isSupport
-                        ? new ItemStack(ItemRegistry.HORSESHOE_GOLD.get())
-                        : new ItemStack(ItemRegistry.CRYSTAL_GOLD.get());
+                        ? new ItemStack(ItemRegistry.HORSESHOE_GOLD)
+                        : new ItemStack(ItemRegistry.CRYSTAL_GOLD);
                 break;
             }
             case SSR : {
                 result = isSupport
-                        ? new ItemStack(ItemRegistry.HORSESHOE_RAINBOW.get())
-                        : new ItemStack(ItemRegistry.CRYSTAL_RAINBOW.get());
+                        ? new ItemStack(ItemRegistry.HORSESHOE_RAINBOW)
+                        : new ItemStack(ItemRegistry.CRYSTAL_RAINBOW);
                 break;
             }
             default:
                 result = isSupport
-                        ? new ItemStack(ItemRegistry.HORSESHOE_SILVER.get())
-                        : new ItemStack(ItemRegistry.CRYSTAL_SILVER.get());
+                        ? new ItemStack(ItemRegistry.HORSESHOE_SILVER)
+                        : new ItemStack(ItemRegistry.CRYSTAL_SILVER);
         }
         return result;
     }

@@ -68,23 +68,23 @@ public class BedrockHumanoidModel<T extends HumanoidRenderState> extends Bedrock
         super.prepareMobModel(entity, limbSwing, limbSwingAmount);
     }
 
-    public void setupAnim(T entity, float limbSwing, float limbSwingAmount) {
+    public void setupAnim(T state) {
         boolean flag = false;
-        if (entity instanceof PlayerRenderState player) {
+        if (state instanceof PlayerRenderState player) {
             flag = player.fallFlyingTimeInTicks > 4;
         }
-        boolean flag1 = entity.isVisuallySwimming;
-        this.head.yRot = entity.yRot * ((float) Math.PI / 180F);
+        boolean flag1 = state.isVisuallySwimming;
+        this.head.yRot = state.yRot * ((float) Math.PI / 180F);
         if (flag) {
             this.head.xRot = (-(float) Math.PI / 4F);
         } else if (this.swimAmount > 0.0F) {
             if (flag1) {
                 this.head.xRot = this.rotlerpRad(this.swimAmount, this.head.xRot, (-(float) Math.PI / 4F));
             } else {
-                this.head.xRot = this.rotlerpRad(this.swimAmount, this.head.xRot, entity.xRot * ((float) Math.PI / 180F));
+                this.head.xRot = this.rotlerpRad(this.swimAmount, this.head.xRot, state.xRot * ((float) Math.PI / 180F));
             }
         } else {
-            this.head.xRot = entity.xRot * ((float) Math.PI / 180F);
+            this.head.xRot = state.xRot * ((float) Math.PI / 180F);
         }
 
         this.body.yRot = 0.0F;
@@ -93,17 +93,17 @@ public class BedrockHumanoidModel<T extends HumanoidRenderState> extends Bedrock
         this.leftArm.z = 0.0F;
         this.leftArm.x = 5.0F;
 
-        this.rightArm.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F;
-        this.leftArm.xRot = Mth.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F;
+        this.rightArm.xRot = Mth.cos(state.walkAnimationPos * 0.6662F + (float) Math.PI) * 2.0F * state.walkAnimationSpeed * 0.5F;
+        this.leftArm.xRot = Mth.cos(state.walkAnimationPos * 0.6662F) * 2.0F * state.walkAnimationSpeed * 0.5F;
         this.rightArm.zRot = 0.0F;
         this.leftArm.zRot = 0.0F;
-        this.rightLeg.xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-        this.leftLeg.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
+        this.rightLeg.xRot = Mth.cos(state.walkAnimationPos * 0.6662F) * 1.4F * state.walkAnimationSpeed;
+        this.leftLeg.xRot = Mth.cos(state.walkAnimationPos * 0.6662F + (float) Math.PI) * 1.4F * state.walkAnimationSpeed;
         this.rightLeg.yRot = 0.0F;
         this.leftLeg.yRot = 0.0F;
         this.rightLeg.zRot = 0.0F;
         this.leftLeg.zRot = 0.0F;
-        if (entity.pose == Pose.SITTING) {
+        if (state.pose == Pose.SITTING) {
             this.rightArm.xRot += (-(float) Math.PI / 5F);
             this.leftArm.xRot += (-(float) Math.PI / 5F);
             this.rightLeg.xRot = -1.4137167F;
@@ -116,26 +116,26 @@ public class BedrockHumanoidModel<T extends HumanoidRenderState> extends Bedrock
 
         this.rightArm.yRot = 0.0F;
         this.leftArm.yRot = 0.0F;
-        boolean flag2 = entity.mainArm == HumanoidArm.RIGHT;
-        if (entity.isUsingItem) {
-            boolean flag3 = entity.useItemHand == InteractionHand.MAIN_HAND;
+        boolean flag2 = state.mainArm == HumanoidArm.RIGHT;
+        if (state.isUsingItem) {
+            boolean flag3 = state.useItemHand == InteractionHand.MAIN_HAND;
             if (flag3 == flag2) {
-                this.poseRightArm(entity);
+                this.poseRightArm(state);
             } else {
-                this.poseLeftArm(entity);
+                this.poseLeftArm(state);
             }
         } else {
             boolean flag4 = flag2 ? this.leftArmPose.isTwoHanded() : this.rightArmPose.isTwoHanded();
             if (flag2 != flag4) {
-                this.poseLeftArm(entity);
-                this.poseRightArm(entity);
+                this.poseLeftArm(state);
+                this.poseRightArm(state);
             } else {
-                this.poseRightArm(entity);
-                this.poseLeftArm(entity);
+                this.poseRightArm(state);
+                this.poseLeftArm(state);
             }
         }
 
-        this.setupAttackAnimation(entity, entity.ageInTicks);
+        this.setupAttackAnimation(state, state.ageInTicks);
         if (this.crouching) {
             this.body.xRot = 0.5F;
             this.rightArm.xRot += 0.4F;
@@ -161,19 +161,19 @@ public class BedrockHumanoidModel<T extends HumanoidRenderState> extends Bedrock
         }
 
         if (this.rightArmPose != HumanoidModel.ArmPose.SPYGLASS) {
-            BedrockAnimationUtils.bobBedrockPart(this.rightArm, entity.ageInTicks, 1.0F);
+            BedrockAnimationUtils.bobBedrockPart(this.rightArm, state.ageInTicks, 1.0F);
         }
 
         if (this.leftArmPose != HumanoidModel.ArmPose.SPYGLASS) {
-            BedrockAnimationUtils.bobBedrockPart(this.leftArm, entity.ageInTicks, -1.0F);
+            BedrockAnimationUtils.bobBedrockPart(this.leftArm, state.ageInTicks, -1.0F);
         }
 
         if (this.swimAmount > 0.0F) {
-            float f5 = limbSwing % 26.0F;
-            HumanoidArm humanoidarm = entity.attackArm;
-            float f1 = humanoidarm == HumanoidArm.RIGHT && entity.attackTime > 0.0F ? 0.0F : this.swimAmount;
-            float f2 = humanoidarm == HumanoidArm.LEFT && entity.attackTime > 0.0F ? 0.0F : this.swimAmount;
-            if (!entity.isUsingItem) {
+            float f5 = state.walkAnimationPos % 26.0F;
+            HumanoidArm humanoidarm = state.attackArm;
+            float f1 = humanoidarm == HumanoidArm.RIGHT && state.attackTime > 0.0F ? 0.0F : this.swimAmount;
+            float f2 = humanoidarm == HumanoidArm.LEFT && state.attackTime > 0.0F ? 0.0F : this.swimAmount;
+            if (!state.isUsingItem) {
                 if (f5 < 14.0F) {
                     this.leftArm.xRot = this.rotlerpRad(f2, this.leftArm.xRot, 0.0F);
                     this.rightArm.xRot = Mth.lerp(f1, this.rightArm.xRot, 0.0F);
@@ -205,8 +205,8 @@ public class BedrockHumanoidModel<T extends HumanoidRenderState> extends Bedrock
             }
 
             this.leftLeg.xRot = Mth.lerp(this.swimAmount, this.leftLeg.xRot,
-                    0.3F * Mth.cos(limbSwing * 0.33333334F + (float) Math.PI));
-            this.rightLeg.xRot = Mth.lerp(this.swimAmount, this.rightLeg.xRot, 0.3F * Mth.cos(limbSwing * 0.33333334F));
+                    0.3F * Mth.cos(state.walkAnimationPos * 0.33333334F + (float) Math.PI));
+            this.rightLeg.xRot = Mth.lerp(this.swimAmount, this.rightLeg.xRot, 0.3F * Mth.cos(state.walkAnimationPos * 0.33333334F));
         }
     }
 

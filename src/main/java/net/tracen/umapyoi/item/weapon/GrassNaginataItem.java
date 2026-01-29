@@ -13,10 +13,14 @@ import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
 public class GrassNaginataItem extends UmaWeaponItem {
     private static final ResourceLocation REACH_ID = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "reach");
 
-    public GrassNaginataItem() {
-        super(createMaterial(), 7, -2.7F, Umapyoi.defaultItemProperties()
+    public GrassNaginataItem(Properties p) {
+        super(createMaterial(), 7, -2.7F, p);
+    }
+
+    public static Properties createProperties() {
+        return Umapyoi.defaultItemProperties()
                 .stacksTo(1)
-                .attributes(createAttributes()));
+                .attributes(createAttributes());
     }
 
     private static ItemAttributeModifiers createAttributes() {

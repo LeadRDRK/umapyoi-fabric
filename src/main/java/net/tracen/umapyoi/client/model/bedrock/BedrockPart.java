@@ -54,12 +54,12 @@ public final class BedrockPart {
     }
 
     public void loadPose(PartPose p_171323_) {
-        this.x = p_171323_.x;
-        this.y = p_171323_.y;
-        this.z = p_171323_.z;
-        this.xRot = p_171323_.xRot;
-        this.yRot = p_171323_.yRot;
-        this.zRot = p_171323_.zRot;
+        this.x = p_171323_.x();
+        this.y = p_171323_.y();
+        this.z = p_171323_.z();
+        this.xRot = p_171323_.xRot();
+        this.yRot = p_171323_.yRot();
+        this.zRot = p_171323_.zRot();
         this.xScale = 1.0F;
         this.yScale = 1.0F;
         this.zScale = 1.0F;

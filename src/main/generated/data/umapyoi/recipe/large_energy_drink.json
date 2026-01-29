@@ -2,27 +2,13 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:carrot"
-    },
-    {
-      "item": "minecraft:carrot"
-    },
-    {
-      "item": "minecraft:redstone"
-    },
-    {
-      "item": "minecraft:glowstone_dust"
-    },
-    {
-      "item": "minecraft:nether_wart"
-    },
-    {
-      "tag": "c:sugar"
-    },
-    {
-      "tag": "c:buckets/water"
-    }
+    "minecraft:carrot",
+    "minecraft:carrot",
+    "minecraft:redstone",
+    "minecraft:glowstone_dust",
+    "minecraft:nether_wart",
+    "#c:sugar",
+    "#c:buckets/water"
   ],
   "result": {
     "count": 1,

@@ -22,7 +22,11 @@ public class UmaFactorUtils {
     public static List<UmaFactorStack> deserializeData(List<FactorData> datas) {
         List<UmaFactorStack> list = Lists.newArrayList();
 
-        datas.forEach(data->list.add(new UmaFactorStack(UmaFactorRegistry.REGISTRY.get().get(data.id()), data.level(), data.tag())));
+        datas.forEach(data ->
+                list.add(new UmaFactorStack(
+                        UmaFactorRegistry.REGISTRY.get().get(data.id()).orElseThrow().value(),
+                        data.level(),
+                        data.tag())));
 
         return list;
     }

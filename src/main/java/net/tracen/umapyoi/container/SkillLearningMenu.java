@@ -28,7 +28,7 @@ public class SkillLearningMenu extends ItemCombinerMenu {
     }
 
     public SkillLearningMenu(int pContainerId, Inventory pPlayerInventory, ContainerLevelAccess pAccess) {
-        super(ContainerRegistry.SKILL_LEARNING_TABLE.get(), pContainerId, pPlayerInventory, pAccess);
+        super(ContainerRegistry.SKILL_LEARNING_TABLE.get(), pContainerId, pPlayerInventory, pAccess, createInputSlotDefinitions());
     }
 
     @Override
@@ -42,14 +42,14 @@ public class SkillLearningMenu extends ItemCombinerMenu {
         if (isUmaSoul(inputSoul) && isSkillBook(inputSkill)) {
             ResourceLocation skillRL = inputSkill.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
             if (UmaSkillRegistry.REGISTRY.get().containsKey(skillRL)) {
-                var upperSkill = UmaSkillRegistry.REGISTRY.get().get(skillRL).getUpperSkill();
+                var upperSkill = UmaSkillRegistry.REGISTRY.get().get(skillRL).orElseThrow().value().getUpperSkill();
                 if (upperSkill != null && UmaSkillUtils.hasLearnedSkill(inputSoul, upperSkill)) 
                     return false;
                 
                 if (!UmaSoulUtils.hasEmptySkillSlot(inputSoul) && UmaSkillUtils.getLowerSkillIndex(inputSkill, skillRL) == -1)
                     return false;
 
-                UmaSkill skill = UmaSkillRegistry.REGISTRY.get().get(skillRL);
+                UmaSkill skill = UmaSkillRegistry.REGISTRY.get().get(skillRL).orElseThrow().value();
                 boolean result = UmaSkillUtils.hasLearnedSkill(inputSoul, skillRL);
                 return UmaSoulUtils.getProperty(inputSoul).wisdom() >= skill.getRequiredWisdom() && !result;
             }
@@ -57,14 +57,14 @@ public class SkillLearningMenu extends ItemCombinerMenu {
         return false;
     }
 
-    private boolean isUmaSoul(ItemStack stack) {
+    private static boolean isUmaSoul(ItemStack stack) {
         if (stack.getItem() instanceof UmaSoulItem) {
             return UmaSoulUtils.getGrowth(stack) != Growth.RETIRED;
         }
         return false;
     }
 
-    private boolean isSkillBook(ItemStack stack) {
+    private static boolean isSkillBook(ItemStack stack) {
         if (stack.getItem()instanceof SkillBookItem skillbook) {
             return skillbook.getSkill(stack) != null;
         }
@@ -73,7 +73,7 @@ public class SkillLearningMenu extends ItemCombinerMenu {
 
     @Override
     protected void onTake(Player player, ItemStack resultStack) {
-        resultStack.onCraftedBy(player.level(), player, resultStack.getCount());
+        resultStack.onCraftedBy(player, resultStack.getCount());
         this.resultSlots.awardUsedRecipes(player, this.getRelevantItems());
         this.shrinkStackInSlot(0);
         this.shrinkStackInSlot(1);
@@ -94,7 +94,7 @@ public class SkillLearningMenu extends ItemCombinerMenu {
 
     @Override
     protected boolean isValidBlock(BlockState pState) {
-        return pState.is(BlockRegistry.SKILL_LEARNING_TABLE.get());
+        return pState.is(BlockRegistry.SKILL_LEARNING_TABLE);
     }
 
     @Override
@@ -106,11 +106,10 @@ public class SkillLearningMenu extends ItemCombinerMenu {
         }
     }
 
-    @Override
-    protected ItemCombinerMenuSlotDefinition createInputSlotDefinitions() {
+    protected static ItemCombinerMenuSlotDefinition createInputSlotDefinitions() {
         return ItemCombinerMenuSlotDefinition.create()
-                .withSlot(0, 27, 47, this::isUmaSoul)
-                .withSlot(1, 76, 47, this::isSkillBook)
+                .withSlot(0, 27, 47, SkillLearningMenu::isUmaSoul)
+                .withSlot(1, 76, 47, SkillLearningMenu::isSkillBook)
                 .withResultSlot(2, 134, 47)
                 .build();
     }

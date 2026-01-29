@@ -16,6 +16,6 @@ public abstract class SkillContext {
     }
 
     public UmaSkill getSkill() {
-        return UmaSkillRegistry.REGISTRY.get().get(getSkillResourceLocation());
+        return UmaSkillRegistry.REGISTRY.get().get(getSkillResourceLocation()).orElseThrow().value();
     }
 }

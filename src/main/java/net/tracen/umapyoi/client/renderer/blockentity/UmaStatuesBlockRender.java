@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.block.UmaStatueBlock;
@@ -32,11 +33,11 @@ public class UmaStatuesBlockRender implements BlockEntityRenderer<UmaStatueBlock
 
     @Override
     public void render(UmaStatueBlockEntity tileEntity, float partialTicks, PoseStack poseStack,
-                       MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
+                       MultiBufferSource buffer, int combinedLight, int combinedOverlay, Vec3 cameraPos) {
         Level world = tileEntity.getLevel();
         boolean flag = world != null;
         BlockState blockstate = flag ? tileEntity.getBlockState()
-                : BlockRegistry.UMA_STATUES.get().defaultBlockState();
+                : BlockRegistry.UMA_STATUES.defaultBlockState();
         if (blockstate.getBlock() instanceof UmaStatueBlock) {
             Direction direction = tileEntity.getBlockState().getValue(UmaStatueBlock.FACING);
             renderModel(tileEntity, direction, poseStack, buffer, combinedLight, combinedOverlay);

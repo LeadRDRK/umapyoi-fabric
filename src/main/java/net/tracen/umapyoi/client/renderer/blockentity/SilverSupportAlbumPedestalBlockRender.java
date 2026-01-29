@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.block.SilverSupportAlbumPedestalBlock;
@@ -34,11 +35,11 @@ public class SilverSupportAlbumPedestalBlockRender implements BlockEntityRendere
 
     @Override
     public void render(SilverSupportAlbumPedestalBlockEntity tileEntity, float partialTicks, PoseStack poseStack,
-                       MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
+                       MultiBufferSource buffer, int combinedLight, int combinedOverlay, Vec3 cameraPos) {
         Level world = tileEntity.getLevel();
         boolean flag = world != null;
         BlockState blockstate = flag ? tileEntity.getBlockState()
-                : BlockRegistry.SILVER_SUPPORT_ALBUM_PEDESTAL.get().defaultBlockState();
+                : BlockRegistry.SILVER_SUPPORT_ALBUM_PEDESTAL.defaultBlockState();
         if (blockstate.getBlock() instanceof SilverSupportAlbumPedestalBlock) {
             renderBook(tileEntity, partialTicks, poseStack, buffer, combinedLight, combinedOverlay);
             renderAnimation(tileEntity, partialTicks, poseStack, buffer, combinedLight, combinedOverlay);
@@ -90,7 +91,7 @@ public class SilverSupportAlbumPedestalBlockRender implements BlockEntityRendere
         this.bookModel.setupAnim(f, Mth.clamp(f4, 0.0F, 1.0F), Mth.clamp(f5, 0.0F, 1.0F), f6);
         VertexConsumer vertexconsumer = pBufferSource.getBuffer(
                 RenderType.entitySolid(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/support_card_album.png")));
-        this.bookModel.render(pPoseStack, vertexconsumer, pPackedLight, pPackedOverlay, -1);
+        this.bookModel.renderToBuffer(pPoseStack, vertexconsumer, pPackedLight, pPackedOverlay, -1);
         pPoseStack.popPose();
     }
 }

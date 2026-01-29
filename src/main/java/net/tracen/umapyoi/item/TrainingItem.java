@@ -15,8 +15,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
-import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.registry.training.SupportContainer;
 import net.tracen.umapyoi.registry.training.SupportStack;
@@ -26,6 +26,7 @@ import net.tracen.umapyoi.utils.GachaRanking;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -34,8 +35,8 @@ public class TrainingItem extends Item implements SupportContainer {
     private final Supplier<TrainingSupport> support;
     private final int level;
 
-    public TrainingItem(SupportType type, Supplier<TrainingSupport> support, int level) {
-        super(Umapyoi.defaultItemProperties());
+    public TrainingItem(SupportType type, Supplier<TrainingSupport> support, int level, Properties p) {
+        super(p);
         this.type = type;
         this.support = support;
         this.level = level;
@@ -92,9 +93,9 @@ public class TrainingItem extends Item implements SupportContainer {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-        tooltipComponents.add(this.getSupport().getDescription());
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
+        tooltipAdder.accept(this.getSupport().getDescription());
     }
 
     @Override

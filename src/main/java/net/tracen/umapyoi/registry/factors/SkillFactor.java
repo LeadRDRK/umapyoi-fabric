@@ -17,9 +17,9 @@ public class SkillFactor extends UmaFactor {
 
     @Override
     public void applyFactor(ItemStack soul, UmaFactorStack stack) {
-        ResourceLocation skill = ResourceLocation.tryParse(stack.getOrCreateTag().getString("skill"));
+        ResourceLocation skill = ResourceLocation.tryParse(stack.getOrCreateTag().getString("skill").orElseThrow());
         if (skill != null && UmaSkillRegistry.REGISTRY.get().containsKey(skill)) {
-            UmaSkill result = UmaSkillRegistry.REGISTRY.get().get(skill);
+            UmaSkill result = UmaSkillRegistry.REGISTRY.get().get(skill).orElseThrow().value();
             if(!result.isInheritable())
                 return;
 
@@ -31,9 +31,9 @@ public class SkillFactor extends UmaFactor {
 
     @Override
     public Component getDescriptionDetail(UmaFactorStack stack) {
-        ResourceLocation skill = ResourceLocation.tryParse(stack.getOrCreateTag().getString("skill"));
+        ResourceLocation skill = ResourceLocation.tryParse(stack.getOrCreateTag().getString("skill").orElseThrow());
         if (skill != null && UmaSkillRegistry.REGISTRY.get().containsKey(skill)) {
-            UmaSkill result = UmaSkillRegistry.REGISTRY.get().get(skill);
+            UmaSkill result = UmaSkillRegistry.REGISTRY.get().get(skill).orElseThrow().value();
             return result.getDescriptionDetail();
         }
         return Component.empty();
@@ -41,9 +41,9 @@ public class SkillFactor extends UmaFactor {
 
     @Override
     public Component getDescription(UmaFactorStack stack) {
-        ResourceLocation skill = ResourceLocation.tryParse(stack.getOrCreateTag().getString("skill"));
+        ResourceLocation skill = ResourceLocation.tryParse(stack.getOrCreateTag().getString("skill").orElseThrow());
         if (skill != null && UmaSkillRegistry.REGISTRY.get().containsKey(skill)) {
-            UmaSkill result = UmaSkillRegistry.REGISTRY.get().get(skill);
+            UmaSkill result = UmaSkillRegistry.REGISTRY.get().get(skill).orElseThrow().value();
             return result.getDescription().copy().append(" ")
                     .append(Component.translatable("enchantment.level." + stack.getLevel()));
         }

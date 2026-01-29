@@ -2,6 +2,7 @@ package net.tracen.umapyoi.api;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -68,12 +69,12 @@ public class TargetSelector {
                 .filter(e -> (e.distanceToSqr(attacker) < (reach * reach))).collect(Collectors.toList());
     }
 
-    public static List<Entity> getTargettableEntitiesWithinAABB(Level world, LivingEntity attacker) {
+    public static List<Entity> getTargettableEntitiesWithinAABB(ServerLevel world, LivingEntity attacker) {
         return getTargettableEntitiesWithinAABB(world, attacker,
                 getResolvedAxisAligned(attacker.getBoundingBox(), attacker.getLookAngle(), getResolvedReach(attacker)));
     }
 
-    public static List<Entity> getTargettableEntitiesWithinAABB(Level world, LivingEntity attacker, AABB aabb) {
+    public static List<Entity> getTargettableEntitiesWithinAABB(ServerLevel world, LivingEntity attacker, AABB aabb) {
         double reach = TargetSelector.getResolvedReach(attacker);
 
         return getTargettableEntitiesWithinAABB(world, attacker, aabb, reach);
@@ -91,7 +92,7 @@ public class TargetSelector {
                 .collect(Collectors.toList());
     }
 
-    public static List<Entity> getTargettableEntitiesWithinAABB(Level world, LivingEntity attacker, AABB aabb,
+    public static List<Entity> getTargettableEntitiesWithinAABB(ServerLevel world, LivingEntity attacker, AABB aabb,
                                                                 double reach) {
         List<Entity> list1 = Lists.newArrayList();
 
@@ -101,7 +102,7 @@ public class TargetSelector {
         TargetingConditions predicate = areaTarget.range(reach);
 
         list1.addAll(world.getEntitiesOfClass(LivingEntity.class, aabb).stream()
-                .filter(t -> predicate.test(attacker, t))
+                .filter(t -> predicate.test(world, attacker, t))
                 .toList());
 
         return list1;

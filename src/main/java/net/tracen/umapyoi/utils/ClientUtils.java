@@ -8,9 +8,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
@@ -22,6 +20,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
+import net.tracen.umapyoi.client.model.SimpleBedrockModel;
 import net.tracen.umapyoi.client.model.bedrock.BedrockVersion;
 import net.tracen.umapyoi.client.model.pojo.BedrockModelPOJO;
 import net.tracen.umapyoi.data.tag.UmapyoiUmaDataTags;
@@ -68,26 +67,26 @@ public class ClientUtils {
     }
 
     public static Registry<UmaData> getClientUmaDataRegistry() {
-        return Minecraft.getInstance().getConnection().registryAccess().registryOrThrow(UmaData.REGISTRY_KEY);
+        return Minecraft.getInstance().getConnection().registryAccess().lookupOrThrow(UmaData.REGISTRY_KEY);
     }
 
     public static Registry<SupportCard> getClientSupportCardRegistry() {
-        return Minecraft.getInstance().getConnection().registryAccess().registryOrThrow(SupportCard.REGISTRY_KEY);
+        return Minecraft.getInstance().getConnection().registryAccess().lookupOrThrow(SupportCard.REGISTRY_KEY);
     }
 
     public static Registry<CosmeticData> getClientCosmeticDataRegistry() {
-        return Minecraft.getInstance().getConnection().registryAccess().registryOrThrow(CosmeticData.REGISTRY_KEY);
+        return Minecraft.getInstance().getConnection().registryAccess().lookupOrThrow(CosmeticData.REGISTRY_KEY);
     }
 
     public static boolean isFlatUmamusume(ItemStack stack) {
         return ClientUtils.getClientUmaDataRegistry()
-                .getHolder(ResourceKey.create(UmaData.REGISTRY_KEY, UmaSoulUtils.getName(stack)))
+                .get(ResourceKey.create(UmaData.REGISTRY_KEY, UmaSoulUtils.getName(stack)))
                 .get().is(UmapyoiUmaDataTags.FLAT_CHEST);
     }
 
     public static boolean isTannedSkin(ItemStack stack) {
         return ClientUtils.getClientUmaDataRegistry()
-                .getHolder(ResourceKey.create(UmaData.REGISTRY_KEY, UmaSoulUtils.getName(stack)))
+                .get(ResourceKey.create(UmaData.REGISTRY_KEY, UmaSoulUtils.getName(stack)))
                 .get().is(UmapyoiUmaDataTags.TANNED_SKIN);
     }
     
@@ -110,16 +109,17 @@ public class ClientUtils {
                                               int x,
                                               int y,
                                               int scale,
-                                              Quaternionf pose, Model pModel,
+                                              Quaternionf pose, SimpleBedrockModel pModel,
                                               ResourceLocation texture) {
         guiGraphic.pose().pushPose();
         guiGraphic.pose().translate(x, y, 50.0D);
         guiGraphic.pose().scale(scale, scale, -scale);
         guiGraphic.pose().mulPose(pose);
-        MultiBufferSource.BufferSource buffersource = guiGraphic.bufferSource();
-        VertexConsumer vertexconsumer = buffersource
-                .getBuffer(RenderType.entityTranslucent(ClientUtils.getTexture(texture)));
-        pModel.renderToBuffer(guiGraphic.pose(), vertexconsumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, -1);
+        guiGraphic.drawSpecial(bufferSource -> {
+            VertexConsumer vertexconsumer = bufferSource
+                    .getBuffer(RenderType.entityTranslucent(ClientUtils.getTexture(texture)));
+            pModel.renderToBuffer(guiGraphic.pose(), vertexconsumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, -1);
+        });
         guiGraphic.flush();
         guiGraphic.pose().popPose();
     }

@@ -2,6 +2,7 @@ package net.tracen.umapyoi.client.screen;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.ItemCombinerScreen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -63,10 +64,10 @@ public class SkillLearningScreen extends ItemCombinerScreen<SkillLearningMenu> {
             int i = (this.width - this.imageWidth) / 2;
             int j = (this.height - this.imageHeight) / 2;
             switch (skill.getType()) {
-            case BUFF -> guiGraphics.blit(BACKGROUND_TEXTURE, i + 31, j + 21, 176, 21, 16, 16);
-            case HINDER -> guiGraphics.blit(BACKGROUND_TEXTURE, i + 31, j + 21, 176, 37, 16, 16);
-            case HEAL -> guiGraphics.blit(BACKGROUND_TEXTURE, i + 31, j + 21, 176, 53, 16, 16);
-            case PASSIVE -> guiGraphics.blit(BACKGROUND_TEXTURE, i + 31, j + 21, 176, 69, 16, 16);
+            case BUFF -> guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, i + 31, j + 21, 176, 21, 16, 16, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+            case HINDER -> guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, i + 31, j + 21, 176, 37, 16, 16, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+            case HEAL -> guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, i + 31, j + 21, 176, 53, 16, 16, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+            case PASSIVE -> guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, i + 31, j + 21, 176, 69, 16, 16, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
             default -> throw new IllegalArgumentException("Unexpected value: " + skill.getType());
             }
         }

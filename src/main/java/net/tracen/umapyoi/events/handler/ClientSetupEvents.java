@@ -9,15 +9,11 @@ import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.resources.FileToIdConverter;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.packs.PackType;
-import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.block.entity.BlockEntityRegistry;
 import net.tracen.umapyoi.client.ActionBarOverlay;
@@ -47,13 +43,13 @@ public class ClientSetupEvents {
 
         // Trinkets renderers
         UmaSoulItem.registerRenderer();
-        AbstractSuitItem.registerRenderer(ItemRegistry.SUMMER_UNIFORM.get());
-        AbstractSuitItem.registerRenderer(ItemRegistry.WINTER_UNIFORM.get());
-        AbstractSuitItem.registerRenderer(ItemRegistry.TRAINING_SUIT.get());
-        AbstractSuitItem.registerRenderer(ItemRegistry.SWIMSUIT.get());
-        AbstractSuitItem.registerRenderer(ItemRegistry.UMA_COSTUME.get());
+        AbstractSuitItem.registerRenderer(ItemRegistry.SUMMER_UNIFORM);
+        AbstractSuitItem.registerRenderer(ItemRegistry.WINTER_UNIFORM);
+        AbstractSuitItem.registerRenderer(ItemRegistry.TRAINING_SUIT);
+        AbstractSuitItem.registerRenderer(ItemRegistry.SWIMSUIT);
+        AbstractSuitItem.registerRenderer(ItemRegistry.UMA_COSTUME);
 
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockRegistry.TRAINING_FACILITY.get(), RenderType.cutoutMipped());
+        BlockRenderLayerMap.INSTANCE.putBlock(BlockRegistry.TRAINING_FACILITY, RenderType.cutoutMipped());
 
         ClientTickEvents.END_CLIENT_TICK.register(SkillKeyMapping::onEndClientTick);
 
@@ -76,32 +72,18 @@ public class ClientSetupEvents {
 
     public static void registerModelLoadingPlugin() {
         ModelLoadingPlugin.register(pluginContext -> {
-            FileToIdConverter.json("models/item/costume")
-                    .listMatchingResources(Minecraft.getInstance().getResourceManager())
-                    .keySet()
-                    .stream()
-                    .map(location -> {
-                        Umapyoi.getLogger().info("Found resource:{}", location.toString());
-                        return resolveCostumeLocation(location);
-                    })
-                    .forEach(pluginContext::addModels);
-            pluginContext.modifyModelAfterBake().register(ClientSetupEvents::onBakedModel);
+            UmaCostumeItemModel.onModelLoading(pluginContext);
+
+            pluginContext.modifyItemModelAfterBake().register(ClientSetupEvents::onBakedItemModel);
         });
     }
 
-    private static ResourceLocation resolveCostumeLocation(ResourceLocation location) {
-        return ResourceLocation.fromNamespaceAndPath(location.getNamespace(),
-                "item/costume/" + location.getPath().substring(20,location.getPath().length()-5));
-    }
-
-    public static BakedModel onBakedModel(BakedModel bakedModel, ModelModifier.AfterBake.Context context) {
-        ModelResourceLocation origin = new ModelResourceLocation(ItemRegistry.UMA_COSTUME.getId(), "inventory");
-        // what?
-        if (Objects.equals(context.topLevelId(), origin) || Objects.equals(context.resourceId(), origin.id())) {
-            return new UmaCostumeItemModel(bakedModel, context.loader());
+    public static ItemModel onBakedItemModel(ItemModel itemModel, ModelModifier.AfterBakeItem.Context context) {
+        if (Objects.equals(context.itemId(), BuiltInRegistries.ITEM.getKey(ItemRegistry.UMA_COSTUME))) {
+            return new UmaCostumeItemModel(itemModel);
         }
 
-        return bakedModel;
+        return itemModel;
     }
 
     public static void registerKeyBinds() {

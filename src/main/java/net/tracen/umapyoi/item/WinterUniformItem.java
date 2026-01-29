@@ -6,6 +6,10 @@ import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.utils.ClientUtils;
 
 public class WinterUniformItem extends AbstractSuitItem {
+    public WinterUniformItem(Properties p) {
+        super(p);
+    }
+
     @Override
     protected ResourceLocation getModel(ItemStack stack) {
         return ClientUtils.WINTER_UNIFORM;

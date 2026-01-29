@@ -16,10 +16,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
-import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
 import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.training.SupportContainer;
 import net.tracen.umapyoi.registry.training.SupportStack;
@@ -32,14 +32,15 @@ import net.tracen.umapyoi.utils.UmaSoulUtils;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class SupportCardItem extends Item implements SupportContainer, CreativeModeTabFiller {
     private static final Comparator<Holder.Reference<SupportCard>> COMPARATOR = new CardDataComparator();
 
-    public SupportCardItem() {
-        super(Umapyoi.defaultItemProperties().stacksTo(1));
+    public SupportCardItem(Properties p) {
+        super(p);
     }
 
     public static Stream<Holder.Reference<SupportCard>> sortedCardDataList(HolderLookup.Provider provider) {
@@ -63,42 +64,39 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
     }
 
     @Override
-    public boolean isValidRepairItem(ItemStack pToRepair, ItemStack pRepair) {
-        return pRepair.is(UmapyoiItemTags.HORSESHOE) || super.isValidRepairItem(pToRepair, pRepair);
-    }
-
-    @Override
-    public String getDescriptionId(ItemStack pStack) {
-        return Util.makeDescriptionId("support_card", this.getSupportCardID(pStack)) + ".name";
+    public Component getName(ItemStack pStack) {
+        return Component.translatable(
+                Util.makeDescriptionId("support_card", this.getSupportCardID(pStack)) + ".name");
     }
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, tooltip, tooltipFlag);
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         ResourceLocation cardID = this.getSupportCardID(stack);
         var registries = context.registries();
         if (isEmptyCard(registries, cardID))
             return ;
         if(!this.getSupports(registries, stack).isEmpty()) {
             if (Screen.hasShiftDown() || !Umapyoi.CONFIG.TOOLTIP_SWITCH()) {
-                tooltip.add(Component.translatable("tooltip.umapyoi.supports").withStyle(ChatFormatting.AQUA));
+                tooltipAdder.accept(Component.translatable("tooltip.umapyoi.supports").withStyle(ChatFormatting.AQUA));
                 this.getSupports(registries, stack)
-                        .forEach(support -> tooltip.add(support.getDescription().copy().withStyle(ChatFormatting.GRAY)));
+                        .forEach(support -> tooltipAdder.accept(support.getDescription().copy().withStyle(ChatFormatting.GRAY)));
             } else {
-                tooltip.add(Component.translatable("tooltip.umapyoi.support_card.press_shift_for_supports")
+                tooltipAdder.accept(Component.translatable("tooltip.umapyoi.support_card.press_shift_for_supports")
                         .withStyle(ChatFormatting.AQUA));
             }
         }
 
-        List<ResourceLocation> supporters = ClientUtils.getClientSupportCardRegistry().get(cardID).getSupporters();
+        List<ResourceLocation> supporters = ClientUtils.getClientSupportCardRegistry().get(cardID)
+                .orElseThrow().value().getSupporters();
         if (!supporters.isEmpty()) {
             if (Screen.hasControlDown() || !Umapyoi.CONFIG.TOOLTIP_SWITCH()) {
-                tooltip.add(Component.translatable("tooltip.umapyoi.supporters").withStyle(ChatFormatting.AQUA));
-                supporters.forEach(name -> tooltip
-                        .add(UmaSoulUtils.getTranslatedUmaName(name).copy().withStyle(ChatFormatting.GRAY)));
+                tooltipAdder.accept(Component.translatable("tooltip.umapyoi.supporters").withStyle(ChatFormatting.AQUA));
+                supporters.forEach(name -> tooltipAdder
+                        .accept(UmaSoulUtils.getTranslatedUmaName(name).copy().withStyle(ChatFormatting.GRAY)));
             } else {
-                tooltip.add(Component.translatable("tooltip.umapyoi.support_card.press_ctrl_for_supporters")
+                tooltipAdder.accept(Component.translatable("tooltip.umapyoi.support_card.press_ctrl_for_supporters")
                         .withStyle(ChatFormatting.AQUA));
             }
         }
@@ -158,7 +156,8 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
                 return false;
             var item = itemstack.getItem();
             if (item instanceof UmaSoulItem) {
-                UmaData data = UmapyoiAPI.getUmaDataRegistry(level).get(UmaSoulUtils.getName(itemstack));
+                UmaData data = UmapyoiAPI.getUmaDataRegistry(level).get(UmaSoulUtils.getName(itemstack))
+                        .orElseThrow().value();
                 return !(this.getSupportCard(level.registryAccess(), stack).getSupporters().contains(data.identifier()));
             }
             if (item instanceof SupportCardItem) {

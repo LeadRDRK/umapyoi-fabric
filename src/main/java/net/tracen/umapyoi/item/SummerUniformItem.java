@@ -6,6 +6,10 @@ import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.utils.ClientUtils;
 
 public class SummerUniformItem extends AbstractSuitItem {
+    public SummerUniformItem(Properties p) {
+        super(p);
+    }
+
     @Override
     protected ResourceLocation getModel(ItemStack stack) {
         return ClientUtils.SUMMER_UNIFORM;

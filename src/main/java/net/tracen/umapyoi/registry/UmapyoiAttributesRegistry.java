@@ -17,10 +17,6 @@ public class UmapyoiAttributesRegistry {
             "attribute.umapyoi.generic.step_height_addition",
             0.0D, -512.0D, 512.0D, true);
 
-    public static final Holder<Attribute> SWIM_SPEED = register("swim_speed",
-            "attribute.umapyoi.generic.swim_speed",
-            1.0D, 0.0D, 1024.0D, true);
-
     private static Holder<Attribute> register(
             String path, String descriptionId, double defaultValue, double minValue, double maxValue, boolean syncedWithClient
     ) {

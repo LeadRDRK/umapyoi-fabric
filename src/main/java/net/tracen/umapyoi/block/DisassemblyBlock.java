@@ -12,7 +12,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
@@ -47,8 +46,8 @@ public class DisassemblyBlock extends Block {
             Block.box(0.0D, 12.0D, 6.333333D, 16.0D, 16.0D, 10.666667D),
             Block.box(0.0D, 14.0D, 2.0D, 16.0D, 18.0D, 6.333333D), SHAPE_COMMON);
     
-    public DisassemblyBlock() {
-        super(Properties.ofLegacyCopy(Blocks.OAK_WOOD));
+    public DisassemblyBlock(Properties p) {
+        super(p);
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 

@@ -4,14 +4,17 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "AnvilMenuMixin",
-    "PlayerMixin",
+    "LivingEntityMixin",
     "PlayerFoodExhaustionMixin",
-    "ServerPlayerMixin",
-    "ServerPlayerAccessor",
-    "LivingEntityMixin"
+    "PlayerMixin",
+    "ServerPlayerMixin"
   ],
   "client": [
+    "client.HumanoidMobRendererMixin",
     "client.ItemInHandLayerMixin",
+    "client.ItemInHandRendererMixin",
+    "client.LivingEntityRendererMixin",
+    "client.LivingEntityRenderStateMixin",
     "client.PlayerModelMixin",
     "client.PlayerRendererMixin"
   ],

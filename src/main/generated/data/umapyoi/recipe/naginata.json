@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "A": {
-      "item": "minecraft:stick"
-    },
-    "J": {
-      "item": "umapyoi:horseshoe_rainbow"
-    },
-    "L": {
-      "item": "minecraft:lightning_rod"
-    }
+    "A": "minecraft:stick",
+    "J": "umapyoi:horseshoe_rainbow",
+    "L": "minecraft:lightning_rod"
   },
   "pattern": [
     "  J",

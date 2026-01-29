@@ -122,12 +122,12 @@ public class UmaPedestalBlockEntity extends AbstractPedestalBlockEntity implemen
         ResourceLocation holder = keys.stream().skip(keys.isEmpty() ? 0 : rand.nextInt(keys.size())).findFirst()
                 .orElse(UmaDataRegistry.COMMON_UMA.location());
 
-//        ItemStack result = ItemRegistry.BLANK_UMA_SOUL.get().getDefaultInstance();
+//        ItemStack result = ItemRegistry.BLANK_UMA_SOUL.getDefaultInstance();
 //        UmaData data = registry.get(holder);
 //        result.getOrCreateTag().putString("name", holder.toString());
 //        result.getOrCreateTag().putString("identifier", data.getIdentifier().toString());
 //        result.getOrCreateTag().putString("ranking", data.getGachaRanking().toString().toLowerCase());
-        ItemStack result = FadedUmaSoulItem.genUmaSoul(holder, registry.get(holder));
+        ItemStack result = FadedUmaSoulItem.genUmaSoul(holder, registry.get(holder).orElseThrow().value());
         return result;
     }
 
@@ -178,7 +178,7 @@ public class UmaPedestalBlockEntity extends AbstractPedestalBlockEntity implemen
         super.loadAdditional(compound, registries);
         clearContent();
         ContainerHelper.loadAllItems(compound, items, registries);
-        recipeTime = compound.getInt("RecipeTime");
+        recipeTime = compound.getInt("RecipeTime").orElse(0);
     }
 
     @Override
@@ -234,9 +234,9 @@ public class UmaPedestalBlockEntity extends AbstractPedestalBlockEntity implemen
                 return resloc.equals(input.get(DataComponentsTypeRegistry.DATA_LOCATION.get()));
             }
             if (input.is(UmapyoiItemTags.SSR_UMA_TICKET))
-                return UmapyoiAPI.getUmaDataRegistry(level).get(resloc).ranking() == GachaRanking.SSR;
+                return UmapyoiAPI.getUmaDataRegistry(level).get(resloc).orElseThrow().value().ranking() == GachaRanking.SSR;
             if (input.is(UmapyoiItemTags.COMMON_GACHA_ITEM))
-                return UmapyoiAPI.getUmaDataRegistry(level).get(resloc).ranking() == GachaRanking.R;
+                return UmapyoiAPI.getUmaDataRegistry(level).get(resloc).orElseThrow().value().ranking() == GachaRanking.R;
             boolean cfgFlag = GachaUtils.checkGachaConfig();
             int gacha_roll;
             int ssrHit = cfgFlag ? Umapyoi.CONFIG.GACHA_PROBABILITY_SSR()
@@ -247,13 +247,13 @@ public class UmaPedestalBlockEntity extends AbstractPedestalBlockEntity implemen
                                 ? Umapyoi.CONFIG.GACHA_PROBABILITY_SUM() - Umapyoi.CONFIG.GACHA_PROBABILITY_R()
                                 : 30);
 
-                return UmapyoiAPI.getUmaDataRegistry(level).get(resloc)
+                return UmapyoiAPI.getUmaDataRegistry(level).get(resloc).orElseThrow().value()
                         .ranking() == (gacha_roll < ssrHit ? GachaRanking.SSR : GachaRanking.SR);
             }
             gacha_roll = level.getRandom().nextInt(
                     cfgFlag ? Umapyoi.CONFIG.GACHA_PROBABILITY_SUM() : UmapyoiConfigModel.DEFAULT_GACHA_PROBABILITY_SUM);
             int srHit = ssrHit + (cfgFlag ? Umapyoi.CONFIG.GACHA_PROBABILITY_SR() : UmapyoiConfigModel.DEFAULT_GACHA_PROBABILITY_SR);
-            return UmapyoiAPI.getUmaDataRegistry(level).get(resloc)
+            return UmapyoiAPI.getUmaDataRegistry(level).get(resloc).orElseThrow().value()
                     .ranking() == (gacha_roll < ssrHit ? GachaRanking.SSR
                             : gacha_roll < srHit ? GachaRanking.SR : GachaRanking.R);
         };

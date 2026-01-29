@@ -72,7 +72,7 @@ public class ThreeGoddessBlockEntity extends SyncedInventoryEntity implements Ex
                 UmaData.DEFAULT_UMA_ID
         );
         if(slot == 0) {
-            if (stack.is(ItemRegistry.BLANK_UMA_SOUL.get())) {
+            if (stack.is(ItemRegistry.BLANK_UMA_SOUL)) {
                 ResourceLocation name = stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
 
                 return !((fatherSlot.isEmpty() ? false : name.equals(fatherName))
@@ -81,7 +81,7 @@ public class ThreeGoddessBlockEntity extends SyncedInventoryEntity implements Ex
             return false;
         }
         else if(slot == 1) {
-            boolean result = stack.is(ItemRegistry.UMA_FACTOR_ITEM.get());
+            boolean result = stack.is(ItemRegistry.UMA_FACTOR_ITEM);
             boolean factorFlag = false;
             ResourceLocation name = stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
             var soulStack = this.getItem(0);
@@ -94,7 +94,7 @@ public class ThreeGoddessBlockEntity extends SyncedInventoryEntity implements Ex
             return result && !soulFlag && !factorFlag;
         }
         else if(slot == 2) {
-            boolean result = stack.is(ItemRegistry.UMA_FACTOR_ITEM.get());
+            boolean result = stack.is(ItemRegistry.UMA_FACTOR_ITEM);
             boolean factorFlag = false;
             ResourceLocation name = stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
             var soulStack = this.getItem(0);
@@ -192,7 +192,7 @@ public class ThreeGoddessBlockEntity extends SyncedInventoryEntity implements Ex
 
         UmaData data = registry.getOptional(name).orElse(UmaData.DEFAULT_UMA);
 
-        ItemStack result = UmaSoulUtils.initUmaSoul(ItemRegistry.UMA_SOUL.get().getDefaultInstance(), name, data)
+        ItemStack result = UmaSoulUtils.initUmaSoul(ItemRegistry.UMA_SOUL.getDefaultInstance(), name, data)
                 .copy();
 
         if (!left.isEmpty() && !right.isEmpty()) {
@@ -241,7 +241,7 @@ public class ThreeGoddessBlockEntity extends SyncedInventoryEntity implements Ex
         super.loadAdditional(compound, registries);
         clearContent();
         ContainerHelper.loadAllItems(compound, items, registries);
-        recipeTime = compound.getInt("RecipeTime");
+        recipeTime = compound.getInt("RecipeTime").orElse(0);
     }
 
     @Override

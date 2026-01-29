@@ -13,10 +13,14 @@ import net.tracen.umapyoi.Umapyoi;
 public class BaseballBatItem extends UmaWeaponItem {
     private static final ResourceLocation KNOCKBACK_ID = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "knockback");
 
-    public BaseballBatItem() {
-        super(createMaterial(), 6, -2.7F, Umapyoi.defaultItemProperties()
+    public BaseballBatItem(Properties p) {
+        super(createMaterial(), 6, -2.7F, p);
+    }
+
+    public static Properties createProperties() {
+        return Umapyoi.defaultItemProperties()
                 .stacksTo(1)
-                .attributes(createAttributes()));
+                .attributes(createAttributes());
     }
 
     private static ItemAttributeModifiers createAttributes() {

@@ -2,27 +2,13 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:carrot"
-    },
-    {
-      "item": "minecraft:carrot"
-    },
-    {
-      "item": "minecraft:wheat"
-    },
-    {
-      "item": "minecraft:egg"
-    },
-    {
-      "tag": "c:sugar"
-    },
-    {
-      "tag": "c:sugar"
-    },
-    {
-      "tag": "c:buckets/milk"
-    }
+    "minecraft:carrot",
+    "minecraft:carrot",
+    "minecraft:wheat",
+    "minecraft:egg",
+    "#c:sugar",
+    "#c:sugar",
+    "#c:buckets/milk"
   ],
   "result": {
     "count": 1,

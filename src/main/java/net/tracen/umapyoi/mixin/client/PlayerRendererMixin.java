@@ -12,12 +12,15 @@ import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
+import net.tracen.umapyoi.client.renderer.ItemInHandRendererMixinState;
 import net.tracen.umapyoi.events.client.RenderArmCallback;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
 @Mixin(PlayerRenderer.class)
@@ -30,9 +33,9 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
     private void renderRightHand(PoseStack poseStack, MultiBufferSource bufferSource, int packedLight,
                                  ResourceLocation skinTexture, boolean isSleeveVisible,
                                  CallbackInfo info) {
-        if (RenderArmCallback.invoke(new RenderArmCallback.Context(
-                EntityRenderDispatcherMixin.lastClientPlayer, LivingEntityRendererMixin.lastPlayerRenderState,
-                poseStack, bufferSource, packedLight, skinTexture, isSleeveVisible, HumanoidArm.RIGHT)))
+        var player = Objects.requireNonNull(ItemInHandRendererMixinState.player);
+        if (RenderArmCallback.invoke(new RenderArmCallback.Context(player, poseStack, bufferSource,
+                packedLight, skinTexture, isSleeveVisible, HumanoidArm.RIGHT)))
             info.cancel();
     }
 
@@ -40,9 +43,9 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
     private void renderLeftHand(PoseStack poseStack, MultiBufferSource bufferSource, int packedLight,
                                 ResourceLocation skinTexture, boolean isSleeveVisible,
                                 CallbackInfo info) {
-        if (RenderArmCallback.invoke(new RenderArmCallback.Context(
-                EntityRenderDispatcherMixin.lastClientPlayer, LivingEntityRendererMixin.lastPlayerRenderState,
-                poseStack, bufferSource, packedLight, skinTexture, isSleeveVisible, HumanoidArm.LEFT)))
+        var player = Objects.requireNonNull(ItemInHandRendererMixinState.player);
+        if (RenderArmCallback.invoke(new RenderArmCallback.Context(player, poseStack, bufferSource,
+                packedLight, skinTexture, isSleeveVisible, HumanoidArm.LEFT)))
             info.cancel();
     }
 }

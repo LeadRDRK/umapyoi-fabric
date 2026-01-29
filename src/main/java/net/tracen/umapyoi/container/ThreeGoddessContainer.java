@@ -108,7 +108,7 @@ public class ThreeGoddessContainer extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player playerIn) {
-        return stillValid(canInteractWithCallable, playerIn, BlockRegistry.THREE_GODDESS.get());
+        return stillValid(canInteractWithCallable, playerIn, BlockRegistry.THREE_GODDESS);
     }
 
     @Environment(EnvType.CLIENT)

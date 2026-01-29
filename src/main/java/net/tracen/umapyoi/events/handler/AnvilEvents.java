@@ -59,109 +59,114 @@ public class AnvilEvents {
         }
 
         public Optional<AnvilUpdateCallback.Result> suzunaSoul() {
-            if(!soul.is(ItemRegistry.BLANK_UMA_SOUL.get())) return Optional.empty();
+            if(!soul.is(ItemRegistry.BLANK_UMA_SOUL)) return Optional.empty();
             if(!material.is(Items.DIAMOND_SWORD)) return Optional.empty();
             if(!itemName.equalsIgnoreCase("priconne")) return Optional.empty();
             var registry = UmapyoiAPI.getUmaDataRegistry(player.level());
             ResourceLocation name = soul.has(DataComponentsTypeRegistry.DATA_LOCATION.get()) ?
         		soul.get(DataComponentsTypeRegistry.DATA_LOCATION.get()) : UmaDataRegistry.COMMON_UMA.location();
-            if(!registry.containsKey(name) || registry.get(name).ranking() != GachaRanking.R) return Optional.empty();
+            if(!registry.containsKey(name)
+                    || registry.get(name).orElseThrow().value().ranking() != GachaRanking.R) return Optional.empty();
 
             var id = UmaDataRegistry.SHENONE_SUZUNA.location();
             if(!registry.containsKey(id)) return Optional.empty();
-            ItemStack egg = FadedUmaSoulItem.genUmaSoul(id, registry.get(id));
+            ItemStack egg = FadedUmaSoulItem.genUmaSoul(id, registry.get(id).orElseThrow().value());
 
             return Optional.of(AnvilUpdateCallback.Result.pass(egg.copy(), 5, 1));
         }
 
         public Optional<AnvilUpdateCallback.Result> tycheSoul() {
-            if(!soul.is(ItemRegistry.BLANK_UMA_SOUL.get())) return Optional.empty();
+            if(!soul.is(ItemRegistry.BLANK_UMA_SOUL)) return Optional.empty();
             if(!material.is(Items.FEATHER)) return Optional.empty();
             if(!itemName.equalsIgnoreCase("tyche")) return Optional.empty();
             var registry = UmapyoiAPI.getUmaDataRegistry(player.level());
             ResourceLocation name = soul.has(DataComponentsTypeRegistry.DATA_LOCATION.get()) ?
         		soul.get(DataComponentsTypeRegistry.DATA_LOCATION.get()) : UmaDataRegistry.COMMON_UMA.location();
-            if(!registry.containsKey(name) || !registry.get(name).identifier().equals(UmaDataRegistry.COMMON_UMA.location())) return Optional.empty();
+            if(!registry.containsKey(name)
+                    || !registry.get(name).orElseThrow().value().identifier().equals(UmaDataRegistry.COMMON_UMA.location())) return Optional.empty();
 
             var id = UmaDataRegistry.TYCHE.location();
             if(!registry.containsKey(id)) return Optional.empty();
-            ItemStack egg = FadedUmaSoulItem.genUmaSoul(id, registry.get(id));
+            ItemStack egg = FadedUmaSoulItem.genUmaSoul(id, registry.get(id).orElseThrow().value());
 
             return Optional.of(AnvilUpdateCallback.Result.pass(egg.copy(), 5, 1));
         }
 
         public Optional<AnvilUpdateCallback.Result> miyaSoul() {
-            if(!soul.is(ItemRegistry.BLANK_UMA_SOUL.get())) return Optional.empty();
+            if(!soul.is(ItemRegistry.BLANK_UMA_SOUL)) return Optional.empty();
             if(!material.is(UmapyoiItemTags.BAMBOO)) return Optional.empty();
             var registry = UmapyoiAPI.getUmaDataRegistry(player.level());
             ResourceLocation name = soul.has(DataComponentsTypeRegistry.DATA_LOCATION.get()) ?
         		soul.get(DataComponentsTypeRegistry.DATA_LOCATION.get()) : UmaDataRegistry.COMMON_UMA.location();
-            if(!registry.containsKey(name) || registry.get(name).ranking() != GachaRanking.R) return Optional.empty();
+            if(!registry.containsKey(name)
+                    || registry.get(name).orElseThrow().value().ranking() != GachaRanking.R) return Optional.empty();
 
             var id = UmaDataRegistry.MIYA_YOMOGI.location();
             if(!registry.containsKey(id)) return Optional.empty();
-            ItemStack egg = FadedUmaSoulItem.genUmaSoul(id, registry.get(id));
+            ItemStack egg = FadedUmaSoulItem.genUmaSoul(id, registry.get(id).orElseThrow().value());
 
             return Optional.of(AnvilUpdateCallback.Result.pass(egg.copy(), 5, 1));
         }
 
         public Optional<AnvilUpdateCallback.Result> venusParkSoul() {
-            if(!soul.is(ItemRegistry.BLANK_UMA_SOUL.get())) return Optional.empty();
+            if(!soul.is(ItemRegistry.BLANK_UMA_SOUL)) return Optional.empty();
             if(!material.is(ConventionalItemTags.BREADS_FOODS)) return Optional.empty();
             if(!itemName.equalsIgnoreCase("vivelafrance")) return Optional.empty();
 
             var registry = UmapyoiAPI.getUmaDataRegistry(player.level());
             ResourceLocation name = soul.has(DataComponentsTypeRegistry.DATA_LOCATION.get()) ?
         		soul.get(DataComponentsTypeRegistry.DATA_LOCATION.get()) : UmaDataRegistry.COMMON_UMA.location();
-            if(!registry.containsKey(name) || registry.get(name).ranking() != GachaRanking.R) return Optional.empty();
+            if(!registry.containsKey(name)
+                    || registry.get(name).orElseThrow().value().ranking() != GachaRanking.R) return Optional.empty();
 
             var id = UmaDataRegistry.VENUS_PARK.location();
             if(!registry.containsKey(id)) return Optional.empty();
-            ItemStack egg = ItemRegistry.BLANK_UMA_SOUL.get().getDefaultInstance();
+            ItemStack egg = ItemRegistry.BLANK_UMA_SOUL.getDefaultInstance();
             egg.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), id);
 
             return Optional.of(AnvilUpdateCallback.Result.pass(egg.copy(), 5, 1));
         }
 
         public Optional<AnvilUpdateCallback.Result> zhengSoul() {
-            if(!soul.is(ItemRegistry.BLANK_UMA_SOUL.get())) return Optional.empty();
+            if(!soul.is(ItemRegistry.BLANK_UMA_SOUL)) return Optional.empty();
             if(!material.is(Items.FEATHER)) return Optional.empty();
 
             var registry = UmapyoiAPI.getUmaDataRegistry(player.level());
             ResourceLocation name = soul.has(DataComponentsTypeRegistry.DATA_LOCATION.get()) ?
         		soul.get(DataComponentsTypeRegistry.DATA_LOCATION.get()) : UmaDataRegistry.COMMON_UMA.location();
             if(!registry.containsKey(name) ||
-                    !registry.get(name).identifier().equals(UmaDataRegistry.AGNUS_TACHYON.location())) // meant to compare with identifier, but it's the same here
+                    !registry.get(name).orElseThrow().value().identifier().equals(UmaDataRegistry.AGNUS_TACHYON.location())) // meant to compare with identifier, but it's the same here
                 return Optional.empty();
 
             var id = UmaDataRegistry.SYAMEIMARU_ZHENG.location();
             if(!registry.containsKey(id)) return Optional.empty();
-            ItemStack egg = ItemRegistry.BLANK_UMA_SOUL.get().getDefaultInstance();
+            ItemStack egg = ItemRegistry.BLANK_UMA_SOUL.getDefaultInstance();
             egg.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), id);
 
             return Optional.of(AnvilUpdateCallback.Result.pass(egg.copy(), 5, 1));
         }
 
         public Optional<AnvilUpdateCallback.Result> dumnheintSoul() {
-            if(!soul.is(ItemRegistry.BLANK_UMA_SOUL.get())) return Optional.empty();
+            if(!soul.is(ItemRegistry.BLANK_UMA_SOUL)) return Optional.empty();
             if(!material.is(Items.GUNPOWDER)) return Optional.empty();
             if(!itemName.equalsIgnoreCase("kino")) return Optional.empty();
             var registry = UmapyoiAPI.getUmaDataRegistry(player.level());
             ResourceLocation name = soul.has(DataComponentsTypeRegistry.DATA_LOCATION.get()) ?
         		soul.get(DataComponentsTypeRegistry.DATA_LOCATION.get()) : UmaDataRegistry.COMMON_UMA.location();
-            if(!registry.containsKey(name) || registry.get(name).ranking() != GachaRanking.R) return Optional.empty();
+            if(!registry.containsKey(name)
+                    || registry.get(name).orElseThrow().value().ranking() != GachaRanking.R) return Optional.empty();
 
             var id = UmaDataRegistry.DUMNHEINT.location();
             if(!registry.containsKey(id)) return Optional.empty();
-            ItemStack egg = ItemRegistry.BLANK_UMA_SOUL.get().getDefaultInstance();
+            ItemStack egg = ItemRegistry.BLANK_UMA_SOUL.getDefaultInstance();
             egg.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), id);
 
             return Optional.of(AnvilUpdateCallback.Result.pass(egg.copy(), 5, 1));
         }
 
         public Optional<AnvilUpdateCallback.Result> darleySoul() {
-            if(!soul.is(ItemRegistry.BLANK_UMA_SOUL.get())) return Optional.empty();
-            if(!material.is(ItemRegistry.THREE_GODDESS.get())) return Optional.empty();
+            if(!soul.is(ItemRegistry.BLANK_UMA_SOUL)) return Optional.empty();
+            if(!material.is(ItemRegistry.THREE_GODDESS)) return Optional.empty();
 
             if(!itemName.equalsIgnoreCase("darley")) return Optional.empty();
 
@@ -169,15 +174,15 @@ public class AnvilEvents {
 
             var id = UmaDataRegistry.DARLEY_ARABIAN.location();
             if(!registry.containsKey(id)) return Optional.empty();
-            ItemStack egg = ItemRegistry.BLANK_UMA_SOUL.get().getDefaultInstance();
+            ItemStack egg = ItemRegistry.BLANK_UMA_SOUL.getDefaultInstance();
             egg.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), id);
 
             return Optional.of(AnvilUpdateCallback.Result.pass(egg.copy(), 5, 1));
         }
 
         public Optional<AnvilUpdateCallback.Result> byerleySoul() {
-            if(!soul.is(ItemRegistry.BLANK_UMA_SOUL.get())) return Optional.empty();
-            if(!material.is(ItemRegistry.THREE_GODDESS.get())) return Optional.empty();
+            if(!soul.is(ItemRegistry.BLANK_UMA_SOUL)) return Optional.empty();
+            if(!material.is(ItemRegistry.THREE_GODDESS)) return Optional.empty();
 
             if(!itemName.equalsIgnoreCase("byerley")) return Optional.empty();
 
@@ -185,15 +190,15 @@ public class AnvilEvents {
 
             var id = UmaDataRegistry.BYERLEY_TURK.location();
             if(!registry.containsKey(id)) return Optional.empty();
-            ItemStack egg = ItemRegistry.BLANK_UMA_SOUL.get().getDefaultInstance();
+            ItemStack egg = ItemRegistry.BLANK_UMA_SOUL.getDefaultInstance();
             egg.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), id);
 
             return Optional.of(AnvilUpdateCallback.Result.pass(egg.copy(), 5, 1));
         }
 
         public Optional<AnvilUpdateCallback.Result> godolphinSoul() {
-            if(!soul.is(ItemRegistry.BLANK_UMA_SOUL.get())) return Optional.empty();
-            if(!material.is(ItemRegistry.THREE_GODDESS.get())) return Optional.empty();
+            if(!soul.is(ItemRegistry.BLANK_UMA_SOUL)) return Optional.empty();
+            if(!material.is(ItemRegistry.THREE_GODDESS)) return Optional.empty();
 
             if(!itemName.equalsIgnoreCase("godolphin")) return Optional.empty();
 
@@ -201,7 +206,7 @@ public class AnvilEvents {
 
             var id = UmaDataRegistry.GODOLPHIN_BARB.location();
             if(!registry.containsKey(id)) return Optional.empty();
-            ItemStack egg = ItemRegistry.BLANK_UMA_SOUL.get().getDefaultInstance();
+            ItemStack egg = ItemRegistry.BLANK_UMA_SOUL.getDefaultInstance();
             egg.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), id);
 
             return Optional.of(AnvilUpdateCallback.Result.pass(egg.copy(), 5, 1));

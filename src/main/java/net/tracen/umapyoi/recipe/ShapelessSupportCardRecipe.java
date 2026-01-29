@@ -15,20 +15,21 @@ import net.tracen.umapyoi.registry.training.card.SupportCard;
 
 public class ShapelessSupportCardRecipe extends ShapelessRecipe {
 
-    public static final RecipeSerializer<ShapelessSupportCardRecipe> SERIALIZER = new SupportCardRecipeSerializer<>(
+    public static final RecipeSerializer<ShapelessRecipe> SERIALIZER = new SupportCardRecipeSerializer<>(
             RecipeSerializer.SHAPELESS_RECIPE, ShapelessSupportCardRecipe::new);
 
     private final ResourceLocation outputUma;
 
     public ShapelessSupportCardRecipe(ShapelessRecipe compose, ResourceLocation outputBlade) {
-        super(compose.getGroup(), compose.category(),
-                getResultItem(outputBlade), compose.getIngredients());
+        super(compose.group(), compose.category(),
+                getResultItem(outputBlade), compose.placementInfo().ingredients());
         this.outputUma = outputBlade;
     }
 
     private static ItemStack getResultItem(ResourceLocation outputBlade) {
-        Item bladeItem = BuiltInRegistries.ITEM.containsKey(outputBlade) ? BuiltInRegistries.ITEM.get(outputBlade)
-                : ItemRegistry.SUPPORT_CARD.get();
+        Item bladeItem = BuiltInRegistries.ITEM.containsKey(outputBlade)
+                ? BuiltInRegistries.ITEM.get(outputBlade).orElseThrow().value()
+                : ItemRegistry.SUPPORT_CARD;
 
         return bladeItem.getDefaultInstance();
     }
@@ -39,11 +40,6 @@ public class ShapelessSupportCardRecipe extends ShapelessRecipe {
 
     @Override
     public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
-        return this.getResultItem(registries).copy();
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
         ItemStack result = getResultItem(outputUma).copy();
         if(registries == RegistryAccess.EMPTY)
             return result;
@@ -60,8 +56,9 @@ public class ShapelessSupportCardRecipe extends ShapelessRecipe {
         }
         return result;
     }
+
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<ShapelessRecipe> getSerializer() {
         return SERIALIZER;
     }
 

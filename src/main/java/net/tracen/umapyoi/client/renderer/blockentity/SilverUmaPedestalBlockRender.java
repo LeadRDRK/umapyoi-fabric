@@ -13,6 +13,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.block.SilverUmaPedestalBlock;
 import net.tracen.umapyoi.block.entity.SilverUmaPedestalBlockEntity;
@@ -23,11 +24,11 @@ public class SilverUmaPedestalBlockRender implements BlockEntityRenderer<SilverU
 
     @Override
     public void render(SilverUmaPedestalBlockEntity tileEntity, float partialTicks, PoseStack poseStack,
-                       MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
+                       MultiBufferSource buffer, int combinedLight, int combinedOverlay, Vec3 cameraPos) {
         Level world = tileEntity.getLevel();
         boolean flag = world != null;
         BlockState blockstate = flag ? tileEntity.getBlockState()
-                : BlockRegistry.SILVER_UMA_PEDESTAL.get().defaultBlockState();
+                : BlockRegistry.SILVER_UMA_PEDESTAL.defaultBlockState();
         if (blockstate.getBlock() instanceof SilverUmaPedestalBlock) {
             renderAnimation(tileEntity, partialTicks, poseStack, buffer, combinedLight, combinedOverlay);
         }

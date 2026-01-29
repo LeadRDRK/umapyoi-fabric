@@ -77,7 +77,7 @@ public class RetireRegisterMenu extends AbstractContainerMenu {
     }
 
     protected void onTake(Player player, ItemStack resultStack) {
-        resultStack.onCraftedBy(player.level(), player, resultStack.getCount());
+        resultStack.onCraftedBy(player, resultStack.getCount());
         this.resultSlots.awardUsedRecipes(player, List.of(resultStack));
         ItemStack inputSoul = this.inputSlots.getItem(0).copy();
         if (inputSoul.getItem() instanceof UmaSoulItem) {
@@ -90,7 +90,7 @@ public class RetireRegisterMenu extends AbstractContainerMenu {
     }
 
     protected boolean isValidBlock(BlockState pState) {
-        return pState.is(BlockRegistry.REGISTER_LECTERN.get());
+        return pState.is(BlockRegistry.REGISTER_LECTERN);
     }
 
     public RetireRegisterMenu(int pContainerId, Inventory pPlayerInventory) {
@@ -157,7 +157,7 @@ public class RetireRegisterMenu extends AbstractContainerMenu {
     }
 
     private ItemStack getResultItem() {
-        ItemStack result = ItemRegistry.UMA_FACTOR_ITEM.get().getDefaultInstance();
+        ItemStack result = ItemRegistry.UMA_FACTOR_ITEM.getDefaultInstance();
         ItemStack inputSoul = this.inputSlots.getItem(0).copy();
         if (!(inputSoul.getItem() instanceof UmaSoulItem))
             return ItemStack.EMPTY;
@@ -216,7 +216,7 @@ public class RetireRegisterMenu extends AbstractContainerMenu {
     public void createSkillFactors(ItemStack inputSoul, int ranking, List<UmaFactorStack> stackList) {
         UmaSoulUtils.getSkills(inputSoul).stream().skip(1).forEach(skillTag -> {
             if (skillTag != null && UmaSkillRegistry.REGISTRY.get().containsKey(skillTag)) {
-                UmaSkill result = UmaSkillRegistry.REGISTRY.get().get(skillTag);
+                UmaSkill result = UmaSkillRegistry.REGISTRY.get().get(skillTag).orElseThrow().value();
                 if(!result.isInheritable())
                     return;
 

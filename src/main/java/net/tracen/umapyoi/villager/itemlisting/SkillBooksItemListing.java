@@ -35,7 +35,7 @@ public class SkillBooksItemListing implements ItemListing {
             j = 64;
         }
 
-        return new MerchantOffer(new ItemCost(ItemRegistry.JEWEL.get(), j), itemstack, 12,
+        return new MerchantOffer(new ItemCost(ItemRegistry.JEWEL, j), itemstack, 12,
                 this.villagerXp, 0.2F);
     }
 }

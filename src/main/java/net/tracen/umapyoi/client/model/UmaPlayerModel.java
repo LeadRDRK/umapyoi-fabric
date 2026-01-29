@@ -10,11 +10,9 @@ import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.tracen.umapyoi.Umapyoi;
-import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.client.model.bedrock.BedrockPart;
 import net.tracen.umapyoi.client.model.pojo.BedrockModelPOJO;
 import net.tracen.umapyoi.data.tag.UmapyoiUmaDataTags;
@@ -43,9 +41,6 @@ public class UmaPlayerModel<T extends HumanoidRenderState> extends BedrockHumano
     public BedrockPart tailDown;
 
     public BedrockPart cape;
-
-    private int earTailEntropy = 0; // 0 to 9
-    private boolean isStuck = false;
 
     public List<BedrockPart> longHairParts = Lists.newArrayList();
     public UmaPlayerModel() {
@@ -92,49 +87,55 @@ public class UmaPlayerModel<T extends HumanoidRenderState> extends BedrockHumano
     }
 
     @Override
-    public void setupAnim(T entityIn, float pLimbSwing, float pLimbSwingAmount) {
+    public void setupAnim(T entityIn) {
         if (entityIn instanceof ArmorStandRenderState entityarmorstand) {
-            this.head.xRot = 0.017453292F * entityarmorstand.headPose.getX();
-            this.head.yRot = 0.017453292F * entityarmorstand.headPose.getY();
-            this.head.zRot = 0.017453292F * entityarmorstand.headPose.getZ();
+            this.head.xRot = 0.017453292F * entityarmorstand.headPose.x();
+            this.head.yRot = 0.017453292F * entityarmorstand.headPose.y();
+            this.head.zRot = 0.017453292F * entityarmorstand.headPose.z();
             this.head.setPos(0.0F, 1.0F, 0.0F);
-            this.body.xRot = 0.017453292F * entityarmorstand.bodyPose.getX();
-            this.body.yRot = 0.017453292F * entityarmorstand.bodyPose.getY();
-            this.body.zRot = 0.017453292F * entityarmorstand.bodyPose.getZ();
-            this.leftArm.xRot = 0.017453292F * entityarmorstand.leftArmPose.getX();
-            this.leftArm.yRot = 0.017453292F * entityarmorstand.leftArmPose.getY();
-            this.leftArm.zRot = 0.017453292F * entityarmorstand.leftArmPose.getZ();
-            this.rightArm.xRot = 0.017453292F * entityarmorstand.rightArmPose.getX();
-            this.rightArm.yRot = 0.017453292F * entityarmorstand.rightArmPose.getY();
-            this.rightArm.zRot = 0.017453292F * entityarmorstand.rightArmPose.getZ();
-            this.leftLeg.xRot = 0.017453292F * entityarmorstand.leftLegPose.getX();
-            this.leftLeg.yRot = 0.017453292F * entityarmorstand.leftLegPose.getY();
-            this.leftLeg.zRot = 0.017453292F * entityarmorstand.leftLegPose.getZ();
+            this.body.xRot = 0.017453292F * entityarmorstand.bodyPose.x();
+            this.body.yRot = 0.017453292F * entityarmorstand.bodyPose.y();
+            this.body.zRot = 0.017453292F * entityarmorstand.bodyPose.z();
+            this.leftArm.xRot = 0.017453292F * entityarmorstand.leftArmPose.x();
+            this.leftArm.yRot = 0.017453292F * entityarmorstand.leftArmPose.y();
+            this.leftArm.zRot = 0.017453292F * entityarmorstand.leftArmPose.z();
+            this.rightArm.xRot = 0.017453292F * entityarmorstand.rightArmPose.x();
+            this.rightArm.yRot = 0.017453292F * entityarmorstand.rightArmPose.y();
+            this.rightArm.zRot = 0.017453292F * entityarmorstand.rightArmPose.z();
+            this.leftLeg.xRot = 0.017453292F * entityarmorstand.leftLegPose.x();
+            this.leftLeg.yRot = 0.017453292F * entityarmorstand.leftLegPose.y();
+            this.leftLeg.zRot = 0.017453292F * entityarmorstand.leftLegPose.z();
             this.leftLeg.setPos(1.9F, 11.0F, 0.0F);
-            this.rightLeg.xRot = 0.017453292F * entityarmorstand.rightLegPose.getX();
-            this.rightLeg.yRot = 0.017453292F * entityarmorstand.rightLegPose.getY();
-            this.rightLeg.zRot = 0.017453292F * entityarmorstand.rightLegPose.getZ();
+            this.rightLeg.xRot = 0.017453292F * entityarmorstand.rightLegPose.x();
+            this.rightLeg.yRot = 0.017453292F * entityarmorstand.rightLegPose.y();
+            this.rightLeg.zRot = 0.017453292F * entityarmorstand.rightLegPose.z();
             this.rightLeg.setPos(-1.9F, 11.0F, 0.0F);
         } else {
             this.tail.copyFrom(this.body);
 
             if (this.crouching) {
-                this.tail.xRot = 1.0F + pLimbSwingAmount * 0.5F;
+                this.tail.xRot = 1.0F + entityIn.walkAnimationSpeed * 0.5F;
                 this.tail.z = 3.125F;
                 this.tail.y = 11.0F;
-                this.cape.xRot = 1.0F + pLimbSwingAmount * 0.5F;
+                this.cape.xRot = 1.0F + entityIn.walkAnimationSpeed * 0.5F;
             } else {
-                this.tail.xRot = pLimbSwingAmount * 1F;
+                this.tail.xRot = entityIn.walkAnimationSpeed;
                 this.tail.z = 1.75F;
                 this.tail.y = 8.0F;
-                this.cape.xRot = pLimbSwingAmount * 1F;
+                this.cape.xRot = entityIn.walkAnimationSpeed;
             }
             if (this.head.xRot < 0) {
                 this.longHairParts.forEach(part -> part.xRot = -this.head.xRot);
             }
             else
                 this.longHairParts.forEach(part -> part.xRot = 0F);
-            if(!isStuck)
+
+            ItemStack renderingUmaSoul = entityIn.umapyoi$getUmaSoul();
+            boolean isStucked = ClientUtils.getClientUmaDataRegistry()
+                    .get(ResourceKey.create(UmaData.REGISTRY_KEY, UmaSoulUtils.getName(renderingUmaSoul)))
+                    .map(uma -> uma.is(UmapyoiUmaDataTags.STUCK_MODEL))
+                    .orElse(false);
+            if(!isStucked)
                 animationEarTail(entityIn, entityIn.ageInTicks);
         }
         this.hat.copyFrom(head);
@@ -142,9 +143,10 @@ public class UmaPlayerModel<T extends HumanoidRenderState> extends BedrockHumano
     }
 
     private void animationEarTail(T entityIn, float pAgeInTicks) {
-        int ears_reminder = (int) ((pAgeInTicks + earTailEntropy)
+        int earTailAnimationOffset = entityIn.umapyoi$getEarTailAnimationOffset();
+        int ears_reminder = (int) ((pAgeInTicks + earTailAnimationOffset)
                 % Umapyoi.CONFIG.EAR_ANIMATION_INTERVAL());
-        int tail_reminder = (int) ((pAgeInTicks + earTailEntropy)
+        int tail_reminder = (int) ((pAgeInTicks + earTailAnimationOffset)
                 % Umapyoi.CONFIG.TAIL_ANIMATION_INTERVAL());
         float earRot = Mth.cos(ears_reminder) * 0.125F;
         if (0 < ears_reminder && ears_reminder < 8) {
@@ -268,14 +270,5 @@ public class UmaPlayerModel<T extends HumanoidRenderState> extends BedrockHumano
 
     public void hideHat() {
         this.hat.visible = false;
-    }
-
-    public void setEntityProperties(LivingEntity entity) {
-        earTailEntropy = (int)Math.abs(entity.getUUID().getLeastSignificantBits()) % 10;
-        ItemStack renderingUmaSoul = UmapyoiAPI.getRenderingUmaSoul(entity);
-        isStuck = ClientUtils.getClientUmaDataRegistry()
-                .get(ResourceKey.create(UmaData.REGISTRY_KEY, UmaSoulUtils.getName(renderingUmaSoul)))
-                .map(uma -> uma.is(UmapyoiUmaDataTags.STUCK_MODEL))
-                .orElse(false);
     }
 }

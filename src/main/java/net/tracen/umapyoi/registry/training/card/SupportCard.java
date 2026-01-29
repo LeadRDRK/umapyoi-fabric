@@ -55,7 +55,7 @@ public class SupportCard extends RegistryNameHolder {
     }
 
     public static ItemStack init(ResourceLocation name, SupportCard card) {
-        ItemStack result = new ItemStack(ItemRegistry.SUPPORT_CARD.get());
+        ItemStack result = new ItemStack(ItemRegistry.SUPPORT_CARD);
         result.set(DataComponents.MAX_DAMAGE, card.getMaxDamage());
         result.set(DataComponents.DAMAGE, 0);
         result.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), name);
@@ -82,8 +82,8 @@ public class SupportCard extends RegistryNameHolder {
     public List<SupportStack> getSupportStacks() {
         List<SupportStack> result = Lists.newArrayList();
         this.getSupports().forEach(
-                sp -> result.add(new SupportStack(TrainingSupportRegistry.REGISTRY.get().get(sp.getFactor()),
-                        sp.getLevel(), sp.getTag())));
+                sp -> result.add(new SupportStack(TrainingSupportRegistry.REGISTRY.get()
+                        .get(sp.getFactor()).orElseThrow().value(), sp.getLevel(), sp.getTag())));
         return result;
     }
 

@@ -9,25 +9,24 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
-import net.tracen.umapyoi.Umapyoi;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.item.data.GachaRankingData;
 import net.tracen.umapyoi.registry.umadata.UmaData;
 import net.tracen.umapyoi.utils.GachaRanking;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class FadedUmaSoulItem extends Item implements CreativeModeTabFiller {
 
-    public FadedUmaSoulItem() {
-        super(Umapyoi.defaultItemProperties().stacksTo(1));
+    public FadedUmaSoulItem(Properties p) {
+        super(p);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents,
-                                TooltipFlag tooltipFlag) {
-        tooltipComponents.add(Component.translatable("tooltip.umapyoi.umadata.name",
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
+        tooltipAdder.accept(Component.translatable("tooltip.umapyoi.umadata.name",
                 UmaSoulUtils.getTranslatedUmaName(this.getUmaName(stack))).withStyle(ChatFormatting.GRAY));
     }
 
@@ -44,7 +43,7 @@ public class FadedUmaSoulItem extends Item implements CreativeModeTabFiller {
 
     public static ItemStack genUmaSoul(ResourceLocation name, UmaData data) {
         GachaRanking ranking = data.ranking();
-        ItemStack result = ItemRegistry.BLANK_UMA_SOUL.get().getDefaultInstance();
+        ItemStack result = ItemRegistry.BLANK_UMA_SOUL.getDefaultInstance();
         result.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), name);
         result.set(DataComponentsTypeRegistry.IDENTIFIER.get(), data.identifier());
         result.set(DataComponentsTypeRegistry.GACHA_RANKING.get(), new GachaRankingData(ranking));

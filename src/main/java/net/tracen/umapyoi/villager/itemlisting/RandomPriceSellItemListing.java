@@ -49,7 +49,7 @@ public class RandomPriceSellItemListing implements ItemListing {
 
         int count = Math.min(pRand.nextInt(minCount, maxCount + 1), 64);
         ItemCost cost = new ItemCost(itemStack.getItem(), count);
-        ItemStack itemstack1 = new ItemStack(ItemRegistry.JEWEL.get(), j);
+        ItemStack itemstack1 = new ItemStack(ItemRegistry.JEWEL, j);
         return new MerchantOffer(cost, itemstack1, this.maxUses, this.villagerXp, this.priceMultiplier);
     }
 }

@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": {
-      "item": "minecraft:iron_ingot"
-    },
-    "J": {
-      "item": "umapyoi:jewel"
-    },
-    "L": {
-      "item": "minecraft:crafting_table"
-    }
+    "I": "minecraft:iron_ingot",
+    "J": "umapyoi:jewel",
+    "L": "minecraft:crafting_table"
   },
   "pattern": [
     "IJI",

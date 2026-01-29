@@ -99,19 +99,20 @@ public class UmapyoiAPI {
     }
 
     public static boolean isSpecifyUmamusume(ItemStack soul, ResourceLocation identifier, Level level) {
-        return UmapyoiAPI.getUmaDataRegistry(level).get(UmaSoulUtils.getName(soul)).identifier().equals(identifier);
+        return UmapyoiAPI.getUmaDataRegistry(level).get(UmaSoulUtils.getName(soul))
+                .orElseThrow().value().identifier().equals(identifier);
     }
 
     public static Registry<UmaData> getUmaDataRegistry(Level level) {
         if (level.isClientSide())
             return ClientUtils.getClientUmaDataRegistry();
-        return level.registryAccess().registryOrThrow(UmaData.REGISTRY_KEY);
+        return level.registryAccess().lookupOrThrow(UmaData.REGISTRY_KEY);
     }
 
     public static Registry<SupportCard> getSupportCardRegistry(Level level) {
         if (level.isClientSide())
             return ClientUtils.getClientSupportCardRegistry();
-        return level.registryAccess().registryOrThrow(SupportCard.REGISTRY_KEY);
+        return level.registryAccess().lookupOrThrow(SupportCard.REGISTRY_KEY);
     }
 
     public static HolderLookup.RegistryLookup<UmaData> getUmaDataRegistry(HolderLookup.Provider provider) {

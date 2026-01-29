@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:honey_bottle"
-    },
-    {
-      "item": "minecraft:honey_bottle"
-    },
-    {
-      "tag": "c:sugar"
-    },
-    {
-      "tag": "c:sugar"
-    },
-    {
-      "tag": "c:buckets/water"
-    }
+    "minecraft:honey_bottle",
+    "minecraft:honey_bottle",
+    "#c:sugar",
+    "#c:sugar",
+    "#c:buckets/water"
   ],
   "result": {
     "count": 1,

@@ -2,6 +2,7 @@ package net.tracen.umapyoi.compat.jei.recipes;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -12,7 +13,6 @@ import net.tracen.umapyoi.utils.ClientUtils;
 import net.tracen.umapyoi.utils.GachaRanking;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -21,11 +21,13 @@ public final class UmapyoiJEIRecipes {
         var registry = ClientUtils.getClientUmaDataRegistry();
         var keys = registry.keySet();
         
-        List<ItemStack> input = Lists.newArrayList();
-        Collections.addAll(input, ingredient.getItems());
+        List<ItemStack> input = ingredient.items()
+                .map(Holder::value)
+                .map(ItemStack::new)
+                .toList();
         List<ItemStack> output = Lists.newArrayList();
         keys.stream().filter(UmapyoiJEIRecipes.umaSoulRanking(list)).forEach(key->{
-            ItemStack result = ItemRegistry.BLANK_UMA_SOUL.get().getDefaultInstance();
+            ItemStack result = ItemRegistry.BLANK_UMA_SOUL.getDefaultInstance();
             result.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), key);
             output.add(result);
         });
@@ -35,12 +37,14 @@ public final class UmapyoiJEIRecipes {
     public static JEISimpleRecipe gachaSupportCard(Ingredient ingredient, GachaRanking... list) {
         var registry = ClientUtils.getClientSupportCardRegistry();
         var keys = registry.keySet();
-        
-        List<ItemStack> input = Lists.newArrayList();
-        Collections.addAll(input, ingredient.getItems());
+
+        List<ItemStack> input = ingredient.items()
+                .map(Holder::value)
+                .map(ItemStack::new)
+                .toList();
         List<ItemStack> output = Lists.newArrayList();
         keys.stream().filter(UmapyoiJEIRecipes.supportCardRanking(list)).forEach(key->{
-            ItemStack result = SupportCard.init(key, registry.get(key));
+            ItemStack result = SupportCard.init(key, registry.get(key).orElseThrow().value());
             output.add(result);
         });
         return new JEISimpleRecipe(input, output);
@@ -52,8 +56,11 @@ public final class UmapyoiJEIRecipes {
         
         List<ItemStack> input = Lists.newArrayList();
         List<ItemStack> output = Lists.newArrayList(result);
-        keys.stream().filter(key->registry.get(key).ranking() == ranking).forEach(key->{
-            var initUmaSoul = UmaSoulUtils.initUmaSoul(ItemRegistry.UMA_SOUL.get().getDefaultInstance(), key, registry.get(key));
+        keys.stream().filter(key ->
+                registry.get(key).orElseThrow().value().ranking() == ranking
+        ).forEach(key -> {
+            var initUmaSoul = UmaSoulUtils.initUmaSoul(ItemRegistry.UMA_SOUL.getDefaultInstance(),
+                    key, registry.get(key).orElseThrow().value());
             UmaSoulUtils.setPhysique(initUmaSoul, 5);
             input.add(initUmaSoul);
         });
@@ -66,8 +73,10 @@ public final class UmapyoiJEIRecipes {
         
         List<ItemStack> input = Lists.newArrayList();
         List<ItemStack> output = Lists.newArrayList(result);
-        keys.stream().filter(key->registry.get(key).getGachaRanking() == ranking).forEach(key->{
-            ItemStack card = SupportCard.init(key, registry.get(key));
+        keys.stream().filter(key ->
+                registry.get(key).orElseThrow().value().getGachaRanking() == ranking
+        ).forEach(key->{
+            ItemStack card = SupportCard.init(key, registry.get(key).orElseThrow().value());
             input.add(card);
         });
         return new JEISimpleRecipe(input, output);
@@ -77,7 +86,7 @@ public final class UmapyoiJEIRecipes {
         return key ->{
             var registry = ClientUtils.getClientUmaDataRegistry();
             for (GachaRanking gachaRanking : list) {
-                if(registry.get(key).ranking() == gachaRanking)
+                if(registry.get(key).orElseThrow().value().ranking() == gachaRanking)
                     return true;
             }
             return false;
@@ -88,7 +97,7 @@ public final class UmapyoiJEIRecipes {
         return key ->{
             var registry = ClientUtils.getClientSupportCardRegistry();
             for (GachaRanking gachaRanking : list) {
-                if(registry.get(key).getGachaRanking() == gachaRanking) 
+                if(registry.get(key).orElseThrow().value().getGachaRanking() == gachaRanking)
                     return true;
             }
             return false;

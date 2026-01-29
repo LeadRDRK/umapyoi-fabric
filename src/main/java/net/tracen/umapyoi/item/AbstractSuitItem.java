@@ -22,7 +22,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.client.model.UmaPlayerModel;
 import net.tracen.umapyoi.events.client.RenderingUmaSuitCallback;
 import net.tracen.umapyoi.registry.umadata.Growth;
@@ -43,8 +42,8 @@ public abstract class AbstractSuitItem extends TrinketItem implements TrinketRen
         return baseModel;
     }
 
-    public AbstractSuitItem() {
-        super(Umapyoi.defaultItemProperties().stacksTo(1));
+    public AbstractSuitItem(Properties p) {
+        super(p);
         baseModel = FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT ? new UmaPlayerModel<>() : null;
     }
 
@@ -138,9 +137,7 @@ public abstract class AbstractSuitItem extends TrinketItem implements TrinketRen
             baseModel.copyAnim(baseModel.rightArm, model.rightArm);
             baseModel.copyAnim(baseModel.rightLeg, model.rightLeg);
         }
-
-        baseModel.setEntityProperties(entity);
-        baseModel.setupAnim(state, limbAngle, limbDistance);
+        baseModel.setupAnim(state);
 
         baseModel.renderToBuffer(poseStack, vertexconsumer, light,
                 LivingEntityRenderer.getOverlayCoords(state, 0.0F), -1);

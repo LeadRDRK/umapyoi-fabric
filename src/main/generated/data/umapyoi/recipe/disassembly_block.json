@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "minecraft:iron_ingot"
-    },
-    "J": {
-      "item": "umapyoi:blank_ticket"
-    },
-    "L": {
-      "item": "minecraft:lectern"
-    }
+    "A": "minecraft:iron_ingot",
+    "J": "umapyoi:blank_ticket",
+    "L": "minecraft:lectern"
   },
   "pattern": [
     " J ",

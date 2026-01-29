@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -12,7 +13,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -31,7 +31,7 @@ import net.tracen.umapyoi.block.entity.TrainingFacilityBlockEntity;
 import javax.annotation.Nullable;
 
 public class TrainingFacilityBlock extends BaseEntityBlock {
-    public static final MapCodec<TrainingFacilityBlock> CODEC = simpleCodec(p -> new TrainingFacilityBlock());
+    public static final MapCodec<TrainingFacilityBlock> CODEC = simpleCodec(TrainingFacilityBlock::new);
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     protected static final VoxelShape SHAPE = Shapes.or(
@@ -54,8 +54,8 @@ public class TrainingFacilityBlock extends BaseEntityBlock {
             Block.box(2.0D, 6.0D, 4.0D, 5.0D, 15.0D, 16.0D)
     );
 
-    public TrainingFacilityBlock() {
-        super(Properties.ofLegacyCopy(Blocks.IRON_BLOCK).noOcclusion().noCollission());
+    public TrainingFacilityBlock(Properties p) {
+        super(p);
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
@@ -114,17 +114,14 @@ public class TrainingFacilityBlock extends BaseEntityBlock {
         return InteractionResult.SUCCESS;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (state.getBlock() != newState.getBlock()) {
-            BlockEntity tileEntity = worldIn.getBlockEntity(pos);
-            if (tileEntity instanceof TrainingFacilityBlockEntity blockEntity) {
-                Containers.dropContents(worldIn, pos, blockEntity.getDroppableItems());
-                worldIn.updateNeighbourForOutputSignal(pos, this);
-            }
-            super.onRemove(state, worldIn, pos, newState, isMoving);
+    public void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        BlockEntity tileEntity = level.getBlockEntity(pos);
+        if (tileEntity instanceof TrainingFacilityBlockEntity blockEntity) {
+            Containers.dropContents(level, pos, blockEntity.getDroppableItems());
+            Containers.updateNeighboursAfterDestroy(state, level, pos);
         }
+        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
     }
 
     @Override

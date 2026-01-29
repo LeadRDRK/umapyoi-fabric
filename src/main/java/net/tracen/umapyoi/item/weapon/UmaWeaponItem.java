@@ -3,20 +3,15 @@ package net.tracen.umapyoi.item.weapon;
 import net.fabricmc.fabric.api.item.v1.EnchantingContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ToolMaterial;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
@@ -28,26 +23,18 @@ public class UmaWeaponItem extends Item {
         super(material.applySwordProperties(pProperties, (float) pAttackDamageModifier, pAttackSpeedModifier));
     }
 
-    public boolean canAttackBlock(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer) {
-        return !pPlayer.isCreative();
-    }
-
     @Override
-    public void inventoryTick(ItemStack pStack, Level pLevel, Entity pEntity, int pSlotId, boolean pIsSelected) {
+    public void inventoryTick(ItemStack pStack, ServerLevel pLevel, Entity pEntity, EquipmentSlot pSlot) {
 
-        super.inventoryTick(pStack, pLevel, pEntity, pSlotId, pIsSelected);
-        if (pStack == null)
-            return;
-        if (pEntity == null)
-            return;
-        if(!pIsSelected)
+        super.inventoryTick(pStack, pLevel, pEntity, pSlot);
+        if (pSlot == null)
             return;
 
         if (pEntity instanceof LivingEntity living) {
             ItemStack soul = UmapyoiAPI.getUmaSoul(living);
             if(soul.isEmpty()) {
-                living.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 100, 1));
-                living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 1));
+                living.addEffect(new MobEffectInstance(MobEffects.MINING_FATIGUE, 100, 1));
+                living.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 100, 1));
             }
         }
     }
@@ -56,15 +43,16 @@ public class UmaWeaponItem extends Item {
      * Current implementations of this method in child classes do not use the entry
      * argument beside ev. They just raise the damage on the stack.
      */
-    public boolean hurtEnemy(ItemStack pStack, LivingEntity pTarget, LivingEntity pAttacker) {
+    @Override
+    public void hurtEnemy(ItemStack pStack, LivingEntity pTarget, LivingEntity pAttacker) {
         pStack.hurtAndBreak(1, pAttacker, EquipmentSlot.MAINHAND);
-        return true;
     }
 
     /**
      * Called when a {@link net.minecraft.world.level.block.Block} is destroyed
      * using this Item. Return {@code true} to trigger the "Use Item" statistic.
      */
+    @Override
     public boolean mineBlock(ItemStack pStack, Level pLevel, BlockState pState, BlockPos pPos,
                              LivingEntity pEntityLiving) {
         if (pState.getDestroySpeed(pLevel, pPos) != 0.0F) {

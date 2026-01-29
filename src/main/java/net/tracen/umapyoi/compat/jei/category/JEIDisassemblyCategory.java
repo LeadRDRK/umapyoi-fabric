@@ -16,8 +16,8 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import mezz.jei.api.recipe.types.IRecipeType;
 
 public class JEIDisassemblyCategory implements IRecipeCategory<JEISimpleRecipe> {
     private final Component title;
@@ -31,11 +31,11 @@ public class JEIDisassemblyCategory implements IRecipeCategory<JEISimpleRecipe> 
         UID = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "disassembly");
         background = helper.createDrawable(backgroundImage, 0, 0, 93, 46);
         icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK,
-                new ItemStack(BlockRegistry.DISASSEMBLY_BLOCK.get()));
+                new ItemStack(BlockRegistry.DISASSEMBLY_BLOCK));
     }
     
     @Override
-    public RecipeType<JEISimpleRecipe> getRecipeType() {
+    public IRecipeType<JEISimpleRecipe> getRecipeType() {
         return JEIPlugin.DISASSEMBLY_JEI_TYPE;
     }
 

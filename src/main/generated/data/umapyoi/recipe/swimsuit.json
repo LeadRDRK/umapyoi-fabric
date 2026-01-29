@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "I": {
-      "item": "minecraft:leather"
-    },
-    "J": {
-      "item": "umapyoi:jewel"
-    },
-    "L": {
-      "item": "minecraft:blue_dye"
-    }
+    "I": "minecraft:leather",
+    "J": "umapyoi:jewel",
+    "L": "minecraft:blue_dye"
   },
   "pattern": [
     "IJI",

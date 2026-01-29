@@ -2,6 +2,7 @@ package net.tracen.umapyoi.client.screen;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -45,11 +46,15 @@ public class RetireRegisterScreen extends AbstractContainerScreen<RetireRegister
             return;
         }
         guiGraphics.pose().pushPose();
-        guiGraphics.blit(BACKGROUND_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE,
+                this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight,
+                BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
 
         ItemStack input = this.getMenu().getSlot(0).getItem();
         if (this.menu.getSlot(0).hasItem() && !this.menu.getSlot(1).hasItem())
-            guiGraphics.blit(BACKGROUND_TEXTURE, this.leftPos + 74, this.topPos + 57, 176, 0, 29, 19);
+            guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE,
+                    this.leftPos + 74, this.topPos + 57, 176, 0, 29, 19,
+                    BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
 
         else if (input.getItem() instanceof UmaSoulItem) {
             var status = UmaSoulUtils.getProperty(input);

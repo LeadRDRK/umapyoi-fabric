@@ -1,39 +1,82 @@
 package net.tracen.umapyoi.client.model;
 
+import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
+import net.fabricmc.fabric.api.client.model.loading.v1.SimpleUnbakedExtraModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.renderer.item.BlockModelWrapper;
+import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.client.renderer.item.MissingItemModel;
+import net.minecraft.client.renderer.item.ModelRenderProperties;
+import net.minecraft.client.resources.model.BlockModelRotation;
+import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.item.UmaCostumeItem;
 
 import org.jetbrains.annotations.Nullable;
 
-public class UmaCostumeItemModel extends DynamicItemBakedModel {
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
-    public UmaCostumeItemModel(BakedModel original, ModelBakery loader) {
-        super(original, loader);
+public class UmaCostumeItemModel extends DynamicItemBakedModel {
+    private static Map<ResourceLocation, ExtraModelKey<ItemModel>> models = new HashMap<>();
+
+    public UmaCostumeItemModel(ItemModel original) {
+        super(original);
     }
 
     @Override
-    public BakedModel resolveModel(BakedModel original, ItemStack stack, @Nullable ClientLevel world,
+    public ItemModel resolveModel(ItemModel original, ItemStack stack, @Nullable ClientLevel world,
                                    @Nullable LivingEntity entity, int seed) {
         if (!stack.isEmpty()) {
             if (stack.getItem() instanceof UmaCostumeItem) {
-                var modelPath = getModelLocation(UmaCostumeItem.getCostumeID(stack));
-
-                BakedModel model = Minecraft.getInstance().getModelManager().getModel(modelPath);
-                if(model == Minecraft.getInstance().getModelManager().getMissingModel())
+                var costumeId = UmaCostumeItem.getCostumeID(stack);
+                var key = models.get(costumeId);
+                if (key == null)
                     return this.getOriginalModel();
+
+                ItemModel model = Minecraft.getInstance().getModelManager().getModel(key);
+                if(model instanceof MissingItemModel)
+                    return this.getOriginalModel();
+
                 return model;
             }
         }
         return this.getOriginalModel();
     }
 
-    private ResourceLocation getModelLocation(ResourceLocation id) {
-        return ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "item/costume/" + id.getPath());
+    public static void onModelLoading(ModelLoadingPlugin.Context pluginContext) {
+        models.clear();
+        FileToIdConverter.json("models/item/costume")
+                .listMatchingResources(Minecraft.getInstance().getResourceManager())
+                .keySet()
+                .stream()
+                .map(location -> {
+                    Umapyoi.getLogger().info("Found resource:{}", location.toString());
+                    var path = location.getPath();
+                    return ResourceLocation.fromNamespaceAndPath(location.getNamespace(),
+                            path.substring("models/".length(), path.length() - ".json".length()));
+                })
+                .forEach(location -> {
+                    var model = new SimpleUnbakedExtraModel<ItemModel>(location, (resolvedModel, baker) -> {
+                        var textureSlots = resolvedModel.getTopTextureSlots();
+                        var quads = resolvedModel.bakeTopGeometry(textureSlots, baker, BlockModelRotation.X0_Y0).getAll();
+                        var properties = ModelRenderProperties.fromResolvedModel(baker, resolvedModel, textureSlots);
+                        return new BlockModelWrapper(Collections.emptyList(), quads, properties);
+                    });
+                    var costumeId = ResourceLocation.fromNamespaceAndPath(
+                            location.getNamespace(),
+                            location.getPath().substring("item/costume/".length())
+                    );
+                    var key = ExtraModelKey.<ItemModel>create(location::toString);
+
+                    pluginContext.addModel(key, model);
+                    models.put(costumeId, key);
+                });
     }
 }

@@ -1,6 +1,7 @@
 package net.tracen.umapyoi.block;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -10,7 +11,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -18,28 +18,25 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import java.util.function.Supplier;
-
 public class StatuesUpperBlock extends Block {
 
-    private final Supplier<Block> bottomBlock;
+    private final Block bottomBlock;
     
     protected final VoxelShape shape;
     
-    public StatuesUpperBlock(Supplier<Block> bottom) {
-        this(bottom, Shapes.block());
+    public StatuesUpperBlock(Block bottom, Properties p) {
+        this(bottom, Shapes.block(), p);
     }
     
-    public StatuesUpperBlock(Supplier<Block> bottom, VoxelShape shape) {
-        super(Properties.ofLegacyCopy(Blocks.STONE).noOcclusion());
+    public StatuesUpperBlock(Block bottom, VoxelShape shape, Properties p) {
+        super(p);
         this.bottomBlock = bottom;
         this.shape = shape;
     }
 
-
     @Override
     public Item asItem() {
-        return this.bottomBlock.get().asItem();
+        return this.bottomBlock.asItem();
     }
 
     @Override
@@ -47,7 +44,7 @@ public class StatuesUpperBlock extends Block {
         return RenderShape.INVISIBLE;
     }
 
-    public Supplier<Block> getBottomBlock() {
+    public Block getBottomBlock() {
         return bottomBlock;
     }
 
@@ -58,16 +55,15 @@ public class StatuesUpperBlock extends Block {
     
     @Override
     public boolean canSurvive(BlockState pState, LevelReader pLevel, BlockPos pPos) {
-        return pLevel.getBlockState(pPos.below()).is(this.getBottomBlock().get());
+        return pLevel.getBlockState(pPos.below()).is(this.getBottomBlock());
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
-        if (pLevel.getBlockState(pPos.below()).is(this.getBottomBlock().get())) {
-            pLevel.destroyBlock(pPos.below(), true);
+    public void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        if (level.getBlockState(pos.below()).is(this.getBottomBlock())) {
+            level.destroyBlock(pos.below(), true);
         }
-        super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
+        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
     }
 
     public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock, BlockPos pFromPos,

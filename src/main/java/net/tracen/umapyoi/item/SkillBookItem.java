@@ -4,21 +4,23 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.UmaSkillRegistry;
 import net.tracen.umapyoi.registry.skills.UmaSkill;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class SkillBookItem extends Item implements CreativeModeTabFiller {
-    public SkillBookItem() {
-        super(Umapyoi.defaultItemProperties().stacksTo(1));
+    public SkillBookItem(Properties p) {
+        super(p);
 
     }
 
@@ -34,11 +36,11 @@ public class SkillBookItem extends Item implements CreativeModeTabFiller {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-        tooltipComponents.add(this.getSkill(stack).getDescription().copy().withStyle(ChatFormatting.GRAY));
-        if(tooltipFlag.isAdvanced() || Umapyoi.CONFIG.DISPLAY_DETAIL()) {
-            tooltipComponents.add(this.getSkill(stack).getDescriptionDetail().copy().withStyle(ChatFormatting.DARK_GRAY));
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
+        tooltipAdder.accept(this.getSkill(stack).getDescription().copy().withStyle(ChatFormatting.GRAY));
+        if(flag.isAdvanced() || Umapyoi.CONFIG.DISPLAY_DETAIL()) {
+            tooltipAdder.accept(this.getSkill(stack).getDescriptionDetail().copy().withStyle(ChatFormatting.DARK_GRAY));
         }
     }
 
@@ -47,7 +49,8 @@ public class SkillBookItem extends Item implements CreativeModeTabFiller {
                 DataComponentsTypeRegistry.DATA_LOCATION.get(),
                 UmaSkillRegistry.BASIC_PACE.getId()
         );
-        return UmaSkillRegistry.REGISTRY.get().get(skillID);
+        return UmaSkillRegistry.REGISTRY.get().get(skillID)
+                .map(Holder.Reference::value).orElse(null);
     }
 
 }

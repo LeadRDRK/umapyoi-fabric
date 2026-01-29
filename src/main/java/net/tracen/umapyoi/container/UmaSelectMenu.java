@@ -92,7 +92,7 @@ public class UmaSelectMenu extends AbstractContainerMenu {
             }
 
             public void onTake(Player player, ItemStack stack) {
-                stack.onCraftedBy(player.level(), player, stack.getCount());
+                stack.onCraftedBy(player, stack.getCount());
 
                 var ticket = UmaSelectMenu.this.inputTicketSlot.remove(1);
                 var lapis = UmaSelectMenu.this.inputLapisSlot.remove(1);
@@ -118,7 +118,7 @@ public class UmaSelectMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player playerIn) {
-        return stillValid(access, playerIn, BlockRegistry.UMA_SELECT_BLOCK.get());
+        return stillValid(access, playerIn, BlockRegistry.UMA_SELECT_BLOCK);
     }
 
     @Override

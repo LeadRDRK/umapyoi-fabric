@@ -7,35 +7,30 @@ import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.registry.LazyRegistrar;
 import net.tracen.umapyoi.registry.RegistryObject;
 
+import java.util.Set;
+
 public class BlockEntityRegistry {
     public static final LazyRegistrar<BlockEntityType<?>> BLOCK_ENTITIES = LazyRegistrar
             .create(Registries.BLOCK_ENTITY_TYPE, Umapyoi.MODID);
 
     public static final RegistryObject<BlockEntityType<ThreeGoddessBlockEntity>> THREE_GODDESS = BLOCK_ENTITIES
-            .register("three_goddess", () -> BlockEntityType.Builder
-                    .of(ThreeGoddessBlockEntity::new, BlockRegistry.THREE_GODDESS.get()).build(null));
+            .register("three_goddess", () -> new BlockEntityType<>(ThreeGoddessBlockEntity::new, Set.of(BlockRegistry.THREE_GODDESS)));
 
     public static final RegistryObject<BlockEntityType<TrainingFacilityBlockEntity>> TRAINING_FACILITY = BLOCK_ENTITIES
-            .register("training_facility", () -> BlockEntityType.Builder
-                    .of(TrainingFacilityBlockEntity::new, BlockRegistry.TRAINING_FACILITY.get()).build(null));
+            .register("training_facility", () -> new BlockEntityType<>(TrainingFacilityBlockEntity::new, Set.of(BlockRegistry.TRAINING_FACILITY)));
 
     public static final RegistryObject<BlockEntityType<UmaPedestalBlockEntity>> UMA_PEDESTAL = BLOCK_ENTITIES
-            .register("uma_pedestal", () -> BlockEntityType.Builder
-                    .of(UmaPedestalBlockEntity::new, BlockRegistry.UMA_PEDESTAL.get()).build(null));
+            .register("uma_pedestal", () -> new BlockEntityType<>(UmaPedestalBlockEntity::new, Set.of(BlockRegistry.UMA_PEDESTAL)));
 
     public static final RegistryObject<BlockEntityType<SupportAlbumPedestalBlockEntity>> SUPPORT_ALBUM_PEDESTAL = BLOCK_ENTITIES
-            .register("support_album_pedestal", () -> BlockEntityType.Builder
-                    .of(SupportAlbumPedestalBlockEntity::new, BlockRegistry.SUPPORT_ALBUM_PEDESTAL.get()).build(null));
+            .register("support_album_pedestal", () -> new BlockEntityType<>(SupportAlbumPedestalBlockEntity::new, Set.of(BlockRegistry.SUPPORT_ALBUM_PEDESTAL)));
     
     public static final RegistryObject<BlockEntityType<SilverUmaPedestalBlockEntity>> SILVER_UMA_PEDESTAL = BLOCK_ENTITIES
-            .register("silver_uma_pedestal", () -> BlockEntityType.Builder
-                    .of(SilverUmaPedestalBlockEntity::new, BlockRegistry.SILVER_UMA_PEDESTAL.get()).build(null));
+            .register("silver_uma_pedestal", () -> new BlockEntityType<>(SilverUmaPedestalBlockEntity::new, Set.of(BlockRegistry.SILVER_UMA_PEDESTAL)));
 
     public static final RegistryObject<BlockEntityType<SilverSupportAlbumPedestalBlockEntity>> SILVER_SUPPORT_ALBUM_PEDESTAL = BLOCK_ENTITIES
-            .register("silver_support_album_pedestal", () -> BlockEntityType.Builder
-                    .of(SilverSupportAlbumPedestalBlockEntity::new, BlockRegistry.SILVER_SUPPORT_ALBUM_PEDESTAL.get()).build(null));
+            .register("silver_support_album_pedestal", () -> new BlockEntityType<>(SilverSupportAlbumPedestalBlockEntity::new, Set.of(BlockRegistry.SILVER_SUPPORT_ALBUM_PEDESTAL)));
     
     public static final RegistryObject<BlockEntityType<UmaStatueBlockEntity>> UMA_STATUES = BLOCK_ENTITIES
-            .register("uma_statues", () -> BlockEntityType.Builder
-                    .of(UmaStatueBlockEntity::new, BlockRegistry.UMA_STATUES.get()).build(null));
+            .register("uma_statues", () -> new BlockEntityType<>(UmaStatueBlockEntity::new, Set.of(BlockRegistry.UMA_STATUES)));
 }

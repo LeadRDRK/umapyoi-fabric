@@ -8,9 +8,7 @@
         "ranking": ["r"]
       }
     },
-    {
-      "item": "umapyoi:uma_costume"
-    }
+    "umapyoi:uma_costume"
   ],
   "cosmetic": "umapyoi:starting_future"
 }

@@ -2,12 +2,8 @@
   "type": "umapyoi:shapeless_costume",
   "category": "misc",
   "ingredients": [
-    {
-      "tag": "c:dyes/cyan"
-    },
-    {
-      "item": "umapyoi:uma_costume"
-    }
+    "minecraft:cyan_dye",
+    "umapyoi:uma_costume"
   ],
   "cosmetic": "umapyoi:kindergarten_uniform"
 }

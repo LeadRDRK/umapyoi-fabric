@@ -49,7 +49,7 @@ public class UmaFoodItem extends ItemFoodBase {
                 this.consumer.accept(UmapyoiAPI.getUmaSoul(player));
             }
         }
-        return stack.finishUsingItem(level, entity);
+        return super.finishUsingItem(stack, level, entity);
     }
 
 }

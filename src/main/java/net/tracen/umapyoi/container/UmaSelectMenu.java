@@ -2,7 +2,7 @@ package net.tracen.umapyoi.container;
 
 import com.google.common.collect.Lists;
 
-import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -81,7 +81,7 @@ public class UmaSelectMenu extends AbstractContainerMenu {
         this.inputLapisSlot = this.addSlot(new Slot(this.container, 1, 19, 65) {
             @Override
             public boolean mayPlace(ItemStack pStack) {
-                return pStack.is(ConventionalItemTags.LAPIS);
+                return pStack.is(ConventionalItemTags.LAPIS_GEMS);
             }
         });
 
@@ -162,7 +162,7 @@ public class UmaSelectMenu extends AbstractContainerMenu {
     }
 
     protected boolean shouldQuickMoveToAdditionalSlot(ItemStack pStack) {
-        return pStack.is(ConventionalItemTags.LAPIS);
+        return pStack.is(ConventionalItemTags.LAPIS_GEMS);
     }
 
     public List<ResourceLocation> getRecipes() {

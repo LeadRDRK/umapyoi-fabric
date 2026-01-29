@@ -13,10 +13,15 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+
+import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 public class StatuesUpperBlock extends Block {
 
@@ -66,11 +71,13 @@ public class StatuesUpperBlock extends Block {
         super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
     }
 
-    public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock, BlockPos pFromPos,
-            boolean pIsMoving) {
-        if (!pLevel.isClientSide) {
-            if (!pState.canSurvive(pLevel, pPos)) {
-                pLevel.removeBlock(pPos, false);
+    @Override
+    @ParametersAreNonnullByDefault
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock,
+                                @Nullable Orientation orientation, boolean movedByPiston) {
+        if (!level.isClientSide) {
+            if (!state.canSurvive(level, pos)) {
+                level.removeBlock(pos, false);
             }
         }
     }

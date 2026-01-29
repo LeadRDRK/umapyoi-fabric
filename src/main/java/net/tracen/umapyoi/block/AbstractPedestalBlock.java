@@ -23,10 +23,8 @@ public abstract class AbstractPedestalBlock extends BaseEntityBlock
         super(properties);
     }
 
-
-
-    protected InteractionResult interactBEWithoutItem(Level level, BlockPos pos, Player player, boolean empty, ItemStack itemStack) {
-        if (empty) {
+    protected InteractionResult interactBEWithoutItem(Level level, BlockPos pos, Player player, ItemStack itemStack) {
+        if (itemStack.isEmpty()) {
             return InteractionResult.PASS;
         }
         else {
@@ -48,7 +46,7 @@ public abstract class AbstractPedestalBlock extends BaseEntityBlock
         // Wtf why useItemOn can use EMPTY item???
         // sbmj
         if (stack.isEmpty()) {
-            return InteractionResult.PASS;
+            return interactBEWithoutItem(level, pos, player, blockEntity.removeItem());
         }
         if (blockEntity.isEmpty()) {
             if (hand == InteractionHand.MAIN_HAND && !player.getOffhandItem().isEmpty() && stack.getItem() instanceof BlockItem) {

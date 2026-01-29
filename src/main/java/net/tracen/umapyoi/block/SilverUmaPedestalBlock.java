@@ -48,8 +48,7 @@ public class SilverUmaPedestalBlock extends AbstractPedestalBlock {
         if (!level.isClientSide) {
             BlockEntity tileEntity = level.getBlockEntity(pos);
             if (tileEntity instanceof SilverUmaPedestalBlockEntity blockEntity) {
-                return interactBEWithoutItem(level, pos, player, blockEntity.isEmpty(), blockEntity.removeItem()
-                );
+                return interactBEWithoutItem(level, pos, player, blockEntity.removeItem());
             }
         }
         return InteractionResult.SUCCESS;
@@ -70,7 +69,7 @@ public class SilverUmaPedestalBlock extends AbstractPedestalBlock {
     public void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
         BlockEntity tileEntity = level.getBlockEntity(pos);
         if (tileEntity instanceof SilverUmaPedestalBlockEntity blockEntity) {
-            Containers.dropContents(level, pos, blockEntity.getDroppableInventory());
+            Containers.dropContents(level, pos, blockEntity.getDroppableItems());
             Containers.updateNeighboursAfterDestroy(state, level, pos);
         }
         super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);

@@ -53,8 +53,7 @@ public class SupportAlbumPedestalBlock extends AbstractPedestalBlock {
         if (!level.isClientSide) {
             BlockEntity tileEntity = level.getBlockEntity(pos);
             if (tileEntity instanceof SupportAlbumPedestalBlockEntity blockEntity) {
-                return interactBEWithoutItem(level, pos, player, blockEntity.isEmpty(), blockEntity.removeItem()
-                );
+                return interactBEWithoutItem(level, pos, player, blockEntity.removeItem());
             }
         }
         return InteractionResult.SUCCESS;

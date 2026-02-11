@@ -38,7 +38,7 @@
     "owo": "*"
   },
   "suggests": {
-    "patchouli": "*",
+    "modonomicon": "*",
     "create": "*",
     "firstperson": "*"
   }

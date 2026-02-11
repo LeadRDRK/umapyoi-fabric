@@ -63,12 +63,7 @@ public class UmaCostumeItemModel extends DynamicItemBakedModel {
                             path.substring("models/".length(), path.length() - ".json".length()));
                 })
                 .forEach(location -> {
-                    var model = new SimpleUnbakedExtraModel<ItemModel>(location, (resolvedModel, baker) -> {
-                        var textureSlots = resolvedModel.getTopTextureSlots();
-                        var quads = resolvedModel.bakeTopGeometry(textureSlots, baker, BlockModelRotation.X0_Y0).getAll();
-                        var properties = ModelRenderProperties.fromResolvedModel(baker, resolvedModel, textureSlots);
-                        return new BlockModelWrapper(Collections.emptyList(), quads, properties);
-                    });
+                    var model = new UnbakedExtraItemModel(location);
                     var costumeId = ResourceLocation.fromNamespaceAndPath(
                             location.getNamespace(),
                             location.getPath().substring("item/costume/".length())

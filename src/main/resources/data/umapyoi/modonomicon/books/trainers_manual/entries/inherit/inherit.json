@@ -1,0 +1,22 @@
+{
+    "name": "book.umapyoi.trainers_manual.inherit.inherit.name",
+    "icon": "umapyoi:three_goddess",
+    "category": "umapyoi:inherit",
+    "x": 0,
+    "y": 0,
+    "sort_number": 2,
+    "pages": [
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.inherit.inherit.page0.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.inherit.inherit.page1.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.inherit.inherit.page2.text"
+        }
+    ]
+}

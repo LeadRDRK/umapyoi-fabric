@@ -1,0 +1,27 @@
+{
+    "name": "book.umapyoi.trainers_manual.inherit.register_table.name",
+    "icon": "umapyoi:register_lectern",
+    "category": "umapyoi:inherit",
+    "x": 0,
+    "y": 0,
+    "sort_number": 0,
+    "pages": [
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.inherit.register_table.page0.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.inherit.register_table.page1.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.inherit.register_table.page2.text"
+        },
+        {
+            "type": "modonomicon:crafting_recipe",
+            "recipe_id_1": "umapyoi:register_lectern",
+            "text": "book.umapyoi.trainers_manual.inherit.register_table.page3.text"
+        }
+    ]
+}

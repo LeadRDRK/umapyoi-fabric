@@ -1,0 +1,18 @@
+{
+    "name": "book.umapyoi.trainers_manual.training.training_books.name",
+    "icon": "umapyoi:speed_high_item",
+    "category": "umapyoi:training",
+    "x": 0,
+    "y": 0,
+    "sort_number": 3,
+    "pages": [
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.training.training_books.page0.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.training.training_books.page1.text"
+        }
+    ]
+}

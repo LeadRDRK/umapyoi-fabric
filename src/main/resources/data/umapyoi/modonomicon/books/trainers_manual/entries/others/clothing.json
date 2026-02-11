@@ -1,0 +1,29 @@
+{
+    "name": "book.umapyoi.trainers_manual.others.clothing.name",
+    "icon": "umapyoi:summer_uniform",
+    "category": "umapyoi:others",
+    "x": 0,
+    "y": 0,
+    "sort_number": 1,
+    "pages": [
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.others.clothing.page0.text"
+        },
+        {
+            "type": "modonomicon:crafting_recipe",
+            "recipe_id_1": "umapyoi:summer_uniform",
+            "text": "book.umapyoi.trainers_manual.others.clothing.page1.text"
+        },
+        {
+            "type": "modonomicon:crafting_recipe",
+            "recipe_id_1": "umapyoi:winter_uniform",
+            "text": "book.umapyoi.trainers_manual.others.clothing.page2.text"
+        },
+        {
+            "type": "modonomicon:crafting_recipe",
+            "recipe_id_1": "umapyoi:trainning_suit",
+            "text": "book.umapyoi.trainers_manual.others.clothing.page3.text"
+        }
+    ]
+}

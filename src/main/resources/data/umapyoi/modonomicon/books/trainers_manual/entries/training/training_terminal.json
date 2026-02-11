@@ -1,0 +1,31 @@
+{
+    "name": "book.umapyoi.trainers_manual.training.training_terminal.name",
+    "icon": "umapyoi:training_facility",
+    "category": "umapyoi:training",
+    "x": 0,
+    "y": 0,
+    "sort_number": 0,
+    "pages": [
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.training.training_terminal.page0.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.training.training_terminal.page1.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.training.training_terminal.page2.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.training.training_terminal.page3.text"
+        },
+        {
+            "type": "modonomicon:crafting_recipe",
+            "recipe_id_1": "umapyoi:training_facility",
+            "text": "book.umapyoi.trainers_manual.training.training_terminal.page4.text"
+        }
+    ]
+}

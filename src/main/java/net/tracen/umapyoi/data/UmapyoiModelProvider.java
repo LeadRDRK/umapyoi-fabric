@@ -20,7 +20,8 @@ public class UmapyoiModelProvider extends FabricModelProvider {
             ItemRegistry.HACHIMI_BIG,
             ItemRegistry.HACHIMI_MID,
             ItemRegistry.NAGINATA,
-            ItemRegistry.UMA_SOUL_DISPLAY
+            ItemRegistry.UMA_SOUL_DISPLAY,
+            ItemRegistry.MANUAL_CLOSED
     );
 
     private static final Set<Item> blockItemsWithFlatModel = Set.of(

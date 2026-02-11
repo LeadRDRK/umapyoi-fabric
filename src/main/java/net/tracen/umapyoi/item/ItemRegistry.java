@@ -209,6 +209,9 @@ public class ItemRegistry {
             BaseballBatItem::new,
             BaseballBatItem.createProperties());
 
+    // dummy manual item to load the model for modonomicon
+    public static final Item MANUAL_CLOSED = registerItem("manual_closed");
+
     private static ResourceKey<Item> modItemId(String name) {
         return ResourceKey.create(Registries.ITEM,
                 ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, name));

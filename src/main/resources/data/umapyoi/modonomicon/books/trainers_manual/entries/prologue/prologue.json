@@ -1,0 +1,22 @@
+{
+    "name": "book.umapyoi.trainers_manual.prologue.prologue.name",
+    "icon": "umapyoi:blank_uma_soul",
+    "category": "umapyoi:prologue",
+    "x": 0,
+    "y": 0,
+    "sort_number": 0,
+    "pages": [
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.prologue.prologue.page0.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.prologue.prologue.page1.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.prologue.prologue.page2.text"
+        }
+    ]
+}

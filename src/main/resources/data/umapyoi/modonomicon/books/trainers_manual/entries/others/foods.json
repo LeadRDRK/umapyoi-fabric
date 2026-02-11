@@ -1,0 +1,50 @@
+{
+    "name": "book.umapyoi.trainers_manual.others.foods.name",
+    "icon": "umapyoi:royal_bitter",
+    "category": "umapyoi:others",
+    "x": 0,
+    "y": 0,
+    "sort_number": 2,
+    "pages": [
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.others.foods.page0.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.others.foods.page1.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.others.foods.page2.text"
+        },
+        {
+            "type": "modonomicon:crafting_recipe",
+            "recipe_id_1": "umapyoi:hachimi_mid",
+            "recipe_id_2": "umapyoi:hachimi_big",
+            "title1": "book.umapyoi.trainers_manual.others.foods.page3.title1",
+            "title2": "book.umapyoi.trainers_manual.others.foods.page3.title2"
+        },
+        {
+            "type": "modonomicon:crafting_recipe",
+            "recipe_id_1": "umapyoi:cupcake",
+            "recipe_id_2": "umapyoi:sweet_cupcake",
+            "title1": "book.umapyoi.trainers_manual.others.foods.page4.title1",
+            "title2": "book.umapyoi.trainers_manual.others.foods.page4.title2"
+        },
+        {
+            "type": "modonomicon:crafting_recipe",
+            "recipe_id_1": "umapyoi:small_energy_drink",
+            "recipe_id_2": "umapyoi:medium_energy_drink",
+            "title1": "book.umapyoi.trainers_manual.others.foods.page5.title1",
+            "title2": "book.umapyoi.trainers_manual.others.foods.page5.title2"
+        },
+        {
+            "type": "modonomicon:crafting_recipe",
+            "recipe_id_1": "umapyoi:large_energy_drink",
+            "recipe_id_2": "umapyoi:royal_bitter",
+            "title1": "book.umapyoi.trainers_manual.others.foods.page6.title1",
+            "title2": "book.umapyoi.trainers_manual.others.foods.page6.title2"
+        }
+    ]
+}

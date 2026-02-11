@@ -1,0 +1,19 @@
+{
+    "name": "book.umapyoi.trainers_manual.uma_soul.three_goddesses.name",
+    "icon": "umapyoi:three_goddess",
+    "category": "umapyoi:uma_soul",
+    "x": 0,
+    "y": 0,
+    "sort_number": 3,
+    "pages": [
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.uma_soul.three_goddesses.page0.text"
+        },
+        {
+            "type": "modonomicon:crafting_recipe",
+            "recipe_id_1": "umapyoi:three_goddess",
+            "text": "book.umapyoi.trainers_manual.uma_soul.three_goddesses.page1.text"
+        }
+    ]
+}

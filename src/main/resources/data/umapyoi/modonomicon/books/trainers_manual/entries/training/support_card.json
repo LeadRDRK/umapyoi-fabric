@@ -1,0 +1,46 @@
+{
+    "name": "book.umapyoi.trainers_manual.training.support_card.name",
+    "icon": "umapyoi:support_card",
+    "category": "umapyoi:training",
+    "x": 0,
+    "y": 0,
+    "sort_number": 2,
+    "pages": [
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.training.support_card.page0.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.training.support_card.page1.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.training.support_card.page2.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.training.support_card.page3.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.training.support_card.page4.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.training.support_card.page5.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.training.support_card.page6.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.training.support_card.page7.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.training.support_card.page8.text"
+        }
+    ]
+}

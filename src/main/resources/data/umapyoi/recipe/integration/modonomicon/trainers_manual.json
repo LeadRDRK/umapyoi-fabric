@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "umapyoi:jewel",
+    "minecraft:book"
+  ],
+  "result": {
+    "id": "modonomicon:modonomicon",
+    "components": {
+      "modonomicon:book_id": "umapyoi:trainers_manual"
+    }
+  }
+}

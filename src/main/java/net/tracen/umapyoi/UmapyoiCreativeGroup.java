@@ -49,7 +49,8 @@ public class UmapyoiCreativeGroup {
                 .register(entries -> {
                     for (Item item : ItemRegistry.ITEMS) {
                         if (item == ItemRegistry.BLANK_UMA_SOUL || item == ItemRegistry.UMA_SOUL
-                                || item == ItemRegistry.UMA_SOUL_DISPLAY || item == ItemRegistry.SUPPORT_CARD)
+                                || item == ItemRegistry.UMA_SOUL_DISPLAY || item == ItemRegistry.SUPPORT_CARD
+                                || item == ItemRegistry.MANUAL_CLOSED)
                             continue;
 
                         if (item instanceof CreativeModeTabFiller filler)

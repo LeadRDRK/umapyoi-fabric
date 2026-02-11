@@ -1,0 +1,63 @@
+{
+    "name": "book.umapyoi.trainers_manual.training.status.name",
+    "icon": "umapyoi:skill_book",
+    "category": "umapyoi:training",
+    "x": 0,
+    "y": 0,
+    "sort_number": 1,
+    "pages": [
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.training.status.page0.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.training.status.page1.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.training.status.page2.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.training.status.page3.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.training.status.page4.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.training.status.page5.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.training.status.page6.text"
+        },
+        {
+            "type": "modonomicon:image",
+            "use_legacy_rendering": true,
+            "images": [
+                "umapyoi:textures/book_images/skills.png"
+            ],
+            "text": "book.umapyoi.trainers_manual.training.status.page7.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.training.status.page8.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.training.status.page9.text"
+        },
+        {
+            "type": "modonomicon:text",
+            "text": "book.umapyoi.trainers_manual.training.status.page10.text"
+        },
+        {
+            "type": "modonomicon:crafting_recipe",
+            "recipe_id_1": "umapyoi:skill_learning_table",
+            "text": "book.umapyoi.trainers_manual.training.status.page11.text"
+        }
+    ]
+}

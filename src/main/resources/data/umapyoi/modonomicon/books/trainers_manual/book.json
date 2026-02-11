@@ -1,0 +1,8 @@
+{
+  "name": "book.umapyoi.trainers_manual.title",
+  "tooltip": "book.umapyoi.trainers_manual.subtitle",
+  "display_mode": "index",
+  "generate_book_item": true,
+  "creative_tab": "umapyoi",
+  "model": "umapyoi:manual_closed"
+}

@@ -33,6 +33,8 @@ public abstract class DynamicItemBakedModel implements ItemModel {
                        ItemDisplayContext displayContext, @Nullable ClientLevel level,
                        @Nullable LivingEntity entity, int seed) {
         var model = resolveModel(original, stack, level, entity, seed);
-        model.update(renderState, stack, itemModelResolver, displayContext, level, entity, seed);
+        if (model != null) {
+            model.update(renderState, stack, itemModelResolver, displayContext, level, entity, seed);
+        }
     }
 }

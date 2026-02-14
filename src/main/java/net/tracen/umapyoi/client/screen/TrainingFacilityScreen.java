@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -39,8 +39,8 @@ public class TrainingFacilityScreen extends AbstractContainerScreen<TrainingFaci
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         guiGraphics.drawString(this.font, this.title,
                 Math.round((this.imageWidth / 2.0F) - (this.font.width(this.title.getVisualOrderText()) / 2.0F)),
-                this.titleLabelY - 3, 0xFFFFFF, false);
-        guiGraphics.drawString(this.font, this.playerInventoryTitle, 8, this.imageHeight - 96 + 2, 4210752, false);
+                this.titleLabelY - 3, 0xFFFFFFFF, false);
+        guiGraphics.drawString(this.font, this.playerInventoryTitle, 8, this.imageHeight - 96 + 2, 0xFF404040, false);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class TrainingFacilityScreen extends AbstractContainerScreen<TrainingFaci
         if (this.minecraft == null) {
             return;
         }
-        guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
         this.renderSupportBG(guiGraphics);
         this.renderTrainingAnim(guiGraphics);
         this.renderSupportTypes(guiGraphics);
@@ -61,9 +61,9 @@ public class TrainingFacilityScreen extends AbstractContainerScreen<TrainingFaci
         if(soul.getItem() instanceof UmaSoulItem) {
             if(UmaSoulUtils.getGrowth(soul) == Growth.RETIRED)
                 return;
-            graphic.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, this.leftPos + 102, this.topPos + 103, 0, 246, 65, 5, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+            graphic.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos + 102, this.topPos + 103, 0, 246, 65, 5, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
             int training_times = 5 - UmaSoulUtils.getPhysique(soul);
-            graphic.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, this.leftPos + 102, this.topPos + 103, 0, 251, training_times * 13, 5, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+            graphic.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos + 102, this.topPos + 103, 0, 251, training_times * 13, 5, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
         }
     }
 
@@ -75,31 +75,31 @@ public class TrainingFacilityScreen extends AbstractContainerScreen<TrainingFaci
                 switch (support.getSupportType(this.minecraft.level, stack)) {
                 case SPEED -> {
                     types[0]++;
-                    guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, this.leftPos + 9 + 0 * 23, this.topPos + 42, 3 + 0 * 23, 219, 12, 12, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos + 9 + 0 * 23, this.topPos + 42, 3 + 0 * 23, 219, 12, 12, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
                 }
                 case STAMINA -> {
                     types[1]++;
-                    guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, this.leftPos + 9 + 1 * 23, this.topPos + 42, 3 + 1 * 23, 219, 12, 12, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos + 9 + 1 * 23, this.topPos + 42, 3 + 1 * 23, 219, 12, 12, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
                 }
                 case STRENGTH -> {
                     types[2]++;
-                    guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, this.leftPos + 9 + 2 * 23, this.topPos + 42, 3 + 2 * 23, 219, 12, 12, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos + 9 + 2 * 23, this.topPos + 42, 3 + 2 * 23, 219, 12, 12, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
                 }
                 case GUTS -> {
                     types[3]++;
-                    guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, this.leftPos + 9 + 3 * 23, this.topPos + 42, 3 + 3 * 23, 219, 12, 12, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos + 9 + 3 * 23, this.topPos + 42, 3 + 3 * 23, 219, 12, 12, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
                 }
                 case WISDOM -> {
                     types[4]++;
-                    guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, this.leftPos + 9 + 4 * 23, this.topPos + 42, 3 + 4 * 23, 219, 12, 12, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos + 9 + 4 * 23, this.topPos + 42, 3 + 4 * 23, 219, 12, 12, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
                 }
                 case FRIENDSHIP -> {
                     types[5]++;
-                    guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, this.leftPos + 9 + 5 * 23, this.topPos + 42, 3 + 5 * 23, 219, 12, 12, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos + 9 + 5 * 23, this.topPos + 42, 3 + 5 * 23, 219, 12, 12, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
                 }
                 case GROUP -> {
                     types[6]++;
-                    guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, this.leftPos + 9 + 6 * 23, this.topPos + 42, 3 + 6 * 23, 219, 12, 12, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos + 9 + 6 * 23, this.topPos + 42, 3 + 6 * 23, 219, 12, 12, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
                 }
                 default -> {}
                 }
@@ -108,7 +108,7 @@ public class TrainingFacilityScreen extends AbstractContainerScreen<TrainingFaci
         for (int i = 0; i < 7; i++) {
             if (types[i] > 0) {
                 guiGraphics.drawString(this.font, String.valueOf(types[i]), this.leftPos + 23 + i * 23,
-                        this.topPos + 44, 0X86D008, false);
+                        this.topPos + 44, 0xFF86D008, false);
             }
         }
     }
@@ -118,10 +118,10 @@ public class TrainingFacilityScreen extends AbstractContainerScreen<TrainingFaci
             ItemStack stack = this.menu.tileEntity.getItem(i);
             if (stack.getItem() instanceof SupportContainer support) {
                 switch (support.getSupportLevel(this.minecraft.level, stack)) {
-                case EASTER_EGG -> guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, this.leftPos + 7 + (i - 1) * 27, this.topPos + 14, 171, 205, 26, 26, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
-                case R -> guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, this.leftPos + 7 + (i - 1) * 27, this.topPos + 14, 171, 205, 26, 26, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
-                case SR -> guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, this.leftPos + 7 + (i - 1) * 27, this.topPos + 14, 198, 205, 26, 26, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
-                case SSR -> guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, this.leftPos + 7 + (i - 1) * 27, this.topPos + 14, 225, 205, 26, 26, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+                case EASTER_EGG -> guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos + 7 + (i - 1) * 27, this.topPos + 14, 171, 205, 26, 26, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+                case R -> guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos + 7 + (i - 1) * 27, this.topPos + 14, 171, 205, 26, 26, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+                case SR -> guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos + 7 + (i - 1) * 27, this.topPos + 14, 198, 205, 26, 26, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+                case SSR -> guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos + 7 + (i - 1) * 27, this.topPos + 14, 225, 205, 26, 26, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
                 default -> throw new IllegalArgumentException(
                         "Unexpected value: " + support.getSupportLevel(this.minecraft.level, stack));
                 }
@@ -133,10 +133,10 @@ public class TrainingFacilityScreen extends AbstractContainerScreen<TrainingFaci
             ItemStack stack = this.menu.tileEntity.getItem(i);
             if (stack.getItem()instanceof SupportContainer support) {
                 switch (support.getSupportLevel(this.minecraft.level, stack)) {
-                case EASTER_EGG -> guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, this.leftPos + 89 + (i - 4) * 27, this.topPos + 14, 171, 205, 26, 26, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
-                case R -> guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, this.leftPos + 89 + (i - 4) * 27, this.topPos + 14, 171, 205, 26, 26, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
-                case SR -> guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, this.leftPos + 89 + (i - 4) * 27, this.topPos + 14, 198, 205, 26, 26, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
-                case SSR -> guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, this.leftPos + 89 + (i - 4) * 27, this.topPos + 14, 225, 205, 26, 26, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+                case EASTER_EGG -> guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos + 89 + (i - 4) * 27, this.topPos + 14, 171, 205, 26, 26, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+                case R -> guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos + 89 + (i - 4) * 27, this.topPos + 14, 171, 205, 26, 26, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+                case SR -> guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos + 89 + (i - 4) * 27, this.topPos + 14, 198, 205, 26, 26, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+                case SSR -> guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos + 89 + (i - 4) * 27, this.topPos + 14, 225, 205, 26, 26, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
                 default -> throw new IllegalArgumentException(
                         "Unexpected value: " + support.getSupportLevel(this.minecraft.level, stack));
                 }
@@ -147,9 +147,9 @@ public class TrainingFacilityScreen extends AbstractContainerScreen<TrainingFaci
     private void renderTrainingAnim(GuiGraphics guiGraphics) {
         int l = this.menu.getProgressionScaled();
         int n = this.menu.getAnimation();
-        guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, this.leftPos + 10 + l, this.topPos + 68, 207, 88 + n * 24, 24, 24, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos + 10 + l, this.topPos + 68, 207, 88 + n * 24, 24, 24, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
         PoseStack ms1 = new PoseStack();
         ms1.translate(0, 0, 1);
-        guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, this.leftPos + 8, this.topPos + 64, 181, 84, 25, 27, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos + 8, this.topPos + 64, 181, 84, 25, 27, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
     }
 }

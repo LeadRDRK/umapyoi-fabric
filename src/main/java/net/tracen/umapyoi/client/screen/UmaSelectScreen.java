@@ -9,7 +9,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
@@ -99,9 +101,9 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
     protected void renderLabels(GuiGraphics pPoseStack, int pMouseX, int pMouseY) {
         pPoseStack.drawString(this.font, this.title,
                 (this.imageWidth / 2) - (this.font.width(this.title.getVisualOrderText()) / 2),
-                this.titleLabelY - 3, 0xFFFFFF, false);
+                this.titleLabelY - 3, 0xFFFFFFFF, false);
         pPoseStack.drawString(this.font, this.playerInventoryTitle,
-                this.inventoryLabelX,this.inventoryLabelY + 20, 4210752, false);
+                this.inventoryLabelX,this.inventoryLabelY + 20, 0xFF404040, false);
     }
 
     protected void subInit() {
@@ -167,9 +169,9 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
     protected void renderBg(GuiGraphics guiGraphics, float pPartialTick, int pX, int pY) {
         int i = this.leftPos;
         int j = this.topPos;
-        guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, i, j, 0, 0, this.imageWidth, this.imageHeight, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, i, j, 0, 0, this.imageWidth, this.imageHeight, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
         int k = (int) (41.0F * this.scrollOffs);
-        guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, i + 116, j + 31 + k, 176 + (this.isScrollBarActive() ? 0 : SCROLLER_WIDTH), 0,
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, i + 116, j + 31 + k, 176 + (this.isScrollBarActive() ? 0 : SCROLLER_WIDTH), 0,
                 SCROLLER_WIDTH, SCROLLER_HEIGHT, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
         int l = this.leftPos + RECIPES_X;
         int i1 = this.topPos + RECIPES_Y;
@@ -191,7 +193,12 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
                 int j1 = i + i1 % RECIPES_COLUMNS * RECIPES_IMAGE_SIZE_WIDTH;
                 int k1 = j + i1 / RECIPES_COLUMNS * RECIPES_IMAGE_SIZE_HEIGHT + 2;
                 if (pX >= j1 && pX < j1 + RECIPES_IMAGE_SIZE_WIDTH && pY >= k1 && pY < k1 + RECIPES_IMAGE_SIZE_HEIGHT) {
-                    pPoseStack.renderTooltip(this.font, this.getResultItem(list.get(l)), pX, pY);
+                    var resultItem = this.getResultItem(list.get(l));
+                    resultItem.getTooltipImage().ifPresent(component -> {
+                        var components = List.of(ClientTooltipComponent.create(component));
+                        pPoseStack.renderTooltip(this.font, components, pX, pY,
+                                DefaultTooltipPositioner.INSTANCE, null);
+                    });
                 }
             }
         }
@@ -213,7 +220,7 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
                     j1 += 36;
                 }
 
-                guiGraphics.blit(RenderType::guiOpaqueTexturedBackground, BACKGROUND_TEXTURE, k, i1 - 1, 176, j1, RECIPES_IMAGE_SIZE_WIDTH, RECIPES_IMAGE_SIZE_HEIGHT, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, k, i1 - 1, 176, j1, RECIPES_IMAGE_SIZE_WIDTH, RECIPES_IMAGE_SIZE_HEIGHT, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
             }
         }
     }

@@ -2,15 +2,10 @@ package net.tracen.umapyoi.utils;
 
 import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
@@ -20,15 +15,12 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
-import net.tracen.umapyoi.client.model.SimpleBedrockModel;
 import net.tracen.umapyoi.client.model.bedrock.BedrockVersion;
 import net.tracen.umapyoi.client.model.pojo.BedrockModelPOJO;
 import net.tracen.umapyoi.data.tag.UmapyoiUmaDataTags;
 import net.tracen.umapyoi.registry.cosmetics.CosmeticData;
 import net.tracen.umapyoi.registry.training.card.SupportCard;
 import net.tracen.umapyoi.registry.umadata.UmaData;
-
-import org.joml.Quaternionf;
 
 import java.util.HashMap;
 import java.util.List;
@@ -103,25 +95,6 @@ public class ClientUtils {
                         (double) ((float) spawnPos.getZ() + pRand.nextFloat()) - 0.5D);
             }
         }
-    }
-
-    public static void renderModelInInventory(GuiGraphics guiGraphic,
-                                              int x,
-                                              int y,
-                                              int scale,
-                                              Quaternionf pose, SimpleBedrockModel pModel,
-                                              ResourceLocation texture) {
-        guiGraphic.pose().pushPose();
-        guiGraphic.pose().translate(x, y, 50.0D);
-        guiGraphic.pose().scale(scale, scale, -scale);
-        guiGraphic.pose().mulPose(pose);
-        guiGraphic.drawSpecial(bufferSource -> {
-            VertexConsumer vertexconsumer = bufferSource
-                    .getBuffer(RenderType.entityTranslucent(ClientUtils.getTexture(texture)));
-            pModel.renderToBuffer(guiGraphic.pose(), vertexconsumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, -1);
-        });
-        guiGraphic.flush();
-        guiGraphic.pose().popPose();
     }
 
     /****** MMLib ******/

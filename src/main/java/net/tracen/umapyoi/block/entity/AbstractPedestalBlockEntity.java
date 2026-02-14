@@ -6,12 +6,17 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.utils.ClientUtils;
 
 public abstract class AbstractPedestalBlockEntity extends SyncedInventoryEntity
@@ -153,28 +158,31 @@ public abstract class AbstractPedestalBlockEntity extends SyncedInventoryEntity
     }
 
     @Override
-    public void loadAdditional(CompoundTag compound, HolderLookup.Provider registries) {
-        super.loadAdditional(compound, registries);
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
         clearContent();
-        ContainerHelper.loadAllItems(compound, items, registries);
-        recipeTime = compound.getInt("RecipeTime").orElse(0);
+        ContainerHelper.loadAllItems(input, items);
+        recipeTime = input.getInt("RecipeTime").orElse(0);
     }
 
     @Override
-    public void saveAdditional(CompoundTag compound, HolderLookup.Provider registries) {
-        super.saveAdditional(compound, registries);
-        compound.putInt("RecipeTime", recipeTime);
-        ContainerHelper.saveAllItems(compound, items, registries);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        output.putInt("RecipeTime", recipeTime);
+        ContainerHelper.saveAllItems(output, items);
     }
 
-    private CompoundTag writeItems(CompoundTag compound, HolderLookup.Provider registries) {
-        super.saveAdditional(compound, registries);
-        ContainerHelper.saveAllItems(compound, items, registries);
-        return compound;
+    private void writeItems(ValueOutput output) {
+        super.saveAdditional(output);
+        ContainerHelper.saveAllItems(output, items);
     }
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return writeItems(new CompoundTag(), registries);
+        try (var reporter = new ProblemReporter.ScopedCollector(this.problemPath(), Umapyoi.getLogger())) {
+            var output = TagValueOutput.createWithContext(reporter, registries);
+            writeItems(output);
+            return output.buildResult();
+        }
     }
 }

@@ -2,15 +2,15 @@ package net.tracen.umapyoi.events.handler;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.packs.PackType;
@@ -49,7 +49,7 @@ public class ClientSetupEvents {
         AbstractSuitItem.registerRenderer(ItemRegistry.SWIMSUIT);
         AbstractSuitItem.registerRenderer(ItemRegistry.UMA_COSTUME);
 
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockRegistry.TRAINING_FACILITY, RenderType.cutoutMipped());
+        BlockRenderLayerMap.putBlock(BlockRegistry.TRAINING_FACILITY, ChunkSectionLayer.CUTOUT_MIPPED);
 
         ClientTickEvents.END_CLIENT_TICK.register(SkillKeyMapping::onEndClientTick);
 

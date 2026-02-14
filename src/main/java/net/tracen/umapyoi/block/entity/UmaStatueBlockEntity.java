@@ -1,13 +1,13 @@
 package net.tracen.umapyoi.block.entity;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.tracen.umapyoi.item.ItemRegistry;
 
 public class UmaStatueBlockEntity extends SyncedInventoryEntity {
@@ -24,16 +24,16 @@ public class UmaStatueBlockEntity extends SyncedInventoryEntity {
     }
 
     @Override
-    public void loadAdditional(CompoundTag compound, HolderLookup.Provider registries) {
-        super.loadAdditional(compound, registries);
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
         clearContent();
-        ContainerHelper.loadAllItems(compound, items, registries);
+        ContainerHelper.loadAllItems(input, items);
     }
 
     @Override
-    public void saveAdditional(CompoundTag compound, HolderLookup.Provider registries) {
-        super.saveAdditional(compound, registries);
-        ContainerHelper.saveAllItems(compound, items, registries);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        ContainerHelper.saveAllItems(output, items);
     }
 
     public boolean addItem(ItemStack itemStack) {

@@ -6,7 +6,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -50,13 +50,13 @@ public class ActionBarOverlay implements HudRenderCallback {
         int maxAp = UmaSoulUtils.getMaxActionPoint(soul);
         if (ap == maxAp)
             return;
-        guiGraphics.blit(RenderType::guiTexturedOverlay, HUD, x, y - 128, 11, 0, 5, 128, 16, 128);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, HUD, x, y - 128, 11, 0, 5, 128, 16, 128);
         int apbar = ap != 0 ? ap * 128 / maxAp : 0;
-        guiGraphics.blit(RenderType::guiTexturedOverlay, HUD, x, y - apbar, 6, 128 - apbar, 5, apbar, 16, 128);
-        guiGraphics.blit(RenderType::guiTexturedOverlay, HUD, x - 7, y - 3 - apbar, 0, 0, 6, 7, 16, 128);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, HUD, x, y - apbar, 6, 128 - apbar, 5, apbar, 16, 128);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, HUD, x - 7, y - 3 - apbar, 0, 0, 6, 7, 16, 128);
         String str = String.valueOf(ap);
         guiGraphics.drawString(this.minecraft.font, str,
                 x - 8 - this.minecraft.font.width(str), y - 3 - apbar,
-                0xFFFFFF, false);
+                0xFFFFFFFF, false);
     }
 }

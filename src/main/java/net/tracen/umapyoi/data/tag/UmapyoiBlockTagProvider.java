@@ -16,29 +16,29 @@ public class UmapyoiBlockTagProvider extends BlockTagProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider arg) {
-        getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_PICKAXE).add(BlockRegistry.THREE_GODDESS)
+        valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE).add(BlockRegistry.THREE_GODDESS)
                 .add(BlockRegistry.SUPPORT_ALBUM_PEDESTAL).add(BlockRegistry.UMA_PEDESTAL)
                 .add(BlockRegistry.SILVER_SUPPORT_ALBUM_PEDESTAL).add(BlockRegistry.SILVER_UMA_PEDESTAL)
                 .add(BlockRegistry.UMA_STATUES)
                 .add(BlockRegistry.THREE_GODDESS_UPPER).add(BlockRegistry.TRAINING_FACILITY);
 
-        getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_AXE).add(BlockRegistry.DISASSEMBLY_BLOCK).add(BlockRegistry.SKILL_LEARNING_TABLE)
+        valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE).add(BlockRegistry.DISASSEMBLY_BLOCK).add(BlockRegistry.SKILL_LEARNING_TABLE)
                 .add(BlockRegistry.REGISTER_LECTERN).add(BlockRegistry.UMA_SELECT_BLOCK);
 
-        getOrCreateTagBuilder(UmapyoiBlockTags.TRACK_TURF)
+        valueLookupBuilder(UmapyoiBlockTags.TRACK_TURF)
                 .add(Blocks.GRASS_BLOCK)
                 .add(Blocks.DIRT_PATH)
                 .add(Blocks.CRIMSON_NYLIUM)
                 .add(Blocks.WARPED_NYLIUM);
 
-        getOrCreateTagBuilder(UmapyoiBlockTags.TRACK_DIRT)
+        valueLookupBuilder(UmapyoiBlockTags.TRACK_DIRT)
                 .add(Blocks.DIRT)
                 .add(Blocks.PODZOL)
                 .add(Blocks.ROOTED_DIRT)
                 .add(Blocks.COARSE_DIRT)
                 .forceAddTag(BlockTags.SAND);
 
-        getOrCreateTagBuilder(UmapyoiBlockTags.TRACK_SNOW)
+        valueLookupBuilder(UmapyoiBlockTags.TRACK_SNOW)
                 .forceAddTag(BlockTags.SNOW);
     }
 }

@@ -273,8 +273,8 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
     public void tick(ItemStack stack, SlotReference slot, LivingEntity entity) {
         if (stack.isEmpty()) return;
 
-        Level commandSenderWorld = entity.getCommandSenderWorld();
-        if (!commandSenderWorld.isClientSide()) {
+        Level level = entity.level();
+        if (!level.isClientSide()) {
             resumeActionPoint(stack, entity);
         }
     }

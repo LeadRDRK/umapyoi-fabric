@@ -1,7 +1,5 @@
 package net.tracen.umapyoi.compat.jei.category;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -60,8 +58,8 @@ public class JEIGachaCategory implements IRecipeCategory<JEISimpleRecipe> {
                 Font font = minecraft.font;
                 var needBookText = Component.translatable("umapyoi.jei.gacha.need_book");
                 guiGraphics.drawString(font, needBookText,
-                        46 - Math.round(font.width(needBookText.getVisualOrderText()) / 2.0F), 36, 0xFEFEFE);
-                RenderSystem.setShaderColor(1, 1, 1, 1);
+                        46 - Math.round(font.width(needBookText.getVisualOrderText()) / 2.0F), 36, 0xFFFEFEFE);
+                //RenderSystem.setShaderColor(1, 1, 1, 1);
             }
         });
         if (recipe.getOutputs().size() > 1)

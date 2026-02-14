@@ -1,7 +1,9 @@
 package net.tracen.umapyoi;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.rendering.v1.SpecialGuiElementRegistry;
 import net.tracen.umapyoi.client.screen.ScreensRegistry;
+import net.tracen.umapyoi.client.screen.pip.GuiBedrockModelRenderer;
 import net.tracen.umapyoi.events.client.RenderArmCallback;
 import net.tracen.umapyoi.events.client.RenderingUmaSoulCallback;
 import net.tracen.umapyoi.events.handler.ClientEvents;
@@ -21,5 +23,8 @@ public class UmapyoiClient implements ClientModInitializer {
 
         // ScreensRegistry
         ScreensRegistry.register();
+
+        // PIP model renderer
+        SpecialGuiElementRegistry.register(GuiBedrockModelRenderer::new);
     }
 }

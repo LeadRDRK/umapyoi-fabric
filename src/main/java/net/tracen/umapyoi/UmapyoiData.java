@@ -2,6 +2,7 @@ package net.tracen.umapyoi;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.tracen.umapyoi.data.UmapyoiAtlasProvider;
 import net.tracen.umapyoi.data.UmapyoiLootTableProvider;
 import net.tracen.umapyoi.data.UmapyoiModelProvider;
 import net.tracen.umapyoi.data.UmapyoiRecipeProvider;
@@ -18,5 +19,6 @@ public class UmapyoiData implements DataGeneratorEntrypoint {
         pack.addProvider(UmapyoiLootTableProvider::new);
         pack.addProvider(UmapyoiRecipeProvider::new);
         pack.addProvider(UmapyoiModelProvider::new);
+        pack.addProvider(UmapyoiAtlasProvider::new);
     }
 }

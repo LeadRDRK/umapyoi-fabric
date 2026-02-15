@@ -3,7 +3,6 @@ package net.tracen.umapyoi.item;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -11,15 +10,15 @@ import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
@@ -41,6 +40,7 @@ import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.client.model.UmaPlayerModel;
+import net.tracen.umapyoi.client.renderer.BedrockModelRenderer;
 import net.tracen.umapyoi.data.tag.UmapyoiUmaDataTags;
 import net.tracen.umapyoi.events.ApplyUmasoulAttributeCallback;
 import net.tracen.umapyoi.events.ResumeActionPointCallback;
@@ -141,7 +141,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
         if(UmaSoulUtils.getGrowth(stack) == Growth.RETIRED)
             tooltipAdder.accept(Component.translatable("tooltip.umapyoi.uma_soul.ranking", UmaStatusUtils.getStatusLevel(ranking))
                     .withStyle(ChatFormatting.GOLD));
-        if (Screen.hasShiftDown() || !Umapyoi.CONFIG.TOOLTIP_SWITCH()) {
+        if (Minecraft.getInstance().hasShiftDown() || !Umapyoi.CONFIG.TOOLTIP_SWITCH()) {
             tooltipAdder.accept(
                     Component.translatable("tooltip.umapyoi.uma_soul.soul_details").withStyle(ChatFormatting.AQUA));
             UmaDataBasicStatus property = UmaSoulUtils.getProperty(stack);
@@ -291,11 +291,11 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
     @Override
     @Environment(EnvType.CLIENT)
     public void render(ItemStack itemStack, SlotReference slotReference, EntityModel<? extends LivingEntityRenderState> entityModel,
-                       PoseStack poseStack, MultiBufferSource multiBufferSource, int light, LivingEntityRenderState entityState,
+                       PoseStack poseStack, SubmitNodeCollector nodeCollector, int light, LivingEntityRenderState entityState,
                        float limbAngle, float limbDistance)
     {
-        // match PlayerRenderState directly (disallow ArmorStandRenderState)
-        if (!(entityState instanceof PlayerRenderState state) || (state.isInvisible && !state.isSpectator))
+        // match AvatarRenderState directly (disallow ArmorStandRenderState)
+        if (!(entityState instanceof AvatarRenderState state) || (state.isInvisible && !state.isSpectator))
             return;
 
         var comp = slotReference.inventory().getComponent();
@@ -306,13 +306,12 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
         if (baseModel.needRefresh(pojo))
             baseModel.loadModel(pojo);
 
-        VertexConsumer vertexConsumer = multiBufferSource
-                .getBuffer(RenderType.entityTranslucent(ClientUtils.getTexture(renderTarget)));
+        var renderType = RenderType.entityTranslucent(ClientUtils.getTexture(renderTarget));
         baseModel.setModelProperties(state);
         baseModel.prepareMobModel(state, limbAngle, limbDistance);
 
         var callbackContext = new RenderingUmaSoulCallback.Context(entity, state, baseModel,
-                poseStack, multiBufferSource, light);
+                poseStack, nodeCollector, light);
         if (RenderingUmaSoulCallback.Pre.invoke(callbackContext))
             return;
 
@@ -325,13 +324,16 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
             baseModel.copyAnim(baseModel.rightLeg, humanoidModel.rightLeg);
         }
         baseModel.setupAnim(state);
-        baseModel.renderToBuffer(poseStack, vertexConsumer, light,
+        var modelRenderer = new BedrockModelRenderer(baseModel, light,
                 LivingEntityRenderer.getOverlayCoords(state, 0.0F), -1);
+        nodeCollector.submitCustomGeometry(poseStack, renderType, modelRenderer);
         if (baseModel.isEmissive()) {
-            VertexConsumer emissiveConsumer = multiBufferSource
-                    .getBuffer(RenderType.entityTranslucentEmissive(ClientUtils.getEmissiveTexture(renderTarget)));
-            baseModel.renderEmissiveParts(poseStack, emissiveConsumer, light,
-                    LivingEntityRenderer.getOverlayCoords(state, 0.0F), -1);
+            var emissiveRenderType = RenderType.entityTranslucentEmissive(
+                    ClientUtils.getEmissiveTexture(renderTarget));
+            var emissiveRenderer = new BedrockModelRenderer(baseModel, light,
+                    LivingEntityRenderer.getOverlayCoords(state, 0.0F), -1, true);
+            nodeCollector.order(1)
+                    .submitCustomGeometry(poseStack, emissiveRenderType, emissiveRenderer);
         }
 
         RenderingUmaSoulCallback.Post.invoke(callbackContext);

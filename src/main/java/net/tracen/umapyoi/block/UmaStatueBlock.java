@@ -82,7 +82,7 @@ public class UmaStatueBlock extends BaseEntityBlock {
                     level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.STONE_PLACE,
                             SoundSource.BLOCKS, 1.0F, 0.8F
                     );
-                    return level.isClientSide ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
+                    return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
                 }
 
             }
@@ -98,7 +98,7 @@ public class UmaStatueBlock extends BaseEntityBlock {
                 level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.WOOD_HIT, SoundSource.BLOCKS,
                         0.25F, 0.5F
                 );
-                return level.isClientSide ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
+                return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
             }
         }
         // Maybe no need to pass to default interaction

@@ -11,12 +11,12 @@
   ],
   "client": [
     "client.HumanoidMobRendererMixin",
-    "client.ItemInHandLayerMixin",
+    "client.PlayerItemInHandLayerMixin",
     "client.ItemInHandRendererMixin",
     "client.LivingEntityRendererMixin",
     "client.LivingEntityRenderStateMixin",
     "client.PlayerModelMixin",
-    "client.PlayerRendererMixin"
+    "client.AvatarRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

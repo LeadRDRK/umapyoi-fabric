@@ -4,7 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -54,7 +54,7 @@ public class UmaFactorContainerItem extends Item implements CreativeModeTabFille
         String buffer = "umadata." + stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get()).toLanguageKey();
         tooltipAdder.accept(Component.translatable("tooltip.umapyoi.umadata.name", I18n.get(buffer.toString()))
                 .withStyle(ChatFormatting.GRAY));
-        if (Screen.hasShiftDown() || !Umapyoi.CONFIG.TOOLTIP_SWITCH()) {
+        if (Minecraft.getInstance().hasShiftDown() || !Umapyoi.CONFIG.TOOLTIP_SWITCH()) {
             tooltipAdder.accept(Component.translatable("tooltip.umapyoi.factors.factors_details")
                     .withStyle(ChatFormatting.AQUA));
             List<UmaFactorStack> stackList = UmaFactorUtils.deserializeData(datas);

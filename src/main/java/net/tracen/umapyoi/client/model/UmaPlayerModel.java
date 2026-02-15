@@ -6,8 +6,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
-import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -175,7 +175,7 @@ public class UmaPlayerModel<T extends HumanoidRenderState> extends BedrockHumano
     }
 
     public void setModelProperties(T state) {
-        if (state instanceof PlayerRenderState playerState && playerState.isSpectator) {
+        if (state instanceof AvatarRenderState playerState && playerState.isSpectator) {
             this.setAllVisible(false);
             this.head.visible = true;
         } else {

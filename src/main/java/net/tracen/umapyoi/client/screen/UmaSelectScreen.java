@@ -11,6 +11,8 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.Registry;
@@ -83,12 +85,14 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
 
     }
 
+    @Override
     public void render(GuiGraphics pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
         this.renderFg(pPoseStack, pMouseX, pMouseY, pPartialTick);
         this.renderTooltip(pPoseStack, pMouseX, pMouseY);
     }
 
+    @Override
     public void containerTick() {
         super.containerTick();
     }
@@ -122,6 +126,7 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
         this.searchBox.setEditable(false);
     }
 
+    @Override
     public void resize(Minecraft pMinecraft, int pWidth, int pHeight) {
         String s = this.searchBox.getValue();
         this.init(pMinecraft, pWidth, pHeight);
@@ -136,18 +141,20 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
         this.menu.addSlotListener(this);
     }
 
+    @Override
     public void removed() {
         super.removed();
         this.menu.removeSlotListener(this);
     }
 
-    public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
-        if (pKeyCode == 256) {
+    @Override
+    public boolean keyPressed(KeyEvent event) {
+        if (event.key() == 256) {
             this.minecraft.player.closeContainer();
         }
 
-        return !this.searchBox.keyPressed(pKeyCode, pScanCode, pModifiers) && !this.searchBox.canConsumeInput()
-                ? super.keyPressed(pKeyCode, pScanCode, pModifiers)
+        return !this.searchBox.keyPressed(event) && !this.searchBox.canConsumeInput()
+                ? super.keyPressed(event)
                 : true;
     }
 
@@ -166,6 +173,7 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
         return this.menu.getSlot(0).hasItem() && this.menu.getSlot(1).hasItem();
     }
 
+    @Override
     protected void renderBg(GuiGraphics guiGraphics, float pPartialTick, int pX, int pY) {
         int i = this.leftPos;
         int j = this.topPos;
@@ -180,6 +188,7 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
         this.renderRecipes(guiGraphics, l, i1, j1);
     }
 
+    @Override
     protected void renderTooltip(GuiGraphics pPoseStack, int pX, int pY) {
         super.renderTooltip(pPoseStack, pX, pY);
         if (this.displayRecipes) {
@@ -323,7 +332,8 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
         }
     }
 
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+    @Override
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         this.scrolling = false;
         if (this.displayRecipes) {
             int i = this.leftPos + RECIPES_X;
@@ -332,10 +342,10 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
 
             for (int l = this.startIndex; l < k; ++l) {
                 if(l >= this.getResults().size())
-                    return super.mouseClicked(pMouseX, pMouseY, pButton);
+                    return super.mouseClicked(event, isDoubleClick);
                 int i1 = l - this.startIndex;
-                double d0 = pMouseX - (double) (i + i1 % RECIPES_COLUMNS * RECIPES_IMAGE_SIZE_WIDTH);
-                double d1 = pMouseY - (double) (j + i1 / RECIPES_COLUMNS * 18);
+                double d0 = event.x() - (double) (i + i1 % RECIPES_COLUMNS * RECIPES_IMAGE_SIZE_WIDTH);
+                double d1 = event.y() - (double) (j + i1 / RECIPES_COLUMNS * 18);
                 if (d0 >= 0.0D && d1 >= 0.0D && d0 < 16.0D && d1 < 18.0D) {
                     Minecraft.getInstance().getSoundManager()
                             .play(SimpleSoundInstance.forUI(SoundEvents.UI_STONECUTTER_SELECT_RECIPE, 1.0F));
@@ -348,26 +358,27 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
 
             i = this.leftPos + 119;
             j = this.topPos + 9;
-            if (pMouseX >= (double) i && pMouseX < (double) (i + SCROLLER_WIDTH) && pMouseY >= (double) j
-                    && pMouseY < (double) (j + SCROLLER_FULL_HEIGHT)) {
+            if (event.x() >= (double) i && event.x() < (double) (i + SCROLLER_WIDTH) && event.y() >= (double) j
+                    && event.y() < (double) (j + SCROLLER_FULL_HEIGHT)) {
                 this.scrolling = true;
             }
         }
 
-        return super.mouseClicked(pMouseX, pMouseY, pButton);
+        return super.mouseClicked(event, isDoubleClick);
     }
 
-    public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
+    @Override
+    public boolean mouseDragged(MouseButtonEvent event, double pDragX, double pDragY) {
         if (this.scrolling && this.isScrollBarActive()) {
             int i = this.topPos + RECIPES_Y;
             int j = i + SCROLLER_FULL_HEIGHT;
-            this.scrollOffs = ((float) pMouseY - (float) i - 7.5F) / ((float) (j - i) - 15.0F);
+            this.scrollOffs = ((float) event.y() - (float) i - 7.5F) / ((float) (j - i) - 15.0F);
             this.scrollOffs = Mth.clamp(this.scrollOffs, 0.0F, 1.0F);
             this.startIndex = (int) ((double) (this.scrollOffs * (float) this.getOffscreenRows()) + 0.5D)
                     * RECIPES_COLUMNS;
             return true;
         } else {
-            return super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
+            return super.mouseDragged(event, pDragX, pDragY);
         }
     }
 

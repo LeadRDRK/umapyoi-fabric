@@ -7,7 +7,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
@@ -78,7 +78,7 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
         if (isEmptyCard(registries, cardID))
             return ;
         if(!this.getSupports(registries, stack).isEmpty()) {
-            if (Screen.hasShiftDown() || !Umapyoi.CONFIG.TOOLTIP_SWITCH()) {
+            if (Minecraft.getInstance().hasShiftDown() || !Umapyoi.CONFIG.TOOLTIP_SWITCH()) {
                 tooltipAdder.accept(Component.translatable("tooltip.umapyoi.supports").withStyle(ChatFormatting.AQUA));
                 this.getSupports(registries, stack)
                         .forEach(support -> tooltipAdder.accept(support.getDescription().copy().withStyle(ChatFormatting.GRAY)));
@@ -91,7 +91,7 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
         List<ResourceLocation> supporters = ClientUtils.getClientSupportCardRegistry().get(cardID)
                 .orElseThrow().value().getSupporters();
         if (!supporters.isEmpty()) {
-            if (Screen.hasControlDown() || !Umapyoi.CONFIG.TOOLTIP_SWITCH()) {
+            if (Minecraft.getInstance().hasShiftDown() || !Umapyoi.CONFIG.TOOLTIP_SWITCH()) {
                 tooltipAdder.accept(Component.translatable("tooltip.umapyoi.supporters").withStyle(ChatFormatting.AQUA));
                 supporters.forEach(name -> tooltipAdder
                         .accept(UmaSoulUtils.getTranslatedUmaName(name).copy().withStyle(ChatFormatting.GRAY)));

@@ -104,7 +104,7 @@ public class TrainingFacilityBlock extends BaseEntityBlock {
 
     @Override
     public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             var menu = state.getMenuProvider(level, pos);
             if (menu != null) {
                 player.openMenu(menu);

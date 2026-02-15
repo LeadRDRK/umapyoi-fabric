@@ -39,7 +39,7 @@ public class BlockRegistry {
 
     public static final Block TRAINING_FACILITY = register("training_facility",
             TrainingFacilityBlock::new,
-            BlockBehaviour.Properties.ofLegacyCopy(Blocks.IRON_BLOCK).noOcclusion().noCollission());
+            BlockBehaviour.Properties.ofLegacyCopy(Blocks.IRON_BLOCK).noOcclusion().noCollision());
 
     public static final Block SKILL_LEARNING_TABLE = register("skill_learning_table",
             SkillLearningTableBlock::new,

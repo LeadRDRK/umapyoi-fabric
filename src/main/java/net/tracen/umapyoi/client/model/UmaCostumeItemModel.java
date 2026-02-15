@@ -2,24 +2,19 @@ package net.tracen.umapyoi.client.model;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
-import net.fabricmc.fabric.api.client.model.loading.v1.SimpleUnbakedExtraModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.item.BlockModelWrapper;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.MissingItemModel;
-import net.minecraft.client.renderer.item.ModelRenderProperties;
-import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.item.UmaCostumeItem;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,8 +26,8 @@ public class UmaCostumeItemModel extends DynamicItemBakedModel {
     }
 
     @Override
-    public ItemModel resolveModel(ItemModel original, ItemStack stack, @Nullable ClientLevel world,
-                                   @Nullable LivingEntity entity, int seed) {
+    public ItemModel resolveModel(ItemModel original, ItemStack stack, @Nullable ClientLevel level,
+                                  @Nullable ItemOwner owner, int seed) {
         if (!stack.isEmpty()) {
             if (stack.getItem() instanceof UmaCostumeItem) {
                 var costumeId = UmaCostumeItem.getCostumeID(stack);

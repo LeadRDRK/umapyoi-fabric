@@ -7,7 +7,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
 
@@ -19,21 +19,20 @@ public interface RenderArmCallback {
     class Context {
         private final AbstractClientPlayer player;
         private final PoseStack poseStack;
-        private final MultiBufferSource bufferSource;
+        private final SubmitNodeCollector nodeCollector;
         private final int packedLight;
         private final ResourceLocation skinTexture;
-        private final boolean isSleeveVisible;
+        private final boolean renderSleeve;
         private final HumanoidArm arm;
 
-        public Context(AbstractClientPlayer player, PoseStack poseStack,
-                       MultiBufferSource bufferSource, int packedLight, ResourceLocation skinTexture,
-                       boolean isSleeveVisible, HumanoidArm arm) {
+        public Context(AbstractClientPlayer player, PoseStack poseStack, SubmitNodeCollector nodeCollector,
+                       int packedLight, ResourceLocation skinTexture, boolean renderSleeve, HumanoidArm arm) {
             this.player = player;
             this.poseStack = poseStack;
-            this.bufferSource = bufferSource;
+            this.nodeCollector = nodeCollector;
             this.packedLight = packedLight;
             this.skinTexture = skinTexture;
-            this.isSleeveVisible = isSleeveVisible;
+            this.renderSleeve = renderSleeve;
             this.arm = arm;
         }
 
@@ -45,8 +44,8 @@ public interface RenderArmCallback {
             return poseStack;
         }
 
-        public MultiBufferSource getBufferSource() {
-            return bufferSource;
+        public SubmitNodeCollector getNodeCollector() {
+            return nodeCollector;
         }
 
         public int getPackedLight() {
@@ -57,8 +56,8 @@ public interface RenderArmCallback {
             return skinTexture;
         }
 
-        public boolean isSleeveVisible() {
-            return isSleeveVisible;
+        public boolean isRenderSleeve() {
+            return renderSleeve;
         }
 
         public HumanoidArm getArm() {

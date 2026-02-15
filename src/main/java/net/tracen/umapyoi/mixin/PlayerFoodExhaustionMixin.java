@@ -22,7 +22,7 @@ public class PlayerFoodExhaustionMixin {
         ItemStack umaSoul = UmapyoiAPI.getUmaSoul(player);
         if (!umaSoul.isEmpty()) {
             if (!player.getAbilities().invulnerable) {
-                if (!player.level().isClientSide) {
+                if (!player.level().isClientSide()) {
                     float exhaustionMultipler = 1.2F - this.getExactProperty(umaSoul, StatusType.STAMINA, 0.85F);
                     player.getFoodData().addExhaustion(pExhaustion * exhaustionMultipler);
                 }

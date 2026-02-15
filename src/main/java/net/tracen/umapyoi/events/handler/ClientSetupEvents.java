@@ -22,12 +22,10 @@ import net.tracen.umapyoi.client.SkillOverlay;
 import net.tracen.umapyoi.client.key.SkillKeyMapping;
 import net.tracen.umapyoi.client.model.BedrockModelResourceLoader;
 import net.tracen.umapyoi.client.model.UmaCostumeItemModel;
-import net.tracen.umapyoi.client.renderer.blockentity.SilverSupportAlbumPedestalBlockRender;
-import net.tracen.umapyoi.client.renderer.blockentity.SilverUmaPedestalBlockRender;
-import net.tracen.umapyoi.client.renderer.blockentity.SupportAlbumPedestalBlockRender;
-import net.tracen.umapyoi.client.renderer.blockentity.ThreeGoddessBlockRender;
-import net.tracen.umapyoi.client.renderer.blockentity.UmaPedestalBlockRender;
-import net.tracen.umapyoi.client.renderer.blockentity.UmaStatuesBlockRender;
+import net.tracen.umapyoi.client.renderer.blockentity.SupportAlbumPedestalBlockRenderer;
+import net.tracen.umapyoi.client.renderer.blockentity.ThreeGoddessBlockRenderer;
+import net.tracen.umapyoi.client.renderer.blockentity.UmaPedestalBlockRenderer;
+import net.tracen.umapyoi.client.renderer.blockentity.UmaStatueBlockRenderer;
 import net.tracen.umapyoi.item.AbstractSuitItem;
 import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.item.UmaSoulItem;
@@ -54,16 +52,16 @@ public class ClientSetupEvents {
         ClientTickEvents.END_CLIENT_TICK.register(SkillKeyMapping::onEndClientTick);
 
         // Block entities
-        BlockEntityRenderers.register(BlockEntityRegistry.THREE_GODDESS.get(), ThreeGoddessBlockRender::new);
-        BlockEntityRenderers.register(BlockEntityRegistry.UMA_PEDESTAL.get(), UmaPedestalBlockRender::new);
+        BlockEntityRenderers.register(BlockEntityRegistry.THREE_GODDESS.get(), ThreeGoddessBlockRenderer::new);
+        BlockEntityRenderers.register(BlockEntityRegistry.UMA_PEDESTAL.get(), UmaPedestalBlockRenderer::new);
         BlockEntityRenderers.register(BlockEntityRegistry.SUPPORT_ALBUM_PEDESTAL.get(),
-                SupportAlbumPedestalBlockRender::new);
+                SupportAlbumPedestalBlockRenderer::new);
         
-        BlockEntityRenderers.register(BlockEntityRegistry.UMA_STATUES.get(), UmaStatuesBlockRender::new);
+        BlockEntityRenderers.register(BlockEntityRegistry.UMA_STATUES.get(), UmaStatueBlockRenderer::new);
         
-        BlockEntityRenderers.register(BlockEntityRegistry.SILVER_UMA_PEDESTAL.get(), SilverUmaPedestalBlockRender::new);
+        BlockEntityRenderers.register(BlockEntityRegistry.SILVER_UMA_PEDESTAL.get(), UmaPedestalBlockRenderer::new);
         BlockEntityRenderers.register(BlockEntityRegistry.SILVER_SUPPORT_ALBUM_PEDESTAL.get(),
-                SilverSupportAlbumPedestalBlockRender::new);
+                SupportAlbumPedestalBlockRenderer::new);
 
         // resourceLoadingListener
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES)

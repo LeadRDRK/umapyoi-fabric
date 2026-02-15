@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.world.entity.LivingEntity;
 import net.tracen.umapyoi.client.model.UmaPlayerModel;
@@ -16,15 +16,15 @@ public interface RenderingModelCallback {
         private final HumanoidRenderState state;
         private final UmaPlayerModel<HumanoidRenderState> model;
         private final PoseStack poseStack;
-        private final MultiBufferSource multiBufferSource;
+        private final SubmitNodeCollector nodeCollector;
         private final int packedLight;
 
-        public Context(LivingEntity entity, HumanoidRenderState state, UmaPlayerModel<HumanoidRenderState> model, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight) {
+        public Context(LivingEntity entity, HumanoidRenderState state, UmaPlayerModel<HumanoidRenderState> model, PoseStack poseStack, SubmitNodeCollector nodeCollector, int packedLight) {
             this.entity = entity;
             this.state = state;
             this.model = model;
             this.poseStack = poseStack;
-            this.multiBufferSource = multiBufferSource;
+            this.nodeCollector = nodeCollector;
             this.packedLight = packedLight;
         }
 
@@ -44,8 +44,8 @@ public interface RenderingModelCallback {
             return poseStack;
         }
 
-        public MultiBufferSource getMultiBufferSource() {
-            return multiBufferSource;
+        public SubmitNodeCollector getNodeCollector() {
+            return nodeCollector;
         }
 
         public int getPackedLight() {

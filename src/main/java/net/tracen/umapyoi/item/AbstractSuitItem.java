@@ -1,15 +1,14 @@
 package net.tracen.umapyoi.item;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
@@ -23,6 +22,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.client.model.UmaPlayerModel;
+import net.tracen.umapyoi.client.renderer.BedrockModelRenderer;
 import net.tracen.umapyoi.events.client.RenderingUmaSuitCallback;
 import net.tracen.umapyoi.registry.umadata.Growth;
 import net.tracen.umapyoi.utils.ClientUtils;
@@ -81,7 +81,7 @@ public abstract class AbstractSuitItem extends TrinketItem implements TrinketRen
     @Override
     @Environment(EnvType.CLIENT)
     public void render(ItemStack itemStack, SlotReference slotReference, EntityModel<? extends LivingEntityRenderState> entityModel,
-                       PoseStack poseStack, MultiBufferSource multiBufferSource, int light, LivingEntityRenderState entityState,
+                       PoseStack poseStack, SubmitNodeCollector nodeCollector, int light, LivingEntityRenderState entityState,
                        float limbAngle, float limbDistance)
     {
         if (!(entityState instanceof HumanoidRenderState state) || state.isInvisible)
@@ -111,8 +111,9 @@ public abstract class AbstractSuitItem extends TrinketItem implements TrinketRen
             tanned = ClientUtils.isTannedSkin(stackInSlot);
         }
 
-        VertexConsumer vertexconsumer = multiBufferSource.getBuffer(
-                RenderType.entityTranslucent(flat_flag ? getFlatTexture(itemStack, tanned) : getTexture(itemStack, tanned)));
+        var renderType = RenderType.entityTranslucent(flat_flag
+                ? getFlatTexture(itemStack, tanned)
+                : getTexture(itemStack, tanned));
 
         var pojo = ClientUtils.getModelPOJO(flat_flag ? getFlatModel(itemStack) : getModel(itemStack));
         if (baseModel.needRefresh(pojo))
@@ -122,7 +123,7 @@ public abstract class AbstractSuitItem extends TrinketItem implements TrinketRen
         baseModel.tail.visible = false;
         baseModel.prepareMobModel(state, limbAngle, limbDistance);
         var callbackContext = new RenderingUmaSuitCallback.Context(entity, state, baseModel,
-                poseStack, multiBufferSource, light);
+                poseStack, nodeCollector, light);
         if (RenderingUmaSuitCallback.Pre.invoke(callbackContext))
             return;
 
@@ -139,8 +140,9 @@ public abstract class AbstractSuitItem extends TrinketItem implements TrinketRen
         }
         baseModel.setupAnim(state);
 
-        baseModel.renderToBuffer(poseStack, vertexconsumer, light,
+        var modelRenderer = new BedrockModelRenderer(baseModel, light,
                 LivingEntityRenderer.getOverlayCoords(state, 0.0F), -1);
+        nodeCollector.submitCustomGeometry(poseStack, renderType, modelRenderer);
         RenderingUmaSuitCallback.Post.invoke(callbackContext);
     }
 

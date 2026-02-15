@@ -42,7 +42,7 @@ public class UmaFactorAmplifierItem extends Item {
 //        StringBuffer buffer = new StringBuffer("umadata.").append(tag.getString("name").toString().replace(':', '.'));
 //        tooltip.add(Component.translatable("tooltip.umapyoi.umadata.name", I18n.get(buffer.toString()))
 //                .withStyle(ChatFormatting.GRAY));
-//        if (Screen.hasShiftDown() || !UmapyoiConfig.TOOLTIP_SWITCH.get()) {
+//        if (Minecraft.getInstance().hasShiftDown() || !UmapyoiConfig.TOOLTIP_SWITCH.get()) {
 //            tooltip.add(Component.translatable("tooltip.umapyoi.factors.factors_details")
 //                    .withStyle(ChatFormatting.AQUA));
 //            List<UmaFactorStack> stackList = UmaFactorUtils.deserializeNBT(tag);

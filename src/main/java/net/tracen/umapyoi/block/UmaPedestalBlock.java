@@ -46,7 +46,7 @@ public class UmaPedestalBlock extends AbstractPedestalBlock {
 
     @Override
     public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             BlockEntity tileEntity = level.getBlockEntity(pos);
             if (tileEntity instanceof UmaPedestalBlockEntity blockEntity) {
                 return interactBEWithoutItem(level, pos, player, blockEntity.removeItem());
@@ -57,7 +57,7 @@ public class UmaPedestalBlock extends AbstractPedestalBlock {
 
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             BlockEntity tileEntity = level.getBlockEntity(pos);
             if (tileEntity instanceof UmaPedestalBlockEntity blockEntity) {
                 return interactBEWithItem(stack, level, pos, player, hand, blockEntity, true);
@@ -80,7 +80,7 @@ public class UmaPedestalBlock extends AbstractPedestalBlock {
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
             BlockEntityType<T> blockEntity) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return createTickerHelper(blockEntity, BlockEntityRegistry.UMA_PEDESTAL.get(),
                     UmaPedestalBlockEntity::animationTick);
         }

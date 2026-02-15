@@ -4,8 +4,8 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
-import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
@@ -70,7 +70,7 @@ public class BedrockHumanoidModel<T extends HumanoidRenderState> extends Bedrock
 
     public void setupAnim(T state) {
         boolean flag = false;
-        if (state instanceof PlayerRenderState player) {
+        if (state instanceof AvatarRenderState player) {
             flag = player.fallFlyingTimeInTicks > 4;
         }
         boolean flag1 = state.isVisuallySwimming;

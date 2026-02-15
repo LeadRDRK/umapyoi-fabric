@@ -1,7 +1,5 @@
 package net.tracen.umapyoi.events.handler;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.RenderType;
@@ -15,7 +13,9 @@ import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.client.model.UmaCostumeModelUtils;
 import net.tracen.umapyoi.client.model.UmaPlayerModel;
+import net.tracen.umapyoi.client.model.bedrock.BedrockPart;
 import net.tracen.umapyoi.client.model.pojo.BedrockModelPOJO;
+import net.tracen.umapyoi.client.renderer.BedrockPartRenderer;
 import net.tracen.umapyoi.data.tag.UmapyoiCostumeDataTags;
 import net.tracen.umapyoi.events.client.RenderArmCallback;
 import net.tracen.umapyoi.events.client.RenderingModelCallback;
@@ -73,24 +73,26 @@ public class ClientEvents {
         ItemStack umasuit = UmapyoiAPI.getUmaSuit(player);
         if (!umasoul.isEmpty()) {
             ResourceLocation name = UmaSoulUtils.getName(umasoul);
-            VertexConsumer vertexconsumer = event.getBufferSource()
-                    .getBuffer(RenderType.entityTranslucent(getTexture(name)));
-            var pojo = ClientUtils.getModelPOJO(name);
-            if(!umasuit.isEmpty()) {
+            BedrockModelPOJO pojo;
+            RenderType renderType;
+            if (umasuit.isEmpty()) {
+                renderType = RenderType.entityTranslucent(getTexture(name));
+                pojo = ClientUtils.getModelPOJO(name);
+            }
+            else {
                 boolean tanned = ClientUtils.isTannedSkin(umasoul);
-                vertexconsumer = event.getBufferSource()
-                        .getBuffer(RenderType.entityTranslucent(UmaCostumeModelUtils.getCostumeTexture(umasuit, tanned)));
+                renderType = RenderType.entityTranslucent(UmaCostumeModelUtils.getCostumeTexture(umasuit, tanned));
                 pojo = ClientUtils.getModelPOJO(UmaCostumeModelUtils.getCostumeModel(umasuit));
             }
-            renderArmModel(event, name, vertexconsumer, pojo);
+            renderArmModel(event, name, renderType, pojo);
             return true;
         }
         return false;
     }
 
-    private static void renderArmModel(RenderArmCallback.Context event, ResourceLocation name, VertexConsumer vertexconsumer,
-                                       BedrockModelPOJO pojo) {
-        if(baseModel.needRefresh(pojo))
+    private static void renderArmModel(RenderArmCallback.Context event, ResourceLocation name,
+                                       RenderType renderType, BedrockModelPOJO pojo) {
+        if (baseModel.needRefresh(pojo))
             baseModel.loadModel(pojo);
 
         //baseModel.setModelProperties(event.getState());
@@ -99,31 +101,30 @@ public class ClientEvents {
         baseModel.swimAmount = 0.0F;
         //baseModel.setupAnim(event.getState(), 0.0F, 0.0F);
 
+        BedrockPart armPart;
+        float xOffset;
         if (event.getArm() == HumanoidArm.RIGHT) {
-            baseModel.rightArm.xRot = 0.0F;
-            baseModel.rightArm.x -=1F;
-            baseModel.rightArm.render(event.getPoseStack(), vertexconsumer, event.getPackedLight(),
-                    OverlayTexture.NO_OVERLAY);
-            if(baseModel.isEmissive()) {
-                VertexConsumer emissiveConsumer = event.getBufferSource()
-                        .getBuffer(RenderType.entityTranslucentEmissive(ClientUtils.getEmissiveTexture(name)));
-                baseModel.rightArm.renderEmissive(event.getPoseStack(), emissiveConsumer, event.getPackedLight(),
-                        OverlayTexture.NO_OVERLAY, -1);
-            }
-            baseModel.rightArm.x +=1F;
+            armPart = baseModel.rightArm;
+            xOffset = -1F;
         } else {
-            baseModel.leftArm.xRot = 0.0F;
-            baseModel.leftArm.x +=1F;
-            baseModel.leftArm.render(event.getPoseStack(), vertexconsumer, event.getPackedLight(),
-                    OverlayTexture.NO_OVERLAY);
-            if(baseModel.isEmissive()) {
-                VertexConsumer emissiveConsumer = event.getBufferSource()
-                        .getBuffer(RenderType.entityTranslucentEmissive(ClientUtils.getEmissiveTexture(name)));
-                baseModel.leftArm.renderEmissive(event.getPoseStack(), emissiveConsumer, event.getPackedLight(),
-                        OverlayTexture.NO_OVERLAY, -1);
-            }
-            baseModel.leftArm.x -=1F;
+            armPart = baseModel.leftArm;
+            xOffset = 1F;
         }
+
+        var nodeCollector = event.getNodeCollector();
+        armPart.xRot = 0.0F;
+        armPart.x += xOffset;
+        var partRenderer = new BedrockPartRenderer(armPart, event.getPackedLight(),
+                OverlayTexture.NO_OVERLAY, -1);
+        nodeCollector.submitCustomGeometry(event.getPoseStack(), renderType, partRenderer);
+        if (baseModel.isEmissive()) {
+            var emissiveRenderType = RenderType.entityTranslucentEmissive(ClientUtils.getEmissiveTexture(name));
+            var emissiveRenderer = new BedrockPartRenderer(armPart, event.getPackedLight(),
+                    OverlayTexture.NO_OVERLAY, -1, true);
+            nodeCollector.order(1)
+                    .submitCustomGeometry(event.getPoseStack(), emissiveRenderType, emissiveRenderer);
+        }
+        armPart.x -= xOffset;
     }
 
     private static ResourceLocation getTexture(ResourceLocation name) {

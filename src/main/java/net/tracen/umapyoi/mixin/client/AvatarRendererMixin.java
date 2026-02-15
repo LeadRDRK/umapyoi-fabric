@@ -4,13 +4,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.entity.ClientAvatarEntity;
 import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.player.PlayerRenderer;
-import net.minecraft.client.renderer.entity.state.PlayerRenderState;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Avatar;
 import net.minecraft.world.entity.HumanoidArm;
 import net.tracen.umapyoi.client.renderer.ItemInHandRendererMixinState;
 import net.tracen.umapyoi.events.client.RenderArmCallback;
@@ -23,29 +24,30 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
-@Mixin(PlayerRenderer.class)
-public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractClientPlayer, PlayerRenderState, PlayerModel> {
-    public PlayerRendererMixin() {
+@Mixin(AvatarRenderer.class)
+public abstract class AvatarRendererMixin<AvatarlikeEntity extends Avatar & ClientAvatarEntity>
+        extends LivingEntityRenderer<AvatarlikeEntity, AvatarRenderState, PlayerModel> {
+    public AvatarRendererMixin() {
         super(null, null, 0.0F);
     }
 
     @Inject(at = @At("HEAD"), method = "renderRightHand", cancellable = true)
-    private void renderRightHand(PoseStack poseStack, MultiBufferSource bufferSource, int packedLight,
-                                 ResourceLocation skinTexture, boolean isSleeveVisible,
+    private void renderRightHand(PoseStack poseStack, SubmitNodeCollector nodeCollector, int packedLight,
+                                 ResourceLocation skinTexture, boolean renderSleeve,
                                  CallbackInfo info) {
         var player = Objects.requireNonNull(ItemInHandRendererMixinState.player);
-        if (RenderArmCallback.invoke(new RenderArmCallback.Context(player, poseStack, bufferSource,
-                packedLight, skinTexture, isSleeveVisible, HumanoidArm.RIGHT)))
+        if (RenderArmCallback.invoke(new RenderArmCallback.Context(player, poseStack, nodeCollector,
+                packedLight, skinTexture, renderSleeve, HumanoidArm.RIGHT)))
             info.cancel();
     }
 
     @Inject(at = @At("HEAD"), method = "renderLeftHand", cancellable = true)
-    private void renderLeftHand(PoseStack poseStack, MultiBufferSource bufferSource, int packedLight,
-                                ResourceLocation skinTexture, boolean isSleeveVisible,
+    private void renderLeftHand(PoseStack poseStack, SubmitNodeCollector nodeCollector, int packedLight,
+                                ResourceLocation skinTexture, boolean renderSleeve,
                                 CallbackInfo info) {
         var player = Objects.requireNonNull(ItemInHandRendererMixinState.player);
-        if (RenderArmCallback.invoke(new RenderArmCallback.Context(player, poseStack, bufferSource,
-                packedLight, skinTexture, isSleeveVisible, HumanoidArm.LEFT)))
+        if (RenderArmCallback.invoke(new RenderArmCallback.Context(player, poseStack, nodeCollector,
+                packedLight, skinTexture, renderSleeve, HumanoidArm.LEFT)))
             info.cancel();
     }
 }

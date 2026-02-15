@@ -113,7 +113,7 @@ public class ThreeGoddessBlock extends BaseEntityBlock {
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
             BlockEntityType<T> blockEntity) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return createTickerHelper(blockEntity, BlockEntityRegistry.THREE_GODDESS.get(),
                     ThreeGoddessBlockEntity::animationTick);
         }

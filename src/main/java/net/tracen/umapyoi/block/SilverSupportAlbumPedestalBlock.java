@@ -51,7 +51,7 @@ public class SilverSupportAlbumPedestalBlock extends AbstractPedestalBlock {
 
     @Override
     public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             BlockEntity tileEntity = level.getBlockEntity(pos);
             if (tileEntity instanceof SilverSupportAlbumPedestalBlockEntity blockEntity) {
                 return interactBEWithoutItem(level, pos, player, blockEntity.removeItem());
@@ -62,7 +62,7 @@ public class SilverSupportAlbumPedestalBlock extends AbstractPedestalBlock {
 
     @Override
     public InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             BlockEntity tileEntity = level.getBlockEntity(pos);
             if (tileEntity instanceof SilverSupportAlbumPedestalBlockEntity blockEntity) {
                 return interactBEWithItem(stack, level, pos, player, hand, blockEntity, false);
@@ -85,7 +85,7 @@ public class SilverSupportAlbumPedestalBlock extends AbstractPedestalBlock {
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
             BlockEntityType<T> blockEntity) {
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return createTickerHelper(blockEntity, BlockEntityRegistry.SILVER_SUPPORT_ALBUM_PEDESTAL.get(),
                     SilverSupportAlbumPedestalBlockEntity::animationTick);
         }

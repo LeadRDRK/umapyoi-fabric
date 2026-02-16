@@ -48,11 +48,6 @@ public class UmaStatueBlockRenderer implements BlockEntityRenderer<UmaStatueBloc
         poseStack.mulPose(Axis.XP.rotationDegrees(180));
 
         var model = renderState.model;
-        var leftArm = model.getChild("left_arm") != null ? model.getChild("left_arm") : new BedrockPart();
-        var rightArm = model.getChild("right_arm") != null ? model.getChild("right_arm") : new BedrockPart();
-        leftArm.zRot = ClientUtils.convertRotation(-5);
-        rightArm.zRot = ClientUtils.convertRotation(5);
-
         var modelRenderer = new BedrockModelRenderer(model, renderState.lightCoords,
                 OverlayTexture.NO_OVERLAY, -1);
         var renderType = RenderType.entityTranslucent(renderState.texture);
@@ -85,11 +80,17 @@ public class UmaStatueBlockRenderer implements BlockEntityRenderer<UmaStatueBloc
         var useDefaultModel = blockEntity.isEmpty();
 
         var umaId = UmaSoulUtils.getName(item);
-        BedrockModelPOJO pojo = useDefaultModel
+        var pojo = useDefaultModel
                 ? ClientUtils.getModelPOJO(ClientUtils.UMA_STATUES)
                 : ClientUtils.getModelPOJO(umaId);
-        if (renderState.model.needRefresh(pojo)) {
-            renderState.model.loadModel(pojo);
+        var model = renderState.model;
+        if (model.needRefresh(pojo)) {
+            model.loadModel(pojo);
+
+            var leftArm = model.getChild("left_arm");
+            var rightArm = model.getChild("right_arm");
+            if (leftArm != null) leftArm.zRot = ClientUtils.convertRotation(-5);
+            if (rightArm != null) rightArm.zRot = ClientUtils.convertRotation(5);
 
             if (useDefaultModel) {
                 renderState.texture = TEXTURE;

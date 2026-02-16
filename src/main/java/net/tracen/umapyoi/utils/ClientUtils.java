@@ -9,8 +9,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -27,35 +27,35 @@ import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class ClientUtils {
-    public static final ResourceLocation TRAINING_SUIT = getModel("trainning_suit");
-    public static final ResourceLocation SUMMER_UNIFORM = getModel("summer_uniform");
-    public static final ResourceLocation WINTER_UNIFORM = getModel("winter_uniform");
-    public static final ResourceLocation KINDERGARTEN_UNIFORM = getModel("kindergarten_uniform");
+    public static final Identifier TRAINING_SUIT = getModel("trainning_suit");
+    public static final Identifier SUMMER_UNIFORM = getModel("summer_uniform");
+    public static final Identifier WINTER_UNIFORM = getModel("winter_uniform");
+    public static final Identifier KINDERGARTEN_UNIFORM = getModel("kindergarten_uniform");
 
-    public static final ResourceLocation TRAINING_SUIT_FLAT = getModel("trainning_suit_flat");
-    public static final ResourceLocation SUMMER_UNIFORM_FLAT = getModel("summer_uniform_flat");
-    public static final ResourceLocation WINTER_UNIFORM_FLAT = getModel("winter_uniform_flat");
+    public static final Identifier TRAINING_SUIT_FLAT = getModel("trainning_suit_flat");
+    public static final Identifier SUMMER_UNIFORM_FLAT = getModel("summer_uniform_flat");
+    public static final Identifier WINTER_UNIFORM_FLAT = getModel("winter_uniform_flat");
 
-    public static final ResourceLocation THREE_GODDESS = getModel("three_goddesses");
-    public static final ResourceLocation UMA_STATUES = getModel("uma_statue");
+    public static final Identifier THREE_GODDESS = getModel("three_goddesses");
+    public static final Identifier UMA_STATUES = getModel("uma_statue");
 
-    public static final ResourceLocation SWIMSUIT = getModel("swimsuit");
-    public static final ResourceLocation SWIMSUIT_FLAT = getModel("swimsuit_flat");
+    public static final Identifier SWIMSUIT = getModel("swimsuit");
+    public static final Identifier SWIMSUIT_FLAT = getModel("swimsuit_flat");
 
-    public static ResourceLocation getModel(String name) {
+    public static Identifier getModel(String name) {
         return getModel(Umapyoi.MODID, name);
     }
 
-    public static ResourceLocation getModel(String modid, String name) {
-        return ResourceLocation.fromNamespaceAndPath(modid, name);
+    public static Identifier getModel(String modid, String name) {
+        return Identifier.fromNamespaceAndPath(modid, name);
     }
 
-    public static ResourceLocation getTexture(ResourceLocation name) {
-        return ResourceLocation.fromNamespaceAndPath(name.getNamespace(), "textures/model/" + name.getPath() + ".png");
+    public static Identifier getTexture(Identifier name) {
+        return Identifier.fromNamespaceAndPath(name.getNamespace(), "textures/model/" + name.getPath() + ".png");
     }
     
-    public static ResourceLocation getEmissiveTexture(ResourceLocation name) {
-        return ResourceLocation.fromNamespaceAndPath(name.getNamespace(), "textures/model/" + name.getPath() + "_emissive.png");
+    public static Identifier getEmissiveTexture(Identifier name) {
+        return Identifier.fromNamespaceAndPath(name.getNamespace(), "textures/model/" + name.getPath() + "_emissive.png");
     }
 
     public static Registry<UmaData> getClientUmaDataRegistry() {
@@ -99,9 +99,9 @@ public class ClientUtils {
 
     /****** MMLib ******/
 
-    public static final HashMap<ResourceLocation, BedrockModelPOJO> MODEL_MAP = Maps.newHashMap();
+    public static final HashMap<Identifier, BedrockModelPOJO> MODEL_MAP = Maps.newHashMap();
 
-    public static void loadModel(ResourceLocation modelLocation, JsonElement element) {
+    public static void loadModel(Identifier modelLocation, JsonElement element) {
         BedrockModelPOJO pojo = DataGenUtils.DATA_GSON.fromJson(element, BedrockModelPOJO.class);
 
         if (pojo.getFormatVersion() == null) {
@@ -140,7 +140,7 @@ public class ClientUtils {
         }
     }
 
-    public static BedrockModelPOJO getModelPOJO(ResourceLocation modelLocation) {
+    public static BedrockModelPOJO getModelPOJO(Identifier modelLocation) {
         return MODEL_MAP.get(modelLocation);
     }
 

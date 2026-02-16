@@ -1,8 +1,8 @@
 package net.tracen.umapyoi.data.loot;
 
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.tracen.umapyoi.Umapyoi;
@@ -40,7 +40,7 @@ public class RareSkillBooksLoot implements AddLootTableModifier {
     public ResourceKey<LootTable> lootTable() {
         return ResourceKey.create(
                 Registries.LOOT_TABLE,
-                ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "complex_skills")
+                Identifier.fromNamespaceAndPath(Umapyoi.MODID, "complex_skills")
         );
     }
 }

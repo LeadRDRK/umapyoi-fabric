@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
@@ -18,9 +17,10 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerListener;
@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
 
 public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> implements ContainerListener {
 
-    private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID,
+    private static final Identifier BACKGROUND_TEXTURE = Identifier.fromNamespaceAndPath(Umapyoi.MODID,
             "textures/gui/select_test.png");
 
     private EditBox searchBox;
@@ -127,9 +127,9 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
     }
 
     @Override
-    public void resize(Minecraft pMinecraft, int pWidth, int pHeight) {
+    public void resize(int width, int height) {
         String s = this.searchBox.getValue();
-        this.init(pMinecraft, pWidth, pHeight);
+        this.init(width, height);
         this.searchBox.setValue(s);
         this.searchBox.setEditable(this.hasRequestItems());
     }
@@ -195,7 +195,7 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
             int i = this.leftPos + RECIPES_X;
             int j = this.topPos + RECIPES_Y;
             int k = this.startIndex + SCROLLER_WIDTH;
-            List<ResourceLocation> list = this.getResults();
+            List<Identifier> list = this.getResults();
 
             for (int l = this.startIndex; l < k && l < this.getResults().size(); ++l) {
                 int i1 = l - this.startIndex;
@@ -236,7 +236,7 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
 
     private void renderRecipes(GuiGraphics pPoseStack,int pLeft, int pTop, int pRecipeIndexOffsetMax) {
         if (this.displayRecipes) {
-            List<ResourceLocation> list = getResults();
+            List<Identifier> list = getResults();
 
             for (int i = this.startIndex; i < pRecipeIndexOffsetMax && i < this.getResults().size(); ++i) {
                 int j = i - this.startIndex;
@@ -248,14 +248,14 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
         }
     }
 
-    public List<ResourceLocation> getResults() {
-        List<ResourceLocation> list = this.menu.getRecipes();
+    public List<Identifier> getResults() {
+        List<Identifier> list = this.menu.getRecipes();
         var result = list.stream().filter(this.getFilter(this.menu.getSlot(0).getItem()))
                 .sorted(SelectComparator.INSTANCE).collect(Collectors.toCollection(Lists::newArrayList));
         return result;
     }
 
-    public Predicate<? super ResourceLocation> getFilter(ItemStack input) {
+    public Predicate<? super Identifier> getFilter(ItemStack input) {
         return resloc -> {
 
             if (input.is(UmapyoiItemTags.CARD_TICKET)) {
@@ -273,7 +273,7 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
                 String s = this.getName().toLowerCase(Locale.ROOT);
                 if (s.startsWith("@")) {
                     s = s.substring(1);
-                    return card.getSupporters().contains(ResourceLocation.tryParse(s)) && rankingCheck;
+                    return card.getSupporters().contains(Identifier.tryParse(s)) && rankingCheck;
                 }
 
                 var localized = Component.translatable(Util.makeDescriptionId("support_card", resloc) + ".name");
@@ -294,7 +294,7 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
                 String s = this.getName().toLowerCase(Locale.ROOT);
                 if (s.startsWith("@")) {
                     s = s.substring(1);
-                    return uma.identifier().equals(ResourceLocation.tryParse(s)) && rankingCheck;
+                    return uma.identifier().equals(Identifier.tryParse(s)) && rankingCheck;
                 }
                 var localized = Component.translatable(Util.makeDescriptionId("umadata", resloc));
                 boolean nameCheck = resloc.toString().contains(s)
@@ -313,7 +313,7 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
         this.name = name;
     }
 
-    private ItemStack getResultItem(ResourceLocation name) {
+    private ItemStack getResultItem(Identifier name) {
         if (this.getMenu().getSlot(0).getItem().is(UmapyoiItemTags.CARD_TICKET)) {
             Registry<SupportCard> registry = ClientUtils.getClientSupportCardRegistry();
             ItemStack result = ItemRegistry.SUPPORT_CARD.getDefaultInstance();

@@ -3,8 +3,8 @@ package net.tracen.umapyoi.recipe;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -21,16 +21,16 @@ public class ShapedSupportCardRecipe extends ShapedRecipe {
     public static final RecipeSerializer<ShapedRecipe> SERIALIZER = new SupportCardRecipeSerializer<>(
             RecipeSerializer.SHAPED_RECIPE, ShapedSupportCardRecipe::new);
 
-    private final ResourceLocation outputUma;
+    private final Identifier outputUma;
 
-    public ShapedSupportCardRecipe(ShapedRecipe compose, ResourceLocation outputBlade) {
+    public ShapedSupportCardRecipe(ShapedRecipe compose, Identifier outputBlade) {
         super(compose.group(), compose.category(),
                 new ShapedRecipePattern(compose.getWidth(), compose.getHeight(), compose.getIngredients(), Optional.empty()),
                 getResultItem(outputBlade));
         this.outputUma = outputBlade;
     }
 
-    private static ItemStack getResultItem(ResourceLocation outputBlade) {
+    private static ItemStack getResultItem(Identifier outputBlade) {
         Item bladeItem = BuiltInRegistries.ITEM.containsKey(outputBlade)
                 ? BuiltInRegistries.ITEM.get(outputBlade).orElseThrow().value()
                 : ItemRegistry.SUPPORT_CARD;
@@ -38,7 +38,7 @@ public class ShapedSupportCardRecipe extends ShapedRecipe {
         return bladeItem.getDefaultInstance();
     }
 
-    public ResourceLocation getOutput() {
+    public Identifier getOutput() {
         return outputUma;
     }
 

@@ -3,7 +3,7 @@ package net.tracen.umapyoi.compat.jei.recipes;
 import com.google.common.collect.Lists;
 
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.tracen.umapyoi.item.ItemRegistry;
@@ -82,7 +82,7 @@ public final class UmapyoiJEIRecipes {
         return new JEISimpleRecipe(input, output);
     }
     
-    private static Predicate<? super ResourceLocation> umaSoulRanking(GachaRanking... list) {
+    private static Predicate<? super Identifier> umaSoulRanking(GachaRanking... list) {
         return key ->{
             var registry = ClientUtils.getClientUmaDataRegistry();
             for (GachaRanking gachaRanking : list) {
@@ -93,7 +93,7 @@ public final class UmapyoiJEIRecipes {
         };
     }
     
-    private static Predicate<? super ResourceLocation> supportCardRanking(GachaRanking... list) {
+    private static Predicate<? super Identifier> supportCardRanking(GachaRanking... list) {
         return key ->{
             var registry = ClientUtils.getClientSupportCardRegistry();
             for (GachaRanking gachaRanking : list) {

@@ -3,7 +3,7 @@ package net.tracen.umapyoi.compat.jei;
 import com.google.common.collect.Lists;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -27,7 +27,7 @@ import mezz.jei.api.registration.IRecipeRegistration;
 
 @JeiPlugin
 public class JEIPlugin implements IModPlugin {
-    public static final ResourceLocation PLUGIN_ID = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "jei_plugin");
+    public static final Identifier PLUGIN_ID = Identifier.fromNamespaceAndPath(Umapyoi.MODID, "jei_plugin");
 
     public static final IRecipeType<JEISimpleRecipe> GACHA_JEI_TYPE = IRecipeType
             .create(Umapyoi.MODID, "gacha_recipe", JEISimpleRecipe.class);
@@ -101,7 +101,7 @@ public class JEIPlugin implements IModPlugin {
     }
 
     @Override
-    public ResourceLocation getPluginUid() {
+    public Identifier getPluginUid() {
         return PLUGIN_ID;
     }
 

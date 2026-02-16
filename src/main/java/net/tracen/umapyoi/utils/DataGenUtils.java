@@ -17,7 +17,7 @@ import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.Encoder;
 import com.mojang.serialization.JsonOps;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.tracen.umapyoi.client.model.pojo.CubesItem;
 
@@ -25,18 +25,18 @@ import java.lang.reflect.Type;
 
 public class DataGenUtils {
     /* Copied from 1.21.1 */
-    public static class ResourceLocationSerializer implements JsonDeserializer<ResourceLocation>, JsonSerializer<ResourceLocation> {
-        public ResourceLocation deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            return ResourceLocation.parse(GsonHelper.convertToString(json, "location"));
+    public static class IdentifierSerializer implements JsonDeserializer<Identifier>, JsonSerializer<Identifier> {
+        public Identifier deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            return Identifier.parse(GsonHelper.convertToString(json, "location"));
         }
 
-        public JsonElement serialize(ResourceLocation src, Type typeOfSrc, JsonSerializationContext context) {
+        public JsonElement serialize(Identifier src, Type typeOfSrc, JsonSerializationContext context) {
             return new JsonPrimitive(src.toString());
         }
     }
 
     public static final Gson DATA_GSON = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting()
-            .registerTypeAdapter(ResourceLocation.class, new ResourceLocationSerializer())
+            .registerTypeAdapter(Identifier.class, new IdentifierSerializer())
             .registerTypeAdapter(CubesItem.class, new CubesItem.Deserializer()).create();
 
     public static final Codec<JsonElement> JSON_ELEMENT_CODEC = Codec.of(

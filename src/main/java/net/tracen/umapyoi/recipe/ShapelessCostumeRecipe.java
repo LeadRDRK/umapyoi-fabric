@@ -3,7 +3,7 @@ package net.tracen.umapyoi.recipe;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -17,15 +17,15 @@ public class ShapelessCostumeRecipe extends ShapelessRecipe {
     public static final RecipeSerializer<ShapelessRecipe> SERIALIZER = new CostumeRecipeSerializer<>(
             RecipeSerializer.SHAPELESS_RECIPE, ShapelessCostumeRecipe::new);
 
-    private final ResourceLocation output;
+    private final Identifier output;
 
-    public ShapelessCostumeRecipe(ShapelessRecipe compose, ResourceLocation output) {
+    public ShapelessCostumeRecipe(ShapelessRecipe compose, Identifier output) {
         super(compose.group(), compose.category(),
                 getResultItem(output), compose.placementInfo().ingredients());
         this.output = output;
     }
 
-    private static ItemStack getResultItem(ResourceLocation output) {
+    private static ItemStack getResultItem(Identifier output) {
         Item bladeItem = BuiltInRegistries.ITEM.containsKey(output)
                 ? BuiltInRegistries.ITEM.get(output).orElseThrow().value()
                 : ItemRegistry.UMA_COSTUME;
@@ -33,7 +33,7 @@ public class ShapelessCostumeRecipe extends ShapelessRecipe {
         return bladeItem.getDefaultInstance();
     }
 
-    public ResourceLocation getOutput() {
+    public Identifier getOutput() {
         return output;
     }
 

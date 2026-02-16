@@ -3,12 +3,12 @@ package net.tracen.umapyoi.registry.factors;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.registry.RegistryNameHolder;
@@ -20,9 +20,9 @@ public class UmaFactor extends RegistryNameHolder {
     private String detailId;
 
     public static final ResourceKey<Registry<UmaFactor>> REGISTRY_KEY = ResourceKey
-            .createRegistryKey(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "factor"));
+            .createRegistryKey(Identifier.fromNamespaceAndPath(Umapyoi.MODID, "factor"));
 
-    public static final Codec<UmaFactor> CODEC = ResourceLocation.CODEC
+    public static final Codec<UmaFactor> CODEC = Identifier.CODEC
             .xmap(loc -> UmaFactorRegistry.REGISTRY.get().get(loc).orElseThrow().value(),
                     RegistryNameHolder::getRegistryName);
 

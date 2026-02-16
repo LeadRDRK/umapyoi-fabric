@@ -1,8 +1,9 @@
 package net.tracen.umapyoi.villager.itemlisting;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.npc.VillagerTrades.ItemListing;
+import net.minecraft.world.entity.npc.villager.VillagerTrades.ItemListing;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
@@ -44,10 +45,10 @@ public class RandomPriceOrderItemListing implements ItemListing {
 
     @Nullable
     @Override
-    public MerchantOffer getOffer(Entity pTrader, RandomSource pRand) {
-       int i = 5 + pRand.nextInt(15);
+    public MerchantOffer getOffer(ServerLevel level, Entity entity, RandomSource random) {
+       int i = 5 + random.nextInt(15);
        ItemStack itemstack = itemStack.copy();
-       int count = Math.min(pRand.nextInt(minCount, maxCount + 1), 64);
+       int count = Math.min(random.nextInt(minCount, maxCount + 1), 64);
        itemstack.setCount(count);
        int j = Math.min(this.baseEmeraldCost + i, 64);
        ItemCost itemstack1 = new ItemCost(ItemRegistry.JEWEL, j);

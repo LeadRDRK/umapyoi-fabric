@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.utils.GachaRanking;
@@ -19,22 +19,22 @@ import java.util.Optional;
 import io.netty.buffer.ByteBuf;
 
 public class RequestUma {
-    private final Optional<ResourceLocation> name;
-    private final Optional<ResourceLocation> identifier;
+    private final Optional<Identifier> name;
+    private final Optional<Identifier> identifier;
     private final List<GachaRanking> ranking;
 
     public static final Codec<RequestUma> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                    ResourceLocation.CODEC.optionalFieldOf("name")
+                    Identifier.CODEC.optionalFieldOf("name")
                             .forGetter(RequestUma::getName),
-                    ResourceLocation.CODEC.optionalFieldOf("identifier")
+                    Identifier.CODEC.optionalFieldOf("identifier")
                             .forGetter(RequestUma::getIdentifier),
                     GachaRanking.CODEC.listOf().optionalFieldOf("ranking", Lists.newArrayList())
                             .forGetter(RequestUma::getRanking))
             .apply(instance, RequestUma::new));
 
     public static final StreamCodec<ByteBuf, RequestUma> STREAM_CODEC = StreamCodec.composite(
-            ResourceLocation.STREAM_CODEC.apply(ByteBufCodecs::optional), RequestUma::getName,
-            ResourceLocation.STREAM_CODEC.apply(ByteBufCodecs::optional), RequestUma::getIdentifier,
+            Identifier.STREAM_CODEC.apply(ByteBufCodecs::optional), RequestUma::getName,
+            Identifier.STREAM_CODEC.apply(ByteBufCodecs::optional), RequestUma::getIdentifier,
             GachaRanking.STREAM_CODEC.apply(ByteBufCodecs.list()), RequestUma::getRanking,
             RequestUma::new
     );
@@ -45,17 +45,17 @@ public class RequestUma {
         this.ranking = Lists.newArrayList();
     }
 
-    public RequestUma(Optional<ResourceLocation> name, Optional<ResourceLocation> identifier, List<GachaRanking> ranking) {
+    public RequestUma(Optional<Identifier> name, Optional<Identifier> identifier, List<GachaRanking> ranking) {
         this.name = name;
         this.identifier = identifier;
         this.ranking = ranking;
     }
 
-    public Optional<ResourceLocation> getName() {
+    public Optional<Identifier> getName() {
         return name;
     }
 
-    public Optional<ResourceLocation> getIdentifier() {
+    public Optional<Identifier> getIdentifier() {
         return identifier;
     }
 

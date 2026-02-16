@@ -5,8 +5,8 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Repairable;
@@ -214,7 +214,7 @@ public class ItemRegistry {
 
     private static ResourceKey<Item> modItemId(String name) {
         return ResourceKey.create(Registries.ITEM,
-                ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, name));
+                Identifier.fromNamespaceAndPath(Umapyoi.MODID, name));
     }
 
     public static Item registerBlock(String name, Block block) {

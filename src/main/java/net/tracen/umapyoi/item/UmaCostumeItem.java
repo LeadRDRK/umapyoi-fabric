@@ -1,17 +1,18 @@
 package net.tracen.umapyoi.item;
 
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
-import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.Util;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.cosmetics.CosmeticData;
 import net.tracen.umapyoi.utils.ClientUtils;
+
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Comparator;
 import java.util.stream.Stream;
@@ -28,17 +29,17 @@ public class UmaCostumeItem extends AbstractSuitItem implements CreativeModeTabF
     }
 
     @Override
-    @MethodsReturnNonnullByDefault
+    @NullMarked
     public Component getName(ItemStack pStack) {
         return Component.translatable(
                 Util.makeDescriptionId("item", UmaCostumeItem.getCostumeID(pStack)) + ".name");
     }
 
-    public static ResourceLocation getCostumeID(ItemStack stack) {
+    public static Identifier getCostumeID(ItemStack stack) {
         return stack.getOrDefault(DataComponentsTypeRegistry.DATA_LOCATION.get(), CosmeticData.COMMON_COSTUME);
     }
 
-    public static ItemStack getCostume(ResourceLocation loc) {
+    public static ItemStack getCostume(Identifier loc) {
         ItemStack defaultInstance = ItemRegistry.UMA_COSTUME.getDefaultInstance();
         defaultInstance.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), loc);
         return defaultInstance;
@@ -49,7 +50,7 @@ public class UmaCostumeItem extends AbstractSuitItem implements CreativeModeTabF
         UmaCostumeItem.sortedCosmeticDataList(entries.getContext().holders()).forEach(
                 entry -> {
                     ItemStack result = ItemRegistry.UMA_COSTUME.getDefaultInstance();
-                    result.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), entry.key().location());
+                    result.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), entry.key().identifier());
                     entries.accept(result);
                 }
         );
@@ -58,15 +59,15 @@ public class UmaCostumeItem extends AbstractSuitItem implements CreativeModeTabF
     private static class DataComparator implements Comparator<Reference<CosmeticData>> {
         @Override
         public int compare(Reference<CosmeticData> left, Reference<CosmeticData> right) {
-            String leftName = left.key().location().toString();
-            String rightName = right.key().location().toString();
+            String leftName = left.key().identifier().toString();
+            String rightName = right.key().identifier().toString();
             return leftName.compareToIgnoreCase(rightName);
         }
     }
 
     @Override
-    protected ResourceLocation getModel(ItemStack stack) {
-        ResourceLocation loc = stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
+    protected Identifier getModel(ItemStack stack) {
+        Identifier loc = stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
 
         CosmeticData data = ClientUtils.getClientCosmeticDataRegistry().get(loc)
                 .map(Reference::value).orElse(null);
@@ -75,16 +76,16 @@ public class UmaCostumeItem extends AbstractSuitItem implements CreativeModeTabF
     }
 
     @Override
-    protected ResourceLocation getTexture(ItemStack stack, boolean tanned) {
-        ResourceLocation loc = stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
+    protected Identifier getTexture(ItemStack stack, boolean tanned) {
+        Identifier loc = stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
         CosmeticData data = ClientUtils.getClientCosmeticDataRegistry().get(loc)
                 .map(Reference::value).orElse(null);
         return data == null ? CosmeticData.DEFAULT_COSTUME.getTexture(tanned) : data.getTexture(tanned);
     }
 
     @Override
-    protected ResourceLocation getFlatModel(ItemStack stack) {
-        ResourceLocation loc = stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
+    protected Identifier getFlatModel(ItemStack stack) {
+        Identifier loc = stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
         CosmeticData data = ClientUtils.getClientCosmeticDataRegistry().get(loc)
                 .map(Reference::value).orElse(null);
         return data == null ? CosmeticData.DEFAULT_COSTUME.flatModel().orElse(CosmeticData.DEFAULT_COSTUME.model())
@@ -92,8 +93,8 @@ public class UmaCostumeItem extends AbstractSuitItem implements CreativeModeTabF
     }
 
     @Override
-    protected ResourceLocation getFlatTexture(ItemStack stack, boolean tanned) {
-        ResourceLocation loc = stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
+    protected Identifier getFlatTexture(ItemStack stack, boolean tanned) {
+        Identifier loc = stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
         CosmeticData data = ClientUtils.getClientCosmeticDataRegistry().get(loc)
                 .map(Reference::value).orElse(null);
         return data == null ? CosmeticData.DEFAULT_COSTUME.getFlatTexture(tanned) : data.getFlatTexture(tanned);

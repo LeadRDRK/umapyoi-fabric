@@ -1,7 +1,7 @@
 package net.tracen.umapyoi.utils;
 
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.events.LearnSkillCallback;
 import net.tracen.umapyoi.item.ItemRegistry;
@@ -22,7 +22,7 @@ public class UmaSkillUtils {
         return result;
     }
 
-    public static SupportEntry getSkillSupportEnrty(ResourceLocation skill) {
+    public static SupportEntry getSkillSupportEnrty(Identifier skill) {
         if (skill == null)
             return null;
         SupportEntry result = new SupportEntry(TrainingSupportRegistry.SKILL_SUPPORT.getId(), 1);
@@ -43,7 +43,7 @@ public class UmaSkillUtils {
         UmaSoulUtils.setActionPoint(stack, UmaSoulUtils.getMaxActionPoint(stack));
     }
 
-    public static void learnSkill(ItemStack stack, ResourceLocation skill) {
+    public static void learnSkill(ItemStack stack, Identifier skill) {
         if (!UmaSoulUtils.hasEmptySkillSlot(stack))
             return;
         var skillItemOpt = UmaSkillRegistry.REGISTRY.get().get(skill);
@@ -65,12 +65,12 @@ public class UmaSkillUtils {
         }
     }
 
-    public static boolean hasLearnedSkill(ItemStack stack, ResourceLocation skill) {
+    public static boolean hasLearnedSkill(ItemStack stack, Identifier skill) {
         var skills = UmaSoulUtils.getSkills(stack);
         return skills.contains(skill);
     }
     
-    public static int getLowerSkillIndex(ItemStack stack, ResourceLocation skill) {
+    public static int getLowerSkillIndex(ItemStack stack, Identifier skill) {
         var skills = UmaSoulUtils.getSkills(stack);
         UmaSkill target = null;
         for(int i = 0;i<skills.size();i++) {

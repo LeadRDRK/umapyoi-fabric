@@ -3,7 +3,7 @@ package net.tracen.umapyoi.registry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.tracen.umapyoi.Umapyoi;
@@ -20,7 +20,7 @@ public class UmapyoiAttributesRegistry {
     private static Holder<Attribute> register(
             String path, String descriptionId, double defaultValue, double minValue, double maxValue, boolean syncedWithClient
     ) {
-        var name = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, path);
+        var name = Identifier.fromNamespaceAndPath(Umapyoi.MODID, path);
         Attribute entityAttribute = new RangedAttribute(
                 descriptionId,
                 defaultValue,

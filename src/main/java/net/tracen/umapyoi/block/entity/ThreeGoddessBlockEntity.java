@@ -8,7 +8,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -68,17 +68,17 @@ public class ThreeGoddessBlockEntity extends SyncedInventoryEntity implements Ex
     public boolean isItemValid(int slot, ItemStack stack) {
         ItemStack motherSlot = this.getItem(2);
         ItemStack fatherSlot = this.getItem(1);
-        ResourceLocation fatherName = fatherSlot.getOrDefault(
+        Identifier fatherName = fatherSlot.getOrDefault(
                 DataComponentsTypeRegistry.DATA_LOCATION.get(),
                 UmaData.DEFAULT_UMA_ID
         );
-        ResourceLocation motherName = motherSlot.getOrDefault(
+        Identifier motherName = motherSlot.getOrDefault(
                 DataComponentsTypeRegistry.DATA_LOCATION.get(),
                 UmaData.DEFAULT_UMA_ID
         );
         if(slot == 0) {
             if (stack.is(ItemRegistry.BLANK_UMA_SOUL)) {
-                ResourceLocation name = stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
+                Identifier name = stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
 
                 return !((fatherSlot.isEmpty() ? false : name.equals(fatherName))
                         || name.equals(motherName));
@@ -88,7 +88,7 @@ public class ThreeGoddessBlockEntity extends SyncedInventoryEntity implements Ex
         else if(slot == 1) {
             boolean result = stack.is(ItemRegistry.UMA_FACTOR_ITEM);
             boolean factorFlag = false;
-            ResourceLocation name = stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
+            Identifier name = stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
             var soulStack = this.getItem(0);
             boolean soulFlag = !soulStack.isEmpty() && Objects.equals(
                     stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get()),
@@ -101,7 +101,7 @@ public class ThreeGoddessBlockEntity extends SyncedInventoryEntity implements Ex
         else if(slot == 2) {
             boolean result = stack.is(ItemRegistry.UMA_FACTOR_ITEM);
             boolean factorFlag = false;
-            ResourceLocation name = stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
+            Identifier name = stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
             var soulStack = this.getItem(0);
             boolean soulFlag = !soulStack.isEmpty() && Objects.equals(
                     stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get()),
@@ -191,7 +191,7 @@ public class ThreeGoddessBlockEntity extends SyncedInventoryEntity implements Ex
         ItemStack right = this.getItem(2);
         Registry<UmaData> registry = UmapyoiAPI.getUmaDataRegistry(this.getLevel());
 
-        ResourceLocation name = this.getItem(0).getOrDefault(DataComponentsTypeRegistry.DATA_LOCATION.get(),
+        Identifier name = this.getItem(0).getOrDefault(DataComponentsTypeRegistry.DATA_LOCATION.get(),
                 UmaData.DEFAULT_UMA_ID);
         name = registry.containsKey(name) ? name : UmaData.DEFAULT_UMA_ID;
 

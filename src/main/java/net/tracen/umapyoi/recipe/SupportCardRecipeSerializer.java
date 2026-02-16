@@ -10,25 +10,25 @@ import com.mojang.serialization.MapEncoder;
 import com.mojang.serialization.MapLike;
 import com.mojang.serialization.RecordBuilder;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 public record SupportCardRecipeSerializer<T extends Recipe<?>, U extends T> (RecipeSerializer<T> compose,
-                                                                             BiFunction<T, @Nullable ResourceLocation, U> converter) implements RecipeSerializer<U> {
+                                                                             BiFunction<T, @Nullable Identifier, U> converter) implements RecipeSerializer<U> {
     @Override
-    @MethodsReturnNonnullByDefault
+    @NullMarked
     public MapCodec<U> codec() {
         return MapCodec.of(
                 new MapEncoder<>() {
@@ -89,11 +89,11 @@ public record SupportCardRecipeSerializer<T extends Recipe<?>, U extends T> (Rec
 
                         var recipeResult = compose().codec().decode(ops, newInput);
                         return recipeResult.flatMap(recipe -> {
-                            var outputResult = ResourceLocation.CODEC.optionalFieldOf("card").decode(ops, newInput);
+                            var outputResult = Identifier.CODEC.optionalFieldOf("card").decode(ops, newInput);
                             return outputResult.map(outputOpt -> {
                                 var output = outputOpt
                                         .orElseGet(() -> // result.id MUST be present for the base recipe to even decode correctly
-                                                ResourceLocation.CODEC.fieldOf("id").codec()
+                                                Identifier.CODEC.fieldOf("id").codec()
                                                         .decode(ops, resultField)
                                                         .result()
                                                         .orElseThrow()
@@ -117,7 +117,7 @@ public record SupportCardRecipeSerializer<T extends Recipe<?>, U extends T> (Rec
     public StreamCodec<RegistryFriendlyByteBuf, U> streamCodec() {
         return StreamCodec.composite(
                 compose().streamCodec(), recipe -> recipe,
-                ResourceLocation.STREAM_CODEC.apply(ByteBufCodecs::optional), recipe -> {
+                Identifier.STREAM_CODEC.apply(ByteBufCodecs::optional), recipe -> {
                     if (recipe instanceof ShapedSupportCardRecipe bladeRecipe) {
                         return Optional.ofNullable(bladeRecipe.getOutput());
                     } else if (recipe instanceof ShapelessSupportCardRecipe bladeRecipe) {

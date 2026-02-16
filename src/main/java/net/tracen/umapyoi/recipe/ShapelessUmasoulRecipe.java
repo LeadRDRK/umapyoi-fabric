@@ -3,8 +3,8 @@ package net.tracen.umapyoi.recipe;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -19,15 +19,15 @@ public class ShapelessUmasoulRecipe extends ShapelessRecipe {
     public static final RecipeSerializer<ShapelessRecipe> SERIALIZER = new UmasoulRecipeSerializer<>(
             RecipeSerializer.SHAPELESS_RECIPE, ShapelessUmasoulRecipe::new);
 
-    private final ResourceLocation outputUma;
+    private final Identifier outputUma;
 
-    public ShapelessUmasoulRecipe(ShapelessRecipe compose, ResourceLocation output) {
+    public ShapelessUmasoulRecipe(ShapelessRecipe compose, Identifier output) {
         super(compose.group(), compose.category(),
                 getResultItem(output), compose.placementInfo().ingredients());
         this.outputUma = output;
     }
 
-    private static ItemStack getResultItem(ResourceLocation output) {
+    private static ItemStack getResultItem(Identifier output) {
         Item bladeItem = BuiltInRegistries.ITEM.containsKey(output)
                 ? BuiltInRegistries.ITEM.get(output).orElseThrow().value()
                 : ItemRegistry.BLANK_UMA_SOUL;
@@ -35,7 +35,7 @@ public class ShapelessUmasoulRecipe extends ShapelessRecipe {
         return bladeItem.getDefaultInstance();
     }
 
-    public ResourceLocation getOutputUma() {
+    public Identifier getOutputUma() {
         return outputUma;
     }
 

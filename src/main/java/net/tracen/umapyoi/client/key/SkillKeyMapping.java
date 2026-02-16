@@ -7,7 +7,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.network.SelectSkillPacket;
 import net.tracen.umapyoi.network.UseSkillPacket;
@@ -17,7 +17,7 @@ import org.lwjgl.glfw.GLFW;
 @Environment(EnvType.CLIENT)
 public class SkillKeyMapping {
     public static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(
-            ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "umapyoi"));
+            Identifier.fromNamespaceAndPath(Umapyoi.MODID, "umapyoi"));
 
     public static final KeyMapping KEY_USE_SKILL = new KeyMapping(
             "key.umapyoi.use_skill",

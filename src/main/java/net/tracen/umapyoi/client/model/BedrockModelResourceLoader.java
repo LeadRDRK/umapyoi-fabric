@@ -5,7 +5,7 @@ import com.mojang.serialization.JsonOps;
 
 import net.fabricmc.fabric.api.resource.SimpleResourceReloadListener;
 import net.minecraft.resources.FileToIdConverter;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.tracen.umapyoi.Umapyoi;
@@ -18,16 +18,16 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 /** Ported from MMLib **/
-public class BedrockModelResourceLoader implements SimpleResourceReloadListener<Map<ResourceLocation, JsonElement>> {
+public class BedrockModelResourceLoader implements SimpleResourceReloadListener<Map<Identifier, JsonElement>> {
     private final String resource_path;
     public BedrockModelResourceLoader(String path) {
         this.resource_path = path;
     }
 
     @Override
-    public CompletableFuture<Map<ResourceLocation, JsonElement>> load(ResourceManager manager, Executor executor) {
+    public CompletableFuture<Map<Identifier, JsonElement>> load(ResourceManager manager, Executor executor) {
         return CompletableFuture.supplyAsync(() -> {
-            HashMap<ResourceLocation, JsonElement> map = new HashMap<ResourceLocation, JsonElement>();
+            HashMap<Identifier, JsonElement> map = new HashMap<Identifier, JsonElement>();
             SimpleJsonResourceReloadListener.scanDirectory(manager, FileToIdConverter.json(resource_path),
                     JsonOps.INSTANCE, DataGenUtils.JSON_ELEMENT_CODEC, map);
             return map;
@@ -35,7 +35,7 @@ public class BedrockModelResourceLoader implements SimpleResourceReloadListener<
     }
 
     @Override
-    public CompletableFuture<Void> apply(Map<ResourceLocation, JsonElement> data, ResourceManager manager, Executor executor) {
+    public CompletableFuture<Void> apply(Map<Identifier, JsonElement> data, ResourceManager manager, Executor executor) {
         return CompletableFuture.runAsync(() -> {
             ClientUtils.MODEL_MAP.clear();
             Umapyoi.getLogger().info("Started Loading Bedrock Model from : {}", resource_path);
@@ -48,9 +48,9 @@ public class BedrockModelResourceLoader implements SimpleResourceReloadListener<
         });
     }
 
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "bmrl");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(Umapyoi.MODID, "bmrl");
     @Override
-    public ResourceLocation getFabricId() {
+    public Identifier getFabricId() {
         return ID;
     }
 }

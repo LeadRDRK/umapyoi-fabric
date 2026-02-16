@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -41,12 +41,12 @@ public class SilverUmaPedestalBlockEntity extends AbstractPedestalBlockEntity im
         Registry<UmaData> registry = UmapyoiAPI.getUmaDataRegistry(this.getLevel());
 
         @NotNull
-        Collection<ResourceLocation> keys = registry.keySet().stream()
+        Collection<Identifier> keys = registry.keySet().stream()
                 .filter(this.getFilter(getLevel(), getStoredItem()))
                 .collect(Collectors.toCollection(Lists::newArrayList));
 
-        ResourceLocation holder = keys.stream().skip(keys.isEmpty() ? 0 : rand.nextInt(keys.size())).findFirst()
-                .orElse(UmaDataRegistry.COMMON_UMA.location());
+        Identifier holder = keys.stream().skip(keys.isEmpty() ? 0 : rand.nextInt(keys.size())).findFirst()
+                .orElse(UmaDataRegistry.COMMON_UMA.identifier());
 
         ItemStack result = FadedUmaSoulItem.genUmaSoul(holder, registry.get(holder).orElseThrow().value());
         return result;
@@ -59,7 +59,7 @@ public class SilverUmaPedestalBlockEntity extends AbstractPedestalBlockEntity im
     }
 
     @Override
-    public Predicate<? super ResourceLocation> getFilter(Level level, ItemStack input) {
+    public Predicate<? super Identifier> getFilter(Level level, ItemStack input) {
         return resloc -> {
             if (input.has(DataComponentsTypeRegistry.DATA_LOCATION.get())) {
                 return resloc.equals(input.get(DataComponentsTypeRegistry.DATA_LOCATION.get()));

@@ -13,7 +13,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.Umapyoi;
@@ -64,13 +64,13 @@ public class UmasoulIngredient implements CustomIngredient {
         public static final Serializer INSTANCE = new Serializer();
 
         @Override
-        public ResourceLocation getIdentifier() {
-            return ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "umasoul");
+        public Identifier getIdentifier() {
+            return Identifier.fromNamespaceAndPath(Umapyoi.MODID, "umasoul");
         }
 
         @Override
         public MapCodec<UmasoulIngredient> getCodec() {
-            Codec<Set<Holder<Item>>> itemSetCodec = ResourceLocation.CODEC
+            Codec<Set<Holder<Item>>> itemSetCodec = Identifier.CODEC
                     .xmap(
                             loc -> (Holder<Item>) BuiltInRegistries.ITEM.get(loc).orElseThrow(),
                             holder -> BuiltInRegistries.ITEM.getKey(holder.value())
@@ -83,7 +83,7 @@ public class UmasoulIngredient implements CustomIngredient {
                     );
 
             // Codec for a single item
-            Codec<Set<Holder<Item>>> singleItemCodec = ResourceLocation.CODEC
+            Codec<Set<Holder<Item>>> singleItemCodec = Identifier.CODEC
                     .xmap(
                             loc -> (Holder<Item>) BuiltInRegistries.ITEM.get(loc).orElseThrow(),
                             holder -> BuiltInRegistries.ITEM.getKey(holder.value())

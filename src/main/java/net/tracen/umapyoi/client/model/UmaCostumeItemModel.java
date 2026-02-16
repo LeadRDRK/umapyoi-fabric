@@ -7,7 +7,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.MissingItemModel;
 import net.minecraft.resources.FileToIdConverter;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.Umapyoi;
@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UmaCostumeItemModel extends DynamicItemBakedModel {
-    private static Map<ResourceLocation, ExtraModelKey<ItemModel>> models = new HashMap<>();
+    private static Map<Identifier, ExtraModelKey<ItemModel>> models = new HashMap<>();
 
     public UmaCostumeItemModel(ItemModel original) {
         super(original);
@@ -54,12 +54,12 @@ public class UmaCostumeItemModel extends DynamicItemBakedModel {
                 .map(location -> {
                     Umapyoi.getLogger().info("Found resource:{}", location.toString());
                     var path = location.getPath();
-                    return ResourceLocation.fromNamespaceAndPath(location.getNamespace(),
+                    return Identifier.fromNamespaceAndPath(location.getNamespace(),
                             path.substring("models/".length(), path.length() - ".json".length()));
                 })
                 .forEach(location -> {
                     var model = new UnbakedExtraItemModel(location);
-                    var costumeId = ResourceLocation.fromNamespaceAndPath(
+                    var costumeId = Identifier.fromNamespaceAndPath(
                             location.getNamespace(),
                             location.getPath().substring("item/costume/".length())
                     );

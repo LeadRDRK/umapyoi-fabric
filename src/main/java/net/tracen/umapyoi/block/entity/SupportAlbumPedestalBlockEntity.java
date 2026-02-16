@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -39,12 +39,12 @@ public class SupportAlbumPedestalBlockEntity extends AbstractSupportAlbumPedesta
         Registry<SupportCard> registry = UmapyoiAPI.getSupportCardRegistry(this.getLevel());
 
         @NotNull
-        Collection<ResourceLocation> keys = registry.keySet().stream()
+        Collection<Identifier> keys = registry.keySet().stream()
                 .filter(this.getFilter(getLevel(), getStoredItem()))
                 .collect(Collectors.toCollection(Lists::newArrayList));
 
-        ResourceLocation key = keys.stream().skip(keys.isEmpty() ? 0 : rand.nextInt(keys.size())).findFirst()
-                .orElse(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "blank_card"));
+        Identifier key = keys.stream().skip(keys.isEmpty() ? 0 : rand.nextInt(keys.size())).findFirst()
+                .orElse(Identifier.fromNamespaceAndPath(Umapyoi.MODID, "blank_card"));
 
         ItemStack result = SupportCard.init(key, registry.get(key).orElseThrow().value());
         return result;
@@ -56,7 +56,7 @@ public class SupportAlbumPedestalBlockEntity extends AbstractSupportAlbumPedesta
     }
     
     @Override
-    public Predicate<? super ResourceLocation> getFilter(Level level, ItemStack input) {
+    public Predicate<? super Identifier> getFilter(Level level, ItemStack input) {
         return resloc -> {
             if (input.has(DataComponentsTypeRegistry.DATA_LOCATION.get())) {
                 return resloc.equals(input.get(DataComponentsTypeRegistry.DATA_LOCATION.get()));

@@ -1,21 +1,21 @@
 package net.tracen.umapyoi.events;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.tracen.umapyoi.registry.UmaSkillRegistry;
 import net.tracen.umapyoi.registry.skills.UmaSkill;
 
 public abstract class SkillContext {
-    private final ResourceLocation skill;
+    private final Identifier skill;
 
-    public SkillContext(ResourceLocation skill) {
+    public SkillContext(Identifier skill) {
         this.skill = skill;
     }
 
-    public ResourceLocation getSkillResourceLocation() {
+    public Identifier getSkillIdentifier() {
         return skill;
     }
 
     public UmaSkill getSkill() {
-        return UmaSkillRegistry.REGISTRY.get().get(getSkillResourceLocation()).orElseThrow().value();
+        return UmaSkillRegistry.REGISTRY.get().get(getSkillIdentifier()).orElseThrow().value();
     }
 }

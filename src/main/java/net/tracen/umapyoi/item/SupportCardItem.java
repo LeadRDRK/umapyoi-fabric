@@ -6,13 +6,13 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -51,9 +51,9 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
     @Override
     public void fillItemCategory(FabricItemGroupEntries entries) {
         SupportCardItem.sortedCardDataList(entries.getContext().holders()).forEach(card -> {
-            if (card.key().location().equals(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "blank_card")))
+            if (card.key().identifier().equals(Identifier.fromNamespaceAndPath(Umapyoi.MODID, "blank_card")))
                 return;
-            ItemStack result = SupportCard.init(card.key().location(), card.value());
+            ItemStack result = SupportCard.init(card.key().identifier(), card.value());
             entries.accept(result);
         });
     }
@@ -73,7 +73,7 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
     @Environment(EnvType.CLIENT)
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        ResourceLocation cardID = this.getSupportCardID(stack);
+        Identifier cardID = this.getSupportCardID(stack);
         var registries = context.registries();
         if (isEmptyCard(registries, cardID))
             return ;
@@ -88,7 +88,7 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
             }
         }
 
-        List<ResourceLocation> supporters = ClientUtils.getClientSupportCardRegistry().get(cardID)
+        List<Identifier> supporters = ClientUtils.getClientSupportCardRegistry().get(cardID)
                 .orElseThrow().value().getSupporters();
         if (!supporters.isEmpty()) {
             if (Minecraft.getInstance().hasShiftDown() || !Umapyoi.CONFIG.TOOLTIP_SWITCH()) {
@@ -102,12 +102,12 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
         }
     }
 
-    public ResourceLocation getSupportCardID(ItemStack stack) {
+    public Identifier getSupportCardID(ItemStack stack) {
         return stack.getOrDefault(DataComponentsTypeRegistry.DATA_LOCATION.get(), SupportCard.EMPTY_ID);
     }
 
     public SupportCard getSupportCard(HolderLookup.Provider registries, ItemStack stack) {
-        ResourceLocation cardID = this.getSupportCardID(stack);
+        Identifier cardID = this.getSupportCardID(stack);
         if (isEmptyCard(registries, cardID))
             return SupportCard.EMPTY;
         return UmapyoiAPI.getSupportCardRegistry(registries)
@@ -116,7 +116,7 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
                 .orElse(null);
     }
 
-    private boolean isEmptyCard(HolderLookup.Provider registries, ResourceLocation cardID) {
+    private boolean isEmptyCard(HolderLookup.Provider registries, Identifier cardID) {
         return registries == null || cardID.equals(SupportCard.EMPTY_ID) || UmapyoiAPI
                 .getSupportCardRegistry(registries)
                 .get(ResourceKey.create(SupportCard.REGISTRY_KEY, cardID))
@@ -177,7 +177,7 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
             var supportCard = this.getSupportCard(level.registryAccess(), stack);
             var otherCard = this.getSupportCard(level.registryAccess(), other);
 
-            for (ResourceLocation name : supportCard.getSupporters()) {
+            for (Identifier name : supportCard.getSupporters()) {
                 if (otherCard.getSupporters().contains(name))
                     return false;
             }
@@ -191,8 +191,8 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
             var leftRanking = left.value().getGachaRanking();
             var rightRanking = right.value().getGachaRanking();
             if(leftRanking == rightRanking) {
-                String leftName = left.key().location().toString();
-                String rightName = right.key().location().toString();
+                String leftName = left.key().identifier().toString();
+                String rightName = right.key().identifier().toString();
                 return leftName.compareToIgnoreCase(rightName);
             }
             return leftRanking.compareTo(rightRanking);

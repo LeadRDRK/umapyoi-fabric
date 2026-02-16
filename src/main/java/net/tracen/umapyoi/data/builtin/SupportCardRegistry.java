@@ -1,7 +1,7 @@
 package net.tracen.umapyoi.data.builtin;
 
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.registry.training.card.SupportCard;
 
@@ -68,7 +68,7 @@ public class SupportCardRegistry {
     public static final ResourceKey<SupportCard> SSR_KIRYUUIN_AOI = register("ssr_kiryuuin_aoi");
 
     private static ResourceKey<SupportCard> register(String id) {
-        ResourceKey<SupportCard> loc = ResourceKey.create(SupportCard.REGISTRY_KEY, ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, id));
+        ResourceKey<SupportCard> loc = ResourceKey.create(SupportCard.REGISTRY_KEY, Identifier.fromNamespaceAndPath(Umapyoi.MODID, id));
         return loc;
     }
 }

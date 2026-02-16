@@ -1,7 +1,7 @@
 package net.tracen.umapyoi.data.builtin;
 
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.registry.umadata.UmaData;
 
@@ -142,7 +142,7 @@ public class UmaDataRegistry {
     public static final ResourceKey<UmaData> DANTSU_FLAME = register("dantsu_flame");
 
     private static ResourceKey<UmaData> register(String id) {
-        ResourceKey<UmaData> loc = ResourceKey.create(UmaData.REGISTRY_KEY, ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, id));
+        ResourceKey<UmaData> loc = ResourceKey.create(UmaData.REGISTRY_KEY, Identifier.fromNamespaceAndPath(Umapyoi.MODID, id));
         return loc;
     }
 }

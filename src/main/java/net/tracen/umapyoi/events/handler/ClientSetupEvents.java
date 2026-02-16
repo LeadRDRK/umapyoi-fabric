@@ -47,7 +47,7 @@ public class ClientSetupEvents {
         AbstractSuitItem.registerRenderer(ItemRegistry.SWIMSUIT);
         AbstractSuitItem.registerRenderer(ItemRegistry.UMA_COSTUME);
 
-        BlockRenderLayerMap.putBlock(BlockRegistry.TRAINING_FACILITY, ChunkSectionLayer.CUTOUT_MIPPED);
+        BlockRenderLayerMap.putBlock(BlockRegistry.TRAINING_FACILITY, ChunkSectionLayer.CUTOUT);
 
         ClientTickEvents.END_CLIENT_TICK.register(SkillKeyMapping::onEndClientTick);
 

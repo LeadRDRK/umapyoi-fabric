@@ -2,7 +2,7 @@ package net.tracen.umapyoi.compat.jei.category;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.block.BlockRegistry;
@@ -21,14 +21,14 @@ import mezz.jei.api.recipe.types.IRecipeType;
 
 public class JEIDisassemblyCategory implements IRecipeCategory<JEISimpleRecipe> {
     private final Component title;
-    private final ResourceLocation UID;
+    private final Identifier UID;
     private final IDrawable background;
     private final IDrawable icon;
 
     public JEIDisassemblyCategory(IGuiHelper helper) {
         title = Component.translatable("umapyoi.jei.disassembly");
-        ResourceLocation backgroundImage = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/gui/jei_compat.png");
-        UID = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "disassembly");
+        Identifier backgroundImage = Identifier.fromNamespaceAndPath(Umapyoi.MODID, "textures/gui/jei_compat.png");
+        UID = Identifier.fromNamespaceAndPath(Umapyoi.MODID, "disassembly");
         background = helper.createDrawable(backgroundImage, 0, 0, 93, 46);
         icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK,
                 new ItemStack(BlockRegistry.DISASSEMBLY_BLOCK));

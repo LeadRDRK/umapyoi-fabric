@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.block.BlockRegistry;
@@ -26,15 +26,15 @@ import mezz.jei.api.recipe.types.IRecipeType;
 
 public class JEIGachaCategory implements IRecipeCategory<JEISimpleRecipe> {
     private final Component title;
-    private final ResourceLocation UID;
+    private final Identifier UID;
     private final IDrawable background;
     private final IDrawable chancedSlot;
     private final IDrawable icon;
 
     public JEIGachaCategory(IGuiHelper helper) {
         title = Component.translatable("umapyoi.jei.gacha");
-        ResourceLocation backgroundImage = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/gui/jei_compat.png");
-        UID = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "gacha");
+        Identifier backgroundImage = Identifier.fromNamespaceAndPath(Umapyoi.MODID, "textures/gui/jei_compat.png");
+        UID = Identifier.fromNamespaceAndPath(Umapyoi.MODID, "gacha");
         background = helper.createDrawable(backgroundImage, 0, 0, 93, 46);
         chancedSlot = helper.createDrawable(backgroundImage, 93, 0, 18, 18);
         icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK,

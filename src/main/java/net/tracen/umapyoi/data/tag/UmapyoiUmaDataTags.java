@@ -1,6 +1,6 @@
 package net.tracen.umapyoi.data.tag;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.registry.umadata.UmaData;
@@ -13,10 +13,10 @@ public class UmapyoiUmaDataTags {
     public static final TagKey<UmaData> STUCK_MODEL = UmapyoiUmaDataTags.umapyoiUmaDataTag("model/stuck");
 
     public static TagKey<UmaData> umapyoiUmaDataTag(String path) {
-        return TagKey.create(UmaData.REGISTRY_KEY, ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, path));
+        return TagKey.create(UmaData.REGISTRY_KEY, Identifier.fromNamespaceAndPath(Umapyoi.MODID, path));
     }
 
     public static TagKey<UmaData> modUmaDataTag(String modid, String path) {
-        return TagKey.create(UmaData.REGISTRY_KEY, ResourceLocation.fromNamespaceAndPath(modid, path));
+        return TagKey.create(UmaData.REGISTRY_KEY, Identifier.fromNamespaceAndPath(modid, path));
     }
 }

@@ -2,7 +2,7 @@ package net.tracen.umapyoi.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -34,8 +34,8 @@ public class UmaTicketItem extends Item {
         }
     }
 
-    public ResourceLocation getUmaName(ItemStack stack) {
-        return stack.getOrDefault(DataComponentsTypeRegistry.DATA_LOCATION.get(), UmaDataRegistry.COMMON_UMA.location());
+    public Identifier getUmaName(ItemStack stack) {
+        return stack.getOrDefault(DataComponentsTypeRegistry.DATA_LOCATION.get(), UmaDataRegistry.COMMON_UMA.identifier());
     }
 
     @Override
@@ -43,7 +43,7 @@ public class UmaTicketItem extends Item {
         return stack.has(DataComponentsTypeRegistry.DATA_LOCATION.get());
     }
 
-    private ResourceLocation getSupportCardID(ItemStack stack) {
+    private Identifier getSupportCardID(ItemStack stack) {
         return stack.getOrDefault(DataComponentsTypeRegistry.DATA_LOCATION.get(), SupportCard.EMPTY_ID);
     }
 

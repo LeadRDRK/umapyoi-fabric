@@ -3,7 +3,6 @@ package net.tracen.umapyoi.data;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -14,6 +13,8 @@ import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
 import net.tracen.umapyoi.item.ItemRegistry;
 
+import org.jspecify.annotations.NullMarked;
+
 import java.util.concurrent.CompletableFuture;
 
 public class UmapyoiRecipeProvider extends FabricRecipeProvider {
@@ -22,7 +23,7 @@ public class UmapyoiRecipeProvider extends FabricRecipeProvider {
     }
 
     @Override
-    @MethodsReturnNonnullByDefault
+    @NullMarked
     public RecipeProvider createRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
         return new RecipeProvider(registries, output) {
             @Override
@@ -190,7 +191,7 @@ public class UmapyoiRecipeProvider extends FabricRecipeProvider {
     }
 
     @Override
-    @MethodsReturnNonnullByDefault
+    @NullMarked
     public String getName() {
         return "UmapyoiRecipeProvider";
     }

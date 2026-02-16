@@ -3,8 +3,8 @@ package net.tracen.umapyoi.recipe;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -18,15 +18,15 @@ public class ShapelessSupportCardRecipe extends ShapelessRecipe {
     public static final RecipeSerializer<ShapelessRecipe> SERIALIZER = new SupportCardRecipeSerializer<>(
             RecipeSerializer.SHAPELESS_RECIPE, ShapelessSupportCardRecipe::new);
 
-    private final ResourceLocation outputUma;
+    private final Identifier outputUma;
 
-    public ShapelessSupportCardRecipe(ShapelessRecipe compose, ResourceLocation outputBlade) {
+    public ShapelessSupportCardRecipe(ShapelessRecipe compose, Identifier outputBlade) {
         super(compose.group(), compose.category(),
                 getResultItem(outputBlade), compose.placementInfo().ingredients());
         this.outputUma = outputBlade;
     }
 
-    private static ItemStack getResultItem(ResourceLocation outputBlade) {
+    private static ItemStack getResultItem(Identifier outputBlade) {
         Item bladeItem = BuiltInRegistries.ITEM.containsKey(outputBlade)
                 ? BuiltInRegistries.ITEM.get(outputBlade).orElseThrow().value()
                 : ItemRegistry.SUPPORT_CARD;
@@ -34,7 +34,7 @@ public class ShapelessSupportCardRecipe extends ShapelessRecipe {
         return bladeItem.getDefaultInstance();
     }
 
-    public ResourceLocation getOutput() {
+    public Identifier getOutput() {
         return outputUma;
     }
 

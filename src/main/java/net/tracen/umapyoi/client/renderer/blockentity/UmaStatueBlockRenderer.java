@@ -3,21 +3,19 @@ package net.tracen.umapyoi.client.renderer.blockentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.block.UmaStatueBlock;
 import net.tracen.umapyoi.block.entity.UmaStatueBlockEntity;
-import net.tracen.umapyoi.client.model.bedrock.BedrockPart;
-import net.tracen.umapyoi.client.model.pojo.BedrockModelPOJO;
 import net.tracen.umapyoi.client.renderer.BedrockModelRenderer;
 import net.tracen.umapyoi.client.renderer.blockentity.state.UmaStatueBlockRenderState;
 import net.tracen.umapyoi.utils.ClientUtils;
@@ -26,7 +24,7 @@ import net.tracen.umapyoi.utils.UmaSoulUtils;
 import org.jetbrains.annotations.Nullable;
 
 public class UmaStatueBlockRenderer implements BlockEntityRenderer<UmaStatueBlockEntity, UmaStatueBlockRenderState> {
-    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/three_goddesses.png");
+    public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/three_goddesses.png");
 
     public UmaStatueBlockRenderer(BlockEntityRendererProvider.Context context) {
     }
@@ -50,13 +48,13 @@ public class UmaStatueBlockRenderer implements BlockEntityRenderer<UmaStatueBloc
         var model = renderState.model;
         var modelRenderer = new BedrockModelRenderer(model, renderState.lightCoords,
                 OverlayTexture.NO_OVERLAY, -1);
-        var renderType = RenderType.entityTranslucent(renderState.texture);
+        var renderType = RenderTypes.entityTranslucent(renderState.texture);
         nodeCollector.submitCustomGeometry(poseStack, renderType, modelRenderer);
 
         if (model.isEmissive()) {
             var emissiveRenderer = new BedrockModelRenderer(model, renderState.lightCoords,
                     OverlayTexture.NO_OVERLAY, -1, true);
-            var emissiveRenderType = RenderType.entityTranslucentEmissive(renderState.emissiveTexture);
+            var emissiveRenderType = RenderTypes.entityTranslucentEmissive(renderState.emissiveTexture);
             nodeCollector.order(1)
                     .submitCustomGeometry(poseStack, emissiveRenderType, emissiveRenderer);
         }

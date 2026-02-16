@@ -3,13 +3,13 @@ package net.tracen.umapyoi.registry.training;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.registry.RegistryNameHolder;
@@ -18,7 +18,7 @@ import net.tracen.umapyoi.registry.TrainingSupportRegistry;
 public class TrainingSupport extends RegistryNameHolder {
     private String descriptionId;
 
-    public static final Codec<TrainingSupport> CODEC = ResourceLocation.CODEC
+    public static final Codec<TrainingSupport> CODEC = Identifier.CODEC
             .xmap(
                     loc -> TrainingSupportRegistry.REGISTRY.get()
                             .get(loc).orElseThrow().value(),
@@ -26,7 +26,7 @@ public class TrainingSupport extends RegistryNameHolder {
             );
 
     public static final ResourceKey<Registry<TrainingSupport>> REGISTRY_KEY = ResourceKey
-            .createRegistryKey(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "training_support"));
+            .createRegistryKey(Identifier.fromNamespaceAndPath(Umapyoi.MODID, "training_support"));
 
     public TrainingSupport() {
     }

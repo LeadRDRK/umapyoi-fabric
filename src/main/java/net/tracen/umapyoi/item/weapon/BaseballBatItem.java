@@ -1,7 +1,7 @@
 package net.tracen.umapyoi.item.weapon;
 
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -11,7 +11,7 @@ import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.tracen.umapyoi.Umapyoi;
 
 public class BaseballBatItem extends UmaWeaponItem {
-    private static final ResourceLocation KNOCKBACK_ID = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "knockback");
+    private static final Identifier KNOCKBACK_ID = Identifier.fromNamespaceAndPath(Umapyoi.MODID, "knockback");
 
     public BaseballBatItem(Properties p) {
         super(createMaterial(), 6, -2.7F, p);

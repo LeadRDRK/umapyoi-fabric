@@ -2,10 +2,11 @@ package net.tracen.umapyoi.registry.umadata;
 
 import com.mojang.serialization.Codec;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.StringRepresentable;
+
+import org.jspecify.annotations.NullMarked;
 
 import io.netty.buffer.ByteBuf;
 
@@ -19,7 +20,7 @@ public enum Growth implements StringRepresentable {
     );
 
     @Override
-    @MethodsReturnNonnullByDefault
+    @NullMarked
     public String getSerializedName() {
         return this.name();
     }

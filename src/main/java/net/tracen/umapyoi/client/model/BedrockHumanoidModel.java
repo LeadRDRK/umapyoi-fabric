@@ -223,7 +223,7 @@ public class BedrockHumanoidModel<T extends HumanoidRenderState> extends Bedrock
                 this.rightArm.xRot = this.rightArm.xRot * 0.5F - ((float) Math.PI / 10F);
                 this.rightArm.yRot = 0.0F;
                 break;
-            case THROW_SPEAR:
+            case THROW_TRIDENT:
                 this.rightArm.xRot = this.rightArm.xRot * 0.5F - (float) Math.PI;
                 this.rightArm.yRot = 0.0F;
                 break;
@@ -262,7 +262,7 @@ public class BedrockHumanoidModel<T extends HumanoidRenderState> extends Bedrock
                 this.leftArm.xRot = this.leftArm.xRot * 0.5F - ((float) Math.PI / 10F);
                 this.leftArm.yRot = 0.0F;
                 break;
-            case THROW_SPEAR:
+            case THROW_TRIDENT:
                 this.leftArm.xRot = this.leftArm.xRot * 0.5F - (float) Math.PI;
                 this.leftArm.yRot = 0.0F;
                 break;

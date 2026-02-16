@@ -1,6 +1,6 @@
 package net.tracen.umapyoi.container;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -40,7 +40,7 @@ public class SkillLearningMenu extends ItemCombinerMenu {
         ItemStack inputSoul = this.inputSlots.getItem(0);
         ItemStack inputSkill = this.inputSlots.getItem(1);
         if (isUmaSoul(inputSoul) && isSkillBook(inputSkill)) {
-            ResourceLocation skillRL = inputSkill.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
+            Identifier skillRL = inputSkill.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
             if (UmaSkillRegistry.REGISTRY.get().containsKey(skillRL)) {
                 var upperSkill = UmaSkillRegistry.REGISTRY.get().get(skillRL).orElseThrow().value().getUpperSkill();
                 if (upperSkill != null && UmaSkillUtils.hasLearnedSkill(inputSoul, upperSkill)) 

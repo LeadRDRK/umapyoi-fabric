@@ -3,18 +3,18 @@ package net.tracen.umapyoi.client.renderer.blockentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
-import net.minecraft.client.model.BookModel;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.model.object.book.BookModel;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.MaterialSet;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.tracen.umapyoi.Umapyoi;
@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class SupportAlbumPedestalBlockRenderer extends AbstractPedestalBlockRenderer<AbstractSupportAlbumPedestalBlockEntity, SupportAlbumPedestalBlockRenderState> {
     public static final Material BOOK_LOCATION = Sheets.BLOCK_ENTITIES_MAPPER.apply(
-            ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "support_card_album"));
+            Identifier.fromNamespaceAndPath(Umapyoi.MODID, "support_card_album"));
     private final MaterialSet materials;
     private final BookModel bookModel;
 
@@ -56,7 +56,7 @@ public class SupportAlbumPedestalBlockRenderer extends AbstractPedestalBlockRend
                 this.bookModel,
                 state,
                 poseStack,
-                BOOK_LOCATION.renderType(RenderType::entitySolid),
+                BOOK_LOCATION.renderType(RenderTypes::entitySolid),
                 renderState.lightCoords,
                 OverlayTexture.NO_OVERLAY,
                 -1,

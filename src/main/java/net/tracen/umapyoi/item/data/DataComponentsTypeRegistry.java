@@ -3,7 +3,7 @@ package net.tracen.umapyoi.item.data;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.registry.LazyRegistrar;
 import net.tracen.umapyoi.registry.RegistryObject;
@@ -20,19 +20,19 @@ public class DataComponentsTypeRegistry {
     public static final LazyRegistrar<DataComponentType<?>> DATA_COMPONENTS = LazyRegistrar
             .create(Registries.DATA_COMPONENT_TYPE, Umapyoi.MODID);
 
-    public static final RegistryObject<DataComponentType<ResourceLocation>> DATA_LOCATION =
+    public static final RegistryObject<DataComponentType<Identifier>> DATA_LOCATION =
             DATA_COMPONENTS.register("data_location",
-                    () -> DataComponentType.<ResourceLocation>builder()
-                            .persistent(ResourceLocation.CODEC)
-                            .networkSynchronized(ResourceLocation.STREAM_CODEC)
+                    () -> DataComponentType.<Identifier>builder()
+                            .persistent(Identifier.CODEC)
+                            .networkSynchronized(Identifier.STREAM_CODEC)
                             .build()
             );
 
-    public static final RegistryObject<DataComponentType<ResourceLocation>> IDENTIFIER =
+    public static final RegistryObject<DataComponentType<Identifier>> IDENTIFIER =
             DATA_COMPONENTS.register("identifier",
-                    () -> DataComponentType.<ResourceLocation>builder()
-                            .persistent(ResourceLocation.CODEC)
-                            .networkSynchronized(ResourceLocation.STREAM_CODEC)
+                    () -> DataComponentType.<Identifier>builder()
+                            .persistent(Identifier.CODEC)
+                            .networkSynchronized(Identifier.STREAM_CODEC)
                             .build()
             );
 

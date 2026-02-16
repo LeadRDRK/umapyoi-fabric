@@ -1,13 +1,13 @@
 package net.tracen.umapyoi.registry.skills;
 
-import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.LivingEntity;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.registry.RegistryNameHolder;
@@ -18,12 +18,12 @@ public class UmaSkill extends RegistryNameHolder {
     private final int actionPoint;
     private final int level;
     private final SoundEvent sound;
-    private final ResourceLocation upperSkill;
+    private final Identifier upperSkill;
     private final boolean inheritable;
     private String descriptionId;
 
     public static final ResourceKey<Registry<UmaSkill>> REGISTRY_KEY = ResourceKey
-            .createRegistryKey(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "skill"));
+            .createRegistryKey(Identifier.fromNamespaceAndPath(Umapyoi.MODID, "skill"));
 
     public UmaSkill(Builder builder) {
         this.type = builder.type;
@@ -90,7 +90,7 @@ public class UmaSkill extends RegistryNameHolder {
         return sound;
     }
 
-    public ResourceLocation getUpperSkill() {
+    public Identifier getUpperSkill() {
         return upperSkill;
     }
 
@@ -104,7 +104,7 @@ public class UmaSkill extends RegistryNameHolder {
         private int actionPoint = 200;
         private int level = 1;
         private SoundEvent sound = SoundEvents.PLAYER_ATTACK_SWEEP;
-        private ResourceLocation upperSkill;
+        private Identifier upperSkill;
         private boolean inheritable = true;
         public Builder type(SkillType type) {
             this.type = type;
@@ -136,7 +136,7 @@ public class UmaSkill extends RegistryNameHolder {
             return this;
         }
 
-        public Builder upperSkill(ResourceLocation upperSkill) {
+        public Builder upperSkill(Identifier upperSkill) {
             this.upperSkill = upperSkill;
             return this;
         }

@@ -1,23 +1,24 @@
 package net.tracen.umapyoi.network;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.container.UmaSelectMenu;
 
+import org.jspecify.annotations.NullMarked;
+
 public record EmptyResultPacket() implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<EmptyResultPacket> TYPE =
-            new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "packet/empty_result"));
+            new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(Umapyoi.MODID, "packet/empty_result"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, EmptyResultPacket> CODEC =
             StreamCodec.unit(new EmptyResultPacket());
 
     @Override
-    @MethodsReturnNonnullByDefault
+    @NullMarked
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }

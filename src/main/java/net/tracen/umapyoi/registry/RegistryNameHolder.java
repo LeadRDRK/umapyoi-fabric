@@ -1,22 +1,22 @@
 package net.tracen.umapyoi.registry;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
 
 public class RegistryNameHolder {
     @Nullable
-    private ResourceLocation name;
+    private Identifier name;
 
     protected RegistryNameHolder() {
         this.name = null;
     }
 
-    public void setRegistryName(ResourceLocation name) {
+    public void setRegistryName(Identifier name) {
         this.name = name;
     }
 
-    public final ResourceLocation getRegistryName() {
+    public final Identifier getRegistryName() {
         return name;
     }
 }

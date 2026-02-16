@@ -6,8 +6,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.tracen.umapyoi.Umapyoi;
@@ -27,26 +27,26 @@ public class SupportCard extends RegistryNameHolder {
             GachaRanking.CODEC.optionalFieldOf("ranking", GachaRanking.EASTER_EGG)
                     .forGetter(SupportCard::getGachaRanking),
             SupportType.CODEC.fieldOf("type").forGetter(SupportCard::getSupportType),
-            SupportEntry.CODEC.listOf().fieldOf("supports").forGetter(SupportCard::getSupports), ResourceLocation.CODEC
+            SupportEntry.CODEC.listOf().fieldOf("supports").forGetter(SupportCard::getSupports), Identifier.CODEC
                     .listOf().optionalFieldOf("supporters", Lists.newArrayList()).forGetter(SupportCard::getSupporters),
             Codec.INT.fieldOf("max_damage").forGetter(SupportCard::getMaxDamage)        
             )
             .apply(instance, SupportCard::new));
 
     public static final ResourceKey<Registry<SupportCard>> REGISTRY_KEY = ResourceKey
-            .createRegistryKey(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "support_card"));
+            .createRegistryKey(Identifier.fromNamespaceAndPath(Umapyoi.MODID, "support_card"));
 
-    public static final ResourceLocation EMPTY_ID = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "blank_card");
+    public static final Identifier EMPTY_ID = Identifier.fromNamespaceAndPath(Umapyoi.MODID, "blank_card");
     public static final SupportCard EMPTY = SupportCard.Builder.create().ranking(GachaRanking.EASTER_EGG).supportType(SupportType.GROUP).build();
 
     private final GachaRanking ranking;
     private final SupportType type;
     private final List<SupportEntry> supports;
-    private final List<ResourceLocation> supporters;
+    private final List<Identifier> supporters;
     private final int maxDamage;
 
     private SupportCard(GachaRanking level, SupportType type, List<SupportEntry> supports,
-            List<ResourceLocation> supporters, int maxDamage) {
+            List<Identifier> supporters, int maxDamage) {
         this.ranking = level;
         this.type = type;
         this.supports = supports;
@@ -54,7 +54,7 @@ public class SupportCard extends RegistryNameHolder {
         this.maxDamage = maxDamage;
     }
 
-    public static ItemStack init(ResourceLocation name, SupportCard card) {
+    public static ItemStack init(Identifier name, SupportCard card) {
         ItemStack result = new ItemStack(ItemRegistry.SUPPORT_CARD);
         result.set(DataComponents.MAX_DAMAGE, card.getMaxDamage());
         result.set(DataComponents.DAMAGE, 0);
@@ -87,7 +87,7 @@ public class SupportCard extends RegistryNameHolder {
         return result;
     }
 
-    public List<ResourceLocation> getSupporters() {
+    public List<Identifier> getSupporters() {
         return supporters;
     }
 
@@ -99,7 +99,7 @@ public class SupportCard extends RegistryNameHolder {
         private GachaRanking level = GachaRanking.R;
         private SupportType type = SupportType.SPEED;
         private List<SupportEntry> supports = Lists.newArrayList();
-        private List<ResourceLocation> supporters = Lists.newArrayList();
+        private List<Identifier> supporters = Lists.newArrayList();
         private int damage = 3;
         private Builder() {
         }
@@ -128,7 +128,7 @@ public class SupportCard extends RegistryNameHolder {
             return this;
         }
 
-        public Builder addSupporter(ResourceLocation name) {
+        public Builder addSupporter(Identifier name) {
             this.supporters.add(name);
             return this;
         }

@@ -2,7 +2,7 @@ package net.tracen.umapyoi.events;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
@@ -11,7 +11,7 @@ public interface ApplySkillCallback {
         private final Level level;
         private final Player user;
 
-        public Context(ResourceLocation skill, Level level, Player user) {
+        public Context(Identifier skill, Level level, Player user) {
             super(skill);
             this.level = level;
             this.user = user;

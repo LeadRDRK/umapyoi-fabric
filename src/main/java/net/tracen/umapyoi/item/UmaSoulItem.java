@@ -9,22 +9,22 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Util;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -87,7 +87,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
     public void fillItemCategory(FabricItemGroupEntries entries) {
         sortedUmaDataList(entries.getContext().holders()).forEach(entry -> {
             var initUmaSoul = UmaSoulUtils.initUmaSoul(getDefaultInstance(),
-                    entry.key().location(),
+                    entry.key().identifier(),
                     entry.value());
             UmaSoulUtils.setPhysique(initUmaSoul, 5);
             entries.accept(initUmaSoul);
@@ -188,7 +188,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
     }
 
     @Override
-    public Multimap<Holder<Attribute>, AttributeModifier> getModifiers(ItemStack stack, SlotReference slot, LivingEntity entity, ResourceLocation slotIdentifier) {
+    public Multimap<Holder<Attribute>, AttributeModifier> getModifiers(ItemStack stack, SlotReference slot, LivingEntity entity, Identifier slotIdentifier) {
         Multimap<Holder<Attribute>, AttributeModifier> atts = LinkedHashMultimap.create();
         SlotAttributes.addSlotModifier(atts, "umapyoi/uma_suit", slotIdentifier, 1.0, AttributeModifier.Operation.ADD_VALUE);
         if (UmaSoulUtils.getGrowth(stack) == Growth.UNTRAINED)
@@ -301,12 +301,12 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
         var comp = slotReference.inventory().getComponent();
         var entity = comp.getEntity();
 
-        ResourceLocation renderTarget = getRenderTarget(itemStack, entity);
+        Identifier renderTarget = getRenderTarget(itemStack, entity);
         var pojo = ClientUtils.getModelPOJO(renderTarget);
         if (baseModel.needRefresh(pojo))
             baseModel.loadModel(pojo);
 
-        var renderType = RenderType.entityTranslucent(ClientUtils.getTexture(renderTarget));
+        var renderType = RenderTypes.entityTranslucent(ClientUtils.getTexture(renderTarget));
         baseModel.setModelProperties(state);
         baseModel.prepareMobModel(state, limbAngle, limbDistance);
 
@@ -328,7 +328,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
                 LivingEntityRenderer.getOverlayCoords(state, 0.0F), -1);
         nodeCollector.submitCustomGeometry(poseStack, renderType, modelRenderer);
         if (baseModel.isEmissive()) {
-            var emissiveRenderType = RenderType.entityTranslucentEmissive(
+            var emissiveRenderType = RenderTypes.entityTranslucentEmissive(
                     ClientUtils.getEmissiveTexture(renderTarget));
             var emissiveRenderer = new BedrockModelRenderer(baseModel, light,
                     LivingEntityRenderer.getOverlayCoords(state, 0.0F), -1, true);
@@ -339,7 +339,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
         RenderingUmaSoulCallback.Post.invoke(callbackContext);
     }
 
-    public static ResourceLocation getRenderTarget(ItemStack stack, LivingEntity entity) {
+    public static Identifier getRenderTarget(ItemStack stack, LivingEntity entity) {
         boolean suit_flag = false;
         boolean alter_flag = false;
         var compOpt = TrinketsApi.getTrinketComponent(entity);
@@ -363,14 +363,14 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
             }
         }
 
-        ResourceLocation renderTarget = suit_flag ? getSuitTarget(stack, alter_flag) : UmaSoulUtils.getName(stack);
+        Identifier renderTarget = suit_flag ? getSuitTarget(stack, alter_flag) : UmaSoulUtils.getName(stack);
         return renderTarget;
     }
 
-    private static ResourceLocation getSuitTarget(ItemStack stack, boolean alter) {
-        ResourceLocation identifier = ClientUtils.getClientUmaDataRegistry().get(UmaSoulUtils.getName(stack)).get().value().identifier();
+    private static Identifier getSuitTarget(ItemStack stack, boolean alter) {
+        Identifier identifier = ClientUtils.getClientUmaDataRegistry().get(UmaSoulUtils.getName(stack)).get().value().identifier();
         if(alter)
-            identifier = ResourceLocation.fromNamespaceAndPath(identifier.getNamespace(), identifier.getPath()+"_alter");
+            identifier = Identifier.fromNamespaceAndPath(identifier.getNamespace(), identifier.getPath()+"_alter");
         return identifier;
     }
 
@@ -386,8 +386,8 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
             var leftRanking = left.value().ranking();
             var rightRanking = right.value().ranking();
             if(leftRanking == rightRanking) {
-                String leftName = left.key().location().toString();
-                String rightName = right.key().location().toString();
+                String leftName = left.key().identifier().toString();
+                String rightName = right.key().identifier().toString();
                 return leftName.compareToIgnoreCase(rightName);
             }
             return leftRanking.compareTo(rightRanking);

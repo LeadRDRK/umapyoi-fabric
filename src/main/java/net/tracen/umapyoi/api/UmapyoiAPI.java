@@ -4,7 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -94,11 +94,11 @@ public class UmapyoiAPI {
         return false;
     }
 
-    public static boolean isSpecifyUmamusumeSoul(ItemStack soul, ResourceLocation name) {
+    public static boolean isSpecifyUmamusumeSoul(ItemStack soul, Identifier name) {
         return UmaSoulUtils.getName(soul).equals(name);
     }
 
-    public static boolean isSpecifyUmamusume(ItemStack soul, ResourceLocation identifier, Level level) {
+    public static boolean isSpecifyUmamusume(ItemStack soul, Identifier identifier, Level level) {
         return UmapyoiAPI.getUmaDataRegistry(level).get(UmaSoulUtils.getName(soul))
                 .orElseThrow().value().identifier().equals(identifier);
     }

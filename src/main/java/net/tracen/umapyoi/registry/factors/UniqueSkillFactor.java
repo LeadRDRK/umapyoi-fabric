@@ -1,7 +1,7 @@
 package net.tracen.umapyoi.registry.factors;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.registry.UmaSkillRegistry;
 import net.tracen.umapyoi.registry.skills.UmaSkill;
@@ -15,13 +15,13 @@ public class UniqueSkillFactor extends UmaFactor {
 
     @Override
     public void applyFactor(ItemStack soul, UmaFactorStack stack) {
-        ResourceLocation skill = ResourceLocation.tryParse(stack.getOrCreateTag().getString("skill").orElseThrow());
+        Identifier skill = Identifier.tryParse(stack.getOrCreateTag().getString("skill").orElseThrow());
         UmaSkillUtils.learnSkill(soul, skill);
     }
 
     @Override
     public Component getDescription(UmaFactorStack stack) {
-        ResourceLocation skill = ResourceLocation.tryParse(stack.getOrCreateTag().getString("skill").orElseThrow());
+        Identifier skill = Identifier.tryParse(stack.getOrCreateTag().getString("skill").orElseThrow());
         if (skill != null && UmaSkillRegistry.REGISTRY.get().containsKey(skill)) {
             UmaSkill result = UmaSkillRegistry.REGISTRY.get().get(skill).orElseThrow().value();
             return result.getDescription();
@@ -31,7 +31,7 @@ public class UniqueSkillFactor extends UmaFactor {
 
     @Override
     public Component getDescriptionDetail(UmaFactorStack stack) {
-        ResourceLocation skill = ResourceLocation.tryParse(stack.getOrCreateTag().getString("skill").orElseThrow());
+        Identifier skill = Identifier.tryParse(stack.getOrCreateTag().getString("skill").orElseThrow());
         if (skill != null && UmaSkillRegistry.REGISTRY.get().containsKey(skill)) {
             UmaSkill result = UmaSkillRegistry.REGISTRY.get().get(skill).orElseThrow().value();
             return result.getDescriptionDetail();

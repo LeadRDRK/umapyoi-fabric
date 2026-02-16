@@ -1,6 +1,6 @@
 package net.tracen.umapyoi.item;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.utils.ClientUtils;
@@ -11,24 +11,24 @@ public class TrainingSuitItem extends AbstractSuitItem {
     }
 
     @Override
-    protected ResourceLocation getModel(ItemStack stack) {
+    protected Identifier getModel(ItemStack stack) {
         return ClientUtils.TRAINING_SUIT;
     }
 
     @Override
-    protected ResourceLocation getTexture(ItemStack stack, boolean tanned) {
-        return tanned ? ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/trainning_suit_tanned.png")
-                : ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/trainning_suit.png");
+    protected Identifier getTexture(ItemStack stack, boolean tanned) {
+        return tanned ? Identifier.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/trainning_suit_tanned.png")
+                : Identifier.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/trainning_suit.png");
     }
 
     @Override
-    protected ResourceLocation getFlatModel(ItemStack stack) {
+    protected Identifier getFlatModel(ItemStack stack) {
         return ClientUtils.TRAINING_SUIT_FLAT;
     }
 
     @Override
-    protected ResourceLocation getFlatTexture(ItemStack stack, boolean tanned) {
-        return tanned ? ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/trainning_suit_tanned.png")
-                : ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/trainning_suit.png");
+    protected Identifier getFlatTexture(ItemStack stack, boolean tanned) {
+        return tanned ? Identifier.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/trainning_suit_tanned.png")
+                : Identifier.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/trainning_suit.png");
     }
 }

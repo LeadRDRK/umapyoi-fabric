@@ -1,23 +1,24 @@
 package net.tracen.umapyoi.network;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
+
+import org.jspecify.annotations.NullMarked;
 
 public record SelectSkillPacket(int slot) implements CustomPacketPayload {
     public static int LATTER_SLOT = 1;
     public static int FORMER_SLOT = 0;
 
     public static final CustomPacketPayload.Type<SelectSkillPacket> TYPE =
-            new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "packet/select_skill"));
+            new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(Umapyoi.MODID, "packet/select_skill"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SelectSkillPacket> CODEC = StreamCodec.composite(
             ByteBufCodecs.INT,
@@ -26,7 +27,7 @@ public record SelectSkillPacket(int slot) implements CustomPacketPayload {
     );
 
     @Override
-    @MethodsReturnNonnullByDefault
+    @NullMarked
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }

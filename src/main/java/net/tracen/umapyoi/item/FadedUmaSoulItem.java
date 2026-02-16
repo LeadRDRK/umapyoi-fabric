@@ -4,7 +4,7 @@ import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -30,7 +30,7 @@ public class FadedUmaSoulItem extends Item implements CreativeModeTabFiller {
                 UmaSoulUtils.getTranslatedUmaName(this.getUmaName(stack))).withStyle(ChatFormatting.GRAY));
     }
 
-    public ResourceLocation getUmaName(ItemStack stack) {
+    public Identifier getUmaName(ItemStack stack) {
         return stack.getOrDefault(DataComponentsTypeRegistry.DATA_LOCATION.get(), UmaData.DEFAULT_UMA_ID);
     }
 
@@ -41,7 +41,7 @@ public class FadedUmaSoulItem extends Item implements CreativeModeTabFiller {
         return super.getName(pStack);
     }
 
-    public static ItemStack genUmaSoul(ResourceLocation name, UmaData data) {
+    public static ItemStack genUmaSoul(Identifier name, UmaData data) {
         GachaRanking ranking = data.ranking();
         ItemStack result = ItemRegistry.BLANK_UMA_SOUL.getDefaultInstance();
         result.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), name);
@@ -60,7 +60,7 @@ public class FadedUmaSoulItem extends Item implements CreativeModeTabFiller {
     public void fillItemCategory(FabricItemGroupEntries entries) {
         UmaSoulItem.sortedUmaDataList(entries.getContext().holders()).forEach(
                 entry -> {
-                    ItemStack result = FadedUmaSoulItem.genUmaSoul(entry.key().location(), entry.value());
+                    ItemStack result = FadedUmaSoulItem.genUmaSoul(entry.key().identifier(), entry.value());
                     entries.accept(result);
                 }
         );

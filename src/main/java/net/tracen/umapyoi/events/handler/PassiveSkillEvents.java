@@ -1,7 +1,7 @@
 package net.tracen.umapyoi.events.handler;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -22,8 +22,8 @@ import net.tracen.umapyoi.utils.UmaSoulUtils;
 
 public class PassiveSkillEvents {
 
-    public static final ResourceLocation PASSIVE_ID = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "passive_speed_bonus");
-    public static final ResourceLocation SPRINT_ID = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "sprint_speed_bonus");
+    public static final Identifier PASSIVE_ID = Identifier.fromNamespaceAndPath(Umapyoi.MODID, "passive_speed_bonus");
+    public static final Identifier SPRINT_ID = Identifier.fromNamespaceAndPath(Umapyoi.MODID, "sprint_speed_bonus");
 
     public static void testPassiveSkill_im(ApplyUmasoulAttributeCallback.Context event) {
         var soul = event.getUmaSoul();

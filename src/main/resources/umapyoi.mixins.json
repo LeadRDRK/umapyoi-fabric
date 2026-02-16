@@ -15,7 +15,6 @@
     "client.ItemInHandRendererMixin",
     "client.LivingEntityRendererMixin",
     "client.LivingEntityRenderStateMixin",
-    "client.PlayerModelMixin",
     "client.AvatarRendererMixin"
   ],
   "injectors": {

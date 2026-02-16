@@ -3,7 +3,7 @@ package net.tracen.umapyoi.container;
 import com.google.common.collect.Lists;
 
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -30,8 +30,8 @@ public class UmaSelectMenu extends AbstractContainerMenu {
 
     private final ContainerLevelAccess access;
     private final Level level;
-    private ResourceLocation itemName;
-    private List<ResourceLocation> recipes = Lists.newArrayList();
+    private Identifier itemName;
+    private List<Identifier> recipes = Lists.newArrayList();
 
     private ItemStack inputTicket = ItemStack.EMPTY;
     private ItemStack inputLapis = ItemStack.EMPTY;
@@ -165,7 +165,7 @@ public class UmaSelectMenu extends AbstractContainerMenu {
         return pStack.is(ConventionalItemTags.LAPIS_GEMS);
     }
 
-    public List<ResourceLocation> getRecipes() {
+    public List<Identifier> getRecipes() {
         return this.recipes;
     }
 
@@ -197,11 +197,11 @@ public class UmaSelectMenu extends AbstractContainerMenu {
         }
     }
 
-    public ResourceLocation getItemName() {
+    public Identifier getItemName() {
         return itemName;
     }
 
-    public void setItemName(ResourceLocation itemName) {
+    public void setItemName(Identifier itemName) {
         if(this.itemName == null || !this.itemName.equals(itemName)) {
             this.itemName = itemName;
             this.setupResultSlot();
@@ -250,11 +250,11 @@ public class UmaSelectMenu extends AbstractContainerMenu {
         });
     }
 
-    public static class SelectComparator implements Comparator<ResourceLocation> {
+    public static class SelectComparator implements Comparator<Identifier> {
         public static final SelectComparator INSTANCE = new SelectComparator();
         private SelectComparator() {}
         @Override
-        public int compare(ResourceLocation left, ResourceLocation right) {
+        public int compare(Identifier left, Identifier right) {
             String leftName = left.toString();
             String rightName = right.toString();
             return leftName.compareToIgnoreCase(rightName);

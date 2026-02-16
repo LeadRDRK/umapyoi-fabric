@@ -1,16 +1,16 @@
 package net.tracen.umapyoi.registry;
 
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Objects;
 import java.util.function.Supplier;
 
 public class RegistryObject<T> implements Supplier<T> {
-    private final ResourceLocation name;
+    private final Identifier name;
     private Holder<T> holder = null;
 
-    public RegistryObject(ResourceLocation name) {
+    public RegistryObject(Identifier name) {
         this.name = name;
     }
 
@@ -21,7 +21,7 @@ public class RegistryObject<T> implements Supplier<T> {
         this.holder = holder;
     }
 
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return name;
     }
 

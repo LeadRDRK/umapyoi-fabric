@@ -1,14 +1,13 @@
 package net.tracen.umapyoi.network;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
@@ -20,15 +19,17 @@ import net.tracen.umapyoi.registry.UmaSkillRegistry;
 import net.tracen.umapyoi.registry.skills.UmaSkill;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
+import org.jspecify.annotations.NullMarked;
+
 public record UseSkillPacket() implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<UseSkillPacket> TYPE =
-            new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "packet/use_skill"));
+            new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(Umapyoi.MODID, "packet/use_skill"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, UseSkillPacket> CODEC =
             StreamCodec.unit(new UseSkillPacket());
 
     @Override
-    @MethodsReturnNonnullByDefault
+    @NullMarked
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
@@ -40,7 +41,7 @@ public record UseSkillPacket() implements CustomPacketPayload {
         ItemStack umaSoul = UmapyoiAPI.getUmaSoul(player);
 
         if (!umaSoul.isEmpty()) {
-            ResourceLocation selectedSkillName = UmaSoulUtils.getSelectedSkill(umaSoul);
+            Identifier selectedSkillName = UmaSoulUtils.getSelectedSkill(umaSoul);
             UmaSkill selectedSkill = UmaSkillRegistry.REGISTRY.get().get(selectedSkillName)
                     .map(Holder::value).orElse(null);
             if (selectedSkill == null) {

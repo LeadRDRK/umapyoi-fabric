@@ -6,7 +6,7 @@ import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.tracen.umapyoi.Umapyoi;
@@ -33,8 +33,8 @@ public class UmapyoiModelProvider extends FabricModelProvider {
         super(output);
     }
 
-    private static ResourceLocation blockModel(String name) {
-        return ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "block/" + name);
+    private static Identifier blockModel(String name) {
+        return Identifier.fromNamespaceAndPath(Umapyoi.MODID, "block/" + name);
     }
 
     @Override

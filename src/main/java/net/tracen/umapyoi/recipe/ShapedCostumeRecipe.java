@@ -2,7 +2,7 @@ package net.tracen.umapyoi.recipe;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -19,16 +19,16 @@ public class ShapedCostumeRecipe extends ShapedRecipe {
     public static final RecipeSerializer<ShapedRecipe> SERIALIZER = new CostumeRecipeSerializer<>(
             RecipeSerializer.SHAPED_RECIPE, ShapedCostumeRecipe::new);
 
-    private final ResourceLocation output;
+    private final Identifier output;
 
-    public ShapedCostumeRecipe(ShapedRecipe compose, ResourceLocation outputBlade) {
+    public ShapedCostumeRecipe(ShapedRecipe compose, Identifier outputBlade) {
         super(compose.group(), compose.category(),
                 new ShapedRecipePattern(compose.getWidth(), compose.getHeight(), compose.getIngredients(), Optional.empty()),
                 getResultItem(outputBlade));
         this.output = outputBlade;
     }
 
-    private static ItemStack getResultItem(ResourceLocation output) {
+    private static ItemStack getResultItem(Identifier output) {
         Item bladeItem = BuiltInRegistries.ITEM.containsKey(output)
                 ? BuiltInRegistries.ITEM.get(output).orElseThrow().value()
                 : ItemRegistry.UMA_COSTUME;
@@ -36,7 +36,7 @@ public class ShapedCostumeRecipe extends ShapedRecipe {
         return bladeItem.getDefaultInstance();
     }
 
-    public ResourceLocation getOutput() {
+    public Identifier getOutput() {
         return output;
     }
 

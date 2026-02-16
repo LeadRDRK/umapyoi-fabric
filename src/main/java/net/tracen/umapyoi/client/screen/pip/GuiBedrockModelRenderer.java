@@ -10,10 +10,9 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
 import net.minecraft.client.gui.render.state.pip.PictureInPictureRenderState;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
-import net.tracen.umapyoi.Umapyoi;
+import net.minecraft.resources.Identifier;
 import net.tracen.umapyoi.client.model.SimpleBedrockModel;
 import net.tracen.umapyoi.utils.ClientUtils;
 
@@ -38,7 +37,7 @@ public class GuiBedrockModelRenderer extends PictureInPictureRenderer<GuiBedrock
         poseStack.translate(translation.x, translation.y, translation.z);
         poseStack.mulPose(renderState.rotation());
         VertexConsumer vertexconsumer = bufferSource
-                .getBuffer(RenderType.entityTranslucent(ClientUtils.getTexture(renderState.texture())));
+                .getBuffer(RenderTypes.entityTranslucent(ClientUtils.getTexture(renderState.texture())));
         renderState.model().renderToBuffer(poseStack, vertexconsumer, LightTexture.FULL_BRIGHT,
                 OverlayTexture.NO_OVERLAY, -1);
     }
@@ -50,7 +49,7 @@ public class GuiBedrockModelRenderer extends PictureInPictureRenderer<GuiBedrock
 
     public record RenderState(
             SimpleBedrockModel model,
-            ResourceLocation texture,
+            Identifier texture,
             Vector3f translation,
             Quaternionf rotation,
             int x0, int y0, int x1, int y1,
@@ -60,7 +59,7 @@ public class GuiBedrockModelRenderer extends PictureInPictureRenderer<GuiBedrock
     ) implements PictureInPictureRenderState {
         public RenderState(
                 SimpleBedrockModel model,
-                ResourceLocation texture,
+                Identifier texture,
                 Vector3f translation,
                 Quaternionf rotation,
                 int x0, int y0, int x1, int y1,

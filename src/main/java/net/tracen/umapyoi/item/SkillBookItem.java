@@ -6,7 +6,7 @@ import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -27,7 +27,7 @@ public class SkillBookItem extends Item implements CreativeModeTabFiller {
     @Environment(EnvType.CLIENT)
     @Override
     public void fillItemCategory(FabricItemGroupEntries entries) {
-        for (ResourceLocation skill : UmaSkillRegistry.REGISTRY.get().keySet()) {
+        for (Identifier skill : UmaSkillRegistry.REGISTRY.get().keySet()) {
             ItemStack result = getDefaultInstance();
             result.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), skill);
             entries.accept(result);
@@ -45,7 +45,7 @@ public class SkillBookItem extends Item implements CreativeModeTabFiller {
     }
 
     public UmaSkill getSkill(ItemStack stack) {
-        ResourceLocation skillID = stack.getOrDefault(
+        Identifier skillID = stack.getOrDefault(
                 DataComponentsTypeRegistry.DATA_LOCATION.get(),
                 UmaSkillRegistry.BASIC_PACE.getId()
         );

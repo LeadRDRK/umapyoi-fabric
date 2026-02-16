@@ -3,17 +3,17 @@ package net.tracen.umapyoi.client.renderer.blockentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -30,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
 public class ThreeGoddessBlockRenderer implements BlockEntityRenderer<ThreeGoddessBlockEntity, ThreeGoddessBlockRenderState> {
-    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(
+    public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(
             Umapyoi.MODID, "textures/model/three_goddesses.png");
     private final SimpleBedrockModel model;
 
@@ -59,7 +59,7 @@ public class ThreeGoddessBlockRenderer implements BlockEntityRenderer<ThreeGodde
             model.loadModel(pojo);
         var modelRenderer = new BedrockModelRenderer(model, renderState.lightCoords,
                 OverlayTexture.NO_OVERLAY, -1);
-        nodeCollector.submitCustomGeometry(poseStack, RenderType.entityCutout(TEXTURE), modelRenderer);
+        nodeCollector.submitCustomGeometry(poseStack, RenderTypes.entityCutout(TEXTURE), modelRenderer);
         poseStack.popPose();
     }
 

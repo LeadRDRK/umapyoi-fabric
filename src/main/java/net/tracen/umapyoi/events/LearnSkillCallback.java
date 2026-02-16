@@ -2,13 +2,13 @@ package net.tracen.umapyoi.events;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 public interface LearnSkillCallback {
     class Context extends SkillContext {
         private final ItemStack umasoul;
-        public Context(ResourceLocation skill, ItemStack umasoul) {
+        public Context(Identifier skill, ItemStack umasoul) {
             super(skill);
             this.umasoul = umasoul;
         }

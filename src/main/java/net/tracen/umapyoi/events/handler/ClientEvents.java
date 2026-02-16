@@ -2,11 +2,12 @@ package net.tracen.umapyoi.events.handler;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -35,7 +36,7 @@ public class ClientEvents {
             model.head.visible = true;
             model.tail.visible = true;
             if(UmapyoiAPI.isUmaSuitHasHat(entity)) {
-                ResourceLocation loc = UmaCostumeItem.getCostumeID(UmapyoiAPI.getUmaSuit(entity));
+                Identifier loc = UmaCostumeItem.getCostumeID(UmapyoiAPI.getUmaSuit(entity));
                 var costumeData = ClientUtils.getClientCosmeticDataRegistry().get(
                         ResourceKey.create(CosmeticData.REGISTRY_KEY, loc)
                 );
@@ -72,16 +73,16 @@ public class ClientEvents {
         ItemStack umasoul = UmapyoiAPI.getRenderingUmaSoul(player);
         ItemStack umasuit = UmapyoiAPI.getUmaSuit(player);
         if (!umasoul.isEmpty()) {
-            ResourceLocation name = UmaSoulUtils.getName(umasoul);
+            Identifier name = UmaSoulUtils.getName(umasoul);
             BedrockModelPOJO pojo;
             RenderType renderType;
             if (umasuit.isEmpty()) {
-                renderType = RenderType.entityTranslucent(getTexture(name));
+                renderType = RenderTypes.entityTranslucent(getTexture(name));
                 pojo = ClientUtils.getModelPOJO(name);
             }
             else {
                 boolean tanned = ClientUtils.isTannedSkin(umasoul);
-                renderType = RenderType.entityTranslucent(UmaCostumeModelUtils.getCostumeTexture(umasuit, tanned));
+                renderType = RenderTypes.entityTranslucent(UmaCostumeModelUtils.getCostumeTexture(umasuit, tanned));
                 pojo = ClientUtils.getModelPOJO(UmaCostumeModelUtils.getCostumeModel(umasuit));
             }
             renderArmModel(event, name, renderType, pojo);
@@ -90,7 +91,7 @@ public class ClientEvents {
         return false;
     }
 
-    private static void renderArmModel(RenderArmCallback.Context event, ResourceLocation name,
+    private static void renderArmModel(RenderArmCallback.Context event, Identifier name,
                                        RenderType renderType, BedrockModelPOJO pojo) {
         if (baseModel.needRefresh(pojo))
             baseModel.loadModel(pojo);
@@ -118,7 +119,7 @@ public class ClientEvents {
                 OverlayTexture.NO_OVERLAY, -1);
         nodeCollector.submitCustomGeometry(event.getPoseStack(), renderType, partRenderer);
         if (baseModel.isEmissive()) {
-            var emissiveRenderType = RenderType.entityTranslucentEmissive(ClientUtils.getEmissiveTexture(name));
+            var emissiveRenderType = RenderTypes.entityTranslucentEmissive(ClientUtils.getEmissiveTexture(name));
             var emissiveRenderer = new BedrockPartRenderer(armPart, event.getPackedLight(),
                     OverlayTexture.NO_OVERLAY, -1, true);
             nodeCollector.order(1)
@@ -127,7 +128,7 @@ public class ClientEvents {
         armPart.x -= xOffset;
     }
 
-    private static ResourceLocation getTexture(ResourceLocation name) {
-        return ResourceLocation.fromNamespaceAndPath(name.getNamespace(), "textures/model/" + name.getPath() + ".png");
+    private static Identifier getTexture(Identifier name) {
+        return Identifier.fromNamespaceAndPath(name.getNamespace(), "textures/model/" + name.getPath() + ".png");
     }
 }

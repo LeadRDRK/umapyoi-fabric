@@ -8,7 +8,7 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.HumanoidArm;
 
 /**
@@ -21,12 +21,12 @@ public interface RenderArmCallback {
         private final PoseStack poseStack;
         private final SubmitNodeCollector nodeCollector;
         private final int packedLight;
-        private final ResourceLocation skinTexture;
+        private final Identifier skinTexture;
         private final boolean renderSleeve;
         private final HumanoidArm arm;
 
         public Context(AbstractClientPlayer player, PoseStack poseStack, SubmitNodeCollector nodeCollector,
-                       int packedLight, ResourceLocation skinTexture, boolean renderSleeve, HumanoidArm arm) {
+                       int packedLight, Identifier skinTexture, boolean renderSleeve, HumanoidArm arm) {
             this.player = player;
             this.poseStack = poseStack;
             this.nodeCollector = nodeCollector;
@@ -52,7 +52,7 @@ public interface RenderArmCallback {
             return packedLight;
         }
 
-        public ResourceLocation getSkinTexture() {
+        public Identifier getSkinTexture() {
             return skinTexture;
         }
 

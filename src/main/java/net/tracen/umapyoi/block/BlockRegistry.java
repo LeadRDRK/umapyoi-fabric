@@ -3,8 +3,8 @@ package net.tracen.umapyoi.block;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -67,7 +67,7 @@ public class BlockRegistry {
 
     private static ResourceKey<Block> modBlockId(String name) {
         return ResourceKey.create(Registries.BLOCK,
-                ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, name));
+                Identifier.fromNamespaceAndPath(Umapyoi.MODID, name));
     }
 
     private static Block register(String name, Function<BlockBehaviour.Properties, Block> factory, BlockBehaviour.Properties properties) {

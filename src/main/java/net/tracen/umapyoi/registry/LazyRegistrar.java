@@ -4,8 +4,8 @@ import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -30,11 +30,11 @@ public class LazyRegistrar<T> {
     }
 
     public <B extends T> RegistryObject<B> register(String path, final Supplier<? extends B> entry) {
-        return register(ResourceLocation.fromNamespaceAndPath(namespace, path), entry);
+        return register(Identifier.fromNamespaceAndPath(namespace, path), entry);
     }
 
     @SuppressWarnings("unchecked")
-    public <B extends T> RegistryObject<B> register(ResourceLocation name, final Supplier<? extends B> entry) {
+    public <B extends T> RegistryObject<B> register(Identifier name, final Supplier<? extends B> entry) {
         RegistryObject<B> obj = new RegistryObject<>(name);
         if (entries.putIfAbsent((RegistryObject<T>) obj, entry) != null) {
             throw new IllegalArgumentException("Entry already exists: " + name);
@@ -43,7 +43,7 @@ public class LazyRegistrar<T> {
     }
 
     public <B extends T> RegistryObject<B> register(ResourceKey<T> key, final Supplier<? extends B> entry) {
-        return register(key.location(), entry);
+        return register(key.identifier(), entry);
     }
 
     public void register() {
@@ -80,7 +80,7 @@ public class LazyRegistrar<T> {
             if (this.registry == null) {
                 // Check if reg is built in, else create registry
                 this.registry = BuiltInRegistries.REGISTRY
-                        .get(key.location())
+                        .get(key.identifier())
                         .map(Holder.Reference::value)
                         .map(Registry.class::cast)
                         .orElseGet(() -> FabricRegistryBuilder

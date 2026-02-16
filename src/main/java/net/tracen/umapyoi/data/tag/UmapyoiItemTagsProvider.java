@@ -4,8 +4,8 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider.ItemTagProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.tracen.umapyoi.item.ItemRegistry;
 
@@ -20,8 +20,8 @@ public class UmapyoiItemTagsProvider extends ItemTagProvider {
     protected void addTags(HolderLookup.Provider arg) {
         valueLookupBuilder(UmapyoiItemTags.SHOULD_RENDER).add(Items.ELYTRA);
         builder(UmapyoiItemTags.SHOULD_RENDER)
-                .addOptional(ResourceKey.create(Registries.ITEM, ResourceLocation.parse("corn_delight:cob_pipe")))
-                .addOptional(ResourceKey.create(Registries.ITEM, ResourceLocation.parse("create:goggles")));
+                .addOptional(ResourceKey.create(Registries.ITEM, Identifier.parse("corn_delight:cob_pipe")))
+                .addOptional(ResourceKey.create(Registries.ITEM, Identifier.parse("create:goggles")));
 
         valueLookupBuilder(UmapyoiItemTags.COMMON_GACHA_ITEM)
                 .add(ItemRegistry.JEWEL).add(ItemRegistry.BLANK_TICKET);

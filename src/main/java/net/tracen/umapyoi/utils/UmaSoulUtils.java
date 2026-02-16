@@ -1,9 +1,9 @@
 package net.tracen.umapyoi.utils;
 
-import net.minecraft.Util;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
@@ -26,11 +26,11 @@ public class UmaSoulUtils {
         return UmaSoulUtils.getTranslatedUmaName(UmaSoulUtils.getName(stack));
     }
 
-    public static Component getTranslatedUmaName(ResourceLocation name) {
+    public static Component getTranslatedUmaName(Identifier name) {
         return Component.translatable(Util.makeDescriptionId("umadata", name));
     }
 
-    public static ItemStack initUmaSoul(ItemStack stack, ResourceLocation name, UmaData data) {
+    public static ItemStack initUmaSoul(ItemStack stack, Identifier name, UmaData data) {
         ItemStack result = stack.copy();
         result.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), name);
         GachaRanking ranking = data.ranking();
@@ -52,7 +52,7 @@ public class UmaSoulUtils {
         return result;
     }
 
-    public static ResourceLocation getName(ItemStack stack) {
+    public static Identifier getName(ItemStack stack) {
         return stack.getOrDefault(DataComponentsTypeRegistry.DATA_LOCATION.get(), UmaData.DEFAULT_UMA_ID);
     }
 
@@ -88,11 +88,11 @@ public class UmaSoulUtils {
         stack.set(DataComponentsTypeRegistry.GROWTH.get(), growth);
     }
 
-    public static List<ResourceLocation> getSkills(ItemStack stack) {
+    public static List<Identifier> getSkills(ItemStack stack) {
         return stack.getOrDefault(DataComponentsTypeRegistry.UMADATA_SKILLS.get(), UmaDataSkills.DEFAULT).skills();
     }
 
-    public static boolean hasSkill(ItemStack stack, ResourceLocation skill) {
+    public static boolean hasSkill(ItemStack stack, Identifier skill) {
         for(var loc : stack.getOrDefault(DataComponentsTypeRegistry.UMADATA_SKILLS.get(), UmaDataSkills.DEFAULT).skills()) {
             if(skill.equals(loc))
                 return true;
@@ -101,20 +101,20 @@ public class UmaSoulUtils {
         return false;
     }
 
-    public static void setSkill(ItemStack stack, int index, ResourceLocation skill) {
+    public static void setSkill(ItemStack stack, int index, Identifier skill) {
         stack.update(DataComponentsTypeRegistry.UMADATA_SKILLS.get(), UmaDataSkills.DEFAULT,
                 data->{
-                    List<ResourceLocation> skills = new ArrayList<ResourceLocation>();
+                    List<Identifier> skills = new ArrayList<Identifier>();
                     skills.addAll(data.skills());
                     skills.set(index, skill);
                     return new UmaDataSkills(data.skillSlot(), data.selectedSkill(), skills);
                 });
     }
 
-    public static void addSkill(ItemStack stack, ResourceLocation skill) {
+    public static void addSkill(ItemStack stack, Identifier skill) {
         stack.update(DataComponentsTypeRegistry.UMADATA_SKILLS.get(), UmaDataSkills.DEFAULT,
                 data->{
-                    List<ResourceLocation> skills = new ArrayList<ResourceLocation>();
+                    List<Identifier> skills = new ArrayList<Identifier>();
                     skills.addAll(data.skills());
                     skills.add(skill);
                     return new UmaDataSkills(data.skillSlot(), data.selectedSkill(), skills);
@@ -130,8 +130,8 @@ public class UmaSoulUtils {
                 data->new UmaDataSkills(data.skillSlot(), slot, data.skills()));
     }
 
-    public static ResourceLocation getSelectedSkill(ItemStack stack) {
-        ResourceLocation skill = UmaSoulUtils.getSkills(stack).get(getSelectedSkillIndex(stack));
+    public static Identifier getSelectedSkill(ItemStack stack) {
+        Identifier skill = UmaSoulUtils.getSkills(stack).get(getSelectedSkillIndex(stack));
         return skill == null ? UmaSkillRegistry.BASIC_PACE.getId() : skill;
     }
 

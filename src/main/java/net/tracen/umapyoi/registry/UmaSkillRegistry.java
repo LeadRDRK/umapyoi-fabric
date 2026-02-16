@@ -1,7 +1,7 @@
 package net.tracen.umapyoi.registry;
 
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.registry.skills.DivineSpeedSkill;
 import net.tracen.umapyoi.registry.skills.HealSkill;
@@ -30,30 +30,30 @@ public class UmaSkillRegistry {
             () -> new SpeedSkill(new UmaSkill.Builder().level(1).type(SkillType.BUFF), 400));
 
     public static final RegistryObject<UmaSkill> LAST_LEG = SKILLS.register("last_leg",
-            () -> new LastLegSkill(new UmaSkill.Builder().upperSkill(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "heart_and_soul")).level(1).type(SkillType.BUFF).actionPoint(400).requiredWisdom(2), 
+            () -> new LastLegSkill(new UmaSkill.Builder().upperSkill(Identifier.fromNamespaceAndPath(Umapyoi.MODID, "heart_and_soul")).level(1).type(SkillType.BUFF).actionPoint(400).requiredWisdom(2), 
                     100));
     public static final RegistryObject<UmaSkill> HEART_AND_SOUL = SKILLS.register("heart_and_soul",
             () -> new LastLegSkill(new UmaSkill.Builder().level(2).type(SkillType.BUFF).actionPoint(900).requiredWisdom(4), 
                     100));
 
     public static final RegistryObject<UmaSkill> DEEP_BREATHS = SKILLS.register("deep_breaths",
-            () -> new HealSkill(new UmaSkill.Builder().upperSkill(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "cooldown")).level(1).type(SkillType.HEAL).actionPoint(400).requiredWisdom(2)));
+            () -> new HealSkill(new UmaSkill.Builder().upperSkill(Identifier.fromNamespaceAndPath(Umapyoi.MODID, "cooldown")).level(1).type(SkillType.HEAL).actionPoint(400).requiredWisdom(2)));
     public static final RegistryObject<UmaSkill> COOLDOWN = SKILLS.register("cooldown",
             () -> new HealSkill(new UmaSkill.Builder().level(2).type(SkillType.HEAL).actionPoint(900).requiredWisdom(4)));
     
     public static final RegistryObject<UmaSkill> LOW_HEALTH_HEAL = SKILLS.register("low_health_heal",
-            () -> new LowHealthHealSkill(new UmaSkill.Builder().upperSkill(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "adv_low_health_heal")).level(1).type(SkillType.HEAL).actionPoint(400).requiredWisdom(2)));
+            () -> new LowHealthHealSkill(new UmaSkill.Builder().upperSkill(Identifier.fromNamespaceAndPath(Umapyoi.MODID, "adv_low_health_heal")).level(1).type(SkillType.HEAL).actionPoint(400).requiredWisdom(2)));
     public static final RegistryObject<UmaSkill> ADV_LOWHEALTH_HEAL = SKILLS.register("adv_low_health_heal",
             () -> new LowHealthHealSkill(new UmaSkill.Builder().level(2).type(SkillType.HEAL).actionPoint(900).requiredWisdom(4)));
     
     public static final RegistryObject<UmaSkill> LOW_HEALTH_BUFF = SKILLS.register("low_health_buff",
-            () -> new LowHealthBuffSkill(new UmaSkill.Builder().upperSkill(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "adv_low_health_buff")).level(1).type(SkillType.BUFF).actionPoint(400).requiredWisdom(2)));
+            () -> new LowHealthBuffSkill(new UmaSkill.Builder().upperSkill(Identifier.fromNamespaceAndPath(Umapyoi.MODID, "adv_low_health_buff")).level(1).type(SkillType.BUFF).actionPoint(400).requiredWisdom(2)));
     public static final RegistryObject<UmaSkill> ADV_LOWHEALTH_BUFF = SKILLS.register("adv_low_health_buff",
             () -> new LowHealthBuffSkill(new UmaSkill.Builder().level(2).type(SkillType.BUFF).actionPoint(900).requiredWisdom(4)));
     
     
     public static final RegistryObject<UmaSkill> NUTRITIONAL_SUPPLEMENTS = SKILLS.register("nutritional_supplements",
-            () -> new NutritionalSupplementsSkill(new UmaSkill.Builder().upperSkill(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "big_eater")).level(1).type(SkillType.HEAL).actionPoint(600).requiredWisdom(3)));
+            () -> new NutritionalSupplementsSkill(new UmaSkill.Builder().upperSkill(Identifier.fromNamespaceAndPath(Umapyoi.MODID, "big_eater")).level(1).type(SkillType.HEAL).actionPoint(600).requiredWisdom(3)));
     public static final RegistryObject<UmaSkill> BIG_EATER = SKILLS.register("big_eater",
             () -> new NutritionalSupplementsSkill(new UmaSkill.Builder().level(2).type(SkillType.HEAL).actionPoint(1000).requiredWisdom(5)));
 
@@ -79,7 +79,7 @@ public class UmaSkillRegistry {
             () -> new PassiveSkill(new UmaSkill.Builder().level(1).requiredWisdom(2)));
 
     public static final RegistryObject<UmaSkill> RAPID = SKILLS.register("rapid",
-            () -> new DivineSpeedSkill(new UmaSkill.Builder().level(1).requiredWisdom(2).upperSkill(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "divine_speed")).type(SkillType.BUFF), 200));
+            () -> new DivineSpeedSkill(new UmaSkill.Builder().level(1).requiredWisdom(2).upperSkill(Identifier.fromNamespaceAndPath(Umapyoi.MODID, "divine_speed")).type(SkillType.BUFF), 200));
 
     public static final RegistryObject<UmaSkill> DIVINE_SPEED = SKILLS.register("divine_speed",
             () -> new DivineSpeedSkill(new UmaSkill.Builder().level(2).requiredWisdom(5).actionPoint(900).type(SkillType.BUFF), 400));
@@ -91,7 +91,7 @@ public class UmaSkillRegistry {
             () -> new PassiveSkill(new UmaSkill.Builder().level(1).requiredWisdom(2)));
 
     public static final RegistryObject<UmaSkill> TETHER = SKILLS.register("tether",
-            () -> new TetherSkill(new UmaSkill.Builder().level(1).upperSkill(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "dominator")).type(SkillType.HINDER).actionPoint(400).requiredWisdom(2)));
+            () -> new TetherSkill(new UmaSkill.Builder().level(1).upperSkill(Identifier.fromNamespaceAndPath(Umapyoi.MODID, "dominator")).type(SkillType.HINDER).actionPoint(400).requiredWisdom(2)));
     public static final RegistryObject<UmaSkill> DOMINATOR = SKILLS.register("dominator",
             () -> new TetherSkill(new UmaSkill.Builder().level(2).type(SkillType.HINDER).actionPoint(900).requiredWisdom(4)));
 }

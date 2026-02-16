@@ -7,12 +7,12 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -111,7 +111,7 @@ public abstract class AbstractSuitItem extends TrinketItem implements TrinketRen
             tanned = ClientUtils.isTannedSkin(stackInSlot);
         }
 
-        var renderType = RenderType.entityTranslucent(flat_flag
+        var renderType = RenderTypes.entityTranslucent(flat_flag
                 ? getFlatTexture(itemStack, tanned)
                 : getTexture(itemStack, tanned));
 
@@ -150,11 +150,11 @@ public abstract class AbstractSuitItem extends TrinketItem implements TrinketRen
         TrinketRendererRegistry.registerRenderer(item, (TrinketRenderer) item);
     }
 
-    protected abstract ResourceLocation getModel(ItemStack stack);
+    protected abstract Identifier getModel(ItemStack stack);
 
-    protected abstract ResourceLocation getTexture(ItemStack stack, boolean tanned);
+    protected abstract Identifier getTexture(ItemStack stack, boolean tanned);
 
-    protected abstract ResourceLocation getFlatModel(ItemStack stack);
+    protected abstract Identifier getFlatModel(ItemStack stack);
 
-    protected abstract ResourceLocation getFlatTexture(ItemStack stack, boolean tanned);
+    protected abstract Identifier getFlatTexture(ItemStack stack, boolean tanned);
 }

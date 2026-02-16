@@ -4,7 +4,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.Umapyoi;
@@ -21,7 +21,7 @@ import org.joml.Vector3f;
 
 public class ThreeGoddessScreen extends AbstractContainerScreen<ThreeGoddessContainer> {
 
-    private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID,
+    private static final Identifier BACKGROUND_TEXTURE = Identifier.fromNamespaceAndPath(Umapyoi.MODID,
             "textures/gui/three_goddess.png");
 
     public ThreeGoddessScreen(ThreeGoddessContainer screenContainer, Inventory inv, Component titleIn) {
@@ -53,13 +53,13 @@ public class ThreeGoddessScreen extends AbstractContainerScreen<ThreeGoddessCont
         ItemStack fatherFactor = this.menu.tileEntity.getItem(1);
         ItemStack motherFactor = this.menu.tileEntity.getItem(2);
         if (!fatherFactor.isEmpty()) {
-            ResourceLocation name = fatherFactor
+            Identifier name = fatherFactor
                     .getOrDefault(DataComponentsTypeRegistry.DATA_LOCATION.get(), UmaData.DEFAULT_UMA_ID);
             renderModel(guiGraphics, this.leftPos + 8, this.topPos + 34, 25f,
                     new Vector3f(0.2f, -1.64f, 0.0f), fatherQuaternion, name);
         }
         if (!motherFactor.isEmpty()) {
-            ResourceLocation name = motherFactor
+            Identifier name = motherFactor
                     .getOrDefault(DataComponentsTypeRegistry.DATA_LOCATION.get(), UmaData.DEFAULT_UMA_ID);
             renderModel(guiGraphics, this.leftPos + 127, this.topPos + 34, 25f,
                     new Vector3f(-0.2f, -1.64f, 0.0f), motherQuaternion, name);
@@ -67,9 +67,9 @@ public class ThreeGoddessScreen extends AbstractContainerScreen<ThreeGoddessCont
     }
 
     protected void renderModel(GuiGraphics guiGraphics, int pPosX, int pPosY, float pScale,
-                               Vector3f pTranslation, Quaternionf pQuaternion, ResourceLocation name) {
+                               Vector3f pTranslation, Quaternionf pQuaternion, Identifier name) {
         if (!ClientUtils.getClientUmaDataRegistry().containsKey(name)) {
-            name = UmaDataRegistry.COMMON_UMA.location();
+            name = UmaDataRegistry.COMMON_UMA.identifier();
         }
         SimpleBedrockModel model = new SimpleBedrockModel(ClientUtils.getModelPOJO(name));
         guiGraphics.guiRenderState.submitPicturesInPictureState(new GuiBedrockModelRenderer.RenderState(

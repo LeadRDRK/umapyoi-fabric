@@ -25,7 +25,7 @@ public class LivingEntityRendererMixin {
             state.umapyoi$setEarTailAnimationOffset((int)Math.abs(entity.getUUID().getLeastSignificantBits()) % 10);
     }
 
-    @Inject(at = @At("HEAD"), cancellable = true, method = "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;getRenderType(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;ZZZ)Lnet/minecraft/client/renderer/RenderType;")
+    @Inject(at = @At("HEAD"), cancellable = true, method = "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;getRenderType(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;ZZZ)Lnet/minecraft/client/renderer/rendertype/RenderType;")
     private void getRenderType(LivingEntityRenderState state, boolean isVisible, boolean renderTranslucent,
                                boolean appearsGlowing, CallbackInfoReturnable<RenderType> ci) {
         if (!state.umapyoi$getUmaSoul().isEmpty()) {

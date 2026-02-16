@@ -2,6 +2,7 @@ package net.tracen.umapyoi.api;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -86,10 +87,10 @@ public class UmapyoiAPI {
         return !getUmaSuit(player).isEmpty();
     }
 
-    public static boolean isUmaSuitHasHat(LivingEntity player) {
-        var item = UmapyoiAPI.getUmaSuit(player).getItem();
-        if (item instanceof AbstractSuitItem suit) {
-            return !suit.getBaseModel().getChild("hat").isEmpty();
+    public static boolean isUmaSuitHasHat(LivingEntityRenderState state) {
+        var suitModel = state.umapyoi$getSuitModel();
+        if (suitModel != null) {
+            return !suitModel.getChild("hat").isEmpty();
         }
         return false;
     }

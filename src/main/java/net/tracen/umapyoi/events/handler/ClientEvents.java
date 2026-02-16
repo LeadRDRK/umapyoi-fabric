@@ -34,7 +34,7 @@ public class ClientEvents {
             model.setAllVisible(false);
             model.head.visible = true;
             model.tail.visible = true;
-            if(UmapyoiAPI.isUmaSuitHasHat(entity)) {
+            if(UmapyoiAPI.isUmaSuitHasHat(event.getRenderState())) {
                 ResourceLocation loc = UmaCostumeItem.getCostumeID(UmapyoiAPI.getUmaSuit(entity));
                 var costumeData = ClientUtils.getClientCosmeticDataRegistry().get(
                         ResourceKey.create(CosmeticData.REGISTRY_KEY, loc)

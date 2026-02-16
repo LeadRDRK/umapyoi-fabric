@@ -7,7 +7,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -17,7 +16,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
-import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -71,11 +69,8 @@ import dev.emi.trinkets.api.client.TrinketRendererRegistry;
 public class UmaSoulItem extends TrinketItem implements TrinketRenderer, CreativeModeTabFiller {
     private static final Comparator<Holder.Reference<UmaData>> COMPARATOR = new UmaDataComparator();
 
-    private final UmaPlayerModel<HumanoidRenderState> baseModel;
-
     public UmaSoulItem(Properties p) {
         super(p);
-        baseModel = FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT ? new UmaPlayerModel<>() : null;
     }
 
     public static Stream<Holder.Reference<UmaData>> sortedUmaDataList(HolderLookup.Provider provider) {
@@ -298,15 +293,13 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
         if (!(entityState instanceof AvatarRenderState state) || (state.isInvisible && !state.isSpectator))
             return;
 
+        var baseModel = state.umapyoi$getUmaModel();
+        if (baseModel == null) return;
+
         var comp = slotReference.inventory().getComponent();
         var entity = comp.getEntity();
 
-        ResourceLocation renderTarget = getRenderTarget(itemStack, entity);
-        var pojo = ClientUtils.getModelPOJO(renderTarget);
-        if (baseModel.needRefresh(pojo))
-            baseModel.loadModel(pojo);
-
-        var renderType = RenderType.entityTranslucent(ClientUtils.getTexture(renderTarget));
+        var renderType = RenderType.entityTranslucent(state.umapyoi$getUmaTexture());
         baseModel.setModelProperties(state);
         baseModel.prepareMobModel(state, limbAngle, limbDistance);
 
@@ -328,8 +321,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
                 LivingEntityRenderer.getOverlayCoords(state, 0.0F), -1);
         nodeCollector.submitCustomGeometry(poseStack, renderType, modelRenderer);
         if (baseModel.isEmissive()) {
-            var emissiveRenderType = RenderType.entityTranslucentEmissive(
-                    ClientUtils.getEmissiveTexture(renderTarget));
+            var emissiveRenderType = RenderType.entityTranslucentEmissive(state.umapyoi$getUmaEmissiveTexture());
             var emissiveRenderer = new BedrockModelRenderer(baseModel, light,
                     LivingEntityRenderer.getOverlayCoords(state, 0.0F), -1, true);
             nodeCollector.order(1)
@@ -374,10 +366,33 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
         return identifier;
     }
 
-
     public static void registerRenderer() {
         Item item = ItemRegistry.UMA_SOUL;
         TrinketRendererRegistry.registerRenderer(item, (TrinketRenderer) item);
+    }
+
+    public static void extractRenderState(ItemStack soul, LivingEntity entity,
+                                          LivingEntityRenderState state) {
+        if (!soul.isEmpty()) {
+            ResourceLocation renderTarget = UmaSoulItem.getRenderTarget(soul, entity);
+            var pojo = ClientUtils.getModelPOJO(renderTarget);
+            var model = state.umapyoi$getUmaModel();
+            if (model == null) {
+                model = new UmaPlayerModel<>();
+                state.umapyoi$setUmaModel(model);
+            }
+            if (model.needRefresh(pojo)) {
+                model.loadModel(pojo);
+
+                state.umapyoi$setUmaTexture(ClientUtils.getTexture(renderTarget));
+                state.umapyoi$setUmaEmissiveTexture(ClientUtils.getEmissiveTexture(renderTarget));
+            }
+        }
+        else {
+            state.umapyoi$setUmaModel(null);
+            state.umapyoi$setUmaTexture(null);
+            state.umapyoi$setUmaEmissiveTexture(null);
+        }
     }
 
     private static class UmaDataComparator implements Comparator<Holder.Reference<UmaData>> {

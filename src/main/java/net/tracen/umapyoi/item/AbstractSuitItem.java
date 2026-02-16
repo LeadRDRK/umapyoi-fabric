@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.RenderType;
@@ -29,22 +28,14 @@ import net.tracen.umapyoi.utils.ClientUtils;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
 import dev.emi.trinkets.api.SlotReference;
-import dev.emi.trinkets.api.TrinketInventory;
 import dev.emi.trinkets.api.TrinketItem;
 import dev.emi.trinkets.api.TrinketsApi;
 import dev.emi.trinkets.api.client.TrinketRenderer;
 import dev.emi.trinkets.api.client.TrinketRendererRegistry;
 
 public abstract class AbstractSuitItem extends TrinketItem implements TrinketRenderer {
-    private final UmaPlayerModel<HumanoidRenderState> baseModel;
-
-    public UmaPlayerModel<HumanoidRenderState> getBaseModel() {
-        return baseModel;
-    }
-
     public AbstractSuitItem(Properties p) {
         super(p);
-        baseModel = FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT ? new UmaPlayerModel<>() : null;
     }
 
     private boolean canEquip(LivingEntity entity) {
@@ -87,37 +78,13 @@ public abstract class AbstractSuitItem extends TrinketItem implements TrinketRen
         if (!(entityState instanceof HumanoidRenderState state) || state.isInvisible)
             return;
 
+        var baseModel = state.umapyoi$getSuitModel();
+        if (baseModel == null) return;
+
         var comp = slotReference.inventory().getComponent();
         var entity = comp.getEntity();
-        var entityInventory = comp.getInventory();
-        TrinketInventory inventory = null;
-        if (entityInventory.containsKey("umapyoi")) {
-            var group = entityInventory.get("umapyoi");
-            if (group.containsKey("uma_soul")) {
-                inventory = group.get("uma_soul");
-            }
-        }
-        if (inventory == null) return;
 
-        boolean flat_flag = false;
-        boolean tanned = false;
-        if (inventory.getContainerSize() > 0) {
-            ItemStack stackInSlot = inventory.getItem(0);
-            if (stackInSlot.isEmpty() || !(stackInSlot.getItem() instanceof UmaSoulItem))
-                return;
-
-            flat_flag = ClientUtils.isFlatUmamusume(stackInSlot);
-
-            tanned = ClientUtils.isTannedSkin(stackInSlot);
-        }
-
-        var renderType = RenderType.entityTranslucent(flat_flag
-                ? getFlatTexture(itemStack, tanned)
-                : getTexture(itemStack, tanned));
-
-        var pojo = ClientUtils.getModelPOJO(flat_flag ? getFlatModel(itemStack) : getModel(itemStack));
-        if (baseModel.needRefresh(pojo))
-            baseModel.loadModel(pojo);
+        var renderType = RenderType.entityTranslucent(state.umapyoi$getSuitTexture());
         baseModel.setModelProperties(state);
         baseModel.head.visible = false;
         baseModel.tail.visible = false;
@@ -148,6 +115,25 @@ public abstract class AbstractSuitItem extends TrinketItem implements TrinketRen
 
     public static void registerRenderer(Item item) {
         TrinketRendererRegistry.registerRenderer(item, (TrinketRenderer) item);
+    }
+
+    public void extractRenderState(ItemStack soul, ItemStack suit, LivingEntityRenderState state) {
+        var isFlat = ClientUtils.isFlatUmamusume(soul);
+        var pojo = ClientUtils.getModelPOJO(isFlat ? getFlatModel(suit) : getModel(suit));
+
+        var model = state.umapyoi$getSuitModel();
+        if (model == null) {
+            model = new UmaPlayerModel<>();
+            state.umapyoi$setSuitModel(model);
+        }
+        if (model.needRefresh(pojo)) {
+            model.loadModel(pojo);
+
+            var isTanned = ClientUtils.isTannedSkin(soul);
+            state.umapyoi$setSuitTexture(isFlat
+                    ? getFlatTexture(suit, isTanned)
+                    : getTexture(suit, isTanned));
+        }
     }
 
     protected abstract ResourceLocation getModel(ItemStack stack);

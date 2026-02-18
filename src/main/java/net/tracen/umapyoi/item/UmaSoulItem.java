@@ -39,6 +39,7 @@ import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.client.model.UmaPlayerModel;
+import net.tracen.umapyoi.compat.fpm.FPMCompat;
 import net.tracen.umapyoi.data.tag.UmapyoiUmaDataTags;
 import net.tracen.umapyoi.events.ApplyUmasoulAttributeCallback;
 import net.tracen.umapyoi.events.ResumeActionPointCallback;
@@ -301,6 +302,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
         VertexConsumer vertexConsumer = multiBufferSource
                 .getBuffer(RenderType.entityTranslucentCull(ClientUtils.getTexture(renderTarget)));
         baseModel.setModelProperties(entity);
+        FPMCompat.hideHeadIfRendering(baseModel);
         baseModel.prepareMobModel(entity, limbAngle, limbDistance, tickDelta);
 
         var callbackContext = new RenderingUmaSoulCallback.Context(entity, baseModel, tickDelta,

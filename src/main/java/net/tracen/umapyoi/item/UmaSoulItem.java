@@ -300,15 +300,15 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
             baseModel.loadModel(pojo);
 
         VertexConsumer vertexConsumer = multiBufferSource
-                .getBuffer(RenderType.entityTranslucentCull(ClientUtils.getTexture(renderTarget)));
+                .getBuffer(RenderType.entityTranslucent(ClientUtils.getTexture(renderTarget)));
         baseModel.setModelProperties(entity);
-        FPMCompat.hideHeadIfRendering(baseModel);
         baseModel.prepareMobModel(entity, limbAngle, limbDistance, tickDelta);
 
         var callbackContext = new RenderingUmaSoulCallback.Context(entity, baseModel, tickDelta,
                 poseStack, multiBufferSource, light);
         if (RenderingUmaSoulCallback.Pre.invoke(callbackContext))
             return;
+        FPMCompat.hideHeadIfRendering(baseModel);
 
         if (entityModel instanceof HumanoidModel<?> humanoidModel) {
             baseModel.copyAnim(baseModel.head, humanoidModel.head);

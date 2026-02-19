@@ -32,15 +32,15 @@ public class ClientEvents {
 
         if (UmapyoiAPI.isUmaSuitRendering(entity)) {
             model.setAllVisible(false);
-            model.head.visible = true;
+            model.setHeadVisible(true);
             model.setTailVisible(true);
             if (UmapyoiAPI.isUmaSuitHasHat(entity)) {
                 ResourceLocation loc = UmaCostumeItem.getCostumeID(UmapyoiAPI.getUmaSuit(entity));
                 var costumeData = ClientUtils.getClientCosmeticDataRegistry().getHolder(
                         ResourceKey.create(CosmeticData.REGISTRY_KEY, loc)
                 );
-                if (!costumeData.get().is(UmapyoiCostumeDataTags.HAT_HIDEHAIR)) {
-                    model.setLongHairPartsVisible(true);
+                if (costumeData.get().is(UmapyoiCostumeDataTags.HAT_HIDEHAIR)) {
+                    model.setLongHairPartsVisible(false);
                 }
                 model.setHatAndEarsVisible(false, true);
             }

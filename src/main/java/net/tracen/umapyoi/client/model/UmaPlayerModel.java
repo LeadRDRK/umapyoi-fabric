@@ -209,13 +209,12 @@ public class UmaPlayerModel<T extends LivingEntity> extends BedrockHumanoidModel
     @Override
     public void setAllVisible(boolean visible) {
         this.setHatAndEarsVisible(visible, visible);
-        this.head.visible = visible;
+        this.setHeadVisible(visible);
         this.setBodyVisible(visible);
-        this.cape.visible = visible;
+        this.setCapeVisible(visible);
         this.setArmsVisible(visible);
         this.setLegsVisible(visible);
         this.setTailVisible(visible);
-        this.setLongHairPartsVisible(visible);
     }
 
     public void copyAnim(BedrockPart part, ModelPart old_part) {
@@ -266,9 +265,21 @@ public class UmaPlayerModel<T extends LivingEntity> extends BedrockHumanoidModel
         this.rightEar.visible = visible && (!this.hat.visible || this.rightEarHideParts.isEmpty());
     }
 
+    /**
+     * Set the visibility of the head and long hair parts.
+     */
+    public void setHeadVisible(boolean visible) {
+        this.head.visible = visible;
+        this.setLongHairPartsVisible(visible);
+    }
+
     public void setBodyVisible(boolean visible) {
         this.body.visible = visible;
         this.hideParts.visible = visible;
+    }
+
+    public void setCapeVisible(boolean visible) {
+        this.cape.visible = visible;
     }
 
     public void setArmsVisible(boolean visible) {

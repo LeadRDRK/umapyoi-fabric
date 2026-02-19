@@ -2,36 +2,39 @@ package net.tracen.umapyoi.compat.fpm;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.CameraType;
+import net.minecraft.client.Minecraft;
 import net.tracen.umapyoi.client.model.UmaPlayerModel;
 
 import java.lang.reflect.Method;
 
 @Environment(EnvType.CLIENT)
 public final class FPMCompat {
-    private static Method fpmIsRenderingPlayer;
+    private static Method fpmIsEnabled;
     static {
         try {
             var fpmApi = Class.forName("dev.tr7zw.firstperson.api.FirstPersonAPI");
-            fpmIsRenderingPlayer = fpmApi.getDeclaredMethod("isRenderingPlayer");
+            fpmIsEnabled = fpmApi.getDeclaredMethod("isEnabled");
         }
         catch (Exception ignored) {
         }
     }
 
     public static void hideHeadIfRendering(UmaPlayerModel<?> model) {
-        if (fpmIsRenderingPlayer == null) return;
+        if (fpmIsEnabled == null
+                || Minecraft.getInstance().options.getCameraType() != CameraType.FIRST_PERSON) return;
 
-        boolean isRendering;
+        boolean isEnabled;
         try {
-            isRendering = (boolean) fpmIsRenderingPlayer.invoke(null);
+            isEnabled = (boolean) fpmIsEnabled.invoke(null);
         }
         catch (Exception e) {
             return;
         }
 
-        if (isRendering) {
+        if (isEnabled) {
             model.head.visible = false;
-            if(!model.hat.isEmpty()) model.hat.visible = false;
+            model.hat.visible = false;
         }
     }
 }

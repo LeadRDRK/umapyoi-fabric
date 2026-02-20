@@ -22,6 +22,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.client.model.UmaPlayerModel;
 import net.tracen.umapyoi.client.renderer.BedrockModelRenderer;
+import net.tracen.umapyoi.compat.FPMCompat;
 import net.tracen.umapyoi.events.client.RenderingUmaSuitCallback;
 import net.tracen.umapyoi.registry.umadata.Growth;
 import net.tracen.umapyoi.utils.ClientUtils;
@@ -93,6 +94,7 @@ public abstract class AbstractSuitItem extends TrinketItem implements TrinketRen
                 poseStack, nodeCollector, light);
         if (RenderingUmaSuitCallback.Pre.invoke(callbackContext))
             return;
+        FPMCompat.hideHeadIfRendering(state, baseModel);
 
         if (entityModel instanceof HumanoidModel) {
             @SuppressWarnings("unchecked")

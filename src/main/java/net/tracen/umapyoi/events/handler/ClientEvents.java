@@ -10,6 +10,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.client.model.UmaCostumeModelUtils;
@@ -30,37 +31,25 @@ public class ClientEvents {
     public static boolean preUmaSoulRendering(RenderingModelCallback.Context event) {
         LivingEntity entity = event.getWearer();
         var model = event.getModel();
-        boolean hideHair = false;
+
         if (UmapyoiAPI.isUmaSuitRendering(entity)) {
             model.setAllVisible(false);
-            model.head.visible = true;
-            model.tail.visible = true;
-            if(UmapyoiAPI.isUmaSuitHasHat(event.getRenderState())) {
+            model.setHeadVisible(true);
+            model.setTailVisible(true);
+            if (UmapyoiAPI.isUmaSuitHasHat(event.getRenderState())) {
                 Identifier loc = UmaCostumeItem.getCostumeID(UmapyoiAPI.getUmaSuit(entity));
                 var costumeData = ClientUtils.getClientCosmeticDataRegistry().get(
                         ResourceKey.create(CosmeticData.REGISTRY_KEY, loc)
                 );
-                if(costumeData.get().is(UmapyoiCostumeDataTags.HAT_HIDEHAIR)) {
-                    hideHair = true;
-                    model.longHairParts.forEach(part -> part.visible = false);
-                }else {
-                    model.longHairParts.forEach(part -> part.visible = true);
+                if (costumeData.get().is(UmapyoiCostumeDataTags.HAT_HIDEHAIR)) {
+                    model.setLongHairPartsVisible(false);
                 }
-                model.hideHat();
+                model.setHatAndEarsVisible(false, true);
             }
             else {
-                model.showHat();
-
+                model.setHatAndEarsVisible(true, true);
             }
-        } else {
-            model.setAllVisible(true);
         }
-        if(hideHair) {
-            model.longHairParts.forEach(part -> part.visible = false);
-        }else {
-            model.longHairParts.forEach(part -> part.visible = true);
-        }
-        model.showEars();
 
         // continue
         return false;
@@ -69,7 +58,7 @@ public class ClientEvents {
     private static final UmaPlayerModel<HumanoidRenderState> baseModel = new UmaPlayerModel<>();
 
     public static boolean onPlayerArmRendering(RenderArmCallback.Context event) {
-        var player = event.getPlayer();
+        Player player = event.getPlayer();
         ItemStack umasoul = UmapyoiAPI.getRenderingUmaSoul(player);
         ItemStack umasuit = UmapyoiAPI.getUmaSuit(player);
         if (!umasoul.isEmpty()) {

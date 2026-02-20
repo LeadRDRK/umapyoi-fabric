@@ -181,7 +181,7 @@ public class UmaPlayerModel<T extends HumanoidRenderState> extends BedrockHumano
 
             this.crouching = state.isCrouching;
             if (Umapyoi.CONFIG.VANILLA_ARMOR_RENDER() && !Umapyoi.CONFIG.HIDE_PARTS_RENDER()) {
-                var noHelmet = state.headItem.isEmpty();
+                var noHelmet = state.headEquipment.isEmpty();
                 this.setHatAndEarsVisible(noHelmet, true);
 
                 var chestEquipment = state.chestEquipment;
@@ -193,7 +193,7 @@ public class UmaPlayerModel<T extends HumanoidRenderState> extends BedrockHumano
                 this.rightLegHideParts.visible = noLeggings;
                 this.leftLegHideParts.visible = noLeggings;
 
-                var noBoots = state.legsEquipment.isEmpty();
+                var noBoots = state.feetEquipment.isEmpty();
                 this.rightFoot.visible = noBoots;
                 this.leftFoot.visible = noBoots;
             }

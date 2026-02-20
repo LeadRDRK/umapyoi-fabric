@@ -39,6 +39,7 @@ import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.client.model.UmaPlayerModel;
 import net.tracen.umapyoi.client.renderer.BedrockModelRenderer;
+import net.tracen.umapyoi.compat.FPMCompat;
 import net.tracen.umapyoi.data.tag.UmapyoiUmaDataTags;
 import net.tracen.umapyoi.events.ApplyUmasoulAttributeCallback;
 import net.tracen.umapyoi.events.ResumeActionPointCallback;
@@ -307,6 +308,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
                 poseStack, nodeCollector, light);
         if (RenderingUmaSoulCallback.Pre.invoke(callbackContext))
             return;
+        FPMCompat.hideHeadIfRendering(state, baseModel);
 
         if (entityModel instanceof HumanoidModel<?> humanoidModel) {
             baseModel.copyAnim(baseModel.head, humanoidModel.head);

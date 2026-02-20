@@ -347,6 +347,7 @@ public class BedrockHumanoidModel<T extends HumanoidRenderState> extends Bedrock
     }
 
     public void setAllVisible(boolean p_102880_) {
+        this.hat.visible = p_102880_;
         this.head.visible = p_102880_;
         this.body.visible = p_102880_;
         this.rightArm.visible = p_102880_;

@@ -13,7 +13,9 @@
   "client": [
     "client.ItemInHandLayerMixin",
     "client.PlayerModelMixin",
-    "client.PlayerRendererMixin"
+    "client.PlayerRendererMixin",
+    "client.HumanoidArmorLayerMixin",
+    "client.ElytraLayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

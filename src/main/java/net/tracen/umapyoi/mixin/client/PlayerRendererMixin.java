@@ -11,8 +11,9 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.item.ItemStack;
+import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.events.client.RenderArmCallback;
-import net.tracen.umapyoi.events.client.RenderPlayerCallback;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,19 +28,13 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
     }
 
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", ordinal = 0), method = "render")
-    private void preRender(AbstractClientPlayer entity, float entityYaw, float partialTicks,
+    private void preRender(AbstractClientPlayer player, float entityYaw, float partialTicks,
                            PoseStack poseStack, MultiBufferSource buffer, int packedLight,
                            CallbackInfo info) {
-        RenderPlayerCallback.Pre.invoke(new RenderPlayerCallback.Context(
-                (PlayerRenderer)(Object) this, entity, entityYaw, partialTicks, poseStack, buffer, packedLight));
-    }
-
-    @Inject(at = @At("TAIL"), method = "render")
-    private void postRender(AbstractClientPlayer entity, float entityYaw, float partialTicks,
-                           PoseStack poseStack, MultiBufferSource buffer, int packedLight,
-                           CallbackInfo info) {
-        RenderPlayerCallback.Post.invoke(new RenderPlayerCallback.Context(
-                (PlayerRenderer)(Object) this, entity, entityYaw, partialTicks, poseStack, buffer, packedLight));
+        ItemStack umaSoul = UmapyoiAPI.getRenderingUmaSoul(player);
+        if (!umaSoul.isEmpty()) {
+            this.model.setAllVisible(false);
+        }
     }
 
     @Inject(at = @At("HEAD"), method = "renderRightHand", cancellable = true)

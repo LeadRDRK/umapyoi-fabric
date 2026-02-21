@@ -117,18 +117,6 @@ public class UmapyoiAPI {
         return level.registryAccess().registryOrThrow(SupportCard.REGISTRY_KEY);
     }
 
-    public static HolderLookup.RegistryLookup<UmaData> getUmaDataRegistry(HolderLookup.Provider provider) {
-        return provider.lookupOrThrow(UmaData.REGISTRY_KEY);
-    }
-
-    public static HolderLookup.RegistryLookup<SupportCard> getSupportCardRegistry(HolderLookup.Provider provider) {
-        return provider.lookupOrThrow(SupportCard.REGISTRY_KEY);
-    }
-
-    public static HolderLookup.RegistryLookup<CosmeticData> getCosmeticDataRegistry(HolderLookup.Provider provider) {
-        return provider.lookupOrThrow(CosmeticData.REGISTRY_KEY);
-    }
-
     public static Registry<Race> getRaceRegistry(Level level) {
         if (level.isClientSide()) return ClientUtils.getRaceRegistry();
         return level.registryAccess().registryOrThrow(Race.REGISTRY_KEY);
@@ -146,5 +134,17 @@ public class UmapyoiAPI {
 
     public static HolderLookup.RegistryLookup<Race> getRaceRegistry(HolderLookup.Provider provider) {
         return provider.lookupOrThrow(Race.REGISTRY_KEY);
+    }
+
+    public static HolderLookup.RegistryLookup<UmaData> getUmaDataRegistry(HolderLookup.Provider provider) {
+        return provider.lookupOrThrow(UmaData.REGISTRY_KEY);
+    }
+
+    public static HolderLookup.RegistryLookup<SupportCard> getSupportCardRegistry(HolderLookup.Provider provider) {
+        return provider.lookupOrThrow(SupportCard.REGISTRY_KEY);
+    }
+
+    public static HolderLookup.RegistryLookup<CosmeticData> getCosmeticDataRegistry(HolderLookup.Provider provider) {
+        return provider.lookupOrThrow(CosmeticData.REGISTRY_KEY);
     }
 }

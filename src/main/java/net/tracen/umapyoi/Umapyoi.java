@@ -5,6 +5,8 @@ import com.mojang.logging.LogUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.world.item.Item;
+import net.tracen.umapyoi.advancements.trigger.GrantBookOnFirstJoin;
+import net.tracen.umapyoi.advancements.trigger.TriggerRegistry;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.block.entity.BlockEntityRegistry;
 import net.tracen.umapyoi.container.ContainerRegistry;
@@ -57,6 +59,7 @@ public class Umapyoi implements ModInitializer {
         VillageRegistry.registerPoi();
         VillagerTradeRegistry.register();
         RecipeSerializerRegistry.RECIPE_SERIALIZER.register();
+        TriggerRegistry.registerAll();
 
         CommonEvents.register();
 
@@ -70,6 +73,7 @@ public class Umapyoi implements ModInitializer {
         ServerPlayNetworking.registerGlobalReceiver(SelectSkillPacket.TYPE, SelectSkillPacket::handler);
         ServerPlayNetworking.registerGlobalReceiver(SetupResultPacket.TYPE, SetupResultPacket::handler);
         ServerPlayNetworking.registerGlobalReceiver(EmptyResultPacket.TYPE, EmptyResultPacket::handler);
+        GrantBookOnFirstJoin.PlayerJoinListener.register();
 
         DatapackEvents.registerDatapackRegistries();
         DatapackEvents.registerSerializers();

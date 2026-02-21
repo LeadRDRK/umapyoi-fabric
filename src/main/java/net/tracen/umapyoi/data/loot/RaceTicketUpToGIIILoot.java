@@ -7,17 +7,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class SkillBooksLoot implements AddLootTableModifier {
+public class RaceTicketUpToGIIILoot implements AddLootTableModifier {
     static private final Set<ResourceLocation> TARGET_LOOT_TABLES = Stream.of(
-                    "minecraft:chests/abandoned_mineshaft",
-                    "minecraft:chests/jungle_temple",
-                    "minecraft:chests/simple_dungeon",
-                    "minecraft:chests/stronghold_library",
-                    "minecraft:chests/woodland_mansion",
-                    "minecraft:chests/shipwreck_treasure",
                     "minecraft:chests/buried_treasure",
-                    "minecraft:chests/desert_pyramid",
-                    "minecraft:chests/spawn_bonus_chest"
+                    "minecraft:chests/ruined_portal"
             )
             .map(ResourceLocation::new)
             .collect(Collectors.toUnmodifiableSet());
@@ -29,6 +22,6 @@ public class SkillBooksLoot implements AddLootTableModifier {
 
     @Override
     public ResourceLocation lootTable() {
-        return new ResourceLocation(Umapyoi.MODID, "simple_skills");
+        return new ResourceLocation(Umapyoi.MODID, "race/ticket/race_ticket_up_to_giii");
     }
 }

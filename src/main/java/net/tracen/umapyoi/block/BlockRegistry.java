@@ -31,11 +31,21 @@ public class BlockRegistry {
             UmaStatueBlock::new);
     
     public static final RegistryObject<Block> UMA_STATUES_UPPER = BLOCKS.register("uma_statues_upper",
-            ()->new StatuesUpperBlock(UMA_STATUES, Block.box(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D)));
+            ()->new StatuesUpperBlock(UMA_STATUES, Block.box(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D), true));
 
     public static final RegistryObject<Block> UMA_SELECT_BLOCK = BLOCKS.register("uma_select_block",
             UmaSelectBlock::new);
 
+    public static final RegistryObject<Block> FACTOR_DECOMPOSE_TABLE = BLOCKS.register("factor_decompose_table",
+            FactorDecomposeTable::new);
+
+    public static final RegistryObject<Block> FACTOR_RESEARCH_TABLE = BLOCKS.register("factor_research_table",
+            FactorResearchTableBlock::new);
+
     public static final RegistryObject<Block> RACE_REGISTER_BLOCK = BLOCKS.register("race_register",
             RaceRegisterBlock::new);
+
+    public static final RegistryObject<Block> GATE_DOOR = BLOCKS.register("gate_door", GateDoor::new);
+
+    public static final RegistryObject<Block> GATE = BLOCKS.register("gate", Gate::new);
 }

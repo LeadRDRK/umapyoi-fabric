@@ -1,5 +1,31 @@
 package net.tracen.umapyoi.registry.races;
 
+import static net.tracen.umapyoi.registry.races.Race.RaceBuilder;
+import static net.tracen.umapyoi.registry.races.field.RaceFieldRegistry.CHUKYO;
+import static net.tracen.umapyoi.registry.races.field.RaceFieldRegistry.CONST_ADAPTIVE;
+import static net.tracen.umapyoi.registry.races.field.RaceFieldRegistry.FUKUSHIMA;
+import static net.tracen.umapyoi.registry.races.field.RaceFieldRegistry.FUNABASHI;
+import static net.tracen.umapyoi.registry.races.field.RaceFieldRegistry.HAKODATE;
+import static net.tracen.umapyoi.registry.races.field.RaceFieldRegistry.HANSHIN;
+import static net.tracen.umapyoi.registry.races.field.RaceFieldRegistry.KAWASAKI;
+import static net.tracen.umapyoi.registry.races.field.RaceFieldRegistry.KOKURA;
+import static net.tracen.umapyoi.registry.races.field.RaceFieldRegistry.KYOTO;
+import static net.tracen.umapyoi.registry.races.field.RaceFieldRegistry.MORIOKA;
+import static net.tracen.umapyoi.registry.races.field.RaceFieldRegistry.NAKAYAMA;
+import static net.tracen.umapyoi.registry.races.field.RaceFieldRegistry.NIIGATA;
+import static net.tracen.umapyoi.registry.races.field.RaceFieldRegistry.OHI;
+import static net.tracen.umapyoi.registry.races.field.RaceFieldRegistry.SAPPORO;
+import static net.tracen.umapyoi.registry.races.field.RaceFieldRegistry.TOKYO;
+import static net.tracen.umapyoi.registry.races.tags.RaceTagRegistry.DIRT;
+import static net.tracen.umapyoi.registry.races.tags.RaceTagRegistry.EIGHT_GREAT_RACES;
+import static net.tracen.umapyoi.registry.races.tags.RaceTagRegistry.GRAND_PRIX;
+import static net.tracen.umapyoi.registry.races.tags.RaceTagRegistry.MILE;
+import static net.tracen.umapyoi.registry.races.tags.RaceTagRegistry.SENIOR_AUTUMN_TRIPLE_CROWN;
+import static net.tracen.umapyoi.registry.races.tags.RaceTagRegistry.SENIOR_SPRING_TRIPLE_CROWN;
+import static net.tracen.umapyoi.registry.races.tags.RaceTagRegistry.SPRINT;
+import static net.tracen.umapyoi.registry.races.tags.RaceTagRegistry.TRIPLE_CROWN;
+import static net.tracen.umapyoi.registry.races.tags.RaceTagRegistry.TRIPLE_TIARA;
+
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -12,10 +38,6 @@ import net.tracen.umapyoi.utils.Year;
 
 import java.util.HashMap;
 import java.util.function.Function;
-
-import static net.tracen.umapyoi.registry.races.Field.RaceFieldRegistry.*;
-import static net.tracen.umapyoi.registry.races.Race.RaceBuilder;
-import static net.tracen.umapyoi.registry.races.Tags.RaceTagRegistry.*;
 
 /**
  * For reference only. Data are present in the datagen in the upstream repository.

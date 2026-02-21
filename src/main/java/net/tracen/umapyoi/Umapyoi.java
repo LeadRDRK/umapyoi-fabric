@@ -25,6 +25,7 @@ import net.tracen.umapyoi.network.SelectSkillPacket;
 import net.tracen.umapyoi.network.SetupResultPacket;
 import net.tracen.umapyoi.network.UseSkillPacket;
 import net.tracen.umapyoi.recipe.RecipeSerializerRegistry;
+import net.tracen.umapyoi.registry.SoundRegistry;
 import net.tracen.umapyoi.registry.TrainingSupportRegistry;
 import net.tracen.umapyoi.registry.UmaFactorRegistry;
 import net.tracen.umapyoi.registry.UmaSkillRegistry;
@@ -60,6 +61,7 @@ public class Umapyoi implements ModInitializer {
         VillagerTradeRegistry.register();
         RecipeSerializerRegistry.RECIPE_SERIALIZER.register();
         TriggerRegistry.registerAll();
+        SoundRegistry.SOUNDS.register();
 
         CommonEvents.register();
 

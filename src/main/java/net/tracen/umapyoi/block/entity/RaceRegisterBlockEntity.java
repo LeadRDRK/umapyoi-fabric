@@ -1,9 +1,9 @@
 package net.tracen.umapyoi.block.entity;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import static net.tracen.umapyoi.item.UmaRaceTicketItem.getRaceID;
+
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -11,9 +11,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.ContainerHelper;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -25,31 +24,35 @@ import net.minecraft.world.level.storage.loot.LootDataManager;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.container.RaceContainer;
 import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.registry.races.Race;
+import net.tracen.umapyoi.registry.races.RaceRegistry;
+import net.tracen.umapyoi.registry.umadata.UmaData;
 import net.tracen.umapyoi.utils.ItemHandlerHelper;
+import net.tracen.umapyoi.utils.Position;
 import net.tracen.umapyoi.utils.RaceRanking;
+import net.tracen.umapyoi.utils.UmaSoulUtils;
+
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.stream.IntStream;
 
-import static net.tracen.umapyoi.item.UmaRaceTicketItem.getRaceID;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements ExtendedScreenHandlerFactory, WorldlyContainer {
+public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements ExtendedScreenHandlerFactory {
     // No additional synchronized logic because provided by SyncedBlockEntity
     // Update by inventoryChanged (custom logic in SyncedBlockEntity, which is the super of this class)
 
     // public static final int MAX_RECIPE_TIME = 260; //13 seconds;
 
-    private final NonNullList<ItemStack> items = NonNullList.withSize(6, ItemStack.EMPTY);;
+    private final NonNullList<ItemStack> items = NonNullList.withSize(6, ItemStack.EMPTY);
 
     @Override
     public NonNullList<ItemStack> getItems() {
@@ -59,6 +62,15 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
     private int recipeTime;
     private int maxRecipeTime = 0;
     protected final ContainerData tileData;
+
+    @Nullable private Long winnerRenderSeed = null;
+    private long safeGetWinnerRenderSeed() {
+        if (winnerRenderSeed == null) {
+            RandomSource randomSeq = this.level == null ? RandomSource.create(this.getBlockPos().asLong()) : this.level.random.fork();
+            this.winnerRenderSeed = randomSeq.nextLong();
+        }
+        return this.winnerRenderSeed;
+    }
 
     public RaceRegisterBlockEntity(BlockPos pos, BlockState state) {
         super(BlockEntityRegistry.RACE_REGISTER_BLOCK_ENTITY.get(), pos, state);
@@ -98,6 +110,7 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
         super.load(compound);
         ContainerHelper.loadAllItems(compound, items);
         recipeTime = compound.getInt("RecipeTime");
+        winnerRenderSeed = compound.getLong("WinnerRenderSeed");
     }
 
     @Override
@@ -105,6 +118,7 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
         super.saveAdditional(compound);
         compound.putInt("RecipeTime", recipeTime);
         ContainerHelper.saveAllItems(compound, items);
+        compound.putLong("WinnerRenderSeed", this.safeGetWinnerRenderSeed());
     }
 
     @Nonnull
@@ -115,20 +129,7 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
         return tag;
     }
 
-    @Override
-    public int[] getSlotsForFace(Direction side) {
-        return side == Direction.UP ? new int[]{0, 1} : IntStream.range(2, 6).toArray();
-    }
-
-    @Override
-    public boolean canPlaceItemThroughFace(int index, ItemStack itemStack, @Nullable Direction direction) {
-        return direction == Direction.UP;
-    }
-
-    @Override
-    public boolean canTakeItemThroughFace(int index, ItemStack stack, Direction direction) {
-        return direction != Direction.UP;
-    }
+    public static final int DATA_SLOT_SIZE = 9;
 
     private ContainerData createIntArray() {
         return new ContainerData() {
@@ -137,6 +138,13 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
                 return switch(index) {
                     case 0 -> RaceRegisterBlockEntity.this.recipeTime;
                     case 1 -> RaceRegisterBlockEntity.this.maxRecipeTime;
+                    case 2 -> RaceRegisterBlockEntity.this.shallSoulWin() ? 1 : 0;
+                    case 3 -> (int) (RaceRegisterBlockEntity.this.safeGetWinnerRenderSeed());
+                    case 4 -> (int) (RaceRegisterBlockEntity.this.safeGetWinnerRenderSeed() >> 32);
+                    case 5 -> RaceRegisterBlockEntity.this.getRaceVariant();
+                    case 6 -> RaceRegisterBlockEntity.this.getRenderScaleFactor();
+                    // case 7 -> (int) (Double.doubleToLongBits(RaceRegisterBlockEntity.this.getRenderScaleFactor()) >> 32);
+                    case 8 -> RaceRegisterBlockEntity.this.getSoulTactic();
                     default -> 0;
                 };
             }
@@ -145,19 +153,20 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
             public void set(int index, int value) {
                 if (index == 0) RaceRegisterBlockEntity.this.recipeTime = value;
                 if (index == 1) RaceRegisterBlockEntity.this.maxRecipeTime = value;
+                if (index == 3) RaceRegisterBlockEntity.this.winnerRenderSeed = (RaceRegisterBlockEntity.this.safeGetWinnerRenderSeed() & 0xffffffff00000000L) | value;
+                if (index == 4) RaceRegisterBlockEntity.this.winnerRenderSeed = (RaceRegisterBlockEntity.this.safeGetWinnerRenderSeed() & 0xffffffffL) | ((long) value << 32);
             }
 
             @Override
             public int getCount() {
-                return 2;
+                return DATA_SLOT_SIZE;
             }
         };
     }
 
     public static void serverTick(Level level, BlockPos blockPos, BlockState blockState,
                                   RaceRegisterBlockEntity raceRegisterBlockEntity) {
-        if (level.isClientSide())
-            return;
+        if (level.isClientSide()) return;
         raceRegisterBlockEntity.serverTick();
     }
 
@@ -256,6 +265,7 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
                 fillStack = this.insertItemToSlot(i, fillStack);
             }
         });
+        this.winnerRenderSeed = this.level.random.fork().nextLong();
         this.setChanged();
         return true;
     }
@@ -264,14 +274,11 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
         if (this.level == null) return ItemStack.EMPTY;
 
         Race race = UmapyoiAPI.getRaceRegistry(this.level).get(raceID);
-        if (race != null) {
-            Umapyoi.getLogger().info("Run {} with following properties: Distance={}, Surface={}", raceID, race.distance(this.getItem(0)), race.surface(this.getItem(0)));
-        }
         ResourceLocation lootSpecify = new ResourceLocation(raceID.getNamespace(), "race/id/" + raceID.getPath());
         LootDataManager manager = Objects.requireNonNull(this.level.getServer()).getLootData();
         LootTable table = manager.getLootTable(lootSpecify);
         if (table == LootTable.EMPTY) {
-            Umapyoi.getLogger().info("There doesn't exist a loot table for {}, falling back to generic rank + field table", raceID);
+            Umapyoi.getLogger().debug("There doesn't exist a loot table for {}, falling back to generic rank + field table", raceID);
             if (race == null) {
                 Umapyoi.getLogger().error("No such race! {}", raceID);
                 return ItemStack.EMPTY;
@@ -287,7 +294,7 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
                 table = manager.getLootTable(new ResourceLocation(field.getNamespace(), "race/generic/field/race_"
                         + field.getPath() + "_" + rank.name().toLowerCase()));
                 if (table == LootTable.EMPTY) {
-                    Umapyoi.getLogger().info("There doesn't exist a loot table for {} {}, falling back to generic table", field, rank);
+                    Umapyoi.getLogger().debug("There doesn't exist a loot table for {} {}, falling back to generic table", field, rank);
                     table = manager.getLootTable(new ResourceLocation(Umapyoi.MODID, "race/generic/race_" +
                             rank.name().toLowerCase()));
                 }
@@ -318,7 +325,11 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
     }
 
     public NonNullList<ItemStack> getDroppableInventory() {
-        return this.items;
+        NonNullList<ItemStack> drops = NonNullList.create();
+        for (int i = 0; i < 6; ++i) {
+            drops.add(this.getItem(i));
+        }
+        return drops;
     }
 
     @Nonnull
@@ -336,5 +347,64 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
     @Override
     public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
         buf.writeBlockPos(getBlockPos());
+    }
+
+    // Render-helper function
+    public boolean shallSoulWin() {
+        ItemStack stackSoul = this.getItem(0);
+        if (stackSoul.isEmpty()) return false;
+        ItemStack stackRace = this.getItem(1);
+        if (stackRace.isEmpty()) return false;
+        if (this.level == null) return false;
+        Race race = UmapyoiAPI.getRaceRegistry(this.level).get(getRaceID(stackRace));
+        if (race == null) return false;
+        return race.isPassed(stackSoul, this.level);
+    }
+
+    public int getRaceVariant() {
+        ItemStack stackRace = this.getItem(1);
+        if (stackRace.isEmpty()) return -1;
+        if (level == null) return -1;
+        Race race = UmapyoiAPI.getRaceRegistry(level).get(getRaceID(stackRace));
+        if (race == null) return -1;
+        if (race.texturePredicateOverride != null) {
+            return switch (race.texturePredicateOverride) {
+                case RaceRegistry.PREDICATE_CHAMPIONS -> -4;
+                default -> -1;
+            };
+        }
+        return race.ranking.ordinal();
+    }
+
+    public double getRenderScaleFactorInDouble() {
+        ItemStack stackSoul = this.getItem(0);
+        if (stackSoul.isEmpty()) return 1d;
+        ItemStack stackRace = this.getItem(1);
+        if (stackRace.isEmpty()) return 1d;
+        if (this.level == null) return 1d;
+        Race race = UmapyoiAPI.getRaceRegistry(this.level).get(getRaceID(stackRace));
+        if (race == null) return 1d;
+        double retValue = race.offScalar(stackSoul, this.level);
+        return retValue;
+    }
+
+    public int getRenderScaleFactor() {
+        double factor = this.getRenderScaleFactorInDouble();
+        double enlargedFactor = factor * ((1L << 32) - 1);
+        long valueInLong = Math.min((long) enlargedFactor, 4294967295L);
+        return (int) (valueInLong & 0xffffffffL);
+    }
+
+    public int getSoulTactic() {
+        ItemStack stackSoul = this.getItem(0);
+        if (stackSoul.isEmpty()) return Position.FRONT_RUNNER.ordinal();
+        if (level == null) return Position.FRONT_RUNNER.ordinal();
+        ResourceLocation nameLoc = UmaSoulUtils.getName(stackSoul);
+        UmaData umaData = UmapyoiAPI.getUmaDataRegistry(level).getOptional(nameLoc).orElseGet(() -> {
+            Umapyoi.getLogger().info("Warning: {} doesn't exist.", nameLoc);
+            return UmaData.DEFAULT_UMA;
+        });
+        Position umaPosition = umaData.position();
+        return umaPosition.ordinal();
     }
 }

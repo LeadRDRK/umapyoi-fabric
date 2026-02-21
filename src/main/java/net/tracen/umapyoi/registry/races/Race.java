@@ -1,8 +1,11 @@
 package net.tracen.umapyoi.registry.races;
 
+import static net.tracen.umapyoi.registry.races.field.RaceFieldRegistry.CONST_ADAPTIVE;
+
 import com.google.common.base.Functions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -14,17 +17,28 @@ import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.item.ItemRegistry;
-import net.tracen.umapyoi.registry.races.Field.RaceField;
-import net.tracen.umapyoi.registry.races.Tags.RaceTag;
+import net.tracen.umapyoi.registry.races.field.RaceField;
+import net.tracen.umapyoi.registry.races.tags.RaceTag;
 import net.tracen.umapyoi.registry.umadata.Growth;
 import net.tracen.umapyoi.registry.umadata.Motivations;
 import net.tracen.umapyoi.registry.umadata.UmaData;
-import net.tracen.umapyoi.utils.*;
+import net.tracen.umapyoi.utils.Distance;
+import net.tracen.umapyoi.utils.Position;
+import net.tracen.umapyoi.utils.RaceRanking;
+import net.tracen.umapyoi.utils.Surface;
+import net.tracen.umapyoi.utils.UmaSoulUtils;
+import net.tracen.umapyoi.utils.Year;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
-
-import static net.tracen.umapyoi.registry.races.Field.RaceFieldRegistry.CONST_ADAPTIVE;
 
 public class Race {
     public static final ResourceKey<Registry<Race>> REGISTRY_KEY = ResourceKey
@@ -201,15 +215,10 @@ public class Race {
         double totalProperties = propertiesAsLevel[0] * (2 - umaPosition.speedFactor) * this.correction[0] + propertiesAsLevel[1]
                 * (2 - umaPosition.staminaFactor) * this.correction[1] + propertiesAsLevel[2] * this.correction[2] +
                 propertiesAsLevel[3] * this.correction[3] + propertiesAsLevel[4] * this.correction[4];
-        Umapyoi.getLogger().debug("Properties: {} / {}", totalProperties, this.referenceLevel);
-        Umapyoi.getLogger().debug("Motivation: {}", motivation.getMultiplier());
-        Umapyoi.getLogger().debug("Surface distance field total: {} {} {} {}", surfaceFactor, distanceFactor,
-                fieldSituationFactor, totalProperties / this.referenceLevel * motivation.getMultiplier() * surfaceFactor
-                        * distanceFactor * fieldSituationFactor);
         return totalProperties / this.referenceLevel * motivation.getMultiplier() * surfaceFactor * distanceFactor * fieldSituationFactor;
     }
 
-    public boolean isPassed(ItemStack stack, Level world) {
+    public double getSelfProp(ItemStack stack, Level world) {
         ResourceLocation nameLoc = UmaSoulUtils.getName(stack);
         UmaData umaData = UmapyoiAPI.getUmaDataRegistry(world).getOptional(nameLoc).orElseGet(() -> {
             Umapyoi.getLogger().info("Warning: {} doesn't exist.", nameLoc);
@@ -221,7 +230,16 @@ public class Race {
                 * (2 - umaPosition.staminaFactor) * this.correction[1] + propertiesAsLevel[2] * this.correction[2] +
                 propertiesAsLevel[3] * this.correction[3] + propertiesAsLevel[4] * this.correction[4];
         Motivations motivation = UmaSoulUtils.getMotivation(stack);
-        return totalProperties * motivation.getMultiplier() >= this.referenceLevel;
+        return totalProperties * motivation.getMultiplier();
+    }
+
+    public double offScalar(ItemStack stack, Level world) {
+        double selfProp = this.getSelfProp(stack, world);
+        return Math.min(selfProp, this.referenceLevel) / Math.max(selfProp, this.referenceLevel);
+    }
+
+    public boolean isPassed(ItemStack stack, Level world) {
+        return this.getSelfProp(stack, world) >= this.referenceLevel;
     }
 
     public void followUp(ItemStack stack, Level level) {
@@ -393,13 +411,13 @@ public class Race {
         public Race create(ResourceLocation id) {
             return new Race(id, this.ranking, this.length, this.time, this.year, this.surface, this.tags, this.field,
                     this.attrCorr, Optional.ofNullable(this.referenceLevel).orElseGet(() ->
-                        switch (this.ranking) {
-                            case DEBUT, PREOP -> 5;
-                            case OP -> 15;
-                            case GIII -> 25;
-                            case GII -> 30;
-                            case GI -> 35;
-                        }
+                    switch (this.ranking) {
+                        case DEBUT, PREOP -> 5;
+                        case OP -> 15;
+                        case GIII -> 25;
+                        case GII -> 30;
+                        case GI -> 35;
+                    }
             ), this.allowStatus, this.exclusive, this.later, this.afterRace, this.texturePredicateOverride);
         }
     }

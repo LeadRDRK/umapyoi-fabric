@@ -4,7 +4,9 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.tracen.umapyoi.registry.umadata.Motivations;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
+import net.tracen.umapyoi.utils.UmaStatusUtils;
 
 public interface SettingPropertyCallback {
     class Context {
@@ -14,13 +16,15 @@ public interface SettingPropertyCallback {
         private double propertyRate;
         private double propertyPercentage;
         private double resultProperty;
+        private final UmaStatusUtils.StatusType aspect;
 
-        public Context(LivingEntity entity, ItemStack soul, double retiredValue, double propertyRate, double propertyPercentage) {
+        public Context(LivingEntity entity, ItemStack soul, double retiredValue, double propertyRate, double propertyPercentage, UmaStatusUtils.StatusType aspect) {
             this.entity = entity;
             this.soul = soul;
             this.retiredValue = retiredValue;
             this.propertyRate = propertyRate;
             this.propertyPercentage = propertyPercentage;
+            this.aspect = aspect;
             this.setResultProperty(UmaSoulUtils.getMotivation(soul).getMultiplier() * propertyRate * retiredValue * propertyPercentage);
         }
 
@@ -56,12 +60,20 @@ public interface SettingPropertyCallback {
             this.propertyRate = propertyRate;
         }
 
+        public void setResultProperty(Motivations motivation, double propertyRate, double retiredValue, double propertyPercentage) {
+            this.setResultProperty(motivation.getMultiplier() * propertyRate * retiredValue * propertyPercentage);
+        }
+
         public double getResultProperty() {
             return resultProperty;
         }
 
         public void setResultProperty(double resultProperty) {
             this.resultProperty = resultProperty;
+        }
+
+        public UmaStatusUtils.StatusType getAspect() {
+            return this.aspect;
         }
     }
 

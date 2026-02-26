@@ -40,6 +40,7 @@ import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.client.model.UmaPlayerModel;
 import net.tracen.umapyoi.data.tag.UmapyoiUmaDataTags;
+import net.tracen.umapyoi.effect.MobEffectRegistry;
 import net.tracen.umapyoi.events.ApplyUmasoulAttributeCallback;
 import net.tracen.umapyoi.events.ResumeActionPointCallback;
 import net.tracen.umapyoi.events.SettingPropertyCallback;
@@ -204,15 +205,17 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
         if (UmaSoulUtils.getGrowth(stack) == Growth.UNTRAINED)
             return atts;
 
+        boolean hasFatique = entity.hasEffect(MobEffectRegistry.SLOW_METABOLISM.get());
+
         atts.put(UmapyoiAttributesRegistry.SPRINT_SPEED,
                 new AttributeModifier(uuid, "sprint_speed_running_bonus",
-                        getExactProperty(stack, entity, StatusType.SPEED, Umapyoi.CONFIG.UMASOUL_MAX_SPEED()),
+                        hasFatique ? 0 : getExactProperty(stack, entity, StatusType.SPEED, Umapyoi.CONFIG.UMASOUL_MAX_SPEED()),
                         Umapyoi.CONFIG.UMASOUL_SPEED_PRECENT_ENABLE() ? AttributeModifier.Operation.MULTIPLY_TOTAL
                                 : AttributeModifier.Operation.ADDITION));
 
         atts.put(UmapyoiAttributesRegistry.SWIM_SPEED,
                 new AttributeModifier(uuid, "speed_swiming_bonus",
-                        getExactProperty(stack, entity, StatusType.SPEED, Umapyoi.CONFIG.UMASOUL_MAX_SPEED()),
+                        hasFatique ? 0 : getExactProperty(stack, entity, StatusType.SPEED, Umapyoi.CONFIG.UMASOUL_MAX_SPEED()),
                         Umapyoi.CONFIG.UMASOUL_SPEED_PRECENT_ENABLE() ? AttributeModifier.Operation.MULTIPLY_TOTAL
                                 : AttributeModifier.Operation.ADDITION));
 
@@ -223,14 +226,14 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
                                 : AttributeModifier.Operation.ADDITION));
 
         atts.put(Attributes.MAX_HEALTH,
-                new AttributeModifier(uuid, "strength_attack_bonus",
-                        getExactProperty(stack, entity, StatusType.STAMINA, Umapyoi.CONFIG.UMASOUL_MAX_STAMINA_HEALTH()),
+                new AttributeModifier(uuid, "stamina_health_bonus",
+                        getExactProperty(stack, entity, StatusType.STAMINA, Umapyoi.CONFIG.UMASOUL_MAX_STAMINA_HEALTH()) * (hasFatique ? 1.05 : 1),
                         Umapyoi.CONFIG.UMASOUL_STAMINA_PRECENT_ENABLE() ? AttributeModifier.Operation.MULTIPLY_TOTAL
                                 : AttributeModifier.Operation.ADDITION));
 
         atts.put(Attributes.ARMOR,
                 new AttributeModifier(uuid, "guts_armor_bonus",
-                        getExactProperty(stack, entity, StatusType.GUTS, Umapyoi.CONFIG.UMASOUL_MAX_GUTS_ARMOR()),
+                        getExactProperty(stack, entity, StatusType.GUTS, Umapyoi.CONFIG.UMASOUL_MAX_GUTS_ARMOR()) * (hasFatique ? 1.05 : 1),
                         Umapyoi.CONFIG.UMASOUL_GUTS_PRECENT_ENABLE() ? AttributeModifier.Operation.MULTIPLY_TOTAL
                                 : AttributeModifier.Operation.ADDITION));
 
@@ -250,18 +253,22 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
         var retiredValue = UmaSoulUtils.getGrowth(stack) == Growth.RETIRED ? 1.0D : 0.25D;
         var propertyRate = 1.0D + (UmaSoulUtils.getPropertyRate(stack)[num] / 100.0D);
         var totalProperty = propertyPercentage(stack, num);
-        var event = new SettingPropertyCallback.Context(user, stack, retiredValue, propertyRate, totalProperty);
+        var event = new SettingPropertyCallback.Context(user, stack, retiredValue, propertyRate, totalProperty, status);
         SettingPropertyCallback.invoke(event);
         return event.getResultProperty() * limit;
     }
 
-    private double propertyPercentage(ItemStack stack, int num) {
-        var x = UmaSoulUtils.getProperty(stack)[num];
+    public static double propertyPercentageByValue(int x) {
         var statLimit = Umapyoi.CONFIG.STAT_LIMIT_VALUE();
         var denominator = 1 + Math.pow(Math.E,
                 (x > statLimit ? (-0.125 * Umapyoi.CONFIG.STAT_LIMIT_REDUCTION_RATE()) : -0.125) *
                         (x - statLimit));
         return 1 / denominator;
+    }
+
+    private double propertyPercentage(ItemStack stack, int num) {
+        var x = UmaSoulUtils.getProperty(stack)[num];
+        return propertyPercentageByValue(x);
     }
 
     @Override

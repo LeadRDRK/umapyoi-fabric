@@ -5,6 +5,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.block.BlockRegistry;
+import net.tracen.umapyoi.item.factor.FactorReport;
 import net.tracen.umapyoi.item.factor.UmaFactorContainerItem;
 import net.tracen.umapyoi.item.food.EnergyDrinkMethods;
 import net.tracen.umapyoi.item.food.UmaDrinkItem;
@@ -16,7 +17,6 @@ import net.tracen.umapyoi.registry.LazyRegistrar;
 import net.tracen.umapyoi.registry.RegistryObject;
 import net.tracen.umapyoi.registry.TrainingSupportRegistry;
 import net.tracen.umapyoi.registry.training.SupportType;
-import net.tracen.umapyoi.utils.UmaStatusUtils;
 
 import java.util.function.Supplier;
 
@@ -50,8 +50,19 @@ public class ItemRegistry {
     public static final RegistryObject<Item> UMA_SELECT_BLOCK = register("uma_select_block",
             () -> new BlockItem(BlockRegistry.UMA_SELECT_BLOCK.get(), Umapyoi.defaultItemProperties()));
 
-    public static final RegistryObject<Item> RACE_REGISTER_BLOCK = register("race_register_block",
+    public static final RegistryObject<Item> RACE_REGISTER_BLOCK = register("race_register",
             () -> new BlockItem(BlockRegistry.RACE_REGISTER_BLOCK.get(), Umapyoi.defaultItemProperties()));
+
+    public static final RegistryObject<Item> FACTOR_DECOMPOSE_TABLE = register("factor_decompose_table",
+            () -> new BlockItem(BlockRegistry.FACTOR_DECOMPOSE_TABLE.get(), Umapyoi.defaultItemProperties()));
+
+    public static final RegistryObject<Item> FACTOR_RESEARCH_TABLE = register("factor_research_table",
+            () -> new BlockItem(BlockRegistry.FACTOR_RESEARCH_TABLE.get(), Umapyoi.defaultItemProperties()));
+
+    public static final RegistryObject<Item> GATE_DOOR = register("gate_door", () -> new BlockItem(BlockRegistry.GATE_DOOR.get(),
+            Umapyoi.defaultItemProperties()));
+
+    public static final RegistryObject<Item> GATE = register("gate", () -> new BlockItem(BlockRegistry.GATE.get(), Umapyoi.defaultItemProperties()));
 
     public static final RegistryObject<Item> BLANK_UMA_SOUL = register("blank_uma_soul", FadedUmaSoulItem::new);
     public static final RegistryObject<Item> UMA_SOUL_DISPLAY = register("uma_soul_display", ItemRegistry::newMaterial);
@@ -138,16 +149,14 @@ public class ItemRegistry {
     public static final RegistryObject<Item> UMA_RACE_TICKET = register("race_ticket", UmaRaceTicketItem::new);
 
     public static final RegistryObject<Item> HACHIMI_MID = register("hachimi_mid",
-            () -> new UmaDrinkItem(UmaStatusUtils::addMotivation,
+            () -> new UmaDrinkItem(e -> {},
                     FoodInfo.builder().name("hachimi_mid").alwaysEat().amountAndCalories(2, 0.6F).water(30F)
                             .nutrients(2F, 2F, 0F, 0F, 0F).decayModifier(1.0F).heatCapacity(1F).cookingTemp(480F)
                             .build()));
 
-    public static final RegistryObject<Item> HACHIMI_BIG = register("hachimi_big", () -> new UmaDrinkItem(status -> {
-        UmaStatusUtils.addMotivation(status);
-        UmaStatusUtils.addMotivation(status);
-    }, FoodInfo.builder().name("hachimi_big").alwaysEat().amountAndCalories(4, 0.8F).water(60F)
-            .nutrients(4F, 4F, 0F, 0F, 0F).decayModifier(1.0F).heatCapacity(1F).cookingTemp(480F).build()));
+    public static final RegistryObject<Item> HACHIMI_BIG = register("hachimi_big", () -> new UmaDrinkItem(e -> {},
+            FoodInfo.builder().name("hachimi_big").alwaysEat().amountAndCalories(4, 0.8F).water(60F)
+                    .nutrients(4F, 4F, 0F, 0F, 0F).decayModifier(1.0F).heatCapacity(1F).cookingTemp(480F).build()));
 
     public static final RegistryObject<Item> ROYAL_BITTER = register("royal_bitter",
             () -> new UmaDrinkItem(EnergyDrinkMethods::royalBitter,
@@ -156,16 +165,14 @@ public class ItemRegistry {
                             .heatCapacity(1F).cookingTemp(480F).build()));
 
     public static final RegistryObject<Item> CUPCAKE = register("cupcake",
-            () -> new UmaFoodItem(UmaStatusUtils::addMotivation,
+            () -> new UmaFoodItem(e -> {},
                     FoodInfo.builder().name("cupcake").amountAndCalories(5, 0.6F).water(0F)
                             .nutrients(2F, 2F, 2F, 0F, 2F).decayModifier(1.5F).heatCapacity(1F).cookingTemp(480F)
                             .build()));
 
-    public static final RegistryObject<Item> SWEET_CUPCAKE = register("sweet_cupcake", () -> new UmaFoodItem(status -> {
-        UmaStatusUtils.addMotivation(status);
-        UmaStatusUtils.addMotivation(status);
-    }, FoodInfo.builder().name("sweet_cupcake").amountAndCalories(7, 0.6F).water(0F).nutrients(4F, 4F, 2F, 0F, 4F)
-            .decayModifier(1.5F).heatCapacity(1F).cookingTemp(480F).build()));
+    public static final RegistryObject<Item> SWEET_CUPCAKE = register("sweet_cupcake", () -> new UmaFoodItem(e -> {},
+            FoodInfo.builder().name("sweet_cupcake").amountAndCalories(7, 0.6F).water(0F).nutrients(4F, 4F, 2F, 0F, 4F)
+                    .decayModifier(1.5F).heatCapacity(1F).cookingTemp(480F).build()));
 
     public static final RegistryObject<Item> SMALL_ENERGY_DRINK = register("small_energy_drink",
             () -> new UmaDrinkItem(EnergyDrinkMethods::smallEnergy,
@@ -188,6 +195,8 @@ public class ItemRegistry {
     public static final RegistryObject<Item> NAGINATA = register("naginata", GrassNaginataItem::new);
 
     public static final RegistryObject<Item> BASEBALL_BAT = register("baseball_bat", BaseballBatItem::new);
+
+    public static final RegistryObject<Item> FACTOR_SHARD = register("uma_factor_shard", FactorReport::new);
 
     private static <V extends Item> RegistryObject<V> register(String name, Supplier<V> item) {
         return ITEMS.register(name, item);

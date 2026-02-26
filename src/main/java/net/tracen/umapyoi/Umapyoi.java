@@ -4,11 +4,13 @@ import com.mojang.logging.LogUtils;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.tracen.umapyoi.advancements.trigger.GrantBookOnFirstJoin;
 import net.tracen.umapyoi.advancements.trigger.TriggerRegistry;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.block.entity.BlockEntityRegistry;
+import net.tracen.umapyoi.command.CommandRegistry;
 import net.tracen.umapyoi.container.ContainerRegistry;
 import net.tracen.umapyoi.data.loot.AddLootTableModifier;
 import net.tracen.umapyoi.effect.MobEffectRegistry;
@@ -45,6 +47,10 @@ public class Umapyoi implements ModInitializer {
         return new Item.Properties();
     }
 
+    public static ResourceLocation id(String path) {
+        return new ResourceLocation(MODID, path);
+    }
+
     @Override
     public void onInitialize() {
         TrainingSupportRegistry.SUPPORTS.register();
@@ -62,6 +68,7 @@ public class Umapyoi implements ModInitializer {
         RecipeSerializerRegistry.RECIPE_SERIALIZER.register();
         TriggerRegistry.registerAll();
         SoundRegistry.SOUNDS.register();
+        CommandRegistry.register();
 
         CommonEvents.register();
 

@@ -21,6 +21,7 @@ import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.UmapyoiConfigModel;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
+import net.tracen.umapyoi.events.SupportCardGachaCallback;
 import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.registry.training.card.SupportCard;
 import net.tracen.umapyoi.utils.ClientUtils;
@@ -189,6 +190,8 @@ public class SupportAlbumPedestalBlockEntity extends SyncedInventoryEntity imple
 
         RandomSource rand = this.getLevel().getRandom();
         Registry<SupportCard> registry = UmapyoiAPI.getSupportCardRegistry(this.getLevel());
+
+        RandomSource copyRand = rand.fork();
         
         @NotNull
         Collection<ResourceLocation> keys = registry.keySet().stream()
@@ -202,7 +205,9 @@ public class SupportAlbumPedestalBlockEntity extends SyncedInventoryEntity imple
         result.getOrCreateTag().putString("support_card", key.toString());
         result.getOrCreateTag().putString("ranking", registry.get(key).getGachaRanking().name().toLowerCase());
         result.getOrCreateTag().putInt("maxDamage", registry.get(key).getMaxDamage());
-        return result;
+        var evt = new SupportCardGachaCallback.Context(getStoredItem(), keys, key, result, copyRand);
+        SupportCardGachaCallback.invoke(evt);
+        return evt.getOutput();
     }
 
     private boolean canWork() {

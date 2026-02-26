@@ -21,6 +21,7 @@ import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.UmapyoiConfigModel;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
+import net.tracen.umapyoi.events.SupportCardGachaCallback;
 import net.tracen.umapyoi.events.UmaSoulGachaCallback;
 import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.registry.training.card.SupportCard;
@@ -205,8 +206,8 @@ public class SilverSupportAlbumPedestalBlockEntity extends SyncedInventoryEntity
         result.getOrCreateTag().putString("support_card", key.toString());
         result.getOrCreateTag().putString("ranking", registry.get(key).getGachaRanking().name().toLowerCase());
         result.getOrCreateTag().putInt("maxDamage", registry.get(key).getMaxDamage());
-        var evt = new UmaSoulGachaCallback.Context(getStoredItem(), keys, key, result, copyRand);
-        UmaSoulGachaCallback.invoke(evt);
+        var evt = new SupportCardGachaCallback.Context(getStoredItem(), keys, key, result, copyRand);
+        SupportCardGachaCallback.invoke(evt);
         return evt.getOutput();
     }
 

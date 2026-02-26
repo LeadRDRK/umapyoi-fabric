@@ -2,7 +2,6 @@ package net.tracen.umapyoi.item;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
@@ -19,10 +18,7 @@ import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.registry.races.Race;
 import net.tracen.umapyoi.registry.races.RaceRegistry;
-import net.tracen.umapyoi.utils.ClientUtils;
-import net.tracen.umapyoi.utils.RaceRanking;
-import net.tracen.umapyoi.utils.Surface;
-import net.tracen.umapyoi.utils.Year;
+import net.tracen.umapyoi.utils.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,9 +31,9 @@ import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 
-public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
+public class UmaRaceTicketItem extends Item {
     public UmaRaceTicketItem() {
-        super(Umapyoi.defaultItemProperties().durability(0).stacksTo(64));
+        super(Umapyoi.defaultItemProperties());
     }
 
     private static class RaceComparator implements Comparator<Holder.Reference<Race>> {
@@ -65,18 +61,6 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
             ResourceLocation locRight = o2.key().location();
             return locLeft.compareTo(locRight);
         }
-    }
-
-    @Environment(EnvType.CLIENT)
-    @Override
-    public void fillItemCategory(FabricItemGroupEntries entries) {
-        sortedRaceList(entries.getContext().holders()).forEachOrdered(race -> {
-            Umapyoi.getLogger().debug("{}", race.key());
-            if (race.key().location().equals(RaceRegistry.DEFAULT.location())) return;
-            ItemStack result = ItemRegistry.UMA_RACE_TICKET.get().getDefaultInstance();
-            result.getOrCreateTag().putString("race", race.key().location().toString());
-            entries.accept(result);
-        });
     }
 
     public static Stream<Holder.Reference<Race>> sortedRaceList(HolderLookup.Provider provider) {
@@ -109,12 +93,24 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
     @Deprecated
     @Nonnull
     public String getDescriptionId(@Nonnull ItemStack pStack) {
+        if (getRaceID(pStack).equals(RaceRegistry.DEFAULT.location())) return super.getDescriptionId(pStack);
         return Util.makeDescriptionId("race", getRaceID(pStack)) + ".name";
+    }
+
+    public static MutableComponent getRaceNameInRawComponent(@Nonnull ItemStack pStack) {
+        return Component.translatable(Util.makeDescriptionId("race", getRaceID(pStack)) + ".name");
+    }
+
+    public static MutableComponent getRaceNameInStyledComponent(@Nonnull ItemStack pStack) {
+        return getRaceNameInRawComponent(pStack).withStyle(
+                Optional.ofNullable(getRace(pStack)).map(r -> r.ranking).orElse(RaceRanking.DEBUT).color
+        );
     }
 
     @Nonnull
     @Override
     public Component getName(@Nonnull ItemStack pStack) {
+        if (getRaceID(pStack).equals(RaceRegistry.DEFAULT.location())) return super.getName(pStack);
         return Component.translatable(this.getDescriptionId(pStack)).withStyle(
                 Optional.ofNullable(getRace(pStack)).map(r -> r.ranking).orElse(RaceRanking.DEBUT).color
         );
@@ -128,7 +124,7 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
     }
 
     public static Race getRace(ItemStack stack) {
-        return getRace(stack, null);
+        return  getRace(stack, null);
     }
 
     public static Race getRace(ItemStack stack, Level world) {
@@ -143,7 +139,7 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
         }
     }
 
-    private class ComponentCollector implements Collector<MutableComponent, MutableComponent, MutableComponent> {
+    private static class ComponentCollector implements Collector<MutableComponent, MutableComponent, MutableComponent> {
         @Override
         public Supplier<MutableComponent> supplier() {
             return Component::empty;
@@ -180,7 +176,7 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
         if (raceObj == null) return;
         MutableComponent year = raceObj.year.stream().sorted().map(Year::name).map(String::toLowerCase)
                 .map(s -> Component.translatable("tooltip.umapyoi.race.time." + s))
-                        .collect(new ComponentCollector());
+                .collect(new ComponentCollector());
         year = year.append(" ").append(Component.translatable("tooltip.umapyoi.race.time." + raceObj.time));
         tooltip.add(year);
 
@@ -194,12 +190,16 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
                 Component.translatable("race.umapyoi.surface." + surface.name().toLowerCase()).withStyle(surface.color)
         ));
 
-        tooltip.add(Component.translatable("tooltip.umapyoi.race.distance")
-                .append(Component.translatable("tooltip.umapyoi.race.distance." + raceObj.distance.name().toLowerCase()))
-                .append(" ")
-                .append(Component.literal(Integer.toString(raceObj.length))
-                .append(Component.translatable("tooltip.umapyoi.race.unit")))
-        );
+        MutableComponent baseComponent = Component.translatable("tooltip.umapyoi.race.distance")
+                .append(Component.translatable("tooltip.umapyoi.race.distance." + raceObj.distance.name().toLowerCase()));
+
+        if (raceObj.distance != Distance.ADAPTIVE) {
+            baseComponent = baseComponent.append(" ")
+                    .append(Component.literal(Integer.toString(raceObj.length))
+                            .append(Component.translatable("tooltip.umapyoi.race.unit")));
+        }
+
+        tooltip.add(baseComponent);
 
         ResourceLocation locField = raceObj.field;
         tooltip.add(Component.translatable("tooltip.umapyoi.race.field").append(
@@ -215,10 +215,7 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
                     .map(rl ->
                             Component.literal(" ")
                                     .append(Component.translatable("race." + rl.id().getNamespace() + ".tags." + rl.id().getPath()))
-                                    .append(" (")
-                                    .append(Component.translatable("tooltip.umapyoi.race.tags.max"))
-                                    .append(Integer.toString(rl.maximum()))
-                                    .append(")").withStyle(ChatFormatting.DARK_GREEN)
+                                    .withStyle(ChatFormatting.DARK_GREEN)
                     )
                     .forEach(tooltip::add);
         }

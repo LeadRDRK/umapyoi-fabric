@@ -34,14 +34,13 @@ import net.tracen.umapyoi.registry.UmaSkillRegistry;
 import net.tracen.umapyoi.registry.UmapyoiAttributesRegistry;
 import net.tracen.umapyoi.villager.VillageRegistry;
 import net.tracen.umapyoi.villager.VillagerTradeRegistry;
-import net.tracen.umapyoi.UmapyoiConfig;
 
 import org.slf4j.Logger;
 
 public class Umapyoi implements ModInitializer {
     public static final String MODID = "umapyoi";
     private static final Logger LOGGER = LogUtils.getLogger();
-    public static final UmapyoiConfig CONFIG = UmapyoiConfig.createAndLoad();
+    public static final net.tracen.umapyoi.UmapyoiConfig CONFIG = net.tracen.umapyoi.UmapyoiConfig.createAndLoad();
 
     public static Item.Properties defaultItemProperties() {
         return new Item.Properties();

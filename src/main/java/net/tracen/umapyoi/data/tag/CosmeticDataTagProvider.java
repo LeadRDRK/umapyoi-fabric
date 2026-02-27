@@ -1,0 +1,25 @@
+package net.tracen.umapyoi.data.tag;
+
+import java.util.concurrent.CompletableFuture;
+
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.tags.TagsProvider;
+import net.tracen.umapyoi.registry.cosmetics.CosmeticData;
+
+public class CosmeticDataTagProvider extends TagsProvider<CosmeticData> {
+    public CosmeticDataTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
+        super(output, CosmeticData.REGISTRY_KEY, provider);
+    }
+
+    @Override
+    public String getName() {
+        return "Umamusume Costume Data Tag Provider";
+    }
+
+    @Override
+    protected void addTags(HolderLookup.Provider lookup) {
+        this.tag(UmapyoiCostumeDataTags.HAT_HIDEHAIR);
+    }
+
+}

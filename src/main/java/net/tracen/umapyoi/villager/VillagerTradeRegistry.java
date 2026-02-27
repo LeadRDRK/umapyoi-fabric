@@ -54,7 +54,7 @@ public class VillagerTradeRegistry {
             factories.add(new RandomPriceOrderItemListing(new ItemStack(ItemRegistry.TRAINING_SUIT.get()), 1, 1, 1, 8, 30, 0.2F))
         );
 
-        var kindergartenUniform = UmaCostumeItem.getCostume(CostumeDataRegistry.KINDERGARTEN_UNIFORM.getId());
+        var kindergartenUniform = UmaCostumeItem.getCostume(CostumeDataRegistry.KINDERGARTEN_UNIFORM.location());
         TradeOfferHelper.registerVillagerOffers(VillagerProfession.SHEPHERD, 5, factories ->
             factories.add(new RandomPriceOrderItemListing(kindergartenUniform, 1, 1, 1, 8, 30, 0.2F))
         );

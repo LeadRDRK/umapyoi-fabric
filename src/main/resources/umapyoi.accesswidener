@@ -2,3 +2,4 @@ accessWidener v2 named
 
 transitive-accessible method net/minecraft/client/gui/screens/MenuScreens getConstructor (Lnet/minecraft/world/inventory/MenuType;)Lnet/minecraft/client/gui/screens/MenuScreens$ScreenConstructor;
 accessible field net/minecraft/client/model/PlayerModel slim Z
+accessible field net/minecraft/world/entity/ai/behavior/GiveGiftToHero GIFTS Ljava/util/Map;

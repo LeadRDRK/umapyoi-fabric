@@ -10,7 +10,8 @@
     "ServerPlayerAccessor",
     "LivingEntityMixin",
     "PhantomSpawnerMixin",
-    "IronBarsBlockMixin"
+    "IronBarsBlockMixin",
+    "GiveGiftToHeroMixin"
   ],
   "client": [
     "client.ItemInHandLayerMixin",

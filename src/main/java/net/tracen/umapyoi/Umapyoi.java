@@ -65,6 +65,7 @@ public class Umapyoi implements ModInitializer {
         ContainerRegistry.CONTAINER_TYPES.register();
         VillageRegistry.PROFESSIONS.register();
         VillageRegistry.registerPoi();
+        VillageRegistry.registerHeroOfTheVillage();
         VillagerTradeRegistry.register();
         RecipeSerializerRegistry.RECIPE_SERIALIZER.register();
         TriggerRegistry.registerAll();

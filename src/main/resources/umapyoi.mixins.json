@@ -8,7 +8,8 @@
     "PlayerFoodExhaustionMixin",
     "ServerPlayerMixin",
     "ServerPlayerAccessor",
-    "LivingEntityMixin"
+    "LivingEntityMixin",
+    "PhantomSpawnerMixin"
   ],
   "client": [
     "client.ItemInHandLayerMixin",

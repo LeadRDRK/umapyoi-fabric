@@ -57,8 +57,14 @@ public record RaceTag(int maximum, ResourceLocation id, boolean isUnique, int[] 
         }
         if (isFulfill) {
             int[] properties = UmaSoulUtils.getProperty(soul);
+            int[] propertiesCeil = UmaSoulUtils.getMaxProperty(soul);
+
             for (int i = 0; i < 5; i++) {
-                properties[i] += this.propertyReward[i];
+                propertiesCeil[i] = Math.min(propertiesCeil[i] + propertyReward[i], 39);
+            }
+
+            for (int i = 0; i < 5; i++) {
+                properties[i] = Math.min(properties[i] + propertyReward[i], propertiesCeil[i]);
             }
         }
         soul.getOrCreateTag().put("attend_race_tag", tagRace);

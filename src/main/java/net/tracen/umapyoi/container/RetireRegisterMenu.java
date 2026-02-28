@@ -180,7 +180,7 @@ public class RetireRegisterMenu extends AbstractContainerMenu {
         StatusFactor statusFactor = (StatusFactor) status.skip(rand.nextLong(statusCount)).findFirst()
                 .orElse(UmaFactorRegistry.SPEED_FACTOR.get());
         var statusProperty = UmaSoulUtils.getProperty(inputSoul)[statusFactor.getStatusType().getId()];
-        var i = statusProperty > 18 ? statusFactor.getMaxLevel() + 1 :
+        var i = statusProperty > 18 ? statusFactor.getMaxLevel():
                 statusProperty > 10 ? 3 :
                 2;
         var statusFactorStack = new UmaFactorStack(statusFactor,

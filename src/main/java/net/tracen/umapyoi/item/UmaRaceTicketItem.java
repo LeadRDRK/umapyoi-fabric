@@ -2,6 +2,7 @@ package net.tracen.umapyoi.item;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
@@ -18,11 +19,17 @@ import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.registry.races.Race;
 import net.tracen.umapyoi.registry.races.RaceRegistry;
-import net.tracen.umapyoi.utils.*;
+import net.tracen.umapyoi.utils.ClientUtils;
+import net.tracen.umapyoi.utils.Distance;
+import net.tracen.umapyoi.utils.RaceRanking;
+import net.tracen.umapyoi.utils.Surface;
+import net.tracen.umapyoi.utils.Year;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
@@ -30,8 +37,11 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-public class UmaRaceTicketItem extends Item {
+
+public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
     public UmaRaceTicketItem() {
         super(Umapyoi.defaultItemProperties());
     }
@@ -65,6 +75,17 @@ public class UmaRaceTicketItem extends Item {
 
     public static Stream<Holder.Reference<Race>> sortedRaceList(HolderLookup.Provider provider) {
         return UmapyoiAPI.getRaceRegistry(provider).listElements().sorted(RaceComparator.INSTANCE);
+    }
+
+    @Environment(EnvType.CLIENT)
+    @Override
+    public void fillItemCategory(FabricItemGroupEntries entries) {
+        sortedRaceList(entries.getContext().holders()).forEachOrdered(race -> {
+            if (race.key().location().equals(RaceRegistry.DEFAULT.location())) return;
+            ItemStack result = ItemRegistry.UMA_RACE_TICKET.get().getDefaultInstance();
+            result.getOrCreateTag().putString("race", race.key().location().toString());
+            entries.accept(result);
+        });
     }
 
     @Nonnull

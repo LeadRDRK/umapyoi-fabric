@@ -4,6 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -50,6 +51,10 @@ public class SkillOverlay implements HudRenderCallback {
 
     private void renderSkill(ItemStack soul, GuiGraphics guiGraphics, int x, int y) {
         UmaSkill skill = UmaSkillRegistry.REGISTRY.get().get(UmaSoulUtils.getSelectedSkill(soul));
+        renderSkill(skill, this.minecraft.font, guiGraphics, x, y);
+    }
+
+    public static void renderSkill(UmaSkill skill, Font font, GuiGraphics guiGraphics, int x, int y) {
         if (skill != null) {
             switch (skill.getType()) {
                 case BUFF -> guiGraphics.blit(HUD, x + 3, y + 2, 0, 48, 16, 16, 128, 64);
@@ -58,7 +63,7 @@ public class SkillOverlay implements HudRenderCallback {
                 case PASSIVE -> guiGraphics.blit(HUD, x + 3, y + 2, 48, 48, 16, 16, 128, 64);
                 default -> throw new IllegalArgumentException("Unexpected value: " + skill.getType());
             }
-            guiGraphics.drawString(this.minecraft.font, skill.getDescription(), x + 22, y + 6, 0x794016, false);
+            guiGraphics.drawString(font, skill.getDescription(), x + 22, y + 6, 0x794016, false);
         } else {
             guiGraphics.blit(HUD, x, y, 0, 20, 96, 20, 128, 64);
         }

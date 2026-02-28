@@ -134,9 +134,4 @@ public class RaceRegisterBlock extends BaseEntityBlock {
                 return SHAPE;
         }
     }
-
-    public static void registerBlockColor() {
-        ColorProviderRegistry.BLOCK.register((state, level, pos, index) ->
-                BiomeColors.getAverageGrassColor(level, pos), BlockRegistry.RACE_REGISTER_BLOCK.get());
-    }
 }

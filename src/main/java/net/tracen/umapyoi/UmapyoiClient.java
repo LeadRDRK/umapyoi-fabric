@@ -22,7 +22,5 @@ public class UmapyoiClient implements ClientModInitializer {
 
         // ScreensRegistry
         ScreensRegistry.register();
-
-        RaceRegisterBlock.registerBlockColor();
     }
 }

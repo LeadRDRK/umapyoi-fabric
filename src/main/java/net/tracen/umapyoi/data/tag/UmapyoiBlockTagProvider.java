@@ -42,5 +42,13 @@ public class UmapyoiBlockTagProvider extends BlockTagProvider {
 
         getOrCreateTagBuilder(UmapyoiBlockTags.TRACK_SNOW)
                 .forceAddTag(BlockTags.SNOW);
+
+        getOrCreateTagBuilder(UmapyoiBlockTags.PEDESTAL_UMA)
+                .add(BlockRegistry.UMA_PEDESTAL.get())
+                .add(BlockRegistry.SILVER_UMA_PEDESTAL.get());
+
+        getOrCreateTagBuilder(UmapyoiBlockTags.PEDESTAL_SUPPORT)
+                .add(BlockRegistry.SUPPORT_ALBUM_PEDESTAL.get())
+                .add(BlockRegistry.SILVER_SUPPORT_ALBUM_PEDESTAL.get());
     }
 }

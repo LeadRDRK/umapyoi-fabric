@@ -45,7 +45,7 @@ public class FactorReport extends Item implements CreativeModeTabFiller {
                 case EXTRASTATUS -> ChatFormatting.RED;
                 default -> ChatFormatting.GRAY;
             }));
-            if(Umapyoi.CONFIG.DISPLAY_DETAIL()) {
+            if(pIsAdvanced.isAdvanced() || Umapyoi.CONFIG.DISPLAY_DETAIL()) {
                 pTooltipComponents.add(factor.getDescriptionDetail().copy().withStyle(ChatFormatting.DARK_GRAY));
             }
         });

@@ -268,12 +268,12 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
                         Umapyoi.CONFIG.UMASOUL_GUTS_PRECENT_ENABLE() ? AttributeModifier.Operation.MULTIPLY_TOTAL
                                 : AttributeModifier.Operation.ADDITION));
 
-        var event = new ApplyUmasoulAttributeCallback.Context(stack, slot, uuid, atts);
+        var event = new ApplyUmasoulAttributeCallback.Context(entity, stack, slot, uuid, atts);
         ApplyUmasoulAttributeCallback.invoke(event);
         return event.getAttributes();
     }
 
-    public double getExactProperty(ItemStack stack, LivingEntity user, StatusType status, double limit) {
+    public static double getExactProperty(ItemStack stack, LivingEntity user, StatusType status, double limit) {
         int num = status.getId();
         var retiredValue = UmaSoulUtils.getGrowth(stack) == Growth.RETIRED ? 1.0D : 0.25D;
         var propertyRate = 1.0D + (UmaSoulUtils.getPropertyRate(stack)[num] / 100.0D);
@@ -291,7 +291,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
         return 1 / denominator;
     }
 
-    private double propertyPercentage(ItemStack stack, int num) {
+    private static double propertyPercentage(ItemStack stack, int num) {
         var x = UmaSoulUtils.getProperty(stack)[num];
         return propertyPercentageByValue(x);
     }

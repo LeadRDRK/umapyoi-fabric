@@ -4,9 +4,12 @@ import com.google.common.collect.Multimap;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
+import net.tracen.umapyoi.item.UmaSoulItem;
+import net.tracen.umapyoi.utils.UmaStatusUtils;
 
 import java.util.UUID;
 
@@ -17,11 +20,14 @@ public interface ApplyUmasoulAttributeCallback {
         private final SlotReference slotReference;
         private final UUID uuid;
         private final Multimap<Attribute, AttributeModifier> atts;
-        public Context(ItemStack soul, SlotReference slotReference, UUID uuid, Multimap<Attribute, AttributeModifier> atts) {
+        private final LivingEntity user;
+        public Context(LivingEntity user, ItemStack soul, SlotReference slotReference, UUID uuid,
+                       Multimap<Attribute, AttributeModifier> atts) {
             super(soul);
             this.uuid = uuid;
             this.slotReference = slotReference;
             this.atts = atts;
+            this.user = user;
         }
 
         public SlotReference slotReference() {
@@ -39,6 +45,14 @@ public interface ApplyUmasoulAttributeCallback {
         @Override
         public void setUmaSoul(ItemStack soul) {
             throw new UnsupportedOperationException("Tried to set a new soul for ApplyUmasoulAttributeEvent");
+        }
+
+        public double getExactProperty(UmaStatusUtils.StatusType status, double limit) {
+            return getExactProperty(this.user, status, limit);
+        }
+
+        public double getExactProperty(LivingEntity user, UmaStatusUtils.StatusType status, double limit) {
+            return UmaSoulItem.getExactProperty(soul, user, status, limit);
         }
     }
 

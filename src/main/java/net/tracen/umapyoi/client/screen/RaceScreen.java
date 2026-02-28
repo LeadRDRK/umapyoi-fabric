@@ -1,6 +1,10 @@
 package net.tracen.umapyoi.client.screen;
 
+import static net.tracen.umapyoi.item.UmaRaceTicketItem.getRaceNameInRawComponent;
+import static net.tracen.umapyoi.item.UmaRaceTicketItem.getRaceNameInStyledComponent;
+
 import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -16,11 +20,13 @@ import net.tracen.umapyoi.container.RaceContainer;
 import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.utils.Position;
 
-import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static net.tracen.umapyoi.item.UmaRaceTicketItem.getRaceNameInRawComponent;
-import static net.tracen.umapyoi.item.UmaRaceTicketItem.getRaceNameInStyledComponent;
+import javax.annotation.Nonnull;
 
 public class RaceScreen extends AbstractContainerScreen<RaceContainer> {
 

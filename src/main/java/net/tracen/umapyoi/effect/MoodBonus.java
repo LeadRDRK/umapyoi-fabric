@@ -1,5 +1,7 @@
 package net.tracen.umapyoi.effect;
 
+import static net.tracen.umapyoi.item.UmaSoulItem.propertyPercentageByValue;
+
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -10,8 +12,6 @@ import net.tracen.umapyoi.events.UseSkillCallback;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
 import java.util.Optional;
-
-import static net.tracen.umapyoi.item.UmaSoulItem.propertyPercentageByValue;
 
 public class MoodBonus extends MobEffect {
     public MoodBonus() {

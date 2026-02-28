@@ -1,12 +1,12 @@
 package net.tracen.umapyoi.data.tag;
 
-import java.util.concurrent.CompletableFuture;
-
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.TagsProvider;
 import net.tracen.umapyoi.data.builtin.UmaDataRegistry;
 import net.tracen.umapyoi.registry.umadata.UmaData;
+
+import java.util.concurrent.CompletableFuture;
 
 public class UmaDataTagProvider extends TagsProvider<UmaData> {
     public UmaDataTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {

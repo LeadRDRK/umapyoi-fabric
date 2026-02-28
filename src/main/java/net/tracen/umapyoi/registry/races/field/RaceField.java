@@ -2,6 +2,7 @@ package net.tracen.umapyoi.registry.races.field;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -10,11 +11,12 @@ import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.utils.Distance;
 import net.tracen.umapyoi.utils.Surface;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.annotation.Nonnull;
 
 public record RaceField(ResourceLocation id, Set<Distance> turfs, Set<Distance> dirts, Set<Distance> synthetics) implements Comparable<RaceField> {
     public static final Codec<RaceField> CODEC = RecordCodecBuilder.create(instance -> instance

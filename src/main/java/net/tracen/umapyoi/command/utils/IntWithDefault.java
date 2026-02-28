@@ -6,15 +6,17 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.util.Either;
+
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.tracen.umapyoi.Umapyoi;
 
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicReference;
+
+import javax.annotation.Nullable;
 
 public class IntWithDefault implements ArgumentType<Either<Integer, String>> {
     private static final Collection<String> EXAMPLES = Arrays.asList("default", "0", "123", "-123");

@@ -1,5 +1,9 @@
 package net.tracen.umapyoi.container;
 
+import static net.tracen.umapyoi.block.BlockRegistry.FACTOR_DECOMPOSE_TABLE;
+import static net.tracen.umapyoi.item.ItemRegistry.FACTOR_SHARD;
+import static net.tracen.umapyoi.item.ItemRegistry.UMA_FACTOR_ITEM;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
@@ -8,22 +12,27 @@ import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.*;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.DataSlot;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.events.FactorDecomposeCallback;
 import net.tracen.umapyoi.registry.factors.FactorType;
 import net.tracen.umapyoi.registry.factors.UmaFactorStack;
 import net.tracen.umapyoi.utils.UmaFactorUtils;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static net.tracen.umapyoi.block.BlockRegistry.FACTOR_DECOMPOSE_TABLE;
-import static net.tracen.umapyoi.item.ItemRegistry.FACTOR_SHARD;
-import static net.tracen.umapyoi.item.ItemRegistry.UMA_FACTOR_ITEM;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class FactorDecomposeMenu extends AbstractContainerMenu {
     protected final ContainerLevelAccess access;

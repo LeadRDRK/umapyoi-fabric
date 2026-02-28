@@ -1,11 +1,14 @@
 package net.tracen.umapyoi.command.commands;
 
+import static net.tracen.umapyoi.registry.UmaSkillRegistry.BASIC_PACE;
+
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -31,8 +34,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
-
-import static net.tracen.umapyoi.registry.UmaSkillRegistry.BASIC_PACE;
 
 public class ModifyUmaSoul {
     private static HashMap<String, List<LiteralArgumentBuilder<CommandSourceStack>>> modesMap;

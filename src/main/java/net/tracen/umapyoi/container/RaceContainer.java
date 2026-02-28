@@ -1,22 +1,28 @@
 package net.tracen.umapyoi.container;
 
+import static net.tracen.umapyoi.block.entity.RaceRegisterBlockEntity.DATA_SLOT_SIZE;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.*;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.SimpleContainerData;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.block.entity.RaceRegisterBlockEntity;
 import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.utils.Position;
+
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.Objects;
 
-import static net.tracen.umapyoi.block.entity.RaceRegisterBlockEntity.DATA_SLOT_SIZE;
+import javax.annotation.Nonnull;
 
 public class RaceContainer extends AbstractContainerMenu {
     public final RaceRegisterBlockEntity tileEntity;

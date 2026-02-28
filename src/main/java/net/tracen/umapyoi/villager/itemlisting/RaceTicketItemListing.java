@@ -13,9 +13,10 @@ import net.tracen.umapyoi.registry.races.Race;
 import net.tracen.umapyoi.registry.races.RaceRegistry;
 import net.tracen.umapyoi.utils.RaceRanking;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
+
+import javax.annotation.Nullable;
 
 public class RaceTicketItemListing implements VillagerTrades.ItemListing {
     private final int level;

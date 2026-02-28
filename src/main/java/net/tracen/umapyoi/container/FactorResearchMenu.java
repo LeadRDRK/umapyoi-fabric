@@ -1,6 +1,9 @@
 package net.tracen.umapyoi.container;
 
+import static net.tracen.umapyoi.item.ItemRegistry.UMA_FACTOR_ITEM;
+
 import com.google.common.base.Equivalence;
+
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -17,13 +20,14 @@ import net.tracen.umapyoi.registry.factors.FactorType;
 import net.tracen.umapyoi.registry.factors.UmaFactorStack;
 import net.tracen.umapyoi.utils.UmaFactorUtils;
 
-import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static net.tracen.umapyoi.item.ItemRegistry.UMA_FACTOR_ITEM;
+import javax.annotation.Nonnull;
 
 public class FactorResearchMenu extends ItemCombinerMenu {
     public FactorResearchMenu(int pContainerId, Inventory pPlayerInventory) {

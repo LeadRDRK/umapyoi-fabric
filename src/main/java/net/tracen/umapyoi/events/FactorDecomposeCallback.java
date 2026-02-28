@@ -1,17 +1,18 @@
 package net.tracen.umapyoi.events;
 
+import static net.tracen.umapyoi.container.FactorDecomposeMenu.AllowContinueDefaultLogic;
+import static net.tracen.umapyoi.container.FactorDecomposeMenu.DefaultAlgResultStacks;
+
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.registry.factors.UmaFactorStack;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static net.tracen.umapyoi.container.FactorDecomposeMenu.AllowContinueDefaultLogic;
-import static net.tracen.umapyoi.container.FactorDecomposeMenu.DefaultAlgResultStacks;
+import javax.annotation.Nullable;
 
 /**
  * This event would be posted whenever a player tries to decompose a factor item inside the derby stallion table.<br>

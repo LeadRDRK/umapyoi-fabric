@@ -1,7 +1,5 @@
 package net.tracen.umapyoi.client.screen;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -12,12 +10,11 @@ import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.client.model.SimpleBedrockModel;
 import net.tracen.umapyoi.client.model.bedrock.BedrockPart;
 import net.tracen.umapyoi.container.FactorDecomposeMenu;
-import net.tracen.umapyoi.data.builtin.UmaDataRegistry;
 import net.tracen.umapyoi.registry.umadata.UmaData;
 import net.tracen.umapyoi.utils.ClientUtils;
+
 import org.joml.Quaternionf;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

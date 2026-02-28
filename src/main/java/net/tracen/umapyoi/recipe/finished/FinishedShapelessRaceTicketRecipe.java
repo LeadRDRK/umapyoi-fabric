@@ -2,6 +2,7 @@ package net.tracen.umapyoi.recipe.finished;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -9,8 +10,9 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.recipe.RecipeSerializerRegistry;
 
-import javax.annotation.Nullable;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 public record FinishedShapelessRaceTicketRecipe(ResourceLocation id, List<Ingredient> ingredients,
                                                 ResourceLocation race) implements FinishedRecipe {

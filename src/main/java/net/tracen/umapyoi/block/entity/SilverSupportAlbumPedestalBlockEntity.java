@@ -22,7 +22,6 @@ import net.tracen.umapyoi.UmapyoiConfigModel;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
 import net.tracen.umapyoi.events.SupportCardGachaCallback;
-import net.tracen.umapyoi.events.UmaSoulGachaCallback;
 import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.registry.training.card.SupportCard;
 import net.tracen.umapyoi.utils.ClientUtils;

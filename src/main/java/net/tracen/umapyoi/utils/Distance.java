@@ -1,6 +1,7 @@
 package net.tracen.umapyoi.utils;
 
 import com.mojang.serialization.Codec;
+
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Arrays;

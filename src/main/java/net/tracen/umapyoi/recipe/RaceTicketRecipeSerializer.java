@@ -1,12 +1,14 @@
 package net.tracen.umapyoi.recipe;
 
 import com.google.gson.JsonObject;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.tracen.umapyoi.item.ItemRegistry;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiFunction;

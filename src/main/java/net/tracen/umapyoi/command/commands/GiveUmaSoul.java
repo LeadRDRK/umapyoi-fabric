@@ -6,6 +6,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -24,14 +25,15 @@ import net.tracen.umapyoi.registry.umadata.Motivations;
 import net.tracen.umapyoi.registry.umadata.UmaData;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.IntStream;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class GiveUmaSoul {
     private static List<SubCommand<GiveBuilder>> subCommands;

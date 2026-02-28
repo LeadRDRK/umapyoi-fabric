@@ -1,7 +1,6 @@
 package net.tracen.umapyoi;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.tracen.umapyoi.block.RaceRegisterBlock;
 import net.tracen.umapyoi.client.screen.ScreensRegistry;
 import net.tracen.umapyoi.events.client.RenderArmCallback;
 import net.tracen.umapyoi.events.client.RenderingUmaSoulCallback;

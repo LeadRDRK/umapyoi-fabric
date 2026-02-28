@@ -1,5 +1,7 @@
 package net.tracen.umapyoi.client.screen.setting;
 
+import static net.tracen.umapyoi.client.SkillOverlay.renderSkill;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -10,9 +12,8 @@ import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.client.MotivationOverlay;
 import net.tracen.umapyoi.client.SkillOverlay;
 import net.tracen.umapyoi.registry.UmaSkillRegistry;
-import org.lwjgl.glfw.GLFW;
 
-import static net.tracen.umapyoi.client.SkillOverlay.renderSkill;
+import org.lwjgl.glfw.GLFW;
 
 public class OverlayScreen extends Screen {
     private Button buttonSave;

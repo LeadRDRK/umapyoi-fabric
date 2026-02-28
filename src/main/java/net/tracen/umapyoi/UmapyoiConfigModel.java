@@ -78,4 +78,9 @@ public class UmapyoiConfigModel {
     public boolean TOOLTIP_SWITCH = true;
 
     public boolean DISPLAY_DETAIL = false;
+
+    public int TOPLEFT_COORD_SKILL_X = 102;
+    public int TOPLEFT_COORD_SKILL_Y = -21;
+    public int TOPLEFT_COORD_MOTIVATION_X = 118;
+    public int TOPLEFT_COORD_MOTIVATION_Y = -37;
 }

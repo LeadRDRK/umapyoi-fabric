@@ -92,7 +92,7 @@ public class UmapyoiAPI {
     public static boolean isUmaSuitHasHat(LivingEntity player) {
         var item = UmapyoiAPI.getUmaSuit(player).getItem();
         if (item instanceof AbstractSuitItem suit) {
-            return !suit.getBaseModel().hat.isEmpty();
+            return !suit.getBaseModel().getChild("hat").isEmpty();
         }
         return false;
     }

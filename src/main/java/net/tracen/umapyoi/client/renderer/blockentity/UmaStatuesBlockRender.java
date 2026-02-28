@@ -104,7 +104,7 @@ public class UmaStatuesBlockRender implements BlockEntityRenderer<UmaStatueBlock
         }
 
         if (doRenderSuit) {
-            ClientUtils.setUmaModelVisibilityForSuit(model, costumeItem);
+            ClientUtils.setUmaModelVisibilityForSuit(model, costumeItem, costumeModel);
         }
         else {
             model.setAllVisible(true);

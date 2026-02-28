@@ -144,11 +144,16 @@ public class ClientUtils {
     }
 
     public static void setUmaModelVisibilityForSuit(UmaPlayerModel<?> model, ItemStack suitItem) {
+        if (suitItem.getItem() instanceof AbstractSuitItem suit) {
+            setUmaModelVisibilityForSuit(model, suitItem, suit.getBaseModel());
+        }
+    }
+
+    public static void setUmaModelVisibilityForSuit(UmaPlayerModel<?> model, ItemStack suitItem, UmaPlayerModel<?> suitModel) {
         model.setAllVisible(false);
         model.setHeadVisible(true);
         model.setTailVisible(true);
-        if (suitItem.getItem() instanceof AbstractSuitItem suit
-                && !suit.getBaseModel().getChild("hat").isEmpty()) {
+        if (!suitModel.getChild("hat").isEmpty()) {
             ResourceLocation loc = UmaCostumeItem.getCostumeID(suitItem);
             var costumeData = ClientUtils.getClientCosmeticDataRegistry().getHolder(
                     ResourceKey.create(CosmeticData.REGISTRY_KEY, loc)

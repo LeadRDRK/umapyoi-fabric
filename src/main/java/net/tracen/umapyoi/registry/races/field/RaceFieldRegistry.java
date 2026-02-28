@@ -10,9 +10,6 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.function.Function;
 
-/**
- * For reference only. Real data is from the builtin datapack generated from the upstream repository.
- */
 public class RaceFieldRegistry {
     public static final ResourceLocation CONST_ADAPTIVE = new ResourceLocation(Umapyoi.MODID, "adaptive");
 

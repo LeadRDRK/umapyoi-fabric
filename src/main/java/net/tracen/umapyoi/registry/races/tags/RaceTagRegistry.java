@@ -8,9 +8,6 @@ import net.tracen.umapyoi.Umapyoi;
 import java.util.HashMap;
 import java.util.function.Function;
 
-/**
- * Reference only. Data are registered through the datagen of upstream repository.
- */
 public class RaceTagRegistry {
     public static ResourceKey<RaceTag> TRIPLE_TIARA = simpleRegister("triple_tiara", 3, true,
             new int[]{1, 1, 1, 1, 1}); //note: 三后冠

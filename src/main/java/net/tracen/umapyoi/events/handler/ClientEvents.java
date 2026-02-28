@@ -55,27 +55,6 @@ public class ClientEvents {
 
     private static final UmaPlayerModel<LivingEntity> baseModel = new UmaPlayerModel<>();
 
-    public static boolean onPlayerArmRendering(RenderArmCallback.Context event) {
-        Player player = event.getPlayer();
-        ItemStack umasoul = UmapyoiAPI.getRenderingUmaSoul(player);
-        ItemStack umasuit = UmapyoiAPI.getUmaSuit(player);
-        if (!umasoul.isEmpty()) {
-            ResourceLocation name = UmaSoulUtils.getName(umasoul);
-            VertexConsumer vertexconsumer = event.getMultiBufferSource()
-                    .getBuffer(RenderType.entityTranslucent(getTexture(name)));
-            var pojo = ClientUtils.getModelPOJO(name);
-            if(!umasuit.isEmpty()) {
-                boolean tanned = ClientUtils.isTannedSkin(umasoul);
-                vertexconsumer = event.getMultiBufferSource()
-                        .getBuffer(RenderType.entityTranslucent(UmaCostumeModelUtils.getCostumeTexture(umasuit, tanned)));
-                pojo = ClientUtils.getModelPOJO(UmaCostumeModelUtils.getCostumeModel(umasuit));
-            }
-            renderArmModel(event, name, vertexconsumer, pojo);
-            return true;
-        }
-        return false;
-    }
-
     private static void renderArmModel(RenderArmCallback.Context event, ResourceLocation name, VertexConsumer vertexconsumer,
                                        BedrockModelPOJO pojo) {
         if(baseModel.needRefresh(pojo))
@@ -114,7 +93,24 @@ public class ClientEvents {
         }
     }
 
-    private static ResourceLocation getTexture(ResourceLocation name) {
-        return new ResourceLocation(name.getNamespace(), "textures/model/" + name.getPath() + ".png");
+    public static boolean onPlayerArmRendering(RenderArmCallback.Context event) {
+        Player player = event.getPlayer();
+        ItemStack umasoul = UmapyoiAPI.getRenderingUmaSoul(player);
+        ItemStack umasuit = UmapyoiAPI.getUmaSuit(player);
+        if (!umasoul.isEmpty()) {
+            ResourceLocation name = UmaSoulUtils.getName(umasoul);
+            VertexConsumer vertexconsumer = event.getMultiBufferSource()
+                    .getBuffer(RenderType.entityTranslucent(ClientUtils.getTexture(name)));
+            var pojo = ClientUtils.getModelPOJO(name);
+            if(!umasuit.isEmpty()) {
+                boolean tanned = ClientUtils.isTannedSkin(umasoul);
+                vertexconsumer = event.getMultiBufferSource()
+                        .getBuffer(RenderType.entityTranslucent(UmaCostumeModelUtils.getCostumeTexture(umasuit, tanned)));
+                pojo = ClientUtils.getModelPOJO(UmaCostumeModelUtils.getCostumeModel(umasuit));
+            }
+            renderArmModel(event, name, vertexconsumer, pojo);
+            return true;
+        }
+        return false;
     }
 }

@@ -39,9 +39,6 @@ import net.tracen.umapyoi.utils.Year;
 import java.util.HashMap;
 import java.util.function.Function;
 
-/**
- * For reference only. Data are present in the datagen in the upstream repository.
- */
 public class RaceRegistry {
     public static final String PREDICATE_CHAMPIONS = "champions";
     
@@ -181,7 +178,7 @@ public class RaceRegistry {
                     .setRanking(RaceRanking.GIII)
                     .setSurface(Surface.TURF)
                     .setLength(1200)
-                    .setField("kokuro")
+                    .setField(KOKURA)
                     .addAttr(0)
                     ::create
     );
@@ -324,7 +321,7 @@ public class RaceRegistry {
                     ::create
     );
 
-    public static final ResourceKey<Race> KYOTO_JUNIOR_STAKES = simpleRegister("kyoto_nisai_stakes",
+    public static final ResourceKey<Race> KYOTO_JUNIOR_STAKES = simpleRegister("kyoto_junior_stakes",
             new RaceBuilder().setTime(11, true)
                     .addYear(Year.JUNIOR)
                     .setRanking(RaceRanking.GIII)
@@ -815,7 +812,7 @@ public class RaceRegistry {
                     ::create
     );
 
-    public static final ResourceKey<Race> FALCON_STAKES = simpleRegister("falkon_stakes",
+    public static final ResourceKey<Race> FALCON_STAKES = simpleRegister("falcon_stakes",
             new RaceBuilder().setTime(3, true)
                     .addYear(Year.CLASSIC)
                     .setRanking(RaceRanking.GIII)
@@ -2771,16 +2768,16 @@ public class RaceRegistry {
                     ::create
     );
     /*
-    * 编者注:
-    * 这场比赛(ダイオライト記念)的中文/英文翻译都有歧义，一说Diolite Kinen(大尾光纪念赛, 简中, HKJC采用翻译), 一说Diorite Kinen(闪长岩纪念赛, 繁中采用)
-    * 编者认为大尾光纪念赛更加符合原意，原因如下：
-    * 根据地方竞马全国协会(NAR)在官方网站对ダイオライト記念的历史介绍中，有:
-    * > 英国から輸入され千葉県の下総御料牧場に繋養された種牡馬ダイオライトの名を冠した伝統の重賞。
-    * > (翻译: 这项传统重赏赛事以种牡马“ダイオライト (Diolite)”命名。该马自英国引入，并被饲养在千叶县的下总御料牧场。)
-    * 而Diolite是官方的欧字表记。
-    * 所以这场比赛的英文应当采用这匹马的欧字表记，即Diolite Kinen
-    * 而中文则应该采用这匹马的中文译名"大尾光"(HKJC在粤语中做的音译+意译的尝试), 或者迪奥莱特 / 戴奥莱特, 但"闪长岩"的确偏离原意。
-    */
+     * 编者注:
+     * 这场比赛(ダイオライト記念)的中文/英文翻译都有歧义，一说Diolite Kinen(大尾光纪念赛, 简中, HKJC采用翻译), 一说Diorite Kinen(闪长岩纪念赛, 繁中采用)
+     * 编者认为大尾光纪念赛更加符合原意，原因如下：
+     * 根据地方竞马全国协会(NAR)在官方网站对ダイオライト記念的历史介绍中，有:
+     * > 英国から輸入され千葉県の下総御料牧場に繋養された種牡馬ダイオライトの名を冠した伝統の重賞。
+     * > (翻译: 这项传统重赏赛事以种牡马“ダイオライト (Diolite)”命名。该马自英国引入，并被饲养在千叶县的下总御料牧场。)
+     * 而Diolite是官方的欧字表记。
+     * 所以这场比赛的英文应当采用这匹马的欧字表记，即Diolite Kinen
+     * 而中文则应该采用这匹马的中文译名"大尾光"(HKJC在粤语中做的音译+意译的尝试), 或者迪奥莱特 / 戴奥莱特, 但"闪长岩"的确偏离原意。
+     */
 
     public static final ResourceKey<Race> MARCH_STAKES = simpleRegister("march_stakes",
             new RaceBuilder().setTime(3, true)
@@ -3376,7 +3373,7 @@ public class RaceRegistry {
                     ::create
     );
 
-    public static final ResourceKey<Race> CAPRICORNUS_CUP = simpleRegister("capriconrnus_cup",
+    public static final ResourceKey<Race> CAPRICORNUS_CUP = simpleRegister("capricornus_cup",
             new RaceBuilder().setRanking(RaceRanking.GI)
                     .addYear(Year.AFTER_REGULAR)
                     .setTime(1, false)

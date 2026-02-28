@@ -22,7 +22,7 @@ public class SkillOverlay implements HudRenderCallback {
     public SkillOverlay() {
     }
 
-    private static final ResourceLocation HUD = new ResourceLocation(Umapyoi.MODID, "textures/gui/skill_hud.png");
+    public static final ResourceLocation HUD = new ResourceLocation(Umapyoi.MODID, "textures/gui/skill_hud.png");
 
     @Override
     public void onHudRender(GuiGraphics guiGraphics, float tickDelta) {
@@ -41,8 +41,10 @@ public class SkillOverlay implements HudRenderCallback {
             return;
 
         if (!UmapyoiAPI.getUmaSoul(player).isEmpty()) {
-            guiGraphics.blit(HUD, x + 102, y - 21, 0, 0, 96, 20, 128, 64);
-            renderSkill(UmapyoiAPI.getUmaSoul(player), guiGraphics, x + 102, y - 21);
+            int xOffset = Umapyoi.CONFIG.TOPLEFT_COORD_SKILL_X();
+            int yOffset = Umapyoi.CONFIG.TOPLEFT_COORD_SKILL_Y();
+            guiGraphics.blit(HUD, x + xOffset, y + yOffset, 0, 0, 96, 20, 128, 64);
+            renderSkill(UmapyoiAPI.getUmaSoul(player), guiGraphics, x + xOffset, y + yOffset);
         }
     }
 
@@ -50,11 +52,11 @@ public class SkillOverlay implements HudRenderCallback {
         UmaSkill skill = UmaSkillRegistry.REGISTRY.get().get(UmaSoulUtils.getSelectedSkill(soul));
         if (skill != null) {
             switch (skill.getType()) {
-            case BUFF -> guiGraphics.blit(HUD, x + 3, y + 2, 0, 48, 16, 16, 128, 64);
-            case HINDER -> guiGraphics.blit(HUD, x + 3, y + 2, 16, 48, 16, 16, 128, 64);
-            case HEAL -> guiGraphics.blit(HUD, x + 3, y + 2, 32, 48, 16, 16, 128, 64);
-            case PASSIVE -> guiGraphics.blit(HUD, x + 3, y + 2, 48, 48, 16, 16, 128, 64);
-            default -> throw new IllegalArgumentException("Unexpected value: " + skill.getType());
+                case BUFF -> guiGraphics.blit(HUD, x + 3, y + 2, 0, 48, 16, 16, 128, 64);
+                case HINDER -> guiGraphics.blit(HUD, x + 3, y + 2, 16, 48, 16, 16, 128, 64);
+                case HEAL -> guiGraphics.blit(HUD, x + 3, y + 2, 32, 48, 16, 16, 128, 64);
+                case PASSIVE -> guiGraphics.blit(HUD, x + 3, y + 2, 48, 48, 16, 16, 128, 64);
+                default -> throw new IllegalArgumentException("Unexpected value: " + skill.getType());
             }
             guiGraphics.drawString(this.minecraft.font, skill.getDescription(), x + 22, y + 6, 0x794016, false);
         } else {

@@ -48,6 +48,7 @@ import net.tracen.umapyoi.events.client.RenderingUmaSoulCallback;
 import net.tracen.umapyoi.registry.UmapyoiAttributesRegistry;
 import net.tracen.umapyoi.registry.umadata.Growth;
 import net.tracen.umapyoi.registry.umadata.UmaData;
+import net.tracen.umapyoi.utils.Aptitude;
 import net.tracen.umapyoi.utils.ClientUtils;
 import net.tracen.umapyoi.utils.GachaRanking;
 import net.tracen.umapyoi.utils.ResultRankingUtils;
@@ -178,6 +179,30 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
                     UmaStatusUtils.getStatusLevel(property[StatusType.WISDOM.getId()]),
                     UmaStatusUtils.getStatusLevel(maxProperty[StatusType.WISDOM.getId()]))
                             .withStyle(ChatFormatting.DARK_GREEN));
+            tooltip.add(Component.literal(""));
+
+            tooltip.add(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.details").withStyle(ChatFormatting.AQUA));
+            Aptitude[] surfaceAptitudes = UmaSoulUtils.getSurfaceAptitudeReadonly(stack);
+            tooltip.add(
+                    Component.translatable("tooltip.umapyoi.uma_soul.aptitude.turf", surfaceAptitudes[0].styledComponent()).withStyle(ChatFormatting.GREEN)
+                            .append(" / ").withStyle(ChatFormatting.RESET)
+                            .append(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.dirt", surfaceAptitudes[1].styledComponent()).withStyle(ChatFormatting.GOLD))
+                            .append(" / ").withStyle(ChatFormatting.RESET)
+                            .append(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.synthetic", surfaceAptitudes[2].styledComponent()).withStyle(ChatFormatting.GOLD))
+            );
+            Aptitude[] distanceAptitudes = UmaSoulUtils.getDistanceAptitudeReadonly(stack);
+            tooltip.add(
+                    Component.translatable("tooltip.umapyoi.uma_soul.aptitude.short", distanceAptitudes[0].styledComponent())
+                            .append(" / ")
+                            .append(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.miles", distanceAptitudes[1].styledComponent())
+                                    .append(" / ")
+                                    .append(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.medium", distanceAptitudes[2].styledComponent()))
+                                    .append(" / ")
+                                    .append(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.long", distanceAptitudes[3].styledComponent())))
+            );
+            tooltip.add(
+                    Component.translatable("tooltip.umapyoi.uma_soul.aptitude.strategy", Component.translatable("tooltip.umapyoi.uma_soul.aptitude.strategy." + UmaSoulUtils.getPosition(stack).name().toLowerCase()))
+            );
         } else {
             tooltip.add(Component.translatable("tooltip.umapyoi.press_shift_for_details")
                     .withStyle(ChatFormatting.AQUA));

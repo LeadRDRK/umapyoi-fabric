@@ -1,6 +1,9 @@
 package net.tracen.umapyoi.utils;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -8,6 +11,9 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.tracen.umapyoi.Umapyoi;
+import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.data.builtin.UmaDataRegistry;
 import net.tracen.umapyoi.registry.UmaSkillRegistry;
 import net.tracen.umapyoi.registry.umadata.Growth;
@@ -42,6 +48,20 @@ public class UmaSoulUtils {
         tag.putIntArray("distanceAptitude", Arrays.stream(data.distanceAptitude()).map(Aptitude::ordinal).toList());
         return result;
     }
+
+    public static Position getPosition(ItemStack stack, Level world) {
+        UmaData umaData = UmapyoiAPI.getUmaDataRegistry(world).getOptional(UmaSoulUtils.getName(stack)).orElseGet(() -> {
+            Umapyoi.getLogger().info("Warning: {} doesn't exist.", UmaSoulUtils.getName(stack));
+            return UmaData.DEFAULT_UMA;
+        });
+        return umaData.position();
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static Position getPosition(ItemStack stack) {
+        return getPosition(stack, Minecraft.getInstance().level);
+    }
+
 
     public static int[] getSurfaceAptitude(ItemStack stack) {
         return stack.getOrCreateTag().getIntArray("surfaceAptitude").length >= 3

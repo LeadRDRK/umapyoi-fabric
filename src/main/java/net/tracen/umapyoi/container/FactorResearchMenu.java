@@ -159,7 +159,7 @@ public class FactorResearchMenu extends ItemCombinerMenu {
         this.resultSlots.awardUsedRecipes(player, this.getRelevantItems());
         this.shrinkStackInSlot(0);
         this.shrinkStackInSlot(1);
-        if (player.level().isClientSide)
+        if (player.level().isClientSide())
             player.playSound(SoundEvents.AMETHYST_CLUSTER_BREAK, 1F, 1F);
     }
 }

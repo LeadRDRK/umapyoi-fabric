@@ -22,9 +22,13 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
+import net.tracen.umapyoi.client.model.UmaPlayerModel;
 import net.tracen.umapyoi.client.model.bedrock.BedrockVersion;
 import net.tracen.umapyoi.client.model.pojo.BedrockModelPOJO;
+import net.tracen.umapyoi.data.tag.UmapyoiCostumeDataTags;
 import net.tracen.umapyoi.data.tag.UmapyoiUmaDataTags;
+import net.tracen.umapyoi.item.AbstractSuitItem;
+import net.tracen.umapyoi.item.UmaCostumeItem;
 import net.tracen.umapyoi.registry.cosmetics.CosmeticData;
 import net.tracen.umapyoi.registry.races.Race;
 import net.tracen.umapyoi.registry.races.field.RaceField;
@@ -137,6 +141,26 @@ public class ClientUtils {
         multibuffersource$buffersource.endBatch();
         guiGraphic.pose().popPose();
         Lighting.setupFor3DItems();
+    }
+
+    public static void setUmaModelVisibilityForSuit(UmaPlayerModel<?> model, ItemStack suitItem) {
+        model.setAllVisible(false);
+        model.setHeadVisible(true);
+        model.setTailVisible(true);
+        if (suitItem.getItem() instanceof AbstractSuitItem suit
+                && !suit.getBaseModel().hat.isEmpty()) {
+            ResourceLocation loc = UmaCostumeItem.getCostumeID(suitItem);
+            var costumeData = ClientUtils.getClientCosmeticDataRegistry().getHolder(
+                    ResourceKey.create(CosmeticData.REGISTRY_KEY, loc)
+            );
+            if (costumeData.get().is(UmapyoiCostumeDataTags.HAT_HIDEHAIR)) {
+                model.setLongHairPartsVisible(false);
+            }
+            model.setHatAndEarsVisible(false, true);
+        }
+        else {
+            model.setHatAndEarsVisible(true, true);
+        }
     }
 
     /****** MMLib ******/

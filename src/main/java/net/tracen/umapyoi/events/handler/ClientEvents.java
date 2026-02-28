@@ -6,7 +6,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,11 +15,8 @@ import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.client.model.UmaCostumeModelUtils;
 import net.tracen.umapyoi.client.model.UmaPlayerModel;
 import net.tracen.umapyoi.client.model.pojo.BedrockModelPOJO;
-import net.tracen.umapyoi.data.tag.UmapyoiCostumeDataTags;
 import net.tracen.umapyoi.events.client.RenderArmCallback;
 import net.tracen.umapyoi.events.client.RenderingModelCallback;
-import net.tracen.umapyoi.item.UmaCostumeItem;
-import net.tracen.umapyoi.registry.cosmetics.CosmeticData;
 import net.tracen.umapyoi.utils.ClientUtils;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
@@ -31,22 +27,8 @@ public class ClientEvents {
         var model = event.getModel();
 
         if (UmapyoiAPI.isUmaSuitRendering(entity)) {
-            model.setAllVisible(false);
-            model.setHeadVisible(true);
-            model.setTailVisible(true);
-            if (UmapyoiAPI.isUmaSuitHasHat(entity)) {
-                ResourceLocation loc = UmaCostumeItem.getCostumeID(UmapyoiAPI.getUmaSuit(entity));
-                var costumeData = ClientUtils.getClientCosmeticDataRegistry().getHolder(
-                        ResourceKey.create(CosmeticData.REGISTRY_KEY, loc)
-                );
-                if (costumeData.get().is(UmapyoiCostumeDataTags.HAT_HIDEHAIR)) {
-                    model.setLongHairPartsVisible(false);
-                }
-                model.setHatAndEarsVisible(false, true);
-            }
-            else {
-                model.setHatAndEarsVisible(true, true);
-            }
+            var suitItem = UmapyoiAPI.getUmaSuit(entity);
+            ClientUtils.setUmaModelVisibilityForSuit(model, suitItem);
         }
 
         // continue

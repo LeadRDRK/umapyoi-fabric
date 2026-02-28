@@ -388,7 +388,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
         return renderTarget;
     }
 
-    private static ResourceLocation getSuitTarget(ItemStack stack, boolean alter) {
+    public static ResourceLocation getSuitTarget(ItemStack stack, boolean alter) {
         ResourceLocation identifier = ClientUtils.getClientUmaDataRegistry().get(UmaSoulUtils.getName(stack)).getIdentifier();
         if(alter)
             identifier = new ResourceLocation(identifier.getNamespace(), identifier.getPath()+"_alter");

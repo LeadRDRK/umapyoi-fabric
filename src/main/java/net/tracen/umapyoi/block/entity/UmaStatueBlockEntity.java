@@ -57,7 +57,7 @@ public class UmaStatueBlockEntity extends SyncedInventoryEntity {
             return item;
         }
         if (!isEmpty()) {
-            ItemStack item = removeItem(0, 1);
+            ItemStack item = getStoredItem().split(1);
             setChanged();
             return item;
         }

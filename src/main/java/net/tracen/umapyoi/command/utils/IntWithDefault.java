@@ -73,7 +73,8 @@ public class IntWithDefault implements ArgumentType<Either<Integer, String>> {
     }
 
     public static Integer getResult(CommandContext<?> ctx, String name, @Nullable Integer defaultValue) {
-        Either<Integer, String> result = ctx.getArgument(name, Either.class);
+        @SuppressWarnings("unchecked")
+        Either<Integer, String> result = (Either<Integer, String>) ctx.getArgument(name, Either.class);
         AtomicReference<Integer> ret = new AtomicReference<>();
         result.ifLeft(ret::set).ifRight((j) -> ret.set(defaultValue));
         return ret.get();

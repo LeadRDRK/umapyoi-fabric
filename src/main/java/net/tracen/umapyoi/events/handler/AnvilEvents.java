@@ -1,9 +1,15 @@
 package net.tracen.umapyoi.events.handler;
 
+import com.mojang.datafixers.util.Pair;
+
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.data.builtin.UmaDataRegistry;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
@@ -47,6 +53,7 @@ public class AnvilEvents {
                     this::venusParkSoul,
                     this::zhengSoul,
                     this::dumnheintSoul,
+                    this::stardustSoul,
                     this::darleySoul,
                     this::byerleySoul,
                     this::godolphinSoul,
@@ -154,6 +161,35 @@ public class AnvilEvents {
             ItemStack egg = ItemRegistry.BLANK_UMA_SOUL.get().getDefaultInstance();
             egg.getOrCreateTag().putString("name", id.toString());
 
+            return Optional.of(AnvilUpdateCallback.Result.pass(egg.copy(), 5, 1));
+        }
+
+        private Optional<AnvilUpdateCallback.Result> stardustSoul() {
+            if (!soul.is(ItemRegistry.BLANK_UMA_SOUL.get())) return Optional.empty();
+            Potion potion = PotionUtils.getPotion(material);
+            boolean flag1 = potion.getEffects().stream()
+                    .anyMatch(eff -> eff.getEffect().equals(MobEffects.MOVEMENT_SPEED));
+            boolean flag2 = Optional.ofNullable(material.getItem().getFoodProperties())
+                    .map(FoodProperties::getEffects)
+                    .map(p -> p.stream()
+                            .map(Pair::getFirst)
+                            .anyMatch(eff -> eff.getEffect().equals(MobEffects.MOVEMENT_SPEED))
+                    )
+                    .orElse(false);
+            if (!(flag1 || flag2)) return Optional.empty();
+            if (!itemName.equalsIgnoreCase("synchro")) return Optional.empty();
+            var registry = UmapyoiAPI.getUmaDataRegistry(player.level());
+            ResourceLocation name = soul.getOrCreateTag().contains("name") ?
+                    ResourceLocation.tryParse(soul.getOrCreateTag().getString("name")) :
+                    UmaDataRegistry.COMMON_UMA.location();
+            if(!registry.containsKey(name) ||
+                    !registry.get(name).getIdentifier().equals(UmaDataRegistry.SILENCE_SUZUKA.location()))
+                return Optional.empty();
+
+            var id = UmaDataRegistry.STARDUST.location();
+            if (!registry.containsKey(id)) return Optional.empty();
+
+            ItemStack egg = FadedUmaSoulItem.genUmaSoul(id.toString(), registry.get(id));
             return Optional.of(AnvilUpdateCallback.Result.pass(egg.copy(), 5, 1));
         }
 

@@ -9,6 +9,7 @@ import net.minecraft.world.item.Items;
 import net.tracen.umapyoi.data.builtin.CostumeDataRegistry;
 import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.item.UmaCostumeItem;
+import net.tracen.umapyoi.villager.itemlisting.RaceTicketItemListing;
 import net.tracen.umapyoi.villager.itemlisting.RandomItemOrderItemListing;
 import net.tracen.umapyoi.villager.itemlisting.RandomPriceOrderItemListing;
 import net.tracen.umapyoi.villager.itemlisting.RandomPriceSellItemListing;
@@ -148,6 +149,12 @@ public class VillagerTradeRegistry {
                         new ItemStack(ItemRegistry.MENTALITY_HIGH_ITEM.get()),
                         new ItemStack(ItemRegistry.WISDOM_HIGH_ITEM.get())), 2, 2, 5, 6, 30, 0.2F))
         );
+
+        for (int i = 1; i <= 5; i++) {
+            var listing = new RaceTicketItemListing(i);
+            TradeOfferHelper.registerVillagerOffers(VillageRegistry.TRAINER.get(), i, factories ->
+                    factories.add(listing));
+        }
     }
 
     private static void registerWandererOffers() {

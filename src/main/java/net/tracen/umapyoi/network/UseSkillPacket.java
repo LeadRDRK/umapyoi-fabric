@@ -54,11 +54,15 @@ public class UseSkillPacket implements FabricPacket {
                 return;
 
             int ap = UmaSoulUtils.getActionPoint(umaSoul);
-            if (ap >= selectedSkill.getActionPoint()) {
+            var evt = new UseSkillCallback.Context(selectedSkillName, player.level(), player, selectedSkill.getActionPoint());
+            if (UseSkillCallback.invoke(evt))
+                return;
+            int apNeeded = evt.getAp();
+            if (ap >= apNeeded) {
                 player.connection.send(new ClientboundSoundPacket(Holder.direct(selectedSkill.getSound()), SoundSource.PLAYERS,
                         player.getX(), player.getY(), player.getZ(), 1F, 1F, 0L));
                 selectedSkill.applySkill(player.level(), player);
-                UmaSoulUtils.setActionPoint(umaSoul, ap - selectedSkill.getActionPoint());
+                UmaSoulUtils.setActionPoint(umaSoul, ap - apNeeded);
 
                 var applyEvent = new ApplySkillCallback.Context(UmaSkillRegistry.REGISTRY.get().getKey(selectedSkill), player.level(), player);
                 ApplySkillCallback.invoke(applyEvent);

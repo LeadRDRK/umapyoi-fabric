@@ -13,13 +13,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
-import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.block.entity.BlockEntityRegistry;
 import net.tracen.umapyoi.client.ActionBarOverlay;
@@ -27,6 +25,7 @@ import net.tracen.umapyoi.client.MotivationOverlay;
 import net.tracen.umapyoi.client.SkillOverlay;
 import net.tracen.umapyoi.client.key.SkillKeyMapping;
 import net.tracen.umapyoi.client.model.*;
+import net.tracen.umapyoi.client.renderer.blockentity.GateRender;
 import net.tracen.umapyoi.client.renderer.blockentity.SilverSupportAlbumPedestalBlockRender;
 import net.tracen.umapyoi.client.renderer.blockentity.SilverUmaPedestalBlockRender;
 import net.tracen.umapyoi.client.renderer.blockentity.SupportAlbumPedestalBlockRender;
@@ -36,6 +35,8 @@ import net.tracen.umapyoi.client.renderer.blockentity.UmaStatuesBlockRender;
 import net.tracen.umapyoi.item.AbstractSuitItem;
 import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.item.UmaSoulItem;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.function.BiFunction;
@@ -71,6 +72,7 @@ public class ClientSetupEvents {
         BlockEntityRenderers.register(BlockEntityRegistry.SILVER_UMA_PEDESTAL.get(), SilverUmaPedestalBlockRender::new);
         BlockEntityRenderers.register(BlockEntityRegistry.SILVER_SUPPORT_ALBUM_PEDESTAL.get(),
                 SilverSupportAlbumPedestalBlockRender::new);
+        BlockEntityRenderers.register(BlockEntityRegistry.GATE.get(), GateRender::new);
 
         // resourceLoadingListener
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES)
@@ -79,67 +81,48 @@ public class ClientSetupEvents {
 
     public static void registerModelLoadingPlugin() {
         ModelLoadingPlugin.register(pluginContext -> {
-            FileToIdConverter.json("models/item/costume")
-                    .listMatchingResources(Minecraft.getInstance().getResourceManager())
-                    .keySet()
-                    .stream()
-                    .map(location -> {
-                        Umapyoi.getLogger().info("Found resource:{}", location.toString());
-                        return resolveCostumeLocation(location);
-                    })
-                    .forEach(pluginContext::addModels);
-            pluginContext.modifyModelAfterBake().register(ClientSetupEvents::onBakedModel);
-        });
-
-        ModelLoadingPlugin.register(pluginContext -> {
-            Stream.of("race_ticket", "support_card").forEachOrdered((suffix) -> {
-                FileToIdConverter.json("models/item/" + suffix)
+            Stream.of("costume", "race_ticket", "support_card").forEachOrdered((type) -> {
+                FileToIdConverter.json("models/item/" + type)
                         .listMatchingResources(Minecraft.getInstance().getResourceManager())
                         .keySet()
                         .stream()
-                        .map(loc -> resolveLocationGeneric(suffix, loc))
+                        .map(loc -> resolveModelLocation(type, loc))
                         .forEach(pluginContext::addModels);
             });
 
-            pluginContext.modifyModelAfterBake().register((model, ctx) -> onBakedModelGeneric(
-                    new ModelResourceLocation(ItemRegistry.UMA_RACE_TICKET.getId(), "inventory"),
-                    model, ctx, UmaRaceTicketItemModel::new
-            ));
+            var afterBakeEvent = pluginContext.modifyModelAfterBake();
 
-            pluginContext.modifyModelAfterBake().register((model, ctx) -> onBakedModelGeneric(
-                    new ModelResourceLocation(ItemRegistry.SUPPORT_CARD.getId(), "inventory"),
-                    model, ctx, SupportCardItemModel::new
-            ));
+            afterBakeEvent.register(new BakedModelHandler(ItemRegistry.UMA_COSTUME.getId(),
+                    UmaCostumeItemModel::new));
+
+            afterBakeEvent.register(new BakedModelHandler(ItemRegistry.UMA_RACE_TICKET.getId(),
+                    UmaRaceTicketItemModel::new));
+
+            afterBakeEvent.register(new BakedModelHandler(ItemRegistry.SUPPORT_CARD.getId(),
+                    SupportCardItemModel::new));
         });
     }
 
-    private static ModelResourceLocation resolveLocationGeneric(String name, ResourceLocation location) {
-        return new ModelResourceLocation(location.getNamespace(),
-                name + "/" + location.getPath().substring(13 + name.length() ,location.getPath().length() - 5), "inventory");
+    private static ModelResourceLocation resolveModelLocation(String type, ResourceLocation location) {
+        var modelLoc = type + "/" + location.getPath().substring(
+                "models/item/".length() + type.length() + "/".length(),
+                location.getPath().length() - ".json".length());
+        return new ModelResourceLocation(location.getNamespace(), modelLoc, "inventory");
     }
 
-    private static ModelResourceLocation resolveCostumeLocation(ResourceLocation location) {
-        return new ModelResourceLocation(location.getNamespace(),
-                "costume/" + location.getPath().substring(20,location.getPath().length()-5), "inventory");
-    }
+    private record BakedModelHandler(
+            ResourceLocation namespace,
+            BiFunction<BakedModel, ModelBakery, DynamicItemBakedModel> constructor
+    ) implements ModelModifier.AfterBake {
+        @Override
+        public @Nullable BakedModel modifyModelAfterBake(@Nullable BakedModel bakedModel, Context context) {
+            ModelResourceLocation origin = new ModelResourceLocation(namespace, "inventory");
+            if (Objects.equals(context.id(), origin)) {
+                return constructor.apply(bakedModel, context.loader());
+            }
 
-    public static BakedModel onBakedModelGeneric(ModelResourceLocation origin, BakedModel bakedModel,
-                                                 ModelModifier.AfterBake.Context context,
-                                                 BiFunction<BakedModel, ModelBakery, DynamicItemBakedModel> constructor) {
-        if (Objects.equals(context.id(), origin)) {
-            return constructor.apply(bakedModel, context.loader());
+            return bakedModel;
         }
-
-        return bakedModel;
-    }
-
-    public static BakedModel onBakedModel(BakedModel bakedModel, ModelModifier.AfterBake.Context context) {
-        ModelResourceLocation origin = new ModelResourceLocation(ItemRegistry.UMA_COSTUME.getId(), "inventory");
-        if (Objects.equals(context.id(), origin)) {
-            return new UmaCostumeItemModel(bakedModel, context.loader());
-        }
-
-        return bakedModel;
     }
 
     public static void registerKeyBinds() {

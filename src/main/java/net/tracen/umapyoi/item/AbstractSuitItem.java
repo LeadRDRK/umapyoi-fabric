@@ -114,6 +114,9 @@ public abstract class AbstractSuitItem extends TrinketItem implements TrinketRen
                     RenderType.entityTranslucent(flat_flag ? getFlatTexture(itemStack, tanned) : getTexture(itemStack, tanned)));
 
             var pojo = ClientUtils.getModelPOJO(flat_flag ? getFlatModel(itemStack) : getModel(itemStack));
+            if (pojo == null)
+                return;
+
             if (baseModel.needRefresh(pojo))
                 baseModel.loadModel(pojo);
             baseModel.setModelProperties(entity);

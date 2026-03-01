@@ -21,6 +21,7 @@ import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.block.UmaStatueBlock;
 import net.tracen.umapyoi.block.entity.UmaStatueBlockEntity;
 import net.tracen.umapyoi.client.model.UmaPlayerModel;
+import net.tracen.umapyoi.client.model.pojo.BedrockModelPOJO;
 import net.tracen.umapyoi.data.tag.UmapyoiUmaDataTags;
 import net.tracen.umapyoi.item.AbstractSuitItem;
 import net.tracen.umapyoi.item.ItemRegistry;
@@ -63,18 +64,21 @@ public class UmaStatuesBlockRender implements BlockEntityRenderer<UmaStatueBlock
 
     private void renderModel(UmaStatueBlockEntity tileEntity, Direction direction, PoseStack poseStack,
                              MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
-
-        poseStack.pushPose();
-        poseStack.translate(0.5D, 1.5D, 0.5D);
-
-        poseStack.mulPose(Axis.YN.rotationDegrees(direction.toYRot()));
-        poseStack.mulPose(Axis.XP.rotationDegrees(180));
         ItemStack item = tileEntity.getStoredItem();
-        ResourceLocation target = getRenderTarget(tileEntity);
+        BedrockModelPOJO pojo;
+        if (item.isEmpty() || !item.is(ItemRegistry.UMA_SOUL.get())) {
+            pojo = ClientUtils.getModelPOJO(ClientUtils.UMA_STATUES);
+        }
+        else {
+            ResourceLocation target = getRenderTarget(tileEntity);
+            pojo = ClientUtils.getModelPOJO(target);
+            if (pojo == null)
+                pojo = ClientUtils.getModelPOJO(ClientUtils.UMA_STATUES);
+        }
 
-        var pojo = (tileEntity.isEmpty() || !item.is(ItemRegistry.UMA_SOUL.get())) ?
-                ClientUtils.getModelPOJO(ClientUtils.UMA_STATUES) :
-                ClientUtils.getModelPOJO(target);
+        // will be null during resource reload
+        if (pojo == null)
+            return;
 
         if (model.needRefresh(pojo))
             model.loadModel(pojo);
@@ -92,14 +96,21 @@ public class UmaStatuesBlockRender implements BlockEntityRenderer<UmaStatueBlock
                 boolean is_flat_chest = ClientUtils.isFlatUmamusume(item);
                 boolean is_tanned = ClientUtils.isTannedSkin(item);
 
-                var suitPojo = ClientUtils.getModelPOJO(is_flat_chest ? renderer.getFlatModel(costumeItem) : renderer.getModel(costumeItem));
-                if (costumeModel.needRefresh(suitPojo)) costumeModel.loadModel(suitPojo);
-                costumeModel.leftArm.zRot = model.leftArm.zRot;
-                costumeModel.rightArm.zRot = model.rightArm.zRot;
-                costumeModel.head.visible = false;
-                costumeModel.tail.visible = false;
-                costumeResource = is_flat_chest ? renderer.getFlatTexture(costumeItem, is_tanned) : renderer.getTexture(costumeItem, is_tanned);
-                doRenderSuit = true;
+                var suitPojo = ClientUtils.getModelPOJO(is_flat_chest
+                        ? renderer.getFlatModel(costumeItem)
+                        : renderer.getModel(costumeItem));
+                if (suitPojo != null) {
+                    if (costumeModel.needRefresh(suitPojo))
+                        costumeModel.loadModel(suitPojo);
+
+                    costumeModel.leftArm.zRot = model.leftArm.zRot;
+                    costumeModel.rightArm.zRot = model.rightArm.zRot;
+                    costumeModel.head.visible = false;
+                    costumeModel.tail.visible = false;
+
+                    costumeResource = is_flat_chest ? renderer.getFlatTexture(costumeItem, is_tanned) : renderer.getTexture(costumeItem, is_tanned);
+                    doRenderSuit = true;
+                }
             }
         }
 
@@ -109,6 +120,12 @@ public class UmaStatuesBlockRender implements BlockEntityRenderer<UmaStatueBlock
         else {
             model.setAllVisible(true);
         }
+
+        poseStack.pushPose();
+        poseStack.translate(0.5D, 1.5D, 0.5D);
+
+        poseStack.mulPose(Axis.YN.rotationDegrees(direction.toYRot()));
+        poseStack.mulPose(Axis.XP.rotationDegrees(180));
 
         VertexConsumer vertexConsumer = buffer
                 .getBuffer(RenderType.entityTranslucent(tileEntity.isEmpty() ? TEXTURE : ClientUtils.getTexture(UmaSoulUtils.getName(item))));

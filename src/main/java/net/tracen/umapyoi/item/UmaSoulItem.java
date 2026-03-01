@@ -327,6 +327,9 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
 
         ResourceLocation renderTarget = getRenderTarget(itemStack, entity);
         var pojo = ClientUtils.getModelPOJO(renderTarget);
+        if (pojo == null)
+            return;
+
         if (baseModel.needRefresh(pojo))
             baseModel.loadModel(pojo);
 

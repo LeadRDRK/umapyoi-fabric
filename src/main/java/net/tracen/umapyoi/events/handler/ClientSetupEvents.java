@@ -133,6 +133,7 @@ public class ClientSetupEvents {
         KeyBindingHelper.registerKeyBinding(SkillKeyMapping.KEY_USE_SKILL);
         KeyBindingHelper.registerKeyBinding(SkillKeyMapping.KEY_FORMER_SKILL);
         KeyBindingHelper.registerKeyBinding(SkillKeyMapping.KEY_LATTER_SKILL);
+        KeyBindingHelper.registerKeyBinding(SkillKeyMapping.KEY_CONFIGURE_GUI);
     }
 
     public static void registerGuiOverlay() {

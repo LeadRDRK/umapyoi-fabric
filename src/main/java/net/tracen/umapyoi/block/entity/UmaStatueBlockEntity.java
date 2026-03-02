@@ -7,10 +7,11 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.tracen.umapyoi.item.AbstractSuitItem;
 import net.tracen.umapyoi.item.ItemRegistry;
 
 public class UmaStatueBlockEntity extends SyncedInventoryEntity {
-    private final NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
+    private final NonNullList<ItemStack> items = NonNullList.withSize(2, ItemStack.EMPTY);
     private boolean isValid = false;
 
     public UmaStatueBlockEntity(BlockPos pos, BlockState state) {
@@ -41,12 +42,22 @@ public class UmaStatueBlockEntity extends SyncedInventoryEntity {
             setChanged();
             return true;
         }
+        if (isCostumeEmpty() && !isEmpty() && itemStack.getItem() instanceof AbstractSuitItem) {
+            setItem(1, itemStack.split(1));
+            setChanged();
+            return true;
+        }
         return false;
     }
 
     public ItemStack removeItem() {
+        if (!isCostumeEmpty()) {
+            ItemStack item = getCostume().split(1);
+            setChanged();
+            return item;
+        }
         if (!isEmpty()) {
-            ItemStack item = removeItem(0, 1);
+            ItemStack item = getStoredItem().split(1);
             setChanged();
             return item;
         }
@@ -59,6 +70,14 @@ public class UmaStatueBlockEntity extends SyncedInventoryEntity {
 
     public boolean isEmpty() {
         return items.get(0).isEmpty();
+    }
+
+    public ItemStack getCostume() {
+        return items.get(1);
+    }
+
+    public boolean isCostumeEmpty() {
+        return items.get(1).isEmpty();
     }
 
     @Override

@@ -9,15 +9,15 @@ import java.util.stream.Stream;
 
 public class SkillBooksLoot implements AddLootTableModifier {
     static private final Set<ResourceLocation> TARGET_LOOT_TABLES = Stream.of(
-            "minecraft:chests/abandoned_mineshaft",
-                "minecraft:chests/jungle_temple",
-                "minecraft:chests/simple_dungeon",
-                "minecraft:chests/stronghold_library",
-                "minecraft:chests/woodland_mansion",
-                "minecraft:chests/shipwreck_treasure",
-                "minecraft:chests/buried_treasure",
-                "minecraft:chests/desert_pyramid",
-                "minecraft:chests/spawn_bonus_chest"
+                    "minecraft:chests/abandoned_mineshaft",
+                    "minecraft:chests/jungle_temple",
+                    "minecraft:chests/simple_dungeon",
+                    "minecraft:chests/stronghold_library",
+                    "minecraft:chests/woodland_mansion",
+                    "minecraft:chests/shipwreck_treasure",
+                    "minecraft:chests/buried_treasure",
+                    "minecraft:chests/desert_pyramid",
+                    "minecraft:chests/spawn_bonus_chest"
             )
             .map(ResourceLocation::new)
             .collect(Collectors.toUnmodifiableSet());

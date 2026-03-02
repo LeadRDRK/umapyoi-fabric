@@ -1,0 +1,23 @@
+{
+  "distance_aptitude": [
+    0,
+    4,
+    6,
+    6
+  ],
+  "identifier": "umapyoi:narita_top_road",
+  "position": "pace_chaser",
+  "propertyRate": [
+    20,
+    10,
+    0,
+    0,
+    0
+  ],
+  "ranking": "sr",
+  "surface_aptitude": [
+    6,
+    0,
+    5
+  ]
+}

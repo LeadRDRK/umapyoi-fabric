@@ -40,6 +40,7 @@ import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.client.model.UmaPlayerModel;
 import net.tracen.umapyoi.data.tag.UmapyoiUmaDataTags;
+import net.tracen.umapyoi.effect.MobEffectRegistry;
 import net.tracen.umapyoi.events.ApplyUmasoulAttributeCallback;
 import net.tracen.umapyoi.events.ResumeActionPointCallback;
 import net.tracen.umapyoi.events.SettingPropertyCallback;
@@ -47,6 +48,7 @@ import net.tracen.umapyoi.events.client.RenderingUmaSoulCallback;
 import net.tracen.umapyoi.registry.UmapyoiAttributesRegistry;
 import net.tracen.umapyoi.registry.umadata.Growth;
 import net.tracen.umapyoi.registry.umadata.UmaData;
+import net.tracen.umapyoi.utils.Aptitude;
 import net.tracen.umapyoi.utils.ClientUtils;
 import net.tracen.umapyoi.utils.GachaRanking;
 import net.tracen.umapyoi.utils.ResultRankingUtils;
@@ -177,6 +179,30 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
                     UmaStatusUtils.getStatusLevel(property[StatusType.WISDOM.getId()]),
                     UmaStatusUtils.getStatusLevel(maxProperty[StatusType.WISDOM.getId()]))
                             .withStyle(ChatFormatting.DARK_GREEN));
+            tooltip.add(Component.literal(""));
+
+            tooltip.add(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.details").withStyle(ChatFormatting.AQUA));
+            Aptitude[] surfaceAptitudes = UmaSoulUtils.getSurfaceAptitudeReadonly(stack);
+            tooltip.add(
+                    Component.translatable("tooltip.umapyoi.uma_soul.aptitude.turf", surfaceAptitudes[0].styledComponent()).withStyle(ChatFormatting.GREEN)
+                            .append(" / ").withStyle(ChatFormatting.RESET)
+                            .append(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.dirt", surfaceAptitudes[1].styledComponent()).withStyle(ChatFormatting.GOLD))
+                            .append(" / ").withStyle(ChatFormatting.RESET)
+                            .append(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.synthetic", surfaceAptitudes[2].styledComponent()).withStyle(ChatFormatting.GOLD))
+            );
+            Aptitude[] distanceAptitudes = UmaSoulUtils.getDistanceAptitudeReadonly(stack);
+            tooltip.add(
+                    Component.translatable("tooltip.umapyoi.uma_soul.aptitude.short", distanceAptitudes[0].styledComponent())
+                            .append(" / ")
+                            .append(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.miles", distanceAptitudes[1].styledComponent())
+                                    .append(" / ")
+                                    .append(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.medium", distanceAptitudes[2].styledComponent()))
+                                    .append(" / ")
+                                    .append(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.long", distanceAptitudes[3].styledComponent())))
+            );
+            tooltip.add(
+                    Component.translatable("tooltip.umapyoi.uma_soul.aptitude.strategy", Component.translatable("tooltip.umapyoi.uma_soul.aptitude.strategy." + UmaSoulUtils.getPosition(stack).name().toLowerCase()))
+            );
         } else {
             tooltip.add(Component.translatable("tooltip.umapyoi.press_shift_for_details")
                     .withStyle(ChatFormatting.AQUA));
@@ -204,15 +230,17 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
         if (UmaSoulUtils.getGrowth(stack) == Growth.UNTRAINED)
             return atts;
 
+        boolean hasFatique = entity.hasEffect(MobEffectRegistry.SLOW_METABOLISM.get());
+
         atts.put(UmapyoiAttributesRegistry.SPRINT_SPEED,
                 new AttributeModifier(uuid, "sprint_speed_running_bonus",
-                        getExactProperty(stack, entity, StatusType.SPEED, Umapyoi.CONFIG.UMASOUL_MAX_SPEED()),
+                        hasFatique ? 0 : getExactProperty(stack, entity, StatusType.SPEED, Umapyoi.CONFIG.UMASOUL_MAX_SPEED()),
                         Umapyoi.CONFIG.UMASOUL_SPEED_PRECENT_ENABLE() ? AttributeModifier.Operation.MULTIPLY_TOTAL
                                 : AttributeModifier.Operation.ADDITION));
 
         atts.put(UmapyoiAttributesRegistry.SWIM_SPEED,
                 new AttributeModifier(uuid, "speed_swiming_bonus",
-                        getExactProperty(stack, entity, StatusType.SPEED, Umapyoi.CONFIG.UMASOUL_MAX_SPEED()),
+                        hasFatique ? 0 : getExactProperty(stack, entity, StatusType.SPEED, Umapyoi.CONFIG.UMASOUL_MAX_SPEED()),
                         Umapyoi.CONFIG.UMASOUL_SPEED_PRECENT_ENABLE() ? AttributeModifier.Operation.MULTIPLY_TOTAL
                                 : AttributeModifier.Operation.ADDITION));
 
@@ -223,14 +251,14 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
                                 : AttributeModifier.Operation.ADDITION));
 
         atts.put(Attributes.MAX_HEALTH,
-                new AttributeModifier(uuid, "strength_attack_bonus",
-                        getExactProperty(stack, entity, StatusType.STAMINA, Umapyoi.CONFIG.UMASOUL_MAX_STAMINA_HEALTH()),
+                new AttributeModifier(uuid, "stamina_health_bonus",
+                        getExactProperty(stack, entity, StatusType.STAMINA, Umapyoi.CONFIG.UMASOUL_MAX_STAMINA_HEALTH()) * (hasFatique ? 1.05 : 1),
                         Umapyoi.CONFIG.UMASOUL_STAMINA_PRECENT_ENABLE() ? AttributeModifier.Operation.MULTIPLY_TOTAL
                                 : AttributeModifier.Operation.ADDITION));
 
         atts.put(Attributes.ARMOR,
                 new AttributeModifier(uuid, "guts_armor_bonus",
-                        getExactProperty(stack, entity, StatusType.GUTS, Umapyoi.CONFIG.UMASOUL_MAX_GUTS_ARMOR()),
+                        getExactProperty(stack, entity, StatusType.GUTS, Umapyoi.CONFIG.UMASOUL_MAX_GUTS_ARMOR()) * (hasFatique ? 1.05 : 1),
                         Umapyoi.CONFIG.UMASOUL_GUTS_PRECENT_ENABLE() ? AttributeModifier.Operation.MULTIPLY_TOTAL
                                 : AttributeModifier.Operation.ADDITION));
 
@@ -240,28 +268,32 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
                         Umapyoi.CONFIG.UMASOUL_GUTS_PRECENT_ENABLE() ? AttributeModifier.Operation.MULTIPLY_TOTAL
                                 : AttributeModifier.Operation.ADDITION));
 
-        var event = new ApplyUmasoulAttributeCallback.Context(stack, slot, uuid, atts);
+        var event = new ApplyUmasoulAttributeCallback.Context(entity, stack, slot, uuid, atts);
         ApplyUmasoulAttributeCallback.invoke(event);
         return event.getAttributes();
     }
 
-    public double getExactProperty(ItemStack stack, LivingEntity user, StatusType status, double limit) {
+    public static double getExactProperty(ItemStack stack, LivingEntity user, StatusType status, double limit) {
         int num = status.getId();
         var retiredValue = UmaSoulUtils.getGrowth(stack) == Growth.RETIRED ? 1.0D : 0.25D;
         var propertyRate = 1.0D + (UmaSoulUtils.getPropertyRate(stack)[num] / 100.0D);
         var totalProperty = propertyPercentage(stack, num);
-        var event = new SettingPropertyCallback.Context(user, stack, retiredValue, propertyRate, totalProperty);
+        var event = new SettingPropertyCallback.Context(user, stack, retiredValue, propertyRate, totalProperty, status);
         SettingPropertyCallback.invoke(event);
         return event.getResultProperty() * limit;
     }
 
-    private double propertyPercentage(ItemStack stack, int num) {
-        var x = UmaSoulUtils.getProperty(stack)[num];
+    public static double propertyPercentageByValue(int x) {
         var statLimit = Umapyoi.CONFIG.STAT_LIMIT_VALUE();
         var denominator = 1 + Math.pow(Math.E,
                 (x > statLimit ? (-0.125 * Umapyoi.CONFIG.STAT_LIMIT_REDUCTION_RATE()) : -0.125) *
                         (x - statLimit));
         return 1 / denominator;
+    }
+
+    private static double propertyPercentage(ItemStack stack, int num) {
+        var x = UmaSoulUtils.getProperty(stack)[num];
+        return propertyPercentageByValue(x);
     }
 
     @Override
@@ -295,6 +327,9 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
 
         ResourceLocation renderTarget = getRenderTarget(itemStack, entity);
         var pojo = ClientUtils.getModelPOJO(renderTarget);
+        if (pojo == null)
+            return;
+
         if (baseModel.needRefresh(pojo))
             baseModel.loadModel(pojo);
 
@@ -356,7 +391,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
         return renderTarget;
     }
 
-    private static ResourceLocation getSuitTarget(ItemStack stack, boolean alter) {
+    public static ResourceLocation getSuitTarget(ItemStack stack, boolean alter) {
         ResourceLocation identifier = ClientUtils.getClientUmaDataRegistry().get(UmaSoulUtils.getName(stack)).getIdentifier();
         if(alter)
             identifier = new ResourceLocation(identifier.getNamespace(), identifier.getPath()+"_alter");

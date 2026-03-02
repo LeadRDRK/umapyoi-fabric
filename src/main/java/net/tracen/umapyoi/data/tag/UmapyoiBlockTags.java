@@ -9,4 +9,7 @@ public class UmapyoiBlockTags {
     public static final TagKey<Block> TRACK_TURF = TagUtils.modBlockTag(Umapyoi.MODID, "track/turf");
     public static final TagKey<Block> TRACK_DIRT = TagUtils.modBlockTag(Umapyoi.MODID, "track/dirt");
     public static final TagKey<Block> TRACK_SNOW = TagUtils.modBlockTag(Umapyoi.MODID, "track/snow");
+
+    public static final TagKey<Block> PEDESTAL_UMA = TagUtils.modBlockTag(Umapyoi.MODID, "pedestal/uma");
+    public static final TagKey<Block> PEDESTAL_SUPPORT = TagUtils.modBlockTag(Umapyoi.MODID, "pedestal/support");
 }

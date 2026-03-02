@@ -16,7 +16,12 @@ public interface AddLootTableModifier {
     AddLootTableModifier[] MODIFIERS = new AddLootTableModifier[] {
             new RareSkillBooksLoot(),
             new SkillBooksLoot(),
-            new TrainingBooksLoot()
+            new TrainingBooksLoot(),
+            new RaceTicketUpToOpLoot(),
+            new RaceTicketUpToGILoot(),
+            new RaceTicketUpToGIILoot(),
+            new RaceTicketUpToGIIILoot(),
+            new RaceTicketEndLoot()
     };
 
     class ModifyLootTableListener implements LootTableEvents.Modify {

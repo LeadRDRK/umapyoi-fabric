@@ -7,23 +7,23 @@ import net.tracen.umapyoi.utils.ClientUtils;
 
 public class SummerUniformItem extends AbstractSuitItem {
     @Override
-    protected ResourceLocation getModel(ItemStack stack) {
+    public ResourceLocation getModel(ItemStack stack) {
         return ClientUtils.SUMMER_UNIFORM;
     }
 
     @Override
-    protected ResourceLocation getTexture(ItemStack stack, boolean tanned) {
+    public ResourceLocation getTexture(ItemStack stack, boolean tanned) {
         return tanned ? new ResourceLocation(Umapyoi.MODID, "textures/model/summer_uniform_tanned.png")
                 : new ResourceLocation(Umapyoi.MODID, "textures/model/summer_uniform.png");
     }
 
     @Override
-    protected ResourceLocation getFlatModel(ItemStack stack) {
+    public ResourceLocation getFlatModel(ItemStack stack) {
         return ClientUtils.SUMMER_UNIFORM_FLAT;
     }
 
     @Override
-    protected ResourceLocation getFlatTexture(ItemStack stack, boolean tanned) {
+    public ResourceLocation getFlatTexture(ItemStack stack, boolean tanned) {
         return tanned ? new ResourceLocation(Umapyoi.MODID, "textures/model/summer_uniform_tanned.png")
                 : new ResourceLocation(Umapyoi.MODID, "textures/model/summer_uniform.png");
     }

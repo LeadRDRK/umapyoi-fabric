@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.item.ItemRegistry;
+import net.tracen.umapyoi.utils.ThreeBlockPart;
 
 public class UmapyoiLootTableProvider extends FabricBlockLootTableProvider {
     public UmapyoiLootTableProvider(FabricDataOutput dataOutput) {
@@ -23,5 +24,11 @@ public class UmapyoiLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(BlockRegistry.UMA_STATUES.get());
         dropOther(BlockRegistry.SUPPORT_ALBUM_PEDESTAL.get(), ItemRegistry.UMA_PEDESTAL.get());
         dropOther(BlockRegistry.SILVER_SUPPORT_ALBUM_PEDESTAL.get(), ItemRegistry.SILVER_UMA_PEDESTAL.get());
+        dropSelf(BlockRegistry.FACTOR_DECOMPOSE_TABLE.get());
+        dropSelf(BlockRegistry.FACTOR_RESEARCH_TABLE.get());
+        dropSelf(BlockRegistry.GATE.get());
+        dropSelf(BlockRegistry.GATE_DOOR.get());
+        dropSelf(BlockRegistry.RACE_REGISTER_BLOCK.get());
+        add(BlockRegistry.GATE.get(), block -> createSinglePropConditionTable(block, ThreeBlockPart.PART, ThreeBlockPart.LOWER));
     }
 }

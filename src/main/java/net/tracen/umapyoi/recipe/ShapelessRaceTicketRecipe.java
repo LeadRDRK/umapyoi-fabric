@@ -18,7 +18,7 @@ public class ShapelessRaceTicketRecipe extends ShapelessRecipe {
 
     private final ResourceLocation baseItemOrKey;
     public ShapelessRaceTicketRecipe(ShapelessRecipe compose, ResourceLocation loc) {
-        super(compose.getId(), compose.getGroup(), compose.category(),
+        super(compose.getGroup(), compose.category(),
                 getResultItem(loc), compose.getIngredients());
         this.baseItemOrKey = loc;
     }

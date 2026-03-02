@@ -3,6 +3,7 @@ package net.tracen.umapyoi.recipe.finished;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -18,30 +19,19 @@ public record FinishedShapelessRaceTicketRecipe(ResourceLocation id, List<Ingred
                                                 ResourceLocation race) implements FinishedRecipe {
     @Nullable
     @Override
-    public ResourceLocation getAdvancementId() {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public JsonObject serializeAdvancement() {
+    public AdvancementHolder advancement() {
         return null;
     }
 
     @Override
-    public RecipeSerializer<?> getType() {
+    public RecipeSerializer<?> type() {
         return RecipeSerializerRegistry.SHAPELESS_RACE_TICKET.get();
-    }
-
-    @Override
-    public ResourceLocation getId() {
-        return this.id();
     }
 
     @Override
     public void serializeRecipeData(JsonObject pJson) {
         JsonArray ingredientsArray = new JsonArray();
-        this.ingredients.forEach(i -> ingredientsArray.add(i.toJson()));
+        this.ingredients.forEach(i -> ingredientsArray.add(i.toJson(false)));
         pJson.add("ingredients", ingredientsArray);
 
         JsonObject resultJson = new JsonObject();

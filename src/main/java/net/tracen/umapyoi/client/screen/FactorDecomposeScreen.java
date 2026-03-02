@@ -35,7 +35,6 @@ public class FactorDecomposeScreen extends AbstractContainerScreen<FactorDecompo
 
     @Override
     public void render(GuiGraphics graphic, final int mouseX, final int mouseY, float partialTicks) {
-        this.renderBackground(graphic);
         super.render(graphic, mouseX, mouseY, partialTicks);
         this.renderTooltip(graphic, mouseX, mouseY);
     }

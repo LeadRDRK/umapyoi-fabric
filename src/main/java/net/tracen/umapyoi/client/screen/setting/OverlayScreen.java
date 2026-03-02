@@ -139,7 +139,6 @@ public class OverlayScreen extends Screen {
 
     @Override
     public void render(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-        this.renderBackground(pGuiGraphics);
         super.render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
         pGuiGraphics.blit(SkillOverlay.HUD, (int) (x + this.skillX), (int) (this.height + this.skillY), 0, 0, 96, 20, 128, 64);
         renderSkill(UmaSkillRegistry.BASIC_PACE.get(), Minecraft.getInstance().font, pGuiGraphics, (int) (x + this.skillX), (int) (this.height + this.skillY));

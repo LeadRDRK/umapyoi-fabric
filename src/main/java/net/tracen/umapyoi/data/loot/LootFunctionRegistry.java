@@ -12,5 +12,5 @@ public class LootFunctionRegistry {
 
     public static final RegistryObject<LootItemFunctionType> RACE_TICKET_RANDOM =
             LOOT_FUNCTIONS.register("race_ticket_random",
-                    () -> new LootItemFunctionType(new RaceTicketRandomLootFunction.RaceTicketRandomLootSerializer()));
+                    () -> new LootItemFunctionType(RaceTicketRandomLootFunction.CODEC));
 }

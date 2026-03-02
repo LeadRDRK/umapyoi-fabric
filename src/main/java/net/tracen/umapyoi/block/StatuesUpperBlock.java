@@ -28,6 +28,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.function.Supplier;
 
 public class StatuesUpperBlock extends Block implements SimpleWaterloggedBlock {
@@ -129,8 +131,8 @@ public class StatuesUpperBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public boolean canPlaceLiquid(BlockGetter pLevel, BlockPos pPos, BlockState pState, Fluid pFluid) {
-        return this.canWaterlog && SimpleWaterloggedBlock.super.canPlaceLiquid(pLevel, pPos, pState, pFluid);
+    public boolean canPlaceLiquid(@Nullable Player player, BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
+        return this.canWaterlog && SimpleWaterloggedBlock.super.canPlaceLiquid(player, level, pos, state, fluid);
     }
 
     @Override
@@ -139,8 +141,8 @@ public class StatuesUpperBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public ItemStack pickupBlock(LevelAccessor pLevel, BlockPos pPos, BlockState pState) {
+    public ItemStack pickupBlock(@Nullable Player player, LevelAccessor level, BlockPos pos, BlockState state) {
         if (!this.canWaterlog) return ItemStack.EMPTY;
-        return SimpleWaterloggedBlock.super.pickupBlock(pLevel, pPos, pState);
+        return SimpleWaterloggedBlock.super.pickupBlock(player, level, pos, state);
     }
 }

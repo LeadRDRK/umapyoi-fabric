@@ -1,28 +1,23 @@
 package net.tracen.umapyoi.data.loot;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.Serializer;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.registry.races.Race;
 import net.tracen.umapyoi.utils.RaceRanking;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
 
 public class RaceTicketRandomLootFunction implements LootItemFunction {
     public final RaceRanking least;
@@ -35,6 +30,13 @@ public class RaceTicketRandomLootFunction implements LootItemFunction {
         this.mode = mode;
         this.predicate = predicate;
     }
+
+    public static final Codec<RaceTicketRandomLootFunction> CODEC = RecordCodecBuilder.create(instance -> instance
+            .group(RaceRanking.CODEC.optionalFieldOf("least", RaceRanking.DEBUT).forGetter(RaceTicketRandomLootFunction::getLeast),
+                    RaceRanking.CODEC.optionalFieldOf("most", RaceRanking.GI).forGetter(RaceTicketRandomLootFunction::getMost),
+                    Codec.BOOL.optionalFieldOf("mode", true).forGetter(RaceTicketRandomLootFunction::getMode),
+                    Codec.STRING.listOf().<Set<String>>xmap(HashSet::new, s -> s.stream().toList()).optionalFieldOf("predicate", Collections.emptySet()).forGetter(RaceTicketRandomLootFunction::getPredicate))
+            .apply(instance, RaceTicketRandomLootFunction::new));
 
     @Override
     public LootItemFunctionType getType() {
@@ -56,34 +58,19 @@ public class RaceTicketRandomLootFunction implements LootItemFunction {
         return stack;
     }
 
-    public static class RaceTicketRandomLootSerializer implements Serializer<RaceTicketRandomLootFunction> {
-        @Nonnull
-        @Override
-        public RaceTicketRandomLootFunction deserialize(
-                @Nonnull JsonObject jsonObject, @Nonnull JsonDeserializationContext jsonDeserializationContext) {
-            RaceRanking least = jsonObject.has("least") ? RaceRanking.valueOf(jsonObject.get("least").getAsString().toUpperCase()) : RaceRanking.DEBUT;
-            RaceRanking most = jsonObject.has("most") ? RaceRanking.valueOf(jsonObject.get("most").getAsString().toUpperCase()) : RaceRanking.GI;
-            boolean mode = !jsonObject.has("mode") || jsonObject.get("mode").getAsBoolean();
-            Set<String> predicate = jsonObject.has("predicate") ?
-                    jsonObject.getAsJsonArray("predicate")
-                            .asList()
-                            .stream()
-                            .map(JsonElement::getAsString)
-                            .collect(Collectors.toSet())
-                    : Set.of();
-            return new RaceTicketRandomLootFunction(least, most, mode, predicate);
-        }
+    public RaceRanking getLeast() {
+        return least;
+    }
 
-        @Override
-        public void serialize(JsonObject jsonObject,
-                              @Nonnull RaceTicketRandomLootFunction raceTicketRandomLootFunction,
-                              @Nonnull JsonSerializationContext jsonSerializationContext) {
-            jsonObject.addProperty("least", raceTicketRandomLootFunction.least.name().toLowerCase());
-            jsonObject.addProperty("most", raceTicketRandomLootFunction.most.name().toLowerCase());
-            jsonObject.addProperty("mode", raceTicketRandomLootFunction.mode);
-            JsonArray arr = new JsonArray();
-            raceTicketRandomLootFunction.predicate.forEach(arr::add);
-            jsonObject.add("predicate", arr);
-        }
+    public RaceRanking getMost() {
+        return most;
+    }
+
+    public boolean getMode() {
+        return mode;
+    }
+
+    public Set<String> getPredicate() {
+        return predicate;
     }
 }

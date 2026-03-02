@@ -14,24 +14,23 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.tracen.umapyoi.Umapyoi;
 
+import java.util.Optional;
+
 import javax.annotation.Nonnull;
 
 public class GrantBookOnFirstJoin extends SimpleCriterionTrigger<GrantBookOnFirstJoin.Instance> {
-    private static final ResourceLocation ID = new ResourceLocation(Umapyoi.MODID, "grant_book_on_first_join");
-
-    @Nonnull
-    @Override protected Instance createInstance(JsonObject json, ContextAwarePredicate playerPredicate,
-                                                DeserializationContext context) {
-        return new Instance(playerPredicate);
-    }
+    public static final ResourceLocation ID = new ResourceLocation(Umapyoi.MODID, "grant_book_on_first_join");
 
     @Nonnull
     @Override
-    public ResourceLocation getId() { return ID; }
+    protected Instance createInstance(JsonObject json, Optional<ContextAwarePredicate> player,
+                                      DeserializationContext deserializationContext) {
+        return new Instance(player);
+    }
 
     public static class Instance extends AbstractCriterionTriggerInstance {
-        public Instance(ContextAwarePredicate playerPredicate) {
-            super(ID, playerPredicate);
+        public Instance(Optional<ContextAwarePredicate> playerPredicate) {
+            super(playerPredicate);
         }
 
         public boolean test(ServerPlayer player) {

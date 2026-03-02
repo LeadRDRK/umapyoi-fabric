@@ -73,7 +73,7 @@ public class PassiveSkillEvents {
                     if (oldModifier.getAmount() == speedModifier.getAmount() && oldModifier.getOperation() == speedModifier.getOperation()) {
                         return;
                     } else {
-                        movementSpeed.removeModifier(speedModifier);
+                        movementSpeed.removeModifier(speedModifier.getId());
                     }
                 }
             }

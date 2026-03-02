@@ -4,18 +4,18 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.RecipeHolder;
+import net.minecraft.world.inventory.RecipeCraftingHolder;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import javax.annotation.Nullable;
 
-public class ExtendedResultContainer implements Container, RecipeHolder {
+public class ExtendedResultContainer implements Container, RecipeCraftingHolder {
     public final int size;
     protected final NonNullList<ItemStack> itemStacks;
 
     @Nullable
-    private Recipe<?> recipeUsed;
+    private RecipeHolder<?> recipeUsed;
 
     public ExtendedResultContainer(int size) {
         this.itemStacks = NonNullList.withSize(size, ItemStack.EMPTY);
@@ -67,13 +67,13 @@ public class ExtendedResultContainer implements Container, RecipeHolder {
     }
 
     @Override
-    public void setRecipeUsed(@Nullable Recipe<?> pRecipe) {
+    public void setRecipeUsed(@Nullable RecipeHolder<?> pRecipe) {
         this.recipeUsed = pRecipe;
     }
 
     @Override
     @Nullable
-    public Recipe<?> getRecipeUsed() {
+    public RecipeHolder<?> getRecipeUsed() {
         return this.recipeUsed;
     }
 }

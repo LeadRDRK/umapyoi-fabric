@@ -16,7 +16,6 @@ import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.item.info.FoodInfo;
 
 import java.util.List;
-import java.util.Map;
 import java.util.function.Supplier;
 
 public interface IFoodLike {

@@ -2,7 +2,6 @@ package net.tracen.umapyoi.data;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
@@ -17,7 +16,6 @@ import net.tracen.umapyoi.recipe.finished.FinishedShapelessRaceTicketRecipe;
 import net.tracen.umapyoi.registry.races.RaceRegistry;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 public class UmapyoiRecipeProvider extends FabricRecipeProvider {
     public UmapyoiRecipeProvider(FabricDataOutput output) {

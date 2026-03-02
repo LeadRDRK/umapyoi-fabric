@@ -22,45 +22,56 @@ public class ExtendedResultContainer implements Container, RecipeHolder {
         this.size = size;
     }
 
+    @Override
     public int getContainerSize() {
         return this.size;
     }
 
+    @Override
     public boolean isEmpty() {
         return this.itemStacks.stream().allMatch(ItemStack::isEmpty);
     }
 
+    @Override
     public ItemStack getItem(int pIndex) {
         return this.itemStacks.get(pIndex);
     }
 
+    @Override
     public ItemStack removeItem(int pIndex, int pCount) {
         return ContainerHelper.takeItem(this.itemStacks, pIndex);
     }
 
+    @Override
     public ItemStack removeItemNoUpdate(int pIndex) {
         return ContainerHelper.takeItem(this.itemStacks, pIndex);
     }
 
+    @Override
     public void setItem(int pIndex, ItemStack pStack) {
         this.itemStacks.set(pIndex, pStack);
     }
 
+    @Override
     public void setChanged() {
     }
 
+    @Override
     public boolean stillValid(Player pPlayer) {
         return true;
     }
 
+    @Override
     public void clearContent() {
         this.itemStacks.clear();
     }
 
+    @Override
     public void setRecipeUsed(@Nullable Recipe<?> pRecipe) {
         this.recipeUsed = pRecipe;
     }
 
+    @Override
     @Nullable
     public Recipe<?> getRecipeUsed() {
         return this.recipeUsed;

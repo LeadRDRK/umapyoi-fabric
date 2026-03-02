@@ -1,15 +1,21 @@
 package net.tracen.umapyoi.recipe;
 
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.registry.races.Race;
+
+import org.jetbrains.annotations.Nullable;
 
 public class ShapelessRaceTicketRecipe extends ShapelessRecipe {
     public static final RecipeSerializer<ShapelessRaceTicketRecipe> SERIALIZER = new RaceTicketRecipeSerializer<>(
@@ -53,5 +59,18 @@ public class ShapelessRaceTicketRecipe extends ShapelessRecipe {
     @Override
     public RecipeSerializer<?> getSerializer() {
         return SERIALIZER;
+    }
+
+    public record ComposeOutput(RecipeOutput compose, ResourceLocation raceId) implements RecipeOutput {
+        @Override
+        public void accept(ResourceLocation location, Recipe<?> recipe, @Nullable AdvancementHolder advancement) {
+            var composeRecipe = new ShapelessRaceTicketRecipe((ShapelessRecipe) recipe, raceId);
+            compose.accept(location, composeRecipe, advancement);
+        }
+
+        @Override
+        public Advancement.Builder advancement() {
+            return compose.advancement();
+        }
     }
 }

@@ -12,10 +12,8 @@ import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
 import net.tracen.umapyoi.item.ItemRegistry;
-import net.tracen.umapyoi.recipe.finished.FinishedShapelessRaceTicketRecipe;
+import net.tracen.umapyoi.recipe.ShapelessRaceTicketRecipe;
 import net.tracen.umapyoi.registry.races.RaceRegistry;
-
-import java.util.List;
 
 public class UmapyoiRecipeProvider extends FabricRecipeProvider {
     public UmapyoiRecipeProvider(FabricDataOutput output) {
@@ -206,7 +204,10 @@ public class UmapyoiRecipeProvider extends FabricRecipeProvider {
                 .requires(UmapyoiItemTags.SUGAR).requires(UmapyoiItemTags.SUGAR).requires(UmapyoiItemTags.MILK)
                 .unlockedBy("has_item", has(Items.CARROT)).save(consumer);
 
-        consumer.accept(new FinishedShapelessRaceTicketRecipe(Umapyoi.id("craft_make_debut"),
-                List.of(Ingredient.of(Items.EMERALD), Ingredient.of(ItemRegistry.BLANK_TICKET.get())), RaceRegistry.MAKE_DEBUT.location()));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ItemRegistry.UMA_RACE_TICKET.get())
+                .requires(Items.EMERALD).requires(ItemRegistry.BLANK_TICKET.get())
+                .unlockedBy("has_item", has(ItemRegistry.BLANK_TICKET.get()))
+                .save(new ShapelessRaceTicketRecipe.ComposeOutput(consumer,
+                        RaceRegistry.MAKE_DEBUT.location()), Umapyoi.id("craft_make_debut"));
     }
 }

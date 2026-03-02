@@ -1,5 +1,7 @@
 package net.tracen.umapyoi.block;
 
+import com.mojang.serialization.MapCodec;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
@@ -79,8 +81,16 @@ public class GateDoor extends BaseEntityBlock {
             Block.box(0, 0, 0, 8.5, 24, 1)
     );
 
+    public static final MapCodec<GateDoor> CODEC = simpleCodec(
+            p -> new GateDoor());
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
     public GateDoor() {
-        super(Properties.copy(Blocks.IRON_BARS).noOcclusion());
+        super(Properties.ofLegacyCopy(Blocks.IRON_BARS).noOcclusion());
     }
 
     @Override

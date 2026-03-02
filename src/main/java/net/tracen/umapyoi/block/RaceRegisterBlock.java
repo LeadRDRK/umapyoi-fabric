@@ -1,5 +1,7 @@
 package net.tracen.umapyoi.block;
 
+import com.mojang.serialization.MapCodec;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Containers;
@@ -55,8 +57,16 @@ public class RaceRegisterBlock extends BaseEntityBlock {
             Block.box(2.0D, 6.0D, 4.0D, 5.0D, 15.0D, 16.0D)
     );
 
+    public static final MapCodec<RaceRegisterBlock> CODEC = simpleCodec(
+            p -> new RaceRegisterBlock());
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
     public RaceRegisterBlock() {
-        super(Properties.copy(Blocks.IRON_BLOCK).noOcclusion());
+        super(Properties.ofLegacyCopy(Blocks.IRON_BLOCK).noOcclusion());
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 

@@ -31,7 +31,7 @@ public class FactorDecomposeTable extends Block {
     private static final Component CONTAINER_TITLE = Component.translatable("container.umapyoi.factor_decompose");
 
     public FactorDecomposeTable() {
-        super(Properties.copy(Blocks.ANDESITE).noOcclusion());
+        super(Properties.ofLegacyCopy(Blocks.ANDESITE).noOcclusion());
     }
 
     @Override

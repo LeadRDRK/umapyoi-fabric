@@ -32,7 +32,7 @@ public class FactorResearchTableBlock extends Block {
     private static final Component CONTAINER_TITLE = Component.translatable("container.umapyoi.factor_research");
 
     public FactorResearchTableBlock() {
-        super(BlockBehaviour.Properties.copy(Blocks.ANDESITE).noOcclusion());
+        super(BlockBehaviour.Properties.ofLegacyCopy(Blocks.ANDESITE).noOcclusion());
     }
 
     @Override

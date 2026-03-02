@@ -53,6 +53,14 @@ public class UmapyoiConfigModel {
 
     @RangeConstraint(min = 0.0, max = 1.0)
     public double ACUPUNCTUIST_SUPPORT_CHANCE = 0.4;
+    @RangeConstraint(min = 0.0, max = 1.0)
+    public double SLOW_METABOLISM_PROBABILITY = 0.05d;
+    @RangeConstraint(min = 0L, max = Long.MAX_VALUE)
+    public long NIGHT_OWL_THRESHOLD = 72000L;
+    @RangeConstraint(min = 0.0, max = 1.0)
+    public double NIGHT_OWL_PROBABILITY_DOWN_MOTIVATION = 0.01d;
+
+    public boolean GRANT_GUIDE_ON_FIRST_JOIN = true;
 
     /* Client config */
     @SectionHeader("client")
@@ -70,4 +78,9 @@ public class UmapyoiConfigModel {
     public boolean TOOLTIP_SWITCH = true;
 
     public boolean DISPLAY_DETAIL = false;
+
+    public int TOPLEFT_COORD_SKILL_X = 102;
+    public int TOPLEFT_COORD_SKILL_Y = -21;
+    public int TOPLEFT_COORD_MOTIVATION_X = 118;
+    public int TOPLEFT_COORD_MOTIVATION_Y = -37;
 }

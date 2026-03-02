@@ -1,32 +1,17 @@
 package net.tracen.umapyoi.recipe;
 
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.Decoder;
-import com.mojang.serialization.DynamicOps;
-import com.mojang.serialization.Encoder;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-
-import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.registry.umadata.UmaData;
-
-import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.Optional;
 

@@ -8,11 +8,14 @@ import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.block.BlockRegistry;
-import net.tracen.umapyoi.data.builtin.CostumeDataRegistry;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
 import net.tracen.umapyoi.item.ItemRegistry;
-import net.tracen.umapyoi.item.UmaCostumeItem;
+import net.tracen.umapyoi.recipe.finished.FinishedShapelessRaceTicketRecipe;
+import net.tracen.umapyoi.registry.races.RaceRegistry;
+
+import java.util.List;
 
 public class UmapyoiRecipeProvider extends FabricRecipeProvider {
     public UmapyoiRecipeProvider(FabricDataOutput output) {
@@ -130,9 +133,32 @@ public class UmapyoiRecipeProvider extends FabricRecipeProvider {
                 .define('J', ItemRegistry.JEWEL.get()).unlockedBy("has_item", has(ItemRegistry.JEWEL.get()))
                 .save(consumer);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, BlockRegistry.FACTOR_RESEARCH_TABLE.get()).pattern("BJF")
+                .pattern("SSS").define('B', Items.BOOK).define('J', ItemRegistry.JEWEL.get())
+                .define('F', ItemRegistry.UMA_FACTOR_ITEM.get()).define('S', UmapyoiItemTags.STONES)
+                .unlockedBy("has_item", has(ItemRegistry.JEWEL.get())).save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, BlockRegistry.FACTOR_DECOMPOSE_TABLE.get()).pattern("PJF")
+                .pattern("SSS").define('P', Items.PAPER).define('J', ItemRegistry.JEWEL.get())
+                .define('F', ItemRegistry.UMA_FACTOR_ITEM.get()).define('S', UmapyoiItemTags.STONES)
+                .unlockedBy("has_item", has(ItemRegistry.JEWEL.get())).save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, BlockRegistry.RACE_REGISTER_BLOCK.get()).pattern("ITI")
+                .pattern("ICI").define('I', Items.IRON_INGOT).define('T', ItemRegistry.UMA_RACE_TICKET.get())
+                .define('C', Items.CRAFTING_TABLE).unlockedBy("has_item", has(ItemRegistry.JEWEL.get()))
+                .save(consumer);
+
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ItemRegistry.SUMMER_UNIFORM.get()).pattern("IJI").pattern("ILI").pattern("ILI")
                 .define('I', Items.PURPLE_WOOL).define('L', Items.WHITE_WOOL).define('J', ItemRegistry.JEWEL.get())
                 .unlockedBy("has_item", has(ItemRegistry.JEWEL.get())).save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ItemRegistry.GATE_DOOR.get()).pattern("BB")
+                .define('B', Items.IRON_BARS).unlockedBy("has_item", has(Items.IRON_BARS)).save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ItemRegistry.GATE.get()).pattern("GYG")
+                .pattern("B B").pattern("B B").define('G', Items.GREEN_CONCRETE)
+                .define('Y', Items.YELLOW_CONCRETE).define('B', Items.IRON_BARS).unlockedBy("has_item", has(Items.IRON_BARS))
+                .save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ItemRegistry.WINTER_UNIFORM.get()).pattern("IJI").pattern("III").pattern("III")
                 .define('I', Items.PURPLE_WOOL).define('J', ItemRegistry.JEWEL.get())
@@ -179,6 +205,8 @@ public class UmapyoiRecipeProvider extends FabricRecipeProvider {
                 .requires(Items.CARROT).requires(Items.WHEAT).requires(Items.EGG)
                 .requires(UmapyoiItemTags.SUGAR).requires(UmapyoiItemTags.SUGAR).requires(UmapyoiItemTags.MILK)
                 .unlockedBy("has_item", has(Items.CARROT)).save(consumer);
-        
+
+        consumer.accept(new FinishedShapelessRaceTicketRecipe(Umapyoi.id("craft_make_debut"),
+                List.of(Ingredient.of(Items.EMERALD), Ingredient.of(ItemRegistry.BLANK_TICKET.get())), RaceRegistry.MAKE_DEBUT.location()));
     }
 }

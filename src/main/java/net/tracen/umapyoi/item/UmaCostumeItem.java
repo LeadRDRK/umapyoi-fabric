@@ -60,7 +60,7 @@ public class UmaCostumeItem extends AbstractSuitItem implements CreativeModeTabF
     }
 
     @Override
-    protected ResourceLocation getModel(ItemStack stack) {
+    public ResourceLocation getModel(ItemStack stack) {
         ResourceLocation loc = ResourceLocation.tryParse(stack.getOrCreateTag().getString("cosmetic"));
 
         CosmeticData data = ClientUtils.getClientCosmeticDataRegistry().get(loc);
@@ -69,14 +69,14 @@ public class UmaCostumeItem extends AbstractSuitItem implements CreativeModeTabF
     }
 
     @Override
-    protected ResourceLocation getTexture(ItemStack stack, boolean tanned) {
+    public ResourceLocation getTexture(ItemStack stack, boolean tanned) {
         ResourceLocation loc = ResourceLocation.tryParse(stack.getOrCreateTag().getString("cosmetic"));
         CosmeticData data = ClientUtils.getClientCosmeticDataRegistry().get(loc);
         return data == null ? CosmeticData.DEFAULT_COSTUME.getTexture(tanned) : data.getTexture(tanned);
     }
 
     @Override
-    protected ResourceLocation getFlatModel(ItemStack stack) {
+    public ResourceLocation getFlatModel(ItemStack stack) {
         ResourceLocation loc = ResourceLocation.tryParse(stack.getOrCreateTag().getString("cosmetic"));
         CosmeticData data = ClientUtils.getClientCosmeticDataRegistry().get(loc);
         return data == null ? CosmeticData.DEFAULT_COSTUME.flatModel().orElse(CosmeticData.DEFAULT_COSTUME.model())
@@ -84,7 +84,7 @@ public class UmaCostumeItem extends AbstractSuitItem implements CreativeModeTabF
     }
 
     @Override
-    protected ResourceLocation getFlatTexture(ItemStack stack, boolean tanned) {
+    public ResourceLocation getFlatTexture(ItemStack stack, boolean tanned) {
         ResourceLocation loc = ResourceLocation.tryParse(stack.getOrCreateTag().getString("cosmetic"));
         CosmeticData data = ClientUtils.getClientCosmeticDataRegistry().get(loc);
         return data == null ? CosmeticData.DEFAULT_COSTUME.getFlatTexture(tanned) : data.getFlatTexture(tanned);

@@ -1,33 +1,23 @@
 package net.tracen.umapyoi.recipe;
 
-import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Decoder;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.Encoder;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.tracen.umapyoi.Umapyoi;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 public record UmasoulRecipeSerializer<T extends Recipe<?>, U extends T> (RecipeSerializer<T> compose,

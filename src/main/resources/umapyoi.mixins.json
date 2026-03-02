@@ -8,7 +8,10 @@
     "PlayerFoodExhaustionMixin",
     "ServerPlayerMixin",
     "ServerPlayerAccessor",
-    "LivingEntityMixin"
+    "LivingEntityMixin",
+    "PhantomSpawnerMixin",
+    "IronBarsBlockMixin",
+    "GiveGiftToHeroMixin"
   ],
   "client": [
     "client.ItemInHandLayerMixin",
@@ -18,7 +21,8 @@
     "client.ElytraLayerMixin"
   ],
   "injectors": {
-    "defaultRequire": 1
+    "defaultRequire": 1,
+    "maxShiftBy": 2
   },
   "minVersion": "0.8"
 }

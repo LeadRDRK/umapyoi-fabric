@@ -17,7 +17,7 @@ import net.tracen.umapyoi.registry.races.Race;
 
 import org.jetbrains.annotations.Nullable;
 
-public class ShapelessRaceTicketRecipe extends ShapelessRecipe {
+public class ShapelessRaceTicketRecipe extends ShapelessRecipe implements RaceTicketRecipe<CraftingContainer> {
     public static final RecipeSerializer<ShapelessRaceTicketRecipe> SERIALIZER = new RaceTicketRecipeSerializer<>(
             RecipeSerializer.SHAPELESS_RECIPE, ShapelessRaceTicketRecipe::new
     );
@@ -35,6 +35,7 @@ public class ShapelessRaceTicketRecipe extends ShapelessRecipe {
                 ItemRegistry.UMA_RACE_TICKET.get()).getDefaultInstance();
     }
 
+    @Override
     public ResourceLocation getKey() { return this.baseItemOrKey; }
 
     @Override

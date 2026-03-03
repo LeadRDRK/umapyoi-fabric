@@ -1,17 +1,25 @@
 package net.tracen.umapyoi.utils;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.Util;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.item.data.GachaRankingData;
+import net.minecraft.world.level.Level;
+import net.tracen.umapyoi.Umapyoi;
+import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.registry.UmaSkillRegistry;
 import net.tracen.umapyoi.registry.umadata.Growth;
 import net.tracen.umapyoi.registry.umadata.Motivations;
 import net.tracen.umapyoi.registry.umadata.UmaData;
+
+import java.util.Arrays;
 import net.tracen.umapyoi.registry.umadata.UmaDataBasicStatus;
 import net.tracen.umapyoi.registry.umadata.UmaDataExtraStatus;
 import net.tracen.umapyoi.registry.umadata.UmaDataSkills;
@@ -49,7 +57,43 @@ public class UmaSoulUtils {
         );
         result.set(DataComponentsTypeRegistry.UMADATA_TRAINING.get(), new UmaDataTraining(1, 6));
         result.set(DataComponentsTypeRegistry.GROWTH.get(), Growth.UNTRAINED);
+        tag.putIntArray("surfaceAptitude", Arrays.stream(data.surfaceAptitude()).map(Aptitude::ordinal).toList());
+        tag.putIntArray("distanceAptitude", Arrays.stream(data.distanceAptitude()).map(Aptitude::ordinal).toList());
         return result;
+    }
+
+    public static Position getPosition(ItemStack stack, Level world) {
+        UmaData umaData = UmapyoiAPI.getUmaDataRegistry(world).getOptional(UmaSoulUtils.getName(stack)).orElseGet(() -> {
+            Umapyoi.getLogger().info("Warning: {} doesn't exist.", UmaSoulUtils.getName(stack));
+            return UmaData.DEFAULT_UMA;
+        });
+        return umaData.position();
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static Position getPosition(ItemStack stack) {
+        return getPosition(stack, Minecraft.getInstance().level);
+    }
+
+
+    public static int[] getSurfaceAptitude(ItemStack stack) {
+        return stack.getOrCreateTag().getIntArray("surfaceAptitude").length >= 3
+                ? stack.getOrCreateTag().getIntArray("surfaceAptitude")
+                : Arrays.stream(UmaData.DEFAULT_SURFACE_APTITUDE).map(Aptitude::ordinal).mapToInt(Integer::intValue).toArray();
+    }
+
+    public static Aptitude[] getSurfaceAptitudeReadonly(ItemStack stack) {
+        return Arrays.stream(getSurfaceAptitude(stack)).mapToObj(v -> Aptitude.values()[v]).toArray(Aptitude[]::new);
+    }
+
+    public static int[] getDistanceAptitude(ItemStack stack) {
+        return stack.getOrCreateTag().getIntArray("distanceAptitude").length >= 4
+                ? stack.getOrCreateTag().getIntArray("distanceAptitude")
+                : Arrays.stream(UmaData.DEFAULT_DISTANCE_APTITUDE).map(Aptitude::ordinal).mapToInt(Integer::intValue).toArray();
+    }
+
+    public static Aptitude[] getDistanceAptitudeReadonly(ItemStack stack) {
+        return Arrays.stream(getDistanceAptitude(stack)).mapToObj(v -> Aptitude.values()[v]).toArray(Aptitude[]::new);
     }
 
     public static ResourceLocation getName(ItemStack stack) {
@@ -218,5 +262,9 @@ public class UmaSoulUtils {
     public static void downLearningTimes(ItemStack stack) {
         int learns = Math.max(getLearningTimes(stack) - 1, 0);
         setLearningTimes(stack, learns);
+    }
+
+    public static boolean hasUmaSoulDebut(ItemStack soul) {
+        return soul.getOrCreateTag().contains("has_debut") && soul.getOrCreateTag().getBoolean("has_debut");
     }
 }

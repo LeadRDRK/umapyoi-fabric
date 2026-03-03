@@ -114,6 +114,9 @@ public abstract class AbstractSuitItem extends TrinketItem implements TrinketRen
                     RenderType.entityTranslucent(flat_flag ? getFlatTexture(itemStack, tanned) : getTexture(itemStack, tanned)));
 
             var pojo = ClientUtils.getModelPOJO(flat_flag ? getFlatModel(itemStack) : getModel(itemStack));
+            if (pojo == null)
+                return;
+
             if (baseModel.needRefresh(pojo))
                 baseModel.loadModel(pojo);
             baseModel.setModelProperties(entity);
@@ -149,11 +152,11 @@ public abstract class AbstractSuitItem extends TrinketItem implements TrinketRen
         TrinketRendererRegistry.registerRenderer(item, (TrinketRenderer) item);
     }
 
-    protected abstract ResourceLocation getModel(ItemStack stack);
+    public abstract ResourceLocation getModel(ItemStack stack);
 
-    protected abstract ResourceLocation getTexture(ItemStack stack, boolean tanned);
+    public abstract ResourceLocation getTexture(ItemStack stack, boolean tanned);
 
-    protected abstract ResourceLocation getFlatModel(ItemStack stack);
+    public abstract ResourceLocation getFlatModel(ItemStack stack);
 
-    protected abstract ResourceLocation getFlatTexture(ItemStack stack, boolean tanned);
+    public abstract ResourceLocation getFlatTexture(ItemStack stack, boolean tanned);
 }

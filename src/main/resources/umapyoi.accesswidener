@@ -1,3 +1,4 @@
 accessWidener v2 named
 
 accessible field net/minecraft/client/model/PlayerModel slim Z
+accessible field net/minecraft/world/entity/ai/behavior/GiveGiftToHero GIFTS Ljava/util/Map;

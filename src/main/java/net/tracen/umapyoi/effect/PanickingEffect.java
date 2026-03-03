@@ -4,6 +4,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.tracen.umapyoi.events.ResumeActionPointCallback;
 
 public class PanickingEffect extends MobEffect {
     public PanickingEffect() {
@@ -12,5 +13,9 @@ public class PanickingEffect extends MobEffect {
 
     public static boolean onResumeAP(LivingEntity entity, ItemStack soul) {
         return entity.hasEffect(MobEffectRegistry.PANICKING.getHolder());
+    }
+
+    public static void registerCallbacks() {
+        ResumeActionPointCallback.EVENT.register(PanickingEffect::onResumeAP);
     }
 }

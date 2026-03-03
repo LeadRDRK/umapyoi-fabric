@@ -1,5 +1,6 @@
 package net.tracen.umapyoi.recipe;
 
+import net.minecraft.core.Registry;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;

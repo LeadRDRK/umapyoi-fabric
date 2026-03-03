@@ -39,6 +39,20 @@ public class UmapyoiItemTagsProvider extends ItemTagProvider {
 
         getOrCreateTagBuilder(UmapyoiItemTags.HORSESHOE).add(ItemRegistry.HORSESHOE_GOLD.get())
             .add(ItemRegistry.HORSESHOE_SILVER.get()).add(ItemRegistry.HORSESHOE_RAINBOW.get());
+
+        getOrCreateTagBuilder(UmapyoiItemTags.getMotivationFoodTag(1))
+                .add(ItemRegistry.HACHIMI_MID.get())
+                .add(ItemRegistry.CUPCAKE.get());
+
+        getOrCreateTagBuilder(UmapyoiItemTags.getMotivationFoodTag(2))
+                .add(ItemRegistry.HACHIMI_BIG.get())
+                .add(ItemRegistry.SWEET_CUPCAKE.get());
+
+        getOrCreateTagBuilder(UmapyoiItemTags.getMotivationFoodTag(-1))
+                .add(ItemRegistry.ROYAL_BITTER.get());
+
+        getOrCreateTagBuilder(UmapyoiItemTags.SLOW_METABOLISM)
+                .add(ItemRegistry.HACHIMI_BIG.get()).add(ItemRegistry.SWEET_CUPCAKE.get());
     }
 
 }

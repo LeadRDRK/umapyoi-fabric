@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.item.ItemRegistry;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.factors.UmaFactorStack;
 import net.tracen.umapyoi.utils.UmaFactorUtils;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
@@ -48,8 +49,8 @@ public interface RetireCallback {
 
             public static ItemStack getDefaultOutputStack(ItemStack soul, List<UmaFactorStack> factors) {
                 ItemStack result = ItemRegistry.UMA_FACTOR_ITEM.get().getDefaultInstance();
-                result.getOrCreateTag().putString("name", UmaSoulUtils.getName(soul).toString());
-                result.getOrCreateTag().put("factors", UmaFactorUtils.serializeNBT(factors));
+                result.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), UmaSoulUtils.getName(soul));
+                result.set(DataComponentsTypeRegistry.FACTOR_DATA.get(), UmaFactorUtils.serializeData(factors));
                 return result;
             }
 

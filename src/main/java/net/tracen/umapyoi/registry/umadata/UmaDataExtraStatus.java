@@ -30,4 +30,12 @@ public record UmaDataExtraStatus(int actionPoint, int extraActionPoint, int resu
     );
 
     public static final UmaDataExtraStatus DEFAULT = new UmaDataExtraStatus(0, 0, 0, Motivations.NORMAL);
+
+    public static UmaDataExtraStatus init(int[] data) {
+        return new UmaDataExtraStatus(data[0], data[1], data[2], Motivations.values()[data[3]]);
+    }
+
+    public int[] array() {
+        return new int[] { actionPoint, extraActionPoint, resultRanking, motivation.ordinal() };
+    }
 }

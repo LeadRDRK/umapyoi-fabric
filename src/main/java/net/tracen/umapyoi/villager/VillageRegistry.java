@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSet;
 
 import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -33,6 +34,7 @@ public class VillageRegistry {
     }
 
     public static void registerHeroOfTheVillage() {
-        GiveGiftToHero.GIFTS.put(TRAINER.get(), new ResourceLocation(Umapyoi.MODID, "race/ticket/race_ticket_up_to_op_gameplay"));
+        GiveGiftToHero.GIFTS.put(TRAINER.get(), ResourceKey.create(Registries.LOOT_TABLE,
+                new ResourceLocation(Umapyoi.MODID, "race/ticket/race_ticket_up_to_op_gameplay")));
     }
 }

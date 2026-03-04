@@ -4,6 +4,10 @@ import com.mojang.serialization.Codec;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+
+import io.netty.buffer.ByteBuf;
 
 public enum Aptitude {
     G(.1d,.1d),
@@ -21,10 +25,16 @@ public enum Aptitude {
         this.distanceFactor = distanceFactor;
     }
 
-    public static Codec<Aptitude> CODEC = Codec.INT.xmap((i) -> 0 <= i && i <= 7 ?
-                    Aptitude.values()[i] :
-                    (i < 0 ? G : S),
-            Aptitude::ordinal);
+    private static Aptitude fromInt(int i) {
+        return (0 <= i && i <= 7)
+                ? Aptitude.values()[i]
+                : (i < 0 ? G : S);
+    }
+
+    public static final Codec<Aptitude> CODEC = Codec.INT.xmap(Aptitude::fromInt, Aptitude::ordinal);
+
+    public static final StreamCodec<ByteBuf, Aptitude> STREAM_CODEC = ByteBufCodecs.INT.map(
+            Aptitude::fromInt, Aptitude::ordinal);
 
     public Component styledComponent() {
         return Component.literal(this.name()).withStyle(switch (this) {

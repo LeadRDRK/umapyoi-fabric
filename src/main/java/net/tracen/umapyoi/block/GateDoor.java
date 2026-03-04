@@ -118,10 +118,10 @@ public class GateDoor extends BaseEntityBlock {
     }
 
     @Override
-    public boolean isPathfindable(BlockState pState, BlockGetter pLevel, BlockPos pPos, PathComputationType pType) {
-        switch (pType) {
+    public boolean isPathfindable(BlockState state, PathComputationType type) {
+        switch (type) {
             case LAND, AIR:
-                return pState.getValue(OPEN);
+                return state.getValue(OPEN);
             default:
                 return false;
         }

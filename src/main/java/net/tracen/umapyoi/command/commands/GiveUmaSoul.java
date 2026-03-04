@@ -23,6 +23,8 @@ import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.registry.umadata.Growth;
 import net.tracen.umapyoi.registry.umadata.Motivations;
 import net.tracen.umapyoi.registry.umadata.UmaData;
+import net.tracen.umapyoi.registry.umadata.UmaDataBasicStatus;
+import net.tracen.umapyoi.registry.umadata.UmaDataExtraStatus;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
 import java.util.ArrayList;
@@ -113,10 +115,10 @@ public class GiveUmaSoul {
         simpleRegister(new SubCommand<>("extra") {
             @Override
             public ArgumentBuilder<CommandSourceStack, ?> build(Function<ArgumentBuilder<CommandSourceStack, ?>, ArgumentBuilder<CommandSourceStack, ?>> mapper){
-                var retv = mapper.apply(Commands.argument("maxap", new IntWithDefault(-1)));
-                return Commands.argument("physique", new IntWithDefault(-1)).then(
-                        Commands.argument("learningtimes", new IntWithDefault(-1)).then(
-                                Commands.argument("skillslots", new IntWithDefault(-1)).then(
+                var retv = mapper.apply(Commands.argument("motivation", new IntWithDefault(-1)));
+                return Commands.argument("ap", new IntWithDefault(-1)).then(
+                        Commands.argument("extraap", new IntWithDefault(-1)).then(
+                                Commands.argument("resultranking", new IntWithDefault(-1)).then(
                                         retv
                                 )
                         )
@@ -126,10 +128,10 @@ public class GiveUmaSoul {
             @Override
             public void argumentExtraction(CommandContext<CommandSourceStack> ctx, GiveBuilder obj) {
                 obj.setExtra(
-                        IntWithDefault.getResult(ctx, "physique", null),
-                        IntWithDefault.getResult(ctx, "learningtimes", null),
-                        IntWithDefault.getResult(ctx, "skillslots", null),
-                        IntWithDefault.getResult(ctx, "maxap", null)
+                        IntWithDefault.getResult(ctx, "ap", null),
+                        IntWithDefault.getResult(ctx, "extraap", null),
+                        IntWithDefault.getResult(ctx, "resultranking", null),
+                        IntWithDefault.getResult(ctx, "motivation", null)
                 );
             }
         });
@@ -300,12 +302,26 @@ public class GiveUmaSoul {
         UmaSoulUtils.setGrowth(umaSoul, growth);
         UmaSoulUtils.setMotivation(umaSoul, motivation);
         UmaSoulUtils.setActionPoint(umaSoul, Optional.ofNullable(ap).orElse(UmaSoulUtils.getMaxActionPoint(umaSoul)));
-        int[] originalProperty = UmaSoulUtils.getProperty(umaSoul);
-        Optional.ofNullable(props).ifPresent(ps -> IntStream.range(0, 5).filter((i) -> props[i] != null).forEach((i) -> originalProperty[i] = props[i]));
-        int[] originalMaxProperty = UmaSoulUtils.getMaxProperty(umaSoul);
-        Optional.ofNullable(maxprops).ifPresent(ps -> IntStream.range(0, 5).filter((i) -> maxprops[i] != null).forEach((i) -> originalMaxProperty[i] = maxprops[i]));
-        int[] originalExtras = UmaSoulUtils.getExtraProperty(umaSoul);
-        Optional.ofNullable(extras).ifPresent(ps -> IntStream.range(0, 4).filter((i) -> extras[i] != null).forEach((i) -> originalExtras[i] = extras[i]));
+        int[] originalProperty = UmaSoulUtils.getProperty(umaSoul).array();
+        Optional.ofNullable(props)
+                .ifPresent(ps -> IntStream.range(0, 5)
+                        .filter((i) -> props[i] != null)
+                        .forEach((i) -> originalProperty[i] = props[i]));
+        UmaSoulUtils.setProperty(umaSoul, UmaDataBasicStatus.init(originalProperty));
+
+        int[] originalMaxProperty = UmaSoulUtils.getMaxProperty(umaSoul).array();
+        Optional.ofNullable(maxprops)
+                .ifPresent(ps -> IntStream.range(0, 5)
+                        .filter((i) -> maxprops[i] != null)
+                        .forEach((i) -> originalMaxProperty[i] = maxprops[i]));
+        UmaSoulUtils.setMaxProperty(umaSoul, UmaDataBasicStatus.init(originalMaxProperty));
+
+        int[] originalExtras = UmaSoulUtils.getExtraProperty(umaSoul).array();
+        Optional.ofNullable(extras)
+                .ifPresent(ps -> IntStream.range(0, 4)
+                        .filter((i) -> extras[i] != null)
+                        .forEach((i) -> originalExtras[i] = extras[i]));
+        UmaSoulUtils.setExtraProperty(umaSoul, UmaDataExtraStatus.init(originalExtras));
 
 
         if (!player.getInventory().add(umaSoul)) {

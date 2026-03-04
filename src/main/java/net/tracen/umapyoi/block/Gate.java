@@ -185,8 +185,8 @@ public class Gate extends Block {
     }
 
     @Override
-    public boolean isPathfindable(BlockState pState, BlockGetter pLevel, BlockPos pPos, PathComputationType pType) {
-        return switch (pType) {
+    public boolean isPathfindable(BlockState state, PathComputationType type) {
+        return switch (type) {
             case LAND, AIR -> true;
             default -> false;
         };

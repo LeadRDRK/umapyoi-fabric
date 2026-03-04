@@ -2,7 +2,7 @@ package net.tracen.umapyoi.container;
 
 import static net.tracen.umapyoi.block.entity.RaceRegisterBlockEntity.DATA_SLOT_SIZE;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -30,18 +30,18 @@ public class RaceContainer extends AbstractContainerMenu {
     private final ContainerLevelAccess canInteractWithCallable;
 
     private static RaceRegisterBlockEntity getTileEntity(final Inventory playerInventory,
-                                                         final FriendlyByteBuf data) {
+                                                         final BlockPos pos) {
         Objects.requireNonNull(playerInventory, "playerInventory cannot be null");
-        Objects.requireNonNull(data, "data cannot be null");
-        final BlockEntity tileAtPos = playerInventory.player.level().getBlockEntity(data.readBlockPos());
+        Objects.requireNonNull(pos, "pos cannot be null");
+        final BlockEntity tileAtPos = playerInventory.player.level().getBlockEntity(pos);
         if (tileAtPos instanceof RaceRegisterBlockEntity) {
             return (RaceRegisterBlockEntity) tileAtPos;
         }
         throw new IllegalStateException("Tile entity is not correct! " + tileAtPos);
     }
 
-    public RaceContainer(final int i, final Inventory playerInv, final FriendlyByteBuf data) {
-        this(i, playerInv, getTileEntity(playerInv, data), new SimpleContainerData(DATA_SLOT_SIZE));
+    public RaceContainer(final int i, final Inventory playerInv, final BlockPos pos) {
+        this(i, playerInv, getTileEntity(playerInv, pos), new SimpleContainerData(DATA_SLOT_SIZE));
     }
 
     public static class UmaSoulSlot extends Slot {

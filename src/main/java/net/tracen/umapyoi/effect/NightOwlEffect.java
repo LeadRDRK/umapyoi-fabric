@@ -20,18 +20,19 @@ public class NightOwlEffect extends MobEffect {
     }
 
     @Override
-    public void applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
+    public boolean applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
         Level level = pLivingEntity.level();
-        if (level.isClientSide) return;
-        if (UmapyoiAPI.getUmaSoul(pLivingEntity).isEmpty()) return;
+        if (level.isClientSide) return true;
+        if (UmapyoiAPI.getUmaSoul(pLivingEntity).isEmpty()) return true;
         if (level.random.nextDouble() <= Umapyoi.CONFIG.NIGHT_OWL_PROBABILITY_DOWN_MOTIVATION()) {
             UmaStatusUtils.changeMotivation(pLivingEntity, -1);
         }
+        return true;
     }
 
     public static boolean onMotivationChange(MotivationCallback.Context event) {
         LivingEntity target = event.getTarget();
-        if (!target.hasEffect(MobEffectRegistry.NIGHT_OWL.get())) return false;
+        if (!target.hasEffect(MobEffectRegistry.NIGHT_OWL.getHolder())) return false;
         return event.getDoTriggerBonus() || event.getAfter().compareTo(event.previous) < 0;
     }
 

@@ -5,7 +5,6 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Containers;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -83,13 +82,11 @@ public class RaceRegisterBlock extends BaseEntityBlock {
 
     @Nonnull
     @Override
-    @Deprecated
-    public InteractionResult use(@Nonnull BlockState state, Level world, @Nonnull BlockPos pos, @Nonnull Player player,
-                                 @Nonnull InteractionHand handIn, @Nonnull BlockHitResult result) {
-        if (!world.isClientSide) {
-            BlockEntity tileEntity = world.getBlockEntity(pos);
+    public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (!level.isClientSide) {
+            BlockEntity tileEntity = level.getBlockEntity(pos);
             if (tileEntity instanceof RaceRegisterBlockEntity) {
-                Optional.ofNullable(state.getMenuProvider(world, pos)).ifPresent(player::openMenu);
+                Optional.ofNullable(state.getMenuProvider(level, pos)).ifPresent(player::openMenu);
             }
         }
         return InteractionResult.SUCCESS;

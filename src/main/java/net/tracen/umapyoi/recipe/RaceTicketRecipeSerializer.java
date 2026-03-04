@@ -1,7 +1,6 @@
 package net.tracen.umapyoi.recipe;
 
 import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.MapCodec;
@@ -9,123 +8,111 @@ import com.mojang.serialization.MapLike;
 import com.mojang.serialization.RecordBuilder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.tracen.umapyoi.item.ItemRegistry;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 public class RaceTicketRecipeSerializer<T extends Recipe<?>, U extends T> implements RecipeSerializer<U> {
-    private final RecipeSerializer<T> compose;
-    private final BiFunction<T, ResourceLocation, U> converter;
-    private final Codec<U> codec;
+    private final MapCodec<U> codec;
+    private final StreamCodec<RegistryFriendlyByteBuf, U> streamCodec;
 
     public RaceTicketRecipeSerializer(RecipeSerializer<T> compose, BiFunction<T, ResourceLocation, U> converter) {
-        this.compose = compose;
-        this.converter = converter;
         this.codec = makeCodec(compose, converter);
+        this.streamCodec = makeStreamCodec(compose, converter);
     }
 
-    private static <T extends Recipe<?>, U extends T> Codec<U> makeCodec(RecipeSerializer<T> compose,
-                                                                         BiFunction<T, ResourceLocation, U> converter) {
-        if (compose.codec() instanceof MapCodec.MapCodecCodec<T> mapCodecCodec) {
-            var mapCodec = mapCodecCodec.codec();
-            return new MapCodec<U>() {
-                @Override
-                public <V> RecordBuilder<V> encode(U input, DynamicOps<V> ops, RecordBuilder<V> prefix) {
-                    var race = ResourceLocation.CODEC
-                            .encodeStart(ops, ((RaceTicketRecipe<?>) input).getKey());
-                    return mapCodec.encode(input, ops, prefix)
-                            .add(ops.createString("race"), race);
+    private static <T extends Recipe<?>, U extends T> MapCodec<U> makeCodec(RecipeSerializer<T> compose,
+                                                                            BiFunction<T, ResourceLocation, U> converter) {
+        var mapCodec = compose.codec();
+        return new MapCodec<>() {
+            @Override
+            public <V> RecordBuilder<V> encode(U input, DynamicOps<V> ops, RecordBuilder<V> prefix) {
+                var race = ResourceLocation.CODEC
+                        .encodeStart(ops, ((RaceTicketRecipe<?>) input).getKey());
+                return mapCodec.encode(input, ops, prefix)
+                        .add(ops.createString("race"), race);
+            }
+
+            @Override
+            public <V> DataResult<U> decode(DynamicOps<V> ops, MapLike<V> input) {
+                if (input == null) {
+                    return DataResult.error(() -> "Input is null");
                 }
 
-                @Override
-                public <V> DataResult<U> decode(DynamicOps<V> ops, MapLike<V> input) {
-                    if (input == null) {
-                        return DataResult.error(() -> "Input is null");
-                    }
+                MapLike<V> newInput;
+                if (input.get("result") == null) {
+                    var newMap = ops.mergeToMap(
+                            ops.empty(),
+                            input
+                    ).flatMap(map ->
+                            ops.mergeToMap(map, ops.createString("result"), ops.createMap(
+                                    Stream.of(Pair.of(
+                                            ops.createString("id"),
+                                            ops.createString(ItemRegistry.UMA_RACE_TICKET.getId().toString())
+                                    ))
+                            ))
+                    ).getOrThrow();
 
-                    MapLike<V> newInput;
-                    if (input.get("result") == null) {
-                        var newMap = ops.mergeToMap(
-                                ops.empty(),
-                                input
-                        ).flatMap(map ->
-                                ops.mergeToMap(map, ops.createString("result"), ops.createMap(
-                                        Stream.of(Pair.of(
-                                                ops.createString("item"),
-                                                ops.createString(ItemRegistry.UMA_RACE_TICKET.getId().toString())
-                                        ))
-                                ))
-                        ).getOrThrow(false, e -> {});
+                    newInput = ops.getMap(newMap).getOrThrow();
+                }
+                else {
+                    newInput = input;
+                }
+                var resultField = newInput.get("result");
 
-                        newInput = ops.getMap(newMap).getOrThrow(false, e -> {});
-                    }
-                    else {
-                        newInput = input;
-                    }
-                    var resultField = newInput.get("result");
+                var recipeResult = mapCodec.decode(ops, newInput);
+                return recipeResult.flatMap(recipe -> {
+                    var outputResult = ResourceLocation.CODEC.optionalFieldOf("race").decode(ops, newInput);
+                    return outputResult.map(outputOpt -> {
+                        var output = outputOpt
+                                .orElseGet(() -> // result.id MUST be present for the base recipe to even decode correctly
+                                        ResourceLocation.CODEC.fieldOf("id").codec()
+                                                .decode(ops, resultField)
+                                                .result()
+                                                .orElseThrow()
+                                                .getFirst()
+                                );
 
-                    var recipeResult = mapCodec.decode(ops, newInput);
-                    return recipeResult.flatMap(recipe -> {
-                        var outputResult = ResourceLocation.CODEC.optionalFieldOf("race").decode(ops, newInput);
-                        return outputResult.map(outputOpt -> {
-                            var output = outputOpt
-                                    .orElseGet(() -> // result.item MUST be present for the base recipe to even decode correctly
-                                            ResourceLocation.CODEC.fieldOf("item").codec()
-                                                    .decode(ops, resultField)
-                                                    .result()
-                                                    .orElseThrow()
-                                                    .getFirst()
-                                    );
-
-                            return converter.apply(recipe, output);
-                        });
+                        return converter.apply(recipe, output);
                     });
-                }
+                });
+            }
 
-                @Override
-                public <V> Stream<V> keys(DynamicOps<V> ops) {
-                    return Stream.concat(
-                            mapCodec.keys(ops),
-                            Stream.of(ops.createString("race"))
-                    );
-                }
-            }.codec();
-        }
-        else {
-            throw new UnsupportedOperationException("Composite codec is not a MapCodec");
-        }
+            @Override
+            public <V> Stream<V> keys(DynamicOps<V> ops) {
+                return Stream.concat(
+                        mapCodec.keys(ops),
+                        Stream.of(ops.createString("race"))
+                );
+            }
+        };
+    }
+
+    private static <T extends Recipe<?>, U extends T>
+    StreamCodec<RegistryFriendlyByteBuf, U> makeStreamCodec(RecipeSerializer<T> compose,
+                                                            BiFunction<T, ResourceLocation, U> converter) {
+        return StreamCodec.composite(
+                compose.streamCodec(), recipe -> recipe,
+                ResourceLocation.STREAM_CODEC, recipe -> ((RaceTicketRecipe<?>) recipe).getKey(),
+                converter
+        );
     }
 
     @Override
     @MethodsReturnNonnullByDefault
-    public Codec<U> codec() {
+    public MapCodec<U> codec() {
         return codec;
     }
 
     @Override
-    public @Nullable U fromNetwork(FriendlyByteBuf pBuffer) {
-        T recipe = compose.fromNetwork(pBuffer);
-        if (pBuffer.readBoolean())
-            return converter.apply(recipe, pBuffer.readResourceLocation());
-        return converter.apply(recipe, null);
-    }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf pBuffer, U pRecipe) {
-        compose.toNetwork(pBuffer, pRecipe);
-        if (pRecipe instanceof ShapelessRaceTicketRecipe shapeless) {
-            boolean hasName = shapeless.getKey() != null;
-            pBuffer.writeBoolean(hasName);
-            if (hasName) pBuffer.writeResourceLocation(shapeless.getKey());
-        } else {
-            pBuffer.writeBoolean(false);
-        }
+    @MethodsReturnNonnullByDefault
+    public StreamCodec<RegistryFriendlyByteBuf, U> streamCodec() {
+        return streamCodec;
     }
 }

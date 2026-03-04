@@ -4,7 +4,7 @@ import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.ServerStatsCounter;
@@ -89,7 +89,7 @@ public class CommonEvents {
     }
 
     public static void onConsumedItem(LivingEntity entity, ItemStack stack) {
-        if (!stack.isEdible()) return;
+        if (!stack.has(DataComponents.FOOD)) return;
         if (entity == null) return;
         if (entity.level().isClientSide()) return;
         Level world = entity.level();
@@ -108,7 +108,7 @@ public class CommonEvents {
             double p = Umapyoi.CONFIG.SLOW_METABOLISM_PROBABILITY();
             if (p != 0) {
                 if (world.getRandom().nextDouble() <= p)
-                    entity.addEffect(new MobEffectInstance(MobEffectRegistry.SLOW_METABOLISM.get(), 3600));
+                    entity.addEffect(new MobEffectInstance(MobEffectRegistry.SLOW_METABOLISM.getHolder(), 3600));
             }
         }
     }
@@ -117,8 +117,8 @@ public class CommonEvents {
         for (ServerPlayer player: level.players()) {
             if (player.isSpectator()) continue;
             if (player.isSleeping()) {
-                if (player.hasEffect(MobEffectRegistry.NIGHT_OWL.get()))
-                    player.removeEffect(MobEffectRegistry.NIGHT_OWL.get());
+                if (player.hasEffect(MobEffectRegistry.NIGHT_OWL.getHolder()))
+                    player.removeEffect(MobEffectRegistry.NIGHT_OWL.getHolder());
             }
         }
     }
@@ -130,15 +130,15 @@ public class CommonEvents {
         ServerStatsCounter serverstatscounter = player.getStats();
         int timeSinceRest = serverstatscounter.getValue(Stats.CUSTOM.get(Stats.TIME_SINCE_REST));
         if (timeSinceRest >= Umapyoi.CONFIG.NIGHT_OWL_THRESHOLD()) {
-            MobEffectInstance effectInstance = new MobEffectInstance(MobEffectRegistry.NIGHT_OWL.get(), -1);
+            MobEffectInstance effectInstance = new MobEffectInstance(MobEffectRegistry.NIGHT_OWL.getHolder(), -1);
             player.addEffect(effectInstance);
         }
     }
 
     public static void onPlayerSlept(LivingEntity entity, BlockPos sleepingPos) {
         if (entity instanceof ServerPlayer player) {
-            if (player.hasEffect(MobEffectRegistry.NIGHT_OWL.get())) {
-                player.removeEffect(MobEffectRegistry.NIGHT_OWL.get());
+            if (player.hasEffect(MobEffectRegistry.NIGHT_OWL.getHolder())) {
+                player.removeEffect(MobEffectRegistry.NIGHT_OWL.getHolder());
             }
         }
     }

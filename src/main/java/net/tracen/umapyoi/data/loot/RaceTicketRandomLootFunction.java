@@ -1,8 +1,11 @@
 package net.tracen.umapyoi.data.loot;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -11,6 +14,7 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.tracen.umapyoi.api.UmapyoiAPI;
+import net.tracen.umapyoi.item.UmaRaceTicketItem;
 import net.tracen.umapyoi.registry.races.Race;
 import net.tracen.umapyoi.utils.RaceRanking;
 
@@ -31,7 +35,7 @@ public class RaceTicketRandomLootFunction implements LootItemFunction {
         this.predicate = predicate;
     }
 
-    public static final Codec<RaceTicketRandomLootFunction> CODEC = RecordCodecBuilder.create(instance -> instance
+    public static final MapCodec<RaceTicketRandomLootFunction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
             .group(RaceRanking.CODEC.optionalFieldOf("least", RaceRanking.DEBUT).forGetter(RaceTicketRandomLootFunction::getLeast),
                     RaceRanking.CODEC.optionalFieldOf("most", RaceRanking.GI).forGetter(RaceTicketRandomLootFunction::getMost),
                     Codec.BOOL.optionalFieldOf("mode", true).forGetter(RaceTicketRandomLootFunction::getMode),
@@ -39,7 +43,7 @@ public class RaceTicketRandomLootFunction implements LootItemFunction {
             .apply(instance, RaceTicketRandomLootFunction::new));
 
     @Override
-    public LootItemFunctionType getType() {
+    public LootItemFunctionType<?> getType() {
         return LootFunctionRegistry.RACE_TICKET_RANDOM.get();
     }
 
@@ -54,8 +58,11 @@ public class RaceTicketRandomLootFunction implements LootItemFunction {
         if (raceListOfPredicate.isEmpty()) return ItemStack.EMPTY;
         Race raceDeterm = raceListOfPredicate.get(rand.nextInt(raceListOfPredicate.size()));
         ResourceLocation id = raceDeterm.id;
-        stack.getOrCreateTag().putString("race", id.toString());
-        return stack;
+        var race = lootContext.getResolver().lookupOrThrow(Race.REGISTRY_KEY)
+                .get(ResourceKey.create(Race.REGISTRY_KEY, id))
+                .map(Holder::value)
+                .orElse(null);
+        return UmaRaceTicketItem.init(id, race, stack);
     }
 
     public RaceRanking getLeast() {

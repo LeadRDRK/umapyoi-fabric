@@ -12,13 +12,16 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.Umapyoi;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.races.Race;
+import net.tracen.umapyoi.registry.umadata.UmaDataBasicStatus;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 public record RaceTag(int maximum, ResourceLocation id, boolean isUnique, int[] propertyReward) {
@@ -37,7 +40,8 @@ public record RaceTag(int maximum, ResourceLocation id, boolean isUnique, int[] 
 
     public boolean applyToUmaSoul(ItemStack soul, Race race) {
         boolean isFulfill;
-        CompoundTag tagRace = soul.getOrCreateTagElement("attend_race_tag");
+        CompoundTag tagRace = Optional.ofNullable(soul.get(DataComponentsTypeRegistry.ATTEND_RACE_TAG.get()))
+                .orElseGet(CompoundTag::new);
         if (!this.isUnique) {
             int current = tagRace.contains(this.id.toString(), CompoundTag.TAG_INT) ? tagRace.getInt(id.toString()) : 0;
             if (current > this.maximum) return false;
@@ -56,8 +60,8 @@ public record RaceTag(int maximum, ResourceLocation id, boolean isUnique, int[] 
             isFulfill = tagList.size() == this.maximum;
         }
         if (isFulfill) {
-            int[] properties = UmaSoulUtils.getProperty(soul);
-            int[] propertiesCeil = UmaSoulUtils.getMaxProperty(soul);
+            int[] properties = UmaSoulUtils.getProperty(soul).array();
+            int[] propertiesCeil = UmaSoulUtils.getMaxProperty(soul).array();
 
             for (int i = 0; i < 5; i++) {
                 propertiesCeil[i] = Math.min(propertiesCeil[i] + propertyReward[i], 39);
@@ -66,21 +70,26 @@ public record RaceTag(int maximum, ResourceLocation id, boolean isUnique, int[] 
             for (int i = 0; i < 5; i++) {
                 properties[i] = Math.min(properties[i] + propertyReward[i], propertiesCeil[i]);
             }
+
+            soul.set(DataComponentsTypeRegistry.UMADATA_BASIC_STATUS.get(), UmaDataBasicStatus.init(properties));
+            soul.set(DataComponentsTypeRegistry.UMADATA_MAX_BASIC_STATUS.get(), UmaDataBasicStatus.init(propertiesCeil));
         }
-        soul.getOrCreateTag().put("attend_race_tag", tagRace);
+        soul.set(DataComponentsTypeRegistry.ATTEND_RACE_TAG.get(), tagRace);
         return true;
     }
 
     public static Map<ResourceLocation, Integer> queryUmaSoulTags(ItemStack soul) {
-        if (!soul.getOrCreateTag().contains("attend_race_tag", CompoundTag.TAG_COMPOUND)) return Map.of();
+        var tagRaceOpt = Optional.ofNullable(soul.get(DataComponentsTypeRegistry.ATTEND_RACE_TAG.get()));
+        if (tagRaceOpt.isEmpty()) return Map.of();
         HashMap<ResourceLocation, Integer> hmap = new HashMap<>();
-        CompoundTag tagRace = soul.getOrCreateTagElement("attend_race_tag");
+        CompoundTag tagRace = tagRaceOpt.get();
         tagRace.getAllKeys().stream().map(ResourceLocation::tryParse).filter(Objects::nonNull).forEach(l -> hmap.put(l, queryUmaSoulTagCount(soul, l)));
         return hmap;
     }
 
     public static int queryUmaSoulTagCount(ItemStack soul, ResourceLocation id) {
-        CompoundTag tagRace = soul.getOrCreateTagElement("attend_race_tag");
+        CompoundTag tagRace = Optional.ofNullable(soul.get(DataComponentsTypeRegistry.ATTEND_RACE_TAG.get()))
+                .orElseGet(CompoundTag::new);
         if (tagRace.contains(id.toString(), CompoundTag.TAG_INT)) {
             return tagRace.getInt(id.toString());
         } else if (tagRace.contains(id.toString(), CompoundTag.TAG_LIST)) {

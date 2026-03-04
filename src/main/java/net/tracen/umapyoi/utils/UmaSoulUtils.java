@@ -3,30 +3,31 @@ package net.tracen.umapyoi.utils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.Util;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
-import net.tracen.umapyoi.item.data.GachaRankingData;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
+import net.tracen.umapyoi.item.data.GachaRankingData;
 import net.tracen.umapyoi.registry.UmaSkillRegistry;
 import net.tracen.umapyoi.registry.umadata.Growth;
 import net.tracen.umapyoi.registry.umadata.Motivations;
 import net.tracen.umapyoi.registry.umadata.UmaData;
-
-import java.util.Arrays;
 import net.tracen.umapyoi.registry.umadata.UmaDataBasicStatus;
 import net.tracen.umapyoi.registry.umadata.UmaDataExtraStatus;
+import net.tracen.umapyoi.registry.umadata.UmaDataRace;
 import net.tracen.umapyoi.registry.umadata.UmaDataSkills;
 import net.tracen.umapyoi.registry.umadata.UmaDataTraining;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class UmaSoulUtils {
 
@@ -57,8 +58,7 @@ public class UmaSoulUtils {
         );
         result.set(DataComponentsTypeRegistry.UMADATA_TRAINING.get(), new UmaDataTraining(1, 6));
         result.set(DataComponentsTypeRegistry.GROWTH.get(), Growth.UNTRAINED);
-        tag.putIntArray("surfaceAptitude", Arrays.stream(data.surfaceAptitude()).map(Aptitude::ordinal).toList());
-        tag.putIntArray("distanceAptitude", Arrays.stream(data.distanceAptitude()).map(Aptitude::ordinal).toList());
+        result.set(DataComponentsTypeRegistry.UMADATA_RACE.get(), new UmaDataRace(data.surfaceAptitude(), data.distanceAptitude()));
         return result;
     }
 
@@ -76,24 +76,18 @@ public class UmaSoulUtils {
     }
 
 
-    public static int[] getSurfaceAptitude(ItemStack stack) {
-        return stack.getOrCreateTag().getIntArray("surfaceAptitude").length >= 3
-                ? stack.getOrCreateTag().getIntArray("surfaceAptitude")
-                : Arrays.stream(UmaData.DEFAULT_SURFACE_APTITUDE).map(Aptitude::ordinal).mapToInt(Integer::intValue).toArray();
+    public static List<Aptitude> getSurfaceAptitude(ItemStack stack) {
+        return Optional.ofNullable(stack.get(DataComponentsTypeRegistry.UMADATA_RACE.get()))
+                .map(UmaDataRace::surfaceAptitude)
+                .filter(surfaceAptitude -> surfaceAptitude.size() >= 3)
+                .orElseGet(() -> Arrays.stream(UmaData.DEFAULT_SURFACE_APTITUDE).toList());
     }
 
-    public static Aptitude[] getSurfaceAptitudeReadonly(ItemStack stack) {
-        return Arrays.stream(getSurfaceAptitude(stack)).mapToObj(v -> Aptitude.values()[v]).toArray(Aptitude[]::new);
-    }
-
-    public static int[] getDistanceAptitude(ItemStack stack) {
-        return stack.getOrCreateTag().getIntArray("distanceAptitude").length >= 4
-                ? stack.getOrCreateTag().getIntArray("distanceAptitude")
-                : Arrays.stream(UmaData.DEFAULT_DISTANCE_APTITUDE).map(Aptitude::ordinal).mapToInt(Integer::intValue).toArray();
-    }
-
-    public static Aptitude[] getDistanceAptitudeReadonly(ItemStack stack) {
-        return Arrays.stream(getDistanceAptitude(stack)).mapToObj(v -> Aptitude.values()[v]).toArray(Aptitude[]::new);
+    public static List<Aptitude> getDistanceAptitude(ItemStack stack) {
+        return Optional.ofNullable(stack.get(DataComponentsTypeRegistry.UMADATA_RACE.get()))
+                .map(UmaDataRace::distanceAptitude)
+                .filter(distanceAptitude -> distanceAptitude.size() >= 4)
+                .orElseGet(() -> Arrays.stream(UmaData.DEFAULT_DISTANCE_APTITUDE).toList());
     }
 
     public static ResourceLocation getName(ItemStack stack) {
@@ -102,7 +96,11 @@ public class UmaSoulUtils {
 
     public static UmaDataBasicStatus getProperty(ItemStack stack) {
         return stack.getOrDefault(DataComponentsTypeRegistry.UMADATA_BASIC_STATUS.get(),
-                new UmaDataBasicStatus(1, 1, 1, 1, 1));
+                UmaDataBasicStatus.DEFAULT_STATUS);
+    }
+
+    public static void setProperty(ItemStack stack, UmaDataBasicStatus props) {
+        stack.set(DataComponentsTypeRegistry.UMADATA_BASIC_STATUS.get(), props);
     }
 
     public static UmaDataBasicStatus getPropertyRate(ItemStack stack) {
@@ -110,9 +108,26 @@ public class UmaSoulUtils {
                 new UmaDataBasicStatus(0, 0, 0, 0, 0));
     }
 
+    public static void setPropertyRate(ItemStack stack, UmaDataBasicStatus props) {
+        stack.set(DataComponentsTypeRegistry.UMADATA_STATUS_RATE.get(), props);
+    }
+
+    public static UmaDataExtraStatus getExtraProperty(ItemStack stack) {
+        return stack.getOrDefault(DataComponentsTypeRegistry.UMADATA_EXTRA_STATUS.get(),
+                UmaDataExtraStatus.DEFAULT);
+    }
+
+    public static void setExtraProperty(ItemStack stack, UmaDataExtraStatus props) {
+        stack.set(DataComponentsTypeRegistry.UMADATA_EXTRA_STATUS.get(), props);
+    }
+
     public static UmaDataBasicStatus getMaxProperty(ItemStack stack) {
         return stack.getOrDefault(DataComponentsTypeRegistry.UMADATA_MAX_BASIC_STATUS.get(),
-                new UmaDataBasicStatus(12, 12, 12, 12, 12));
+                UmaDataBasicStatus.DEFAULT_MAX_STATUS);
+    }
+
+    public static void setMaxProperty(ItemStack stack, UmaDataBasicStatus props) {
+        stack.set(DataComponentsTypeRegistry.UMADATA_MAX_BASIC_STATUS.get(), props);
     }
 
     public static Motivations getMotivation(ItemStack stack) {
@@ -265,6 +280,8 @@ public class UmaSoulUtils {
     }
 
     public static boolean hasUmaSoulDebut(ItemStack soul) {
-        return soul.getOrCreateTag().contains("has_debut") && soul.getOrCreateTag().getBoolean("has_debut");
+        return Optional.ofNullable(soul.get(DataComponentsTypeRegistry.UMADATA_RACE.get()))
+                .map(UmaDataRace::hasDebut)
+                .orElse(false);
     }
 }

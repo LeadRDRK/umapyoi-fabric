@@ -15,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.item.ItemRegistry;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.item.factor.FactorReport;
 import net.tracen.umapyoi.registry.factors.FactorType;
 import net.tracen.umapyoi.registry.factors.UmaFactorStack;
@@ -80,8 +81,8 @@ public class FactorResearchMenu extends ItemCombinerMenu {
         } else {
             ItemStack left = this.inputSlots.getItem(0);
             ItemStack right = this.inputSlots.getItem(1);
-            List<UmaFactorStack> stackLeft = UmaFactorUtils.deserializeNBT(left.getOrCreateTag());
-            List<UmaFactorStack> stackRight = UmaFactorUtils.deserializeNBT(right.getOrCreateTag());
+            List<UmaFactorStack> stackLeft = UmaFactorUtils.deserializeData(left);
+            List<UmaFactorStack> stackRight = UmaFactorUtils.deserializeData(right);
             List<UmaFactorStack> outputs;
             if (isFactorItem(left) || stackLeft.get(0).getFactor().getFactorType() == FactorType.OTHER) {
                 outputs = Stream.concat(
@@ -108,7 +109,7 @@ public class FactorResearchMenu extends ItemCombinerMenu {
             }
             ItemStack returnItem = isFactorItem(left) ? left.copyWithCount(1) : new ItemStack(ItemRegistry.FACTOR_SHARD.get(), 1);
             // todo: I am not sure about it, but, it seems that both can be simply copied with left.copyWithCount(1)
-            returnItem.getOrCreateTag().put("factors", UmaFactorUtils.serializeNBT(outputs));
+            returnItem.set(DataComponentsTypeRegistry.FACTOR_DATA.get(), UmaFactorUtils.serializeData(outputs));
             this.resultSlots.setItem(0, returnItem);
         }
     }

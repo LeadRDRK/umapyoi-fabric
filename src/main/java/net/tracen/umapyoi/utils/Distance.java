@@ -6,6 +6,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 public enum Distance {
     SPRINT(0, 1499, 0, 1000), MILE(1500, 1899, 2, 1600),
@@ -49,9 +50,9 @@ public enum Distance {
         // MEDIUM > MILES > LONG > SPRINT
         @Override
         public int compare(Distance o1, Distance o2) {
-            Aptitude[] umaAptitudes = UmaSoulUtils.getDistanceAptitudeReadonly(stack);
-            Aptitude leftApt = umaAptitudes[o1.ordinal()];
-            Aptitude rightApt = umaAptitudes[o2.ordinal()];
+            List<Aptitude> umaAptitudes = UmaSoulUtils.getDistanceAptitude(stack);
+            Aptitude leftApt = umaAptitudes.get(o1.ordinal());
+            Aptitude rightApt = umaAptitudes.get(o2.ordinal());
             if (leftApt != rightApt) {
                 return leftApt.compareTo(rightApt);
             }
@@ -68,7 +69,7 @@ public enum Distance {
         if (this == ADAPTIVE) {
             return AdaptiveEvaluation(umaSoul).GetMultiplier(umaSoul);
         }
-        return UmaSoulUtils.getDistanceAptitudeReadonly(umaSoul)[this.ordinal()].distanceFactor;
+        return UmaSoulUtils.getDistanceAptitude(umaSoul).get(this.ordinal()).distanceFactor;
     }
 
     public static final Codec<Distance> CODEC = Codec.STRING.xmap(s -> Distance.valueOf(s.toUpperCase()), d -> d.name().toLowerCase());

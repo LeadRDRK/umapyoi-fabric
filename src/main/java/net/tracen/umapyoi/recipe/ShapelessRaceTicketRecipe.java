@@ -2,17 +2,21 @@ package net.tracen.umapyoi.recipe;
 
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.core.Registry;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
+import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.item.ItemRegistry;
+import net.tracen.umapyoi.item.UmaRaceTicketItem;
 import net.tracen.umapyoi.registry.races.Race;
 
 import org.jetbrains.annotations.Nullable;
@@ -39,22 +43,24 @@ public class ShapelessRaceTicketRecipe extends ShapelessRecipe implements RaceTi
     public ResourceLocation getKey() { return this.baseItemOrKey; }
 
     @Override
-    public ItemStack assemble(CraftingContainer pContainer, RegistryAccess pRegistryAccess) {
-        return this.getResultItem(pRegistryAccess).copy();
+    public ItemStack assemble(CraftingContainer craftingContainer, HolderLookup.Provider registries) {
+        return this.getResultItem(registries).copy();
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess pRegistryAccess) {
+    public ItemStack getResultItem(HolderLookup.Provider registries) {
         ItemStack result = getResultItem(this.baseItemOrKey).copy();
-        if (pRegistryAccess == RegistryAccess.EMPTY) return result;
-        Registry<Race> registry = pRegistryAccess.registryOrThrow(Race.REGISTRY_KEY);
-        if (!BuiltInRegistries.ITEM.getKey(result.getItem()).equals(this.baseItemOrKey))
-            result = ItemRegistry.UMA_RACE_TICKET.get().getDefaultInstance();
-        if (registry.containsKey(this.baseItemOrKey)) {
-            result.getOrCreateTag().putString("race", this.baseItemOrKey.toString());
+        if(registries == RegistryAccess.EMPTY)
             return result;
+
+        if (!BuiltInRegistries.ITEM.getKey(result.getItem()).equals(this.baseItemOrKey)) {
+            var race = UmapyoiAPI.getRaceRegistry(registries)
+                    .get(ResourceKey.create(Race.REGISTRY_KEY, this.baseItemOrKey))
+                    .map(Holder::value)
+                    .orElse(null);
+            result = UmaRaceTicketItem.init(this.baseItemOrKey, race);
         }
-        return ItemStack.EMPTY;
+        return result;
     }
 
     @Override

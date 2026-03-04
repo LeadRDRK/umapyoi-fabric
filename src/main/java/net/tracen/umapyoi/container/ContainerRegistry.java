@@ -38,5 +38,5 @@ public class ContainerRegistry {
             .register("factor_research_menu", () -> new MenuType<>(FactorResearchMenu::new, FeatureFlags.DEFAULT_FLAGS));
 
     public static final RegistryObject<MenuType<RaceContainer>> RACE_REGISTER = CONTAINER_TYPES
-            .register("race_container", () -> new ExtendedScreenHandlerType<>(RaceContainer::new));
+            .register("race_container", () -> new ExtendedScreenHandlerType<>(RaceContainer::new, BlockPos.STREAM_CODEC));
 }

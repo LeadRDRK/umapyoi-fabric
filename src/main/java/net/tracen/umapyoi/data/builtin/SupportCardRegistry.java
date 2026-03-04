@@ -1,6 +1,6 @@
 package net.tracen.umapyoi.data.builtin;
 
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.tracen.umapyoi.Umapyoi;
@@ -69,7 +69,7 @@ public class SupportCardRegistry {
 
     public static final ResourceKey<SupportCard> SSR_SATONO_DIAMOND_STAMINA = register("ssr_satono_diamond_stamina");
     public static final ResourceKey<SupportCard> SSR_KIRYUUIN_AOI = register("ssr_kiryuuin_aoi");
-    public static void registerAll(BootstapContext<SupportCard> bootstrap) {
+    public static void registerAll(BootstrapContext<SupportCard> bootstrap) {
 
         bootstrap.register(SSR_ANIME_MAIN,
                 SupportCard.Builder.create()

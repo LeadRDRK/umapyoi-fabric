@@ -19,20 +19,20 @@ public class MoodBonus extends MobEffect {
     }
 
     public static void onSettingProperty(SettingPropertyCallback.Context event) {
-        MobEffect thisEffect = MobEffectRegistry.MOOD_BONUS.get();
+        var thisEffect = MobEffectRegistry.MOOD_BONUS.getHolder();
         LivingEntity entity = event.getLivingEntity();
         if (!entity.hasEffect(thisEffect)) return;
         MobEffectInstance instance = entity.getEffect(thisEffect);
         int levelAdd = Optional.ofNullable(instance).map(MobEffectInstance::getAmplifier).orElse(-1) + 1;
         ItemStack stack = event.getUmaSoul();
-        int level = UmaSoulUtils.getProperty(stack)[event.getAspect().getId()] + levelAdd;
+        int level = UmaSoulUtils.getProperty(stack).array()[event.getAspect().getId()] + levelAdd;
         double propertyFactor = propertyPercentageByValue(level);
         event.setPropertyPercentage(propertyFactor);
         event.setResultProperty(UmaSoulUtils.getMotivation(stack), event.getPropertyRate(), event.getRetiredValue(), propertyFactor);
     }
 
     public static boolean onBeforeUseSkill(UseSkillCallback.Context event) {
-        MobEffect thisEffect = MobEffectRegistry.MOOD_BONUS.get();
+        var thisEffect = MobEffectRegistry.MOOD_BONUS.getHolder();
         LivingEntity entity = event.getPlayer();
         if (!entity.hasEffect(thisEffect)) return false;
         event.setAp(event.getAp() / 2);

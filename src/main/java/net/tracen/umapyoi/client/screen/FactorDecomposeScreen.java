@@ -10,6 +10,7 @@ import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.client.model.SimpleBedrockModel;
 import net.tracen.umapyoi.client.model.bedrock.BedrockPart;
 import net.tracen.umapyoi.container.FactorDecomposeMenu;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.umadata.UmaData;
 import net.tracen.umapyoi.utils.ClientUtils;
 
@@ -63,9 +64,7 @@ public class FactorDecomposeScreen extends AbstractContainerScreen<FactorDecompo
     protected void renderUma(GuiGraphics graphic) {
         ItemStack rawStack = this.menu.getSlot(0).getItem();
         if (rawStack.isEmpty()) return;
-        ResourceLocation name = Optional.ofNullable(rawStack.getTag())
-                .map(r -> r.getString("name"))
-                .map(ResourceLocation::tryParse)
+        ResourceLocation name = Optional.ofNullable(rawStack.get(DataComponentsTypeRegistry.DATA_LOCATION.get()))
                 .orElse(UmaData.DEFAULT_UMA_ID);
         if (!ClientUtils.getClientUmaDataRegistry().containsKey(name)) name = UmaData.DEFAULT_UMA_ID;
         SimpleBedrockModel model = new SimpleBedrockModel(ClientUtils.getModelPOJO(name)) {

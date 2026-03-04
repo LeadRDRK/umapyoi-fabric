@@ -18,7 +18,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.events.RetireCallback;
 import net.tracen.umapyoi.item.UmaSoulItem;
-import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.UmaFactorRegistry;
 import net.tracen.umapyoi.registry.UmaSkillRegistry;
 import net.tracen.umapyoi.registry.factors.FactorType;

@@ -2,13 +2,16 @@ package net.tracen.umapyoi.utils;
 
 import com.google.common.collect.Lists;
 
-import net.tracen.umapyoi.registry.UmaFactorRegistry;
-import net.tracen.umapyoi.registry.factors.FactorData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
+import net.tracen.umapyoi.registry.UmaFactorRegistry;
+import net.tracen.umapyoi.registry.factors.FactorData;
 import net.tracen.umapyoi.registry.factors.UmaFactorStack;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +30,12 @@ public class UmaFactorUtils {
         datas.forEach(data->list.add(new UmaFactorStack(UmaFactorRegistry.REGISTRY.get().get(data.id()), data.level(), data.tag())));
 
         return list;
+    }
+
+    public static List<UmaFactorStack> deserializeData(ItemStack stack) {
+        return Optional.ofNullable(stack.get(DataComponentsTypeRegistry.FACTOR_DATA.get()))
+                .map(UmaFactorUtils::deserializeData)
+                .orElse(Collections.emptyList());
     }
 
     public static UmaFactorStack cloneWithLevel(UmaFactorStack orig, int level, boolean forced) {

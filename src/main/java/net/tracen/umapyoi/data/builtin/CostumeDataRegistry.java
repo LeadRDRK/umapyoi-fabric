@@ -1,6 +1,6 @@
 package net.tracen.umapyoi.data.builtin;
 
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.tracen.umapyoi.Umapyoi;
@@ -16,7 +16,7 @@ public class CostumeDataRegistry {
     public static final ResourceKey<CosmeticData> KASAMATSU_TRAINING_UNIFORM = register("kasamatsu_training_uniform");
 
 
-    public static void registerAll(BootstapContext<CosmeticData> bootstrap) {
+    public static void registerAll(BootstrapContext<CosmeticData> bootstrap) {
 
         bootstrap.register(COMMON_COSTUME, new CosmeticData(CosmeticData.COMMON_COSTUME));
         bootstrap.register(STARTING_FUTURE, new CosmeticData(

@@ -5,10 +5,12 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.item.ItemRegistry;
+import net.tracen.umapyoi.item.UmaRaceTicketItem;
 import net.tracen.umapyoi.registry.races.Race;
 import net.tracen.umapyoi.registry.races.RaceRegistry;
 import net.tracen.umapyoi.utils.RaceRanking;
@@ -36,13 +38,11 @@ public class RaceTicketItemListing implements VillagerTrades.ItemListing {
                 .filter(r -> !Objects.equals(r.texturePredicateOverride(), RaceRegistry.PREDICATE_CHAMPIONS))
                 .toList();
         Race rand = fulfill.get(pRandom.nextInt(fulfill.size()));
-        ItemStack result = ItemRegistry.UMA_RACE_TICKET.get().getDefaultInstance();
-        result.getOrCreateTag().putString("race", rand.id().toString());
+        ItemStack result = UmaRaceTicketItem.init(rand.id(), rand);
         int baseValPrice = 5 * this.level;
         int price = pRandom.nextIntBetweenInclusive(-2, 2) + baseValPrice;
         return new MerchantOffer(
-                new ItemStack(ItemRegistry.JEWEL.get(), price),
-                ItemStack.EMPTY,
+                new ItemCost(ItemRegistry.JEWEL.get(), price),
                 result, 12, 6 * this.level, 0.2f
         );
     }

@@ -1,46 +1,49 @@
 package net.tracen.umapyoi.data.loot;
 
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.tracen.umapyoi.Umapyoi;
 
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class RaceTicketUpToGILoot implements AddLootTableModifier {
-    static private final Set<ResourceLocation> TARGET_LOOT_TABLES = Stream.of(
-                    "minecraft:chests/abandoned_mineshaft",
-                    "minecraft:chests/ancient_city",
-                    "minecraft:chests/ancient_city_ice_box",
-                    "minecraft:chests/bastion_bridge",
-                    "minecraft:chests/bastion_hoglin_stable",
-                    "minecraft:chests/bastion_other",
-                    "minecraft:chests/bastion_treasure",
-                    "minecraft:chests/desert_pyramid",
-                    "minecraft:chests/igloo_chest",
-                    "minecraft:chests/jungle_temple",
-                    "minecraft:chests/nether_bridge",
-                    "minecraft:chests/shipwreck_map",
-                    "minecraft:chests/shipwreck_supply",
-                    "minecraft:chests/shipwreck_treasure",
-                    "minecraft:chests/simple_dungeon",
-                    "minecraft:chests/stronghold_corridor",
-                    "minecraft:chests/stronghold_crossing",
-                    "minecraft:chests/stronghold_library",
-                    "minecraft:chests/underwater_ruin_big",
-                    "minecraft:chests/underwater_ruin_small",
-                    "minecraft:chests/woodland_mansion"
-            )
-            .map(ResourceLocation::new)
-            .collect(Collectors.toUnmodifiableSet());
+    static private final Set<ResourceKey<LootTable>> TARGET_LOOT_TABLES = Set.of(
+            BuiltInLootTables.ABANDONED_MINESHAFT,
+            BuiltInLootTables.ANCIENT_CITY,
+            BuiltInLootTables.ANCIENT_CITY_ICE_BOX,
+            BuiltInLootTables.BASTION_BRIDGE,
+            BuiltInLootTables.BASTION_HOGLIN_STABLE,
+            BuiltInLootTables.BASTION_OTHER,
+            BuiltInLootTables.BASTION_TREASURE,
+            BuiltInLootTables.DESERT_PYRAMID,
+            BuiltInLootTables.IGLOO_CHEST,
+            BuiltInLootTables.JUNGLE_TEMPLE,
+            BuiltInLootTables.NETHER_BRIDGE,
+            BuiltInLootTables.SHIPWRECK_MAP,
+            BuiltInLootTables.SHIPWRECK_SUPPLY,
+            BuiltInLootTables.SHIPWRECK_TREASURE,
+            BuiltInLootTables.SIMPLE_DUNGEON,
+            BuiltInLootTables.STRONGHOLD_CORRIDOR,
+            BuiltInLootTables.STRONGHOLD_CROSSING,
+            BuiltInLootTables.STRONGHOLD_LIBRARY,
+            BuiltInLootTables.UNDERWATER_RUIN_BIG,
+            BuiltInLootTables.UNDERWATER_RUIN_SMALL,
+            BuiltInLootTables.WOODLAND_MANSION
+    );
 
     @Override
-    public Set<ResourceLocation> targetLootTables() {
+    public Set<ResourceKey<LootTable>> targetLootTables() {
         return TARGET_LOOT_TABLES;
     }
 
     @Override
-    public ResourceLocation lootTable() {
-        return new ResourceLocation(Umapyoi.MODID, "race/ticket/race_ticket_up_to_gi");
+    public ResourceKey<LootTable> lootTable() {
+        return ResourceKey.create(
+                Registries.LOOT_TABLE,
+                new ResourceLocation(Umapyoi.MODID, "race/ticket/race_ticket_up_to_gi")
+        );
     }
 }

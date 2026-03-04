@@ -7,6 +7,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 public enum Surface {
     TURF(ChatFormatting.GREEN), DIRT(ChatFormatting.GOLD), SYNTHETIC(ChatFormatting.RED), ADAPTIVE(ChatFormatting.WHITE);
@@ -25,9 +26,9 @@ public enum Surface {
 
         @Override
         public int compare(Surface o1, Surface o2) {
-            Aptitude[] aptitudes = UmaSoulUtils.getSurfaceAptitudeReadonly(soul);
-            Aptitude leftAptitude = aptitudes[o1.ordinal()];
-            Aptitude rightAptitude = aptitudes[o2.ordinal()];
+            List<Aptitude> aptitudes = UmaSoulUtils.getSurfaceAptitude(soul);
+            Aptitude leftAptitude = aptitudes.get(o1.ordinal());
+            Aptitude rightAptitude = aptitudes.get(o2.ordinal());
             if (leftAptitude != rightAptitude) {
                 return leftAptitude.compareTo(rightAptitude);
             }
@@ -43,7 +44,7 @@ public enum Surface {
         if (this == ADAPTIVE) {
             return AdaptiveCollapse(soul).GetMultiplier(soul);
         }
-        return UmaSoulUtils.getSurfaceAptitudeReadonly(soul)[this.ordinal()].surfaceFactor;
+        return UmaSoulUtils.getSurfaceAptitude(soul).get(this.ordinal()).surfaceFactor;
     }
 
     public static final Codec<Surface> CODEC = Codec.STRING

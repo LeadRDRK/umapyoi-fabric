@@ -4,10 +4,12 @@ import static net.tracen.umapyoi.item.UmaRaceTicketItem.getRaceID;
 
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -20,7 +22,6 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.LootDataManager;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -46,7 +47,7 @@ import javax.annotation.Nullable;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements ExtendedScreenHandlerFactory {
+public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements ExtendedScreenHandlerFactory<BlockPos> {
     // No additional synchronized logic because provided by SyncedBlockEntity
     // Update by inventoryChanged (custom logic in SyncedBlockEntity, which is the super of this class)
 
@@ -106,26 +107,27 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
     // NBT: {RecipeTime: this.recipeTime, Inventory: [...this.inventory]}
 
     @Override
-    public void load(@Nonnull CompoundTag compound) {
-        super.load(compound);
-        ContainerHelper.loadAllItems(compound, items);
+    public void loadAdditional(CompoundTag compound, HolderLookup.Provider registries) {
+        super.loadAdditional(compound, registries);
+        clearContent();
+        ContainerHelper.loadAllItems(compound, items, registries);
         recipeTime = compound.getInt("RecipeTime");
         winnerRenderSeed = compound.getLong("WinnerRenderSeed");
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag compound) {
-        super.saveAdditional(compound);
+    public void saveAdditional(CompoundTag compound, HolderLookup.Provider registries) {
+        super.saveAdditional(compound, registries);
         compound.putInt("RecipeTime", recipeTime);
-        ContainerHelper.saveAllItems(compound, items);
+        ContainerHelper.saveAllItems(compound, items, registries);
         compound.putLong("WinnerRenderSeed", this.safeGetWinnerRenderSeed());
     }
 
     @Nonnull
     @Override
-    public CompoundTag getUpdateTag() {
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
         CompoundTag tag = new CompoundTag();
-        this.saveAdditional(tag);
+        this.saveAdditional(tag, registries);
         return tag;
     }
 
@@ -190,7 +192,7 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
         int limit = Math.min(this.getSlotLimit(slot), existing.getMaxStackSize());
 
         if (!existing.isEmpty()) {
-            if (!ItemHandlerHelper.canItemStacksStack(stack, existing)) return stack;
+            if (!ItemStack.isSameItemSameComponents(stack, existing)) return stack;
             limit -= existing.getCount();
         }
 
@@ -275,8 +277,8 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
 
         Race race = UmapyoiAPI.getRaceRegistry(this.level).get(raceID);
         ResourceLocation lootSpecify = new ResourceLocation(raceID.getNamespace(), "race/id/" + raceID.getPath());
-        LootDataManager manager = Objects.requireNonNull(this.level.getServer()).getLootData();
-        LootTable table = manager.getLootTable(lootSpecify);
+        var registries = Objects.requireNonNull(this.level.getServer()).reloadableRegistries();
+        LootTable table = registries.getLootTable(ResourceKey.create(Registries.LOOT_TABLE, lootSpecify));
         if (table == LootTable.EMPTY) {
             Umapyoi.getLogger().debug("There doesn't exist a loot table for {}, falling back to generic rank + field table", raceID);
             if (race == null) {
@@ -287,16 +289,19 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
             RaceRanking rank = race.ranking;
             if (stackSoul.equals(ItemStack.EMPTY)) {
                 Umapyoi.getLogger().error("Umasoul is no longer present.");
-                table = manager.getLootTable(new ResourceLocation(Umapyoi.MODID, "race/generic/race_" +
-                        rank.name().toLowerCase()));
+                table = registries.getLootTable(ResourceKey.create(Registries.LOOT_TABLE,
+                        new ResourceLocation(Umapyoi.MODID, "race/generic/race_"
+                                + rank.name().toLowerCase())));
             } else {
                 ResourceLocation field = race.field(this.level, stackSoul).id();
-                table = manager.getLootTable(new ResourceLocation(field.getNamespace(), "race/generic/field/race_"
-                        + field.getPath() + "_" + rank.name().toLowerCase()));
+                table = registries.getLootTable(ResourceKey.create(Registries.LOOT_TABLE,
+                        new ResourceLocation(field.getNamespace(), "race/generic/field/race_"
+                                + field.getPath() + "_" + rank.name().toLowerCase())));
                 if (table == LootTable.EMPTY) {
                     Umapyoi.getLogger().debug("There doesn't exist a loot table for {} {}, falling back to generic table", field, rank);
-                    table = manager.getLootTable(new ResourceLocation(Umapyoi.MODID, "race/generic/race_" +
-                            rank.name().toLowerCase()));
+                    table = registries.getLootTable(ResourceKey.create(Registries.LOOT_TABLE,
+                            new ResourceLocation(Umapyoi.MODID, "race/generic/race_"
+                                    + rank.name().toLowerCase())));
                 }
             }
         }
@@ -345,8 +350,8 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
     }
 
     @Override
-    public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
-        buf.writeBlockPos(getBlockPos());
+    public BlockPos getScreenOpeningData(ServerPlayer player) {
+        return getBlockPos();
     }
 
     // Render-helper function

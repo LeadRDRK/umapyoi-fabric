@@ -47,8 +47,8 @@ import net.tracen.umapyoi.events.client.RenderingUmaSoulCallback;
 import net.tracen.umapyoi.registry.UmapyoiAttributesRegistry;
 import net.tracen.umapyoi.registry.umadata.Growth;
 import net.tracen.umapyoi.registry.umadata.UmaData;
-import net.tracen.umapyoi.utils.Aptitude;
 import net.tracen.umapyoi.registry.umadata.UmaDataBasicStatus;
+import net.tracen.umapyoi.utils.Aptitude;
 import net.tracen.umapyoi.utils.ClientUtils;
 import net.tracen.umapyoi.utils.GachaRanking;
 import net.tracen.umapyoi.utils.ResultRankingUtils;
@@ -175,23 +175,23 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
             tooltip.add(Component.literal(""));
 
             tooltip.add(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.details").withStyle(ChatFormatting.AQUA));
-            Aptitude[] surfaceAptitudes = UmaSoulUtils.getSurfaceAptitudeReadonly(stack);
+            List<Aptitude> surfaceAptitudes = UmaSoulUtils.getSurfaceAptitude(stack);
             tooltip.add(
-                    Component.translatable("tooltip.umapyoi.uma_soul.aptitude.turf", surfaceAptitudes[0].styledComponent()).withStyle(ChatFormatting.GREEN)
+                    Component.translatable("tooltip.umapyoi.uma_soul.aptitude.turf", surfaceAptitudes.get(0).styledComponent()).withStyle(ChatFormatting.GREEN)
                             .append(" / ").withStyle(ChatFormatting.RESET)
-                            .append(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.dirt", surfaceAptitudes[1].styledComponent()).withStyle(ChatFormatting.GOLD))
+                            .append(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.dirt", surfaceAptitudes.get(1).styledComponent()).withStyle(ChatFormatting.GOLD))
                             .append(" / ").withStyle(ChatFormatting.RESET)
-                            .append(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.synthetic", surfaceAptitudes[2].styledComponent()).withStyle(ChatFormatting.GOLD))
+                            .append(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.synthetic", surfaceAptitudes.get(2).styledComponent()).withStyle(ChatFormatting.GOLD))
             );
-            Aptitude[] distanceAptitudes = UmaSoulUtils.getDistanceAptitudeReadonly(stack);
+            List<Aptitude> distanceAptitudes = UmaSoulUtils.getDistanceAptitude(stack);
             tooltip.add(
-                    Component.translatable("tooltip.umapyoi.uma_soul.aptitude.short", distanceAptitudes[0].styledComponent())
+                    Component.translatable("tooltip.umapyoi.uma_soul.aptitude.short", distanceAptitudes.get(0).styledComponent())
                             .append(" / ")
-                            .append(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.miles", distanceAptitudes[1].styledComponent())
+                            .append(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.miles", distanceAptitudes.get(1).styledComponent())
                                     .append(" / ")
-                                    .append(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.medium", distanceAptitudes[2].styledComponent()))
+                                    .append(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.medium", distanceAptitudes.get(2).styledComponent()))
                                     .append(" / ")
-                                    .append(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.long", distanceAptitudes[3].styledComponent())))
+                                    .append(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.long", distanceAptitudes.get(3).styledComponent())))
             );
             tooltip.add(
                     Component.translatable("tooltip.umapyoi.uma_soul.aptitude.strategy", Component.translatable("tooltip.umapyoi.uma_soul.aptitude.strategy." + UmaSoulUtils.getPosition(stack).name().toLowerCase()))
@@ -223,7 +223,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
         if (UmaSoulUtils.getGrowth(stack) == Growth.UNTRAINED)
             return atts;
 
-        boolean hasFatique = entity.hasEffect(MobEffectRegistry.SLOW_METABOLISM.get());
+        boolean hasFatique = entity.hasEffect(MobEffectRegistry.SLOW_METABOLISM.getHolder());
 
         atts.put(UmapyoiAttributesRegistry.SPRINT_SPEED,
                 new AttributeModifier(uuid, "sprint_speed_running_bonus",
@@ -266,7 +266,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
         return event.getAttributes();
     }
 
-    public double getExactProperty(ItemStack stack, LivingEntity user, StatusType type, double limit) {
+    public static double getExactProperty(ItemStack stack, LivingEntity user, StatusType type, double limit) {
         var retiredValue = UmaSoulUtils.getGrowth(stack) == Growth.RETIRED ? 1.0D : 0.25D;
         int rate = 0;
         switch (type) {
@@ -278,7 +278,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
         }
         var propertyRate = 1.0D + (rate / 100.0D);
         var totalProperty = propertyPercentage(stack, type);
-        var event = new SettingPropertyCallback.Context(user, stack, retiredValue, propertyRate, totalProperty);
+        var event = new SettingPropertyCallback.Context(user, stack, retiredValue, propertyRate, totalProperty, type);
         SettingPropertyCallback.invoke(event);
         return event.getResultProperty() * limit;
     }
@@ -291,7 +291,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
         return 1 / denominator;
     }
 
-    private double propertyPercentage(ItemStack stack, StatusType type) {
+    private static double propertyPercentage(ItemStack stack, StatusType type) {
         int x = 0;
         switch (type) {
             case SPEED -> x = UmaSoulUtils.getProperty(stack).speed();

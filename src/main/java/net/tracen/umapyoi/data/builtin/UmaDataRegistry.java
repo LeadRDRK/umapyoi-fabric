@@ -1,6 +1,6 @@
 package net.tracen.umapyoi.data.builtin;
 
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.tracen.umapyoi.Umapyoi;
@@ -152,7 +152,7 @@ public class UmaDataRegistry {
     public static final ResourceKey<UmaData> KISEKI = register("kiseki");
     public static final ResourceKey<UmaData> MEJIRO_RAMONU = register("mejiro_ramonu");
 
-    public static void registerAll(BootstapContext<UmaData> bootstrap) {
+    public static void registerAll(BootstrapContext<UmaData> bootstrap) {
 
         bootstrap.register(AGNES_DIGITAL, UmaData.createNewUmamusume("agnes_digital", GachaRanking.SR, new int[] {8, 8, 7, 0, 7}, new Aptitude[]{Aptitude.A, Aptitude.A, Aptitude.F, Aptitude.A, Aptitude.A, Aptitude.G}, Position.LATE_SURGER));
 

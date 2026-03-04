@@ -137,12 +137,12 @@ public class UmapyoiRecipeProvider extends FabricRecipeProvider {
 
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, BlockRegistry.FACTOR_RESEARCH_TABLE.get()).pattern("BJF")
                 .pattern("SSS").define('B', Items.BOOK).define('J', ItemRegistry.JEWEL.get())
-                .define('F', ItemRegistry.UMA_FACTOR_ITEM.get()).define('S', UmapyoiItemTags.STONES)
+                .define('F', ItemRegistry.UMA_FACTOR_ITEM.get()).define('S', ConventionalItemTags.STONES)
                 .unlockedBy("has_item", has(ItemRegistry.JEWEL.get())).save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, BlockRegistry.FACTOR_DECOMPOSE_TABLE.get()).pattern("PJF")
                 .pattern("SSS").define('P', Items.PAPER).define('J', ItemRegistry.JEWEL.get())
-                .define('F', ItemRegistry.UMA_FACTOR_ITEM.get()).define('S', UmapyoiItemTags.STONES)
+                .define('F', ItemRegistry.UMA_FACTOR_ITEM.get()).define('S', ConventionalItemTags.STONES)
                 .unlockedBy("has_item", has(ItemRegistry.JEWEL.get())).save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, BlockRegistry.RACE_REGISTER_BLOCK.get()).pattern("ITI")

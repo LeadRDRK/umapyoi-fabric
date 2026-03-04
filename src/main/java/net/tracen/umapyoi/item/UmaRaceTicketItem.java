@@ -7,6 +7,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -17,6 +18,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.races.Race;
 import net.tracen.umapyoi.registry.races.RaceRegistry;
 import net.tracen.umapyoi.utils.ClientUtils;
@@ -44,6 +46,23 @@ import javax.annotation.Nullable;
 public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
     public UmaRaceTicketItem() {
         super(Umapyoi.defaultItemProperties());
+    }
+
+    public static ItemStack init(ResourceLocation id, @Nullable Race race, ItemStack result) {
+        result.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), id);
+
+        RaceRanking ranking = Optional.ofNullable(race).map(r -> r.ranking).orElse(RaceRanking.DEBUT);
+        var rarity = ranking == RaceRanking.GI
+                ? Rarity.EPIC
+                : (ranking == RaceRanking.GII || ranking == RaceRanking.GIII) ? Rarity.UNCOMMON : Rarity.COMMON;
+        result.set(DataComponents.RARITY, rarity);
+
+        return result;
+    }
+
+    public static ItemStack init(ResourceLocation id, @Nullable Race race) {
+        ItemStack result = new ItemStack(ItemRegistry.UMA_RACE_TICKET.get());
+        return init(id, race, result);
     }
 
     private static class RaceComparator implements Comparator<Holder.Reference<Race>> {
@@ -82,8 +101,7 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
     public void fillItemCategory(FabricItemGroupEntries entries) {
         sortedRaceList(entries.getContext().holders()).forEachOrdered(race -> {
             if (race.key().location().equals(RaceRegistry.DEFAULT.location())) return;
-            ItemStack result = ItemRegistry.UMA_RACE_TICKET.get().getDefaultInstance();
-            result.getOrCreateTag().putString("race", race.key().location().toString());
+            ItemStack result = init(race.key().location(), race.value());
             entries.accept(result);
         });
     }
@@ -91,23 +109,12 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
     @Nonnull
     @Override
     public ItemStack getDefaultInstance() {
-        ItemStack result = super.getDefaultInstance();
-        result.getOrCreateTag().putString("race", "umapyoi:undetermined_race");
-        return result;
+        return init(RaceRegistry.DEFAULT.location(), null);
     }
 
     @Override
     public boolean isValidRepairItem(ItemStack stack, ItemStack repairCandidate) {
         return false;
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public Rarity getRarity(@Nonnull ItemStack pStack) {
-        RaceRanking ranking = Optional.ofNullable(getRace(pStack)).map(r -> r.ranking).orElse(RaceRanking.DEBUT);
-        return ranking == RaceRanking.GI ? Rarity.EPIC :
-                (ranking == RaceRanking.GII || ranking == RaceRanking.GIII) ? Rarity.UNCOMMON : Rarity.COMMON;
     }
 
     @Override
@@ -138,10 +145,8 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
     }
 
     public static ResourceLocation getRaceID(ItemStack stack) {
-        if (stack.getOrCreateTag().contains("race"))
-            return Optional.ofNullable(ResourceLocation.tryParse(stack.getOrCreateTag().getString("race")))
-                    .orElseGet(RaceRegistry.DEFAULT::location); // sanity check (if nbt has been incorrectly modified through command)
-        return RaceRegistry.DEFAULT.location();
+        return Optional.ofNullable(stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get()))
+                .orElseGet(RaceRegistry.DEFAULT::location);
     }
 
     public static Race getRace(ItemStack stack) {
@@ -150,9 +155,7 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
 
     public static Race getRace(ItemStack stack, Level world) {
         try {
-            if (!stack.getOrCreateTag().contains("race")) return null;
-            String rawTag = stack.getOrCreateTag().getString("race");
-            ResourceLocation loc = ResourceLocation.tryParse(rawTag);
+            ResourceLocation loc = stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
             if (loc == null) return null;
             return Optional.ofNullable(world).map(UmapyoiAPI::getRaceRegistry).orElse(ClientUtils.getRaceRegistry()).get(loc);
         } catch (Exception _ignored) {
@@ -189,8 +192,9 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flagIn) {
-        super.appendHoverText(stack, level, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents,
+                                TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
         ResourceLocation raceID = getRaceID(stack);
         if (raceID == RaceRegistry.DEFAULT.location()) return;
         Race raceObj = getRace(stack);
@@ -199,15 +203,15 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
                 .map(s -> Component.translatable("tooltip.umapyoi.race.time." + s))
                 .collect(new ComponentCollector());
         year = year.append(" ").append(Component.translatable("tooltip.umapyoi.race.time." + raceObj.time));
-        tooltip.add(year);
+        tooltipComponents.add(year);
 
         RaceRanking ranking = raceObj.ranking;
-        tooltip.add(Component.translatable("tooltip.umapyoi.race.tier.hint").append(
+        tooltipComponents.add(Component.translatable("tooltip.umapyoi.race.tier.hint").append(
                 Component.translatable("race.umapyoi.tier." + ranking.name().toLowerCase()).withStyle(ranking.color)
         ));
 
         Surface surface = raceObj.surface;
-        tooltip.add(Component.translatable("tooltip.umapyoi.race.surface").append(
+        tooltipComponents.add(Component.translatable("tooltip.umapyoi.race.surface").append(
                 Component.translatable("race.umapyoi.surface." + surface.name().toLowerCase()).withStyle(surface.color)
         ));
 
@@ -220,16 +224,16 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
                             .append(Component.translatable("tooltip.umapyoi.race.unit")));
         }
 
-        tooltip.add(baseComponent);
+        tooltipComponents.add(baseComponent);
 
         ResourceLocation locField = raceObj.field;
-        tooltip.add(Component.translatable("tooltip.umapyoi.race.field").append(
+        tooltipComponents.add(Component.translatable("tooltip.umapyoi.race.field").append(
                 Component.translatable("race." + locField.getNamespace() + ".field." + locField.getPath())
         ));
 
         if (!raceObj.tags.isEmpty()) {
-            tooltip.add(Component.literal(""));
-            tooltip.add(Component.translatable("tooltip.umapyoi.race.gainable_tags").withStyle(ChatFormatting.BLUE));
+            tooltipComponents.add(Component.literal(""));
+            tooltipComponents.add(Component.translatable("tooltip.umapyoi.race.gainable_tags").withStyle(ChatFormatting.BLUE));
             raceObj.tags.stream().sorted()
                     .map(ClientUtils.getRaceTagRegistry()::get)
                     .filter(Objects::nonNull)
@@ -238,7 +242,7 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
                                     .append(Component.translatable("race." + rl.id().getNamespace() + ".tags." + rl.id().getPath()))
                                     .withStyle(ChatFormatting.DARK_GREEN)
                     )
-                    .forEach(tooltip::add);
+                    .forEach(tooltipComponents::add);
         }
     }
 }

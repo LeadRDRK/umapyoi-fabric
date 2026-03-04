@@ -26,7 +26,7 @@ import static net.tracen.umapyoi.registry.races.tags.RaceTagRegistry.SPRINT;
 import static net.tracen.umapyoi.registry.races.tags.RaceTagRegistry.TRIPLE_CROWN;
 import static net.tracen.umapyoi.registry.races.tags.RaceTagRegistry.TRIPLE_TIARA;
 
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.tracen.umapyoi.Umapyoi;
@@ -3443,7 +3443,7 @@ public class RaceRegistry {
         return rKey;
     }
 
-    public static void registerAll(BootstapContext<Race> bootstep) {
+    public static void registerAll(BootstrapContext<Race> bootstep) {
         forDataGenMap.forEach((rKey, rFun) ->
                 bootstep.register(rKey, rFun.apply(rKey.location())));
     }

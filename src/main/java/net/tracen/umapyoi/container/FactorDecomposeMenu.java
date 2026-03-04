@@ -4,9 +4,6 @@ import static net.tracen.umapyoi.block.BlockRegistry.FACTOR_DECOMPOSE_TABLE;
 import static net.tracen.umapyoi.item.ItemRegistry.FACTOR_SHARD;
 import static net.tracen.umapyoi.item.ItemRegistry.UMA_FACTOR_ITEM;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -19,6 +16,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.events.FactorDecomposeCallback;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.factors.FactorType;
 import net.tracen.umapyoi.registry.factors.UmaFactorStack;
 import net.tracen.umapyoi.utils.UmaFactorUtils;
@@ -185,17 +183,9 @@ public class FactorDecomposeMenu extends AbstractContainerMenu {
 
     public static boolean AllowContinueDefaultLogic(ItemStack factorStackCandidate) {
         if (!factorStackCandidate.is(UMA_FACTOR_ITEM.get())) return false;
-        boolean isHasValidFactor = false;
-        for (Tag tag: factorStackCandidate.getOrCreateTag().getList("factors", Tag.TAG_COMPOUND)) {
-            if (tag instanceof CompoundTag compound) {
-                Optional<UmaFactorStack> opt = UmaFactorStack.CODEC.parse(NbtOps.INSTANCE, compound).result();
-                if (opt.isPresent() && opt.get().getLevel() > 0) {
-                    isHasValidFactor = true;
-                    break;
-                }
-            }
-        }
-        return isHasValidFactor;
+        return Optional.ofNullable(factorStackCandidate.get(DataComponentsTypeRegistry.FACTOR_DATA.get()))
+                .map(factors -> factors.stream().anyMatch(data -> data.level() > 0))
+                .orElse(false);
     }
 
     public void createResult() {
@@ -209,8 +199,8 @@ public class FactorDecomposeMenu extends AbstractContainerMenu {
             int i = 0;
             List<ItemStack> returnStacks = evt.getListOfReturn().stream().map(s -> {
                 ItemStack returnStack = new ItemStack(FACTOR_SHARD.get(), 1);
-                CompoundTag tag = returnStack.getOrCreateTag();
-                tag.put("factors", UmaFactorUtils.serializeNBT(List.of(s)));
+                returnStack.set(DataComponentsTypeRegistry.FACTOR_DATA.get(),
+                        UmaFactorUtils.serializeData(List.of(s)));
                 return returnStack;
             }).toList();
             for (ItemStack stack: returnStacks) {
@@ -227,7 +217,10 @@ public class FactorDecomposeMenu extends AbstractContainerMenu {
     public static List<UmaFactorStack> DefaultAlgResultStacks(ItemStack factorStack, int seed) {
         Random random = new Random();
         random.setSeed(seed);
-        List<UmaFactorStack> listOfFactor = UmaFactorUtils.deserializeNBT(factorStack.getOrCreateTag()).stream().filter(s -> s.getFactor().getFactorType() != FactorType.UNIQUE).collect(Collectors.toCollection(ArrayList::new));
+        List<UmaFactorStack> listOfFactor = UmaFactorUtils.deserializeData(factorStack)
+                .stream()
+                .filter(s -> s.getFactor().getFactorType() != FactorType.UNIQUE)
+                .collect(Collectors.toCollection(ArrayList::new));
         List<UmaFactorStack> outputStack;
         if (listOfFactor.size() <= 9) {
             outputStack = listOfFactor;

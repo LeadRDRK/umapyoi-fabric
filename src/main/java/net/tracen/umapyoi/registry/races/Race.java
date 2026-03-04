@@ -7,9 +7,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.Registry;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -17,11 +14,13 @@ import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.item.ItemRegistry;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.races.field.RaceField;
 import net.tracen.umapyoi.registry.races.tags.RaceTag;
 import net.tracen.umapyoi.registry.umadata.Growth;
 import net.tracen.umapyoi.registry.umadata.Motivations;
 import net.tracen.umapyoi.registry.umadata.UmaData;
+import net.tracen.umapyoi.registry.umadata.UmaDataRace;
 import net.tracen.umapyoi.utils.Distance;
 import net.tracen.umapyoi.utils.Position;
 import net.tracen.umapyoi.utils.RaceRanking;
@@ -32,6 +31,7 @@ import net.tracen.umapyoi.utils.Year;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -172,8 +172,8 @@ public class Race {
         if (this.id.equals(RaceRegistry.DEFAULT.location())) return false;
         if (!(stack.is(ItemRegistry.UMA_SOUL.get()) &&
                 ((this.ranking == RaceRanking.DEBUT) ^ UmaSoulUtils.hasUmaSoulDebut(stack)))) return false;
-        CompoundTag tag = stack.getOrCreateTag();
-        int last = tag.getInt("last_attend_time");
+        var raceData = stack.getOrDefault(DataComponentsTypeRegistry.UMADATA_RACE.get(), UmaDataRace.DEFAULT);
+        int last = raceData.lastAttendTime();
         if (this.exclusive) {
             boolean canAttend = false;
             for (Year year: this.year) {
@@ -185,10 +185,10 @@ public class Race {
             if (!canAttend) return false;
         }
         if (!this.afterRace.isEmpty()) {
-            CompoundTag attended = tag.getCompound("attended");
+            var attended = raceData.attended();
             boolean canAttend = false;
-            for (String key: attended.getAllKeys()){
-                if (this.afterRace.contains(ResourceLocation.tryParse(key))) {
+            for (ResourceLocation key : attended.keySet()){
+                if (this.afterRace.contains(key)) {
                     canAttend = true;
                     break;
                 }
@@ -199,7 +199,7 @@ public class Race {
     }
 
     public double getUmaFactorCorrection(ItemStack stack, Level world) {
-        int[] propertiesAsLevel = UmaSoulUtils.getProperty(stack);
+        int[] propertiesAsLevel = UmaSoulUtils.getProperty(stack).array();
         int fieldSituation = world.getRandom().nextIntBetweenInclusive(0, 3);
         ResourceLocation nameLoc = UmaSoulUtils.getName(stack);
         UmaData umaData = UmapyoiAPI.getUmaDataRegistry(world).getOptional(nameLoc).orElseGet(() -> {
@@ -224,7 +224,7 @@ public class Race {
             Umapyoi.getLogger().info("Warning: {} doesn't exist.", nameLoc);
             return UmaData.DEFAULT_UMA;
         });
-        int[] propertiesAsLevel = UmaSoulUtils.getProperty(stack);
+        var propertiesAsLevel = UmaSoulUtils.getProperty(stack).array();
         Position umaPosition = umaData.position();
         double totalProperties = propertiesAsLevel[0] * (2 - umaPosition.speedFactor) * this.correction[0] + propertiesAsLevel[1]
                 * (2 - umaPosition.staminaFactor) * this.correction[1] + propertiesAsLevel[2] * this.correction[2] +
@@ -243,43 +243,34 @@ public class Race {
     }
 
     public void followUp(ItemStack stack, Level level) {
-        CompoundTag tag = stack.getOrCreateTag();
+        var raceData = stack.getOrDefault(DataComponentsTypeRegistry.UMADATA_RACE.get(), UmaDataRace.DEFAULT);
 
+        var wonRaces = raceData.wonRaces();
         if (this.isPassed(stack, level)) {
             tags.stream().map(UmapyoiAPI.getRaceTagRegistry(level)::get).filter(Objects::nonNull)
                     .forEach((t) -> t.applyToUmaSoul(stack, this));
-            ListTag list = tag.contains("won_races", CompoundTag.TAG_LIST) ? tag.getList("won_races", CompoundTag.TAG_STRING) : new ListTag();
-            boolean has = false;
-            for (int i = 0; i < list.size(); i++) {
-                ResourceLocation rl = ResourceLocation.tryParse(list.getString(i));
-                if (rl != null && rl.equals(this.id)) {
-                    has = true;
-                    break;
-                }
-            }
-            if (!has) {
-                list.add(StringTag.valueOf(this.id.toString()));
-            }
-            tag.put("won_races", list);
+            wonRaces = new HashSet<>(wonRaces);
+            wonRaces.add(this.id);
         }
 
-        CompoundTag attended = tag.contains("attended", CompoundTag.TAG_COMPOUND) ? tag.getCompound("attended") : new CompoundTag();
-        int count = attended.getInt(this.id.toString()) + 1;
-        attended.putInt(this.id.toString(), count);
-        tag.put("attended", attended);
+        var attended = new HashMap<>(raceData.attended());
+        int count = attended.getOrDefault(this.id, 0) + 1;
+        attended.put(this.id, count);
 
-        int lastAttend = tag.getInt("last_attend_time");
-        this.year.stream().filter(y -> (y.ordinal() * 24 + this.time) > lastAttend).min(Comparator.naturalOrder()).ifPresentOrElse(
-                y -> tag.putInt("last_attend_time", y.ordinal() * 24 + this.time),
-                () -> {
-                    Umapyoi.getLogger().error("Cannot calculate the right time.");
-                    tag.putInt("last_attend_time", lastAttend + 1);
-                }
-        );
+        int lastAttend = raceData.lastAttendTime();
+        int newLastAttend = this.year.stream()
+                .filter(y -> (y.ordinal() * 24 + this.time) > lastAttend)
+                .min(Comparator.naturalOrder())
+                .map(y -> y.ordinal() * 24 + this.time)
+                .orElse(lastAttend + 1);
 
+        boolean hasDebut = raceData.hasDebut();
         if (this.ranking == RaceRanking.DEBUT) {
-            tag.putBoolean("has_debut", true);
+            hasDebut = true;
         }
+
+        var newRaceData = raceData.update(wonRaces, attended, newLastAttend, hasDebut);
+        stack.set(DataComponentsTypeRegistry.UMADATA_RACE.get(), newRaceData);
     }
 
     public static class RaceBuilder {

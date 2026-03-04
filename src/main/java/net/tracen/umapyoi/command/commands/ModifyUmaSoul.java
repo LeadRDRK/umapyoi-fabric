@@ -15,25 +15,29 @@ import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.commands.arguments.selector.EntitySelector;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.item.ItemRegistry;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.UmaSkillRegistry;
 import net.tracen.umapyoi.registry.umadata.Growth;
 import net.tracen.umapyoi.registry.umadata.Motivations;
+import net.tracen.umapyoi.registry.umadata.UmaDataBasicStatus;
+import net.tracen.umapyoi.registry.umadata.UmaDataExtraStatus;
+import net.tracen.umapyoi.registry.umadata.UmaDataSkills;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class ModifyUmaSoul {
     private static HashMap<String, List<LiteralArgumentBuilder<CommandSourceStack>>> modesMap;
@@ -72,10 +76,10 @@ public class ModifyUmaSoul {
                 ).then(
                         Commands.literal("set").then(Commands.argument("ap", IntegerArgumentType.integer(0)).executes(ctx -> setAP(k, ctx)))
                 ),
-                Commands.literal("maxap").then(
-                        Commands.literal("add").then(Commands.argument("ap", IntegerArgumentType.integer()).executes(ctx -> modifyMaxAP(k, ctx)))
+                Commands.literal("extraap").then(
+                        Commands.literal("add").then(Commands.argument("ap", IntegerArgumentType.integer()).executes(ctx -> modifyExtraAP(k, ctx)))
                 ).then(
-                        Commands.literal("set").then(Commands.argument("ap", IntegerArgumentType.integer(0)).executes(ctx -> setMaxAP(k, ctx)))
+                        Commands.literal("set").then(Commands.argument("ap", IntegerArgumentType.integer(0)).executes(ctx -> setExtraAP(k, ctx)))
                 ),
                 Commands.literal("maxprop").then(
                         Commands.argument("type", IntegerArgumentType.integer(0, 4))
@@ -233,7 +237,9 @@ public class ModifyUmaSoul {
 
         type = type == null ? IntegerArgumentType.getInteger(ctx, "type") : type;
         int value = IntegerArgumentType.getInteger(ctx, "value");
-        UmaSoulUtils.getProperty(soul)[type] = value;
+        int[] props = UmaSoulUtils.getProperty(soul).array();
+        props[type] = value;
+        UmaSoulUtils.setProperty(soul, UmaDataBasicStatus.init(props));
 
         player.getInventory().setChanged();
         player.inventoryMenu.broadcastChanges();
@@ -256,7 +262,9 @@ public class ModifyUmaSoul {
 
         type = type == null ? IntegerArgumentType.getInteger(ctx, "type") : type;
         int value = IntegerArgumentType.getInteger(ctx, "value");
-        UmaSoulUtils.getMaxProperty(soul)[type] = value;
+        int[] props = UmaSoulUtils.getMaxProperty(soul).array();
+        props[type] = value;
+        UmaSoulUtils.setMaxProperty(soul, UmaDataBasicStatus.init(props));
 
         player.getInventory().setChanged();
         player.inventoryMenu.broadcastChanges();
@@ -309,7 +317,7 @@ public class ModifyUmaSoul {
         return 1;
     }
 
-    public static int modifyMaxAP(String mode, CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+    public static int modifyExtraAP(String mode, CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ServerPlayer player;
         try {
             player = EntityArgument.getPlayer(ctx, "player");
@@ -322,7 +330,10 @@ public class ModifyUmaSoul {
         if (soul == null) return 0;
 
         int ap = IntegerArgumentType.getInteger(ctx, "ap");
-        UmaSoulUtils.setMaxActionPoint(soul, UmaSoulUtils.getMaxActionPoint(soul) + ap);
+        var extraProps = UmaSoulUtils.getExtraProperty(soul);
+        var extraAp = extraProps.extraActionPoint() + ap;
+        UmaSoulUtils.setExtraProperty(soul, new UmaDataExtraStatus(extraProps.actionPoint(),
+                extraAp, extraProps.resultRanking(), extraProps.motivation()));
 
         player.getInventory().setChanged();
         player.inventoryMenu.broadcastChanges();
@@ -331,7 +342,7 @@ public class ModifyUmaSoul {
         return 1;
     }
 
-    public static int setMaxAP(String mode, CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+    public static int setExtraAP(String mode, CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ServerPlayer player;
         try {
             player = EntityArgument.getPlayer(ctx, "player");
@@ -344,7 +355,9 @@ public class ModifyUmaSoul {
         if (soul == null) return 0;
 
         int ap = IntegerArgumentType.getInteger(ctx, "ap");
-        UmaSoulUtils.setMaxActionPoint(soul, ap);
+        var extraProps = UmaSoulUtils.getExtraProperty(soul);
+        UmaSoulUtils.setExtraProperty(soul, new UmaDataExtraStatus(extraProps.actionPoint(),
+                ap, extraProps.resultRanking(), extraProps.motivation()));
 
         player.getInventory().setChanged();
         player.inventoryMenu.broadcastChanges();
@@ -591,16 +604,17 @@ public class ModifyUmaSoul {
             ctx.getSource().sendFailure(Component.translatable("umapyoi.command.skill.remove.notexist", rl));
             return 0;
         }
-        ListTag lTag = new ListTag();
-        UmaSoulUtils.getSkills(soul).stream().filter(tag -> !Objects.equals(ResourceLocation.tryParse(tag.getAsString()), rl)).forEach(lTag::add);
-        if (lTag.size() == 0) {
-            lTag.add(StringTag.valueOf(BASIC_PACE.getId().toString()));
+        var skillData = soul.getOrDefault(DataComponentsTypeRegistry.UMADATA_SKILLS.get(), UmaDataSkills.DEFAULT);
+        List<ResourceLocation> skills = skillData.skills()
+                .stream()
+                .filter(id -> !Objects.equals(id, rl))
+                .collect(Collectors.toCollection(ArrayList::new));
+        if (skills.isEmpty()) {
+            skills.add(BASIC_PACE.getId());
         }
-        soul.getOrCreateTag().put("skills", lTag);
+        soul.set(DataComponentsTypeRegistry.UMADATA_SKILLS.get(), new UmaDataSkills(
+                skillData.skillSlot(), Math.min(skillData.selectedSkill(), skills.size() - 1), skills));
 
-        if (UmaSoulUtils.getSelectedSkillIndex(soul) >= UmaSoulUtils.getSkills(soul).size()) {
-            UmaSoulUtils.setSelectedSkill(soul, UmaSoulUtils.getSkills(soul).size() - 1);
-        }
         player.getInventory().setChanged();
         player.inventoryMenu.broadcastChanges();
 
@@ -620,16 +634,15 @@ public class ModifyUmaSoul {
         ItemStack soul = getItemStackByMode(mode, player, ctx.getSource()::sendFailure, typeString::set);
         if (soul == null) return 0;
 
-        ListTag ltag = UmaSoulUtils.getSkills(soul);
-        ltag.remove(UmaSoulUtils.getSkills(soul).size() - 1);
-        if (ltag.size() == 0) {
-            ltag.add(StringTag.valueOf(BASIC_PACE.getId().toString()));
+        var skillData = soul.getOrDefault(DataComponentsTypeRegistry.UMADATA_SKILLS.get(), UmaDataSkills.DEFAULT);
+        List<ResourceLocation> skills = new ArrayList<>(skillData.skills());
+        skills.remove(UmaSoulUtils.getSkills(soul).size() - 1);
+        if (skills.isEmpty()) {
+            skills.add(BASIC_PACE.getId());
         }
-        soul.getOrCreateTag().put("skills", ltag);
+        soul.set(DataComponentsTypeRegistry.UMADATA_SKILLS.get(), new UmaDataSkills(
+                skillData.skillSlot(), Math.min(skillData.selectedSkill(), skills.size() - 1), skills));
 
-        if (UmaSoulUtils.getSelectedSkillIndex(soul) >= UmaSoulUtils.getSkills(soul).size()) {
-            UmaSoulUtils.setSelectedSkill(soul, UmaSoulUtils.getSkills(soul).size() - 1);
-        }
         player.getInventory().setChanged();
         player.inventoryMenu.broadcastChanges();
 
@@ -649,10 +662,10 @@ public class ModifyUmaSoul {
         ItemStack soul = getItemStackByMode(mode, player, ctx.getSource()::sendFailure, typeString::set);
         if (soul == null) return 0;
 
-        ListTag newTag = new ListTag();
-        newTag.add(StringTag.valueOf(BASIC_PACE.getId().toString()));
-        soul.getOrCreateTag().put("skills", newTag);
-        UmaSoulUtils.setSelectedSkill(soul, 0);
+        var skillData = soul.getOrDefault(DataComponentsTypeRegistry.UMADATA_SKILLS.get(), UmaDataSkills.DEFAULT);
+        List<ResourceLocation> skills = List.of(BASIC_PACE.getId());
+        soul.set(DataComponentsTypeRegistry.UMADATA_SKILLS.get(), new UmaDataSkills(
+                skillData.skillSlot(), 0, skills));
 
         player.getInventory().setChanged();
         player.inventoryMenu.broadcastChanges();

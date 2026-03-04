@@ -1,6 +1,6 @@
 package net.tracen.umapyoi.registry.races.tags;
 
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.tracen.umapyoi.Umapyoi;
@@ -50,7 +50,7 @@ public class RaceTagRegistry {
         return simpleRegister(name, max, max != 1);
     }
 
-    public static void registerAll(BootstapContext<RaceTag> bootstep) {
+    public static void registerAll(BootstrapContext<RaceTag> bootstep) {
         forDataGenMap.forEach((rKey, rFun) ->
                 bootstep.register(rKey, rFun.apply(rKey.location())));
     }

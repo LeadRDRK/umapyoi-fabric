@@ -12,7 +12,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
-import net.minecraft.util.ExtraCodecs;
 import net.tracen.umapyoi.Umapyoi;
 
 import java.util.Optional;
@@ -28,7 +27,7 @@ public class GrantBookOnFirstJoin extends SimpleCriterionTrigger<GrantBookOnFirs
 
     public record Instance(Optional<ContextAwarePredicate> player) implements SimpleCriterionTrigger.SimpleInstance {
         public static final Codec<Instance> CODEC = RecordCodecBuilder.create(instance -> instance
-                .group(ExtraCodecs.strictOptionalField(EntityPredicate.ADVANCEMENT_CODEC, "player").forGetter(Instance::player))
+                .group(EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(Instance::player))
                 .apply(instance, Instance::new));
 
         public boolean test(ServerPlayer player) {

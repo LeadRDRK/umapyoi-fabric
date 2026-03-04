@@ -11,6 +11,10 @@
   ],
   "race": "umapyoi:make_debut",
   "result": {
-    "item": "umapyoi:race_ticket"
+    "components": {
+      "umapyoi:data_location": "umapyoi:undetermined_race"
+    },
+    "count": 1,
+    "id": "umapyoi:race_ticket"
   }
 }

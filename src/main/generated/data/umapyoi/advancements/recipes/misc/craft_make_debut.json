@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "umapyoi:blank_ticket"
-            ]
+            "items": "umapyoi:blank_ticket"
           }
         ]
       },

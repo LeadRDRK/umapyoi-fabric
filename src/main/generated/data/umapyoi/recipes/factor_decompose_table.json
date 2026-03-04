@@ -20,7 +20,7 @@
     "SSS"
   ],
   "result": {
-    "item": "umapyoi:factor_decompose_table"
-  },
-  "show_notification": true
+    "count": 1,
+    "id": "umapyoi:factor_decompose_table"
+  }
 }

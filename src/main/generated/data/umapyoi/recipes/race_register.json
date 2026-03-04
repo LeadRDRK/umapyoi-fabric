@@ -17,7 +17,7 @@
     "ICI"
   ],
   "result": {
-    "item": "umapyoi:race_register"
-  },
-  "show_notification": true
+    "count": 1,
+    "id": "umapyoi:race_register"
+  }
 }

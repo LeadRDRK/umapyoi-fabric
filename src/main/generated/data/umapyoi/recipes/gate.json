@@ -18,7 +18,7 @@
     "B B"
   ],
   "result": {
-    "item": "umapyoi:gate"
-  },
-  "show_notification": true
+    "count": 1,
+    "id": "umapyoi:gate"
+  }
 }

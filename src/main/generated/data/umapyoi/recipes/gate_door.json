@@ -10,7 +10,7 @@
     "BB"
   ],
   "result": {
-    "item": "umapyoi:gate_door"
-  },
-  "show_notification": true
+    "count": 1,
+    "id": "umapyoi:gate_door"
+  }
 }

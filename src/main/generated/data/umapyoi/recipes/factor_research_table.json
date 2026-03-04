@@ -20,7 +20,7 @@
     "SSS"
   ],
   "result": {
-    "item": "umapyoi:factor_research_table"
-  },
-  "show_notification": true
+    "count": 1,
+    "id": "umapyoi:factor_research_table"
+  }
 }

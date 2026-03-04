@@ -80,12 +80,12 @@ public class UmaStatueBlock extends BaseEntityBlock implements SimpleWaterlogged
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         BlockEntity tileEntity = level.getBlockEntity(pos);
-        if (tileEntity instanceof UmaStatueBlockEntity obon) {
-            if (obon.isEmpty()) {
+        if (tileEntity instanceof UmaStatueBlockEntity statue) {
+            if (statue.isEmpty() || (statue.isCostumeEmpty() && !stack.isEmpty())) {
                 if (stack.isEmpty()) {
                     return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
                 }
-                else if (obon.addItem(player.getAbilities().instabuild ? stack.copy() : stack)) {
+                else if (statue.addItem(player.getAbilities().instabuild ? stack.copy() : stack)) {
                     level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.STONE_PLACE,
                             SoundSource.BLOCKS, 1.0F, 0.8F
                     );
@@ -95,12 +95,12 @@ public class UmaStatueBlock extends BaseEntityBlock implements SimpleWaterlogged
             }
             else if (hand.equals(InteractionHand.MAIN_HAND)) {
                 if (!player.isCreative()) {
-                    if (!player.getInventory().add(obon.removeItem())) {
-                        Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), obon.removeItem());
+                    if (!player.getInventory().add(statue.removeItem())) {
+                        Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), statue.removeItem());
                     }
                 }
                 else {
-                    obon.removeItem();
+                    statue.removeItem();
                 }
                 level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.WOOD_HIT, SoundSource.BLOCKS,
                         0.25F, 0.5F

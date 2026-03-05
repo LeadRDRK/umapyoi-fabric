@@ -3436,7 +3436,7 @@ public class RaceRegistry {
     private static HashMap<ResourceKey<Race>, Function<ResourceLocation, Race>> forDataGenMap;
 
     public static ResourceKey<Race> simpleRegister(String name, Function<ResourceLocation, Race> factory){
-        ResourceLocation rLoc = new ResourceLocation(Umapyoi.MODID, name);
+        ResourceLocation rLoc = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, name);
         ResourceKey<Race> rKey = ResourceKey.create(Race.REGISTRY_KEY, rLoc);
         if (forDataGenMap == null) forDataGenMap = new HashMap<>();
         forDataGenMap.put(rKey, factory);

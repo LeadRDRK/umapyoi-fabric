@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 
 public class Race {
     public static final ResourceKey<Registry<Race>> REGISTRY_KEY = ResourceKey
-            .createRegistryKey(new ResourceLocation(Umapyoi.MODID, "races"));
+            .createRegistryKey(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "races"));
 
     public static Codec<Race> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(
@@ -296,7 +296,7 @@ public class Race {
             this.surface = Surface.TURF;
             this.year = new HashSet<>();
             this.tags = new HashSet<>();
-            this.field = new ResourceLocation(Umapyoi.MODID, "unknown");
+            this.field = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "unknown");
             this.attrCorr = new HashSet<>();
             this.referenceLevel = null;
             this.exclusive = true;
@@ -347,7 +347,7 @@ public class Race {
         }
 
         public RaceBuilder setField(String field) {
-            return this.setField(new ResourceLocation(Umapyoi.MODID, field));
+            return this.setField(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, field));
         }
 
         public RaceBuilder setField(ResourceKey<RaceField> field) {

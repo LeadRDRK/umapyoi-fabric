@@ -24,7 +24,7 @@ public class RaceTicketUpToGIIILoot implements AddLootTableModifier {
     public ResourceKey<LootTable> lootTable() {
         return ResourceKey.create(
                 Registries.LOOT_TABLE,
-                new ResourceLocation(Umapyoi.MODID, "race/ticket/race_ticket_up_to_giii")
+                ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "race/ticket/race_ticket_up_to_giii")
         );
     }
 }

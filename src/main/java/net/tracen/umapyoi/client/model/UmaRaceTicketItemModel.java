@@ -28,7 +28,7 @@ public class UmaRaceTicketItemModel extends DynamicItemBakedModel {
                                 ? race.ranking.textureSuffix
                                 : race.texturePredicateOverride)
                         .map(suffix -> new ModelResourceLocation(
-                                new ResourceLocation(Umapyoi.MODID, "race_ticket/race_ticket_" + suffix), "inventory"
+                                ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "race_ticket/race_ticket_" + suffix), "inventory"
                         ))
                         .map(Minecraft.getInstance().getModelManager()::getModel)
                         .map(model -> model == Minecraft.getInstance().getModelManager().getMissingModel() ? null : model)

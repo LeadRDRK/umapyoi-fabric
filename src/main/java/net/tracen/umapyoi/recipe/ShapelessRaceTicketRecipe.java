@@ -9,8 +9,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
@@ -21,7 +21,7 @@ import net.tracen.umapyoi.registry.races.Race;
 
 import org.jetbrains.annotations.Nullable;
 
-public class ShapelessRaceTicketRecipe extends ShapelessRecipe implements RaceTicketRecipe<CraftingContainer> {
+public class ShapelessRaceTicketRecipe extends ShapelessRecipe implements RaceTicketRecipe<CraftingInput> {
     public static final RecipeSerializer<ShapelessRaceTicketRecipe> SERIALIZER = new RaceTicketRecipeSerializer<>(
             RecipeSerializer.SHAPELESS_RECIPE, ShapelessRaceTicketRecipe::new
     );
@@ -43,7 +43,7 @@ public class ShapelessRaceTicketRecipe extends ShapelessRecipe implements RaceTi
     public ResourceLocation getKey() { return this.baseItemOrKey; }
 
     @Override
-    public ItemStack assemble(CraftingContainer craftingContainer, HolderLookup.Provider registries) {
+    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
         return this.getResultItem(registries).copy();
     }
 

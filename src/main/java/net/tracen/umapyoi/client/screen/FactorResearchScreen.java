@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FactorResearchScreen extends ItemCombinerScreen<FactorResearchMenu> {
-    private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation(Umapyoi.MODID,
+    private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID,
             "textures/gui/factor_research.png");
 
     private static final int MAX_LEN = 96;

@@ -133,7 +133,7 @@ public class UmapyoiItemModelProvider {
     }
 
     private ResourceLocation mcLoc(String name) {
-        return new ResourceLocation(name);
+        return ResourceLocation.withDefaultNamespace(name);
     }
 
     public static class FromBlockModels {

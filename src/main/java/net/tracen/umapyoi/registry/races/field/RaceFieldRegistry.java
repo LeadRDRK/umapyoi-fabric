@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 public class RaceFieldRegistry {
-    public static final ResourceLocation CONST_ADAPTIVE = new ResourceLocation(Umapyoi.MODID, "adaptive");
+    public static final ResourceLocation CONST_ADAPTIVE = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "adaptive");
 
     public static final ResourceKey<RaceField> HAKODATE = simpleRegister("hakodate", Set.of(Distance.SPRINT), Set.of(), Set.of()); //函馆
     public static final ResourceKey<RaceField> CHUKYO = simpleRegister("chukyo"); //中京
@@ -35,7 +35,7 @@ public class RaceFieldRegistry {
     }
 
     public static ResourceKey<RaceField> simpleRegister(String name, Set<Distance> turf, Set<Distance> dirt, Set<Distance> synthetic){
-        ResourceLocation rLoc = new ResourceLocation(Umapyoi.MODID, name);
+        ResourceLocation rLoc = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, name);
         ResourceKey<RaceField> rKey = ResourceKey.create(RaceField.REGISTRY_KEY, rLoc);
         if (forDataGenMap == null) forDataGenMap = new HashMap<>();
         forDataGenMap.put(rKey, (id) -> new RaceField(id, turf, dirt, synthetic));

@@ -17,7 +17,7 @@ import net.tracen.umapyoi.Umapyoi;
 import java.util.Optional;
 
 public class GrantBookOnFirstJoin extends SimpleCriterionTrigger<GrantBookOnFirstJoin.Instance> {
-    public static final ResourceLocation ID = new ResourceLocation(Umapyoi.MODID, "grant_book_on_first_join");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "grant_book_on_first_join");
 
 
     @Override

@@ -23,7 +23,7 @@ import net.tracen.umapyoi.client.model.pojo.BedrockModelPOJO;
 import net.tracen.umapyoi.utils.ClientUtils;
 
 public class GateRender implements BlockEntityRenderer<GateEntity> {
-    public static final ResourceLocation TEXTURE = new ResourceLocation(Umapyoi.MODID, "textures/model/gate_door.png");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/gate_door.png");
     private final SimpleBedrockModel model;
 
     public GateRender(BlockEntityRendererProvider.Context ctx) {
@@ -56,7 +56,7 @@ public class GateRender implements BlockEntityRenderer<GateEntity> {
         poseStack.mulPose(Axis.YN.rotationDegrees(direction.toYRot() + 180));
         poseStack.mulPose(Axis.XP.rotationDegrees(180));
         // poseStack.translate(0d, 0d, 7d/16d);
-        BedrockModelPOJO pojo = ClientUtils.getModelPOJO(new ResourceLocation(Umapyoi.MODID, "gate_door"));
+        BedrockModelPOJO pojo = ClientUtils.getModelPOJO(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "gate_door"));
         if (model.needRefresh(pojo)) model.loadModel(pojo);
         BlockState state = tileEntity.getBlockState();
         boolean isOpen;
@@ -70,7 +70,7 @@ public class GateRender implements BlockEntityRenderer<GateEntity> {
         double angle = Math.toRadians(Mth.rotLerp(renderProgress, 15f, 90f));
         model.getChild("door_left").yRot = (float) -angle;
         model.getChild("door_right").yRot = (float) angle;
-        model.renderToBuffer(poseStack, vertexconsumer, combinedLight, combinedOverlay, 1f, 1f, 1f, 1f);
+        model.renderToBuffer(poseStack, vertexconsumer, combinedLight, combinedOverlay, -1);
         poseStack.popPose();
     }
 }

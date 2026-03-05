@@ -31,7 +31,7 @@ public class RaceTagRegistry {
     private static HashMap<ResourceKey<RaceTag>, Function<ResourceLocation, RaceTag>> forDataGenMap;
 
     public static ResourceKey<RaceTag> simpleRegister(String name, int max, boolean isUnique, int[] propertyReward) {
-        ResourceLocation rLoc = new ResourceLocation(Umapyoi.MODID, name);
+        ResourceLocation rLoc = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, name);
         ResourceKey<RaceTag> rKey = ResourceKey.create(RaceTag.REGISTRY_KEY, rLoc);
         if (forDataGenMap == null) forDataGenMap = new HashMap<>();
         forDataGenMap.put(rKey, (rLocs) -> new RaceTag(max, rLocs, isUnique, propertyReward));
@@ -39,7 +39,7 @@ public class RaceTagRegistry {
     }
 
     public static ResourceKey<RaceTag> simpleRegister(String name, int max, boolean isUnique) {
-        ResourceLocation rLoc = new ResourceLocation(Umapyoi.MODID, name);
+        ResourceLocation rLoc = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, name);
         ResourceKey<RaceTag> rKey = ResourceKey.create(RaceTag.REGISTRY_KEY, rLoc);
         if (forDataGenMap == null) forDataGenMap = new HashMap<>();
         forDataGenMap.put(rKey, (rLocs) -> new RaceTag(max, rLocs, isUnique, new int[5]));

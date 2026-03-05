@@ -33,7 +33,7 @@ public record RaceTag(int maximum, ResourceLocation id, boolean isUnique, int[] 
             ).apply(instance, RaceTag::new));
 
     public static final ResourceKey<Registry<RaceTag>> REGISTRY_KEY = ResourceKey
-            .createRegistryKey(new ResourceLocation(Umapyoi.MODID, "race_tags"));
+            .createRegistryKey(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "race_tags"));
 
     public boolean applyToUmaSoul(ItemStack soul, Race race) {
         boolean isFulfill;

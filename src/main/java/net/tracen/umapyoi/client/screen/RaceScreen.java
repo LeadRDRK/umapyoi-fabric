@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
 
 public class RaceScreen extends AbstractContainerScreen<RaceContainer> {
 
-    private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation(Umapyoi.MODID,
+    private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID,
             "textures/gui/race_screen.png");
 
     public RaceScreen(RaceContainer container, Inventory inv, Component title) {

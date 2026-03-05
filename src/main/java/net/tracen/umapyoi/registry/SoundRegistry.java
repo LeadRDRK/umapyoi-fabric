@@ -10,8 +10,8 @@ public class SoundRegistry {
             LazyRegistrar.create(Registries.SOUND_EVENT, Umapyoi.MODID);
 
     public static final RegistryObject<SoundEvent> GATE_OPEN = SOUNDS.register("gate_open",
-            () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Umapyoi.MODID, "gate_open")));
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "gate_open")));
 
     public static final RegistryObject<SoundEvent> GATE_CLOSE = SOUNDS.register("gate_close",
-            () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Umapyoi.MODID, "gate_close")));
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "gate_close")));
 }

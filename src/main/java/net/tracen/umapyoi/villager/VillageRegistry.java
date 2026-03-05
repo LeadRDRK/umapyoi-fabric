@@ -35,6 +35,6 @@ public class VillageRegistry {
 
     public static void registerHeroOfTheVillage() {
         GiveGiftToHero.GIFTS.put(TRAINER.get(), ResourceKey.create(Registries.LOOT_TABLE,
-                new ResourceLocation(Umapyoi.MODID, "race/ticket/race_ticket_up_to_op_gameplay")));
+                ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "race/ticket/race_ticket_up_to_op_gameplay")));
     }
 }

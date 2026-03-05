@@ -276,7 +276,7 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
         if (this.level == null) return ItemStack.EMPTY;
 
         Race race = UmapyoiAPI.getRaceRegistry(this.level).get(raceID);
-        ResourceLocation lootSpecify = new ResourceLocation(raceID.getNamespace(), "race/id/" + raceID.getPath());
+        ResourceLocation lootSpecify = ResourceLocation.fromNamespaceAndPath(raceID.getNamespace(), "race/id/" + raceID.getPath());
         var registries = Objects.requireNonNull(this.level.getServer()).reloadableRegistries();
         LootTable table = registries.getLootTable(ResourceKey.create(Registries.LOOT_TABLE, lootSpecify));
         if (table == LootTable.EMPTY) {
@@ -290,17 +290,17 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
             if (stackSoul.equals(ItemStack.EMPTY)) {
                 Umapyoi.getLogger().error("Umasoul is no longer present.");
                 table = registries.getLootTable(ResourceKey.create(Registries.LOOT_TABLE,
-                        new ResourceLocation(Umapyoi.MODID, "race/generic/race_"
+                        ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "race/generic/race_"
                                 + rank.name().toLowerCase())));
             } else {
                 ResourceLocation field = race.field(this.level, stackSoul).id();
                 table = registries.getLootTable(ResourceKey.create(Registries.LOOT_TABLE,
-                        new ResourceLocation(field.getNamespace(), "race/generic/field/race_"
+                        ResourceLocation.fromNamespaceAndPath(field.getNamespace(), "race/generic/field/race_"
                                 + field.getPath() + "_" + rank.name().toLowerCase())));
                 if (table == LootTable.EMPTY) {
                     Umapyoi.getLogger().debug("There doesn't exist a loot table for {} {}, falling back to generic table", field, rank);
                     table = registries.getLootTable(ResourceKey.create(Registries.LOOT_TABLE,
-                            new ResourceLocation(Umapyoi.MODID, "race/generic/race_"
+                            ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "race/generic/race_"
                                     + rank.name().toLowerCase())));
                 }
             }

@@ -28,7 +28,7 @@ public record RaceField(ResourceLocation id, Set<Distance> turfs, Set<Distance> 
             ).apply(instance, RaceField::new));
 
     public static final ResourceKey<Registry<RaceField>> REGISTRY_KEY = ResourceKey
-            .createRegistryKey(new ResourceLocation(Umapyoi.MODID, "race_field"));
+            .createRegistryKey(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "race_field"));
 
     public int compareToAbs(Distance distance, Surface surface) {
         AtomicInteger eval = new AtomicInteger(-1);

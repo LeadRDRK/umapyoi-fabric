@@ -24,7 +24,7 @@ public class SupportCardItemModel extends DynamicItemBakedModel {
                 var ranking = stack.get(DataComponentsTypeRegistry.GACHA_RANKING.get());
                 if (ranking == null) return this.getOriginalModel();
                 ModelResourceLocation modelPath = new ModelResourceLocation(
-                        new ResourceLocation(Umapyoi.MODID, "support_card/support_card_" +
+                        ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "support_card/support_card_" +
                                 ranking.ranking().name().toLowerCase()),
                         "inventory"
                 );

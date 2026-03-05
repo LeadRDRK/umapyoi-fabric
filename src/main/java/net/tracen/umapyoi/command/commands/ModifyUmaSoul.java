@@ -235,11 +235,9 @@ public class ModifyUmaSoul {
         ItemStack soul = getItemStackByMode(mode, player, ctx.getSource()::sendFailure, typeString::set);
         if (soul == null) return 0;
 
-        type = type == null ? IntegerArgumentType.getInteger(ctx, "type") : type;
         int value = IntegerArgumentType.getInteger(ctx, "value");
-        int[] props = UmaSoulUtils.getProperty(soul).array();
-        props[type] = value;
-        UmaSoulUtils.setProperty(soul, UmaDataBasicStatus.init(props));
+        int finalType = type == null ? IntegerArgumentType.getInteger(ctx, "type") : type;
+        UmaSoulUtils.updatePropertyAsArray(soul, props -> props[finalType] = value);
 
         player.getInventory().setChanged();
         player.inventoryMenu.broadcastChanges();

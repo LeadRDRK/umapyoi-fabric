@@ -266,19 +266,11 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
         return event.getAttributes();
     }
 
-    public static double getExactProperty(ItemStack stack, LivingEntity user, StatusType type, double limit) {
+    public static double getExactProperty(ItemStack stack, LivingEntity user, StatusType status, double limit) {
         var retiredValue = UmaSoulUtils.getGrowth(stack) == Growth.RETIRED ? 1.0D : 0.25D;
-        int rate = 0;
-        switch (type) {
-            case SPEED -> rate = UmaSoulUtils.getPropertyRate(stack).speed();
-            case STAMINA -> rate = UmaSoulUtils.getPropertyRate(stack).stamina();
-            case STRENGTH -> rate = UmaSoulUtils.getPropertyRate(stack).strength();
-            case GUTS -> rate = UmaSoulUtils.getPropertyRate(stack).guts();
-            case WISDOM -> rate = UmaSoulUtils.getPropertyRate(stack).wisdom();
-        }
-        var propertyRate = 1.0D + (rate / 100.0D);
-        var totalProperty = propertyPercentage(stack, type);
-        var event = new SettingPropertyCallback.Context(user, stack, retiredValue, propertyRate, totalProperty, type);
+        var propertyRate = 1.0D + (UmaSoulUtils.getPropertyRate(stack).get(status) / 100.0D);
+        var totalProperty = propertyPercentage(stack, status);
+        var event = new SettingPropertyCallback.Context(user, stack, retiredValue, propertyRate, totalProperty, status);
         SettingPropertyCallback.invoke(event);
         return event.getResultProperty() * limit;
     }
@@ -291,15 +283,8 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
         return 1 / denominator;
     }
 
-    private static double propertyPercentage(ItemStack stack, StatusType type) {
-        int x = 0;
-        switch (type) {
-            case SPEED -> x = UmaSoulUtils.getProperty(stack).speed();
-            case STAMINA -> x = UmaSoulUtils.getProperty(stack).stamina();
-            case STRENGTH -> x = UmaSoulUtils.getProperty(stack).strength();
-            case GUTS -> x = UmaSoulUtils.getProperty(stack).guts();
-            case WISDOM -> x = UmaSoulUtils.getProperty(stack).wisdom();
-        }
+    private static double propertyPercentage(ItemStack stack, StatusType status) {
+        var x = UmaSoulUtils.getProperty(stack).get(status);
         return propertyPercentageByValue(x);
     }
 

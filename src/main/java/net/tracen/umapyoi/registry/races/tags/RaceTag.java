@@ -4,10 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.Registry;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -15,13 +11,15 @@ import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.races.Race;
 import net.tracen.umapyoi.registry.umadata.UmaDataBasicStatus;
+import net.tracen.umapyoi.registry.umadata.UmaDataRaceStatus;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.IntStream;
 
 public record RaceTag(int maximum, ResourceLocation id, boolean isUnique, int[] propertyReward) {
@@ -40,24 +38,22 @@ public record RaceTag(int maximum, ResourceLocation id, boolean isUnique, int[] 
 
     public boolean applyToUmaSoul(ItemStack soul, Race race) {
         boolean isFulfill;
-        CompoundTag tagRace = Optional.ofNullable(soul.get(DataComponentsTypeRegistry.ATTEND_RACE_TAG.get()))
-                .orElseGet(CompoundTag::new);
+        var raceData = UmaSoulUtils.getRaceStatus(soul);
+        var attendRaceTagUnique = raceData.attendRaceTagUnique();
+        var attendRaceTag = raceData.attendRaceTag();
         if (!this.isUnique) {
-            int current = tagRace.contains(this.id.toString(), CompoundTag.TAG_INT) ? tagRace.getInt(id.toString()) : 0;
-            if (current > this.maximum) return false;
-            current++;
-            tagRace.putInt(this.id.toString(), current);
+            attendRaceTagUnique = new HashMap<>(attendRaceTagUnique);
+            int current = attendRaceTagUnique.getOrDefault(this.id, 0);
+            if (current >= this.maximum) return false;
+            attendRaceTagUnique.put(this.id, ++current);
             isFulfill = current == this.maximum;
         } else {
-            ListTag tagList = tagRace.getList(this.id.toString(), Tag.TAG_STRING);
-            int current = tagList.size();
-            if (current >= this.maximum) return false;
-            for (Tag tag: tagList) {
-                if (tag.getAsString().equals(race.id.toString())) return false;
-            }
-            tagList.add(StringTag.valueOf(race.id.toString()));
-            tagRace.put(this.id.toString(), tagList);
-            isFulfill = tagList.size() == this.maximum;
+            attendRaceTag = new HashMap<>(attendRaceTag);
+            var races = new HashSet<>(attendRaceTag.get(this.id));
+            int current = races.size();
+            if (current >= this.maximum || !races.add(race.id)) return false;
+            attendRaceTag.put(this.id, races);
+            isFulfill = races.size() == this.maximum;
         }
         if (isFulfill) {
             int[] properties = UmaSoulUtils.getProperty(soul).array();
@@ -74,28 +70,35 @@ public record RaceTag(int maximum, ResourceLocation id, boolean isUnique, int[] 
             soul.set(DataComponentsTypeRegistry.UMADATA_BASIC_STATUS.get(), UmaDataBasicStatus.init(properties));
             soul.set(DataComponentsTypeRegistry.UMADATA_MAX_BASIC_STATUS.get(), UmaDataBasicStatus.init(propertiesCeil));
         }
-        soul.set(DataComponentsTypeRegistry.ATTEND_RACE_TAG.get(), tagRace);
+        soul.set(DataComponentsTypeRegistry.UMADATA_RACE_STATUS.get(), new UmaDataRaceStatus(
+                raceData.wonRaces(), raceData.attended(), raceData.lastAttendTime(), raceData.hasDebut(),
+                attendRaceTag, attendRaceTagUnique
+        ));
         return true;
     }
 
     public static Map<ResourceLocation, Integer> queryUmaSoulTags(ItemStack soul) {
-        var tagRaceOpt = Optional.ofNullable(soul.get(DataComponentsTypeRegistry.ATTEND_RACE_TAG.get()));
-        if (tagRaceOpt.isEmpty()) return Map.of();
+        var raceData = UmaSoulUtils.getRaceStatus(soul);
+        var attendRaceTag = raceData.attendRaceTag();
+        var attendRaceTagUnique = raceData.attendRaceTagUnique();
+        if (attendRaceTag.isEmpty() && attendRaceTagUnique.isEmpty())
+            return Map.of();
+
         HashMap<ResourceLocation, Integer> hmap = new HashMap<>();
-        CompoundTag tagRace = tagRaceOpt.get();
-        tagRace.getAllKeys().stream().map(ResourceLocation::tryParse).filter(Objects::nonNull).forEach(l -> hmap.put(l, queryUmaSoulTagCount(soul, l)));
+        attendRaceTag.keySet().forEach(l -> hmap.put(l, queryUmaSoulTagCount(raceData, l)));
+        attendRaceTagUnique.keySet().forEach(l -> hmap.put(l, queryUmaSoulTagCount(raceData, l)));
         return hmap;
     }
 
     public static int queryUmaSoulTagCount(ItemStack soul, ResourceLocation id) {
-        CompoundTag tagRace = Optional.ofNullable(soul.get(DataComponentsTypeRegistry.ATTEND_RACE_TAG.get()))
-                .orElseGet(CompoundTag::new);
-        if (tagRace.contains(id.toString(), CompoundTag.TAG_INT)) {
-            return tagRace.getInt(id.toString());
-        } else if (tagRace.contains(id.toString(), CompoundTag.TAG_LIST)) {
-            return tagRace.getList(id.toString(), CompoundTag.TAG_STRING).size();
-        }
-        return 0;
+        var raceData = UmaSoulUtils.getRaceStatus(soul);
+        return queryUmaSoulTagCount(raceData, id);
+    }
+
+    public static int queryUmaSoulTagCount(UmaDataRaceStatus raceData, ResourceLocation id) {
+        return Optional.ofNullable(raceData.attendRaceTagUnique().get(id))
+                .or(() -> Optional.ofNullable(raceData.attendRaceTag().get(id)).map(Set::size))
+                .orElse(0);
     }
 
     public int queryUmaSoulTagCount(ItemStack soul) {

@@ -14,13 +14,12 @@ import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.item.ItemRegistry;
-import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.races.field.RaceField;
 import net.tracen.umapyoi.registry.races.tags.RaceTag;
 import net.tracen.umapyoi.registry.umadata.Growth;
 import net.tracen.umapyoi.registry.umadata.Motivations;
 import net.tracen.umapyoi.registry.umadata.UmaData;
-import net.tracen.umapyoi.registry.umadata.UmaDataRace;
+import net.tracen.umapyoi.registry.umadata.UmaDataRaceStatus;
 import net.tracen.umapyoi.utils.Distance;
 import net.tracen.umapyoi.utils.Position;
 import net.tracen.umapyoi.utils.RaceRanking;
@@ -172,7 +171,7 @@ public class Race {
         if (this.id.equals(RaceRegistry.DEFAULT.location())) return false;
         if (!(stack.is(ItemRegistry.UMA_SOUL.get()) &&
                 ((this.ranking == RaceRanking.DEBUT) ^ UmaSoulUtils.hasUmaSoulDebut(stack)))) return false;
-        var raceData = stack.getOrDefault(DataComponentsTypeRegistry.UMADATA_RACE.get(), UmaDataRace.DEFAULT);
+        var raceData = UmaSoulUtils.getRaceStatus(stack);
         int last = raceData.lastAttendTime();
         if (this.exclusive) {
             boolean canAttend = false;
@@ -243,7 +242,7 @@ public class Race {
     }
 
     public void followUp(ItemStack stack, Level level) {
-        var raceData = stack.getOrDefault(DataComponentsTypeRegistry.UMADATA_RACE.get(), UmaDataRace.DEFAULT);
+        var raceData = UmaSoulUtils.getRaceStatus(stack);
 
         var wonRaces = raceData.wonRaces();
         if (this.isPassed(stack, level)) {
@@ -269,8 +268,9 @@ public class Race {
             hasDebut = true;
         }
 
-        var newRaceData = raceData.update(wonRaces, attended, newLastAttend, hasDebut);
-        stack.set(DataComponentsTypeRegistry.UMADATA_RACE.get(), newRaceData);
+        var newRaceData = new UmaDataRaceStatus(wonRaces, attended, newLastAttend, hasDebut,
+                raceData.attendRaceTag(), raceData.attendRaceTagUnique());
+        UmaSoulUtils.setRaceStatus(stack, newRaceData);
     }
 
     public static class RaceBuilder {

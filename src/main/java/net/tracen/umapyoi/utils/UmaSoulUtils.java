@@ -21,6 +21,7 @@ import net.tracen.umapyoi.registry.umadata.UmaData;
 import net.tracen.umapyoi.registry.umadata.UmaDataBasicStatus;
 import net.tracen.umapyoi.registry.umadata.UmaDataExtraStatus;
 import net.tracen.umapyoi.registry.umadata.UmaDataRace;
+import net.tracen.umapyoi.registry.umadata.UmaDataRaceStatus;
 import net.tracen.umapyoi.registry.umadata.UmaDataSkills;
 import net.tracen.umapyoi.registry.umadata.UmaDataTraining;
 
@@ -59,6 +60,7 @@ public class UmaSoulUtils {
         result.set(DataComponentsTypeRegistry.UMADATA_TRAINING.get(), new UmaDataTraining(1, 6));
         result.set(DataComponentsTypeRegistry.GROWTH.get(), Growth.UNTRAINED);
         result.set(DataComponentsTypeRegistry.UMADATA_RACE.get(), new UmaDataRace(data.surfaceAptitude(), data.distanceAptitude()));
+        result.set(DataComponentsTypeRegistry.UMADATA_RACE_STATUS.get(), UmaDataRaceStatus.DEFAULT);
         return result;
     }
 
@@ -280,8 +282,16 @@ public class UmaSoulUtils {
     }
 
     public static boolean hasUmaSoulDebut(ItemStack soul) {
-        return Optional.ofNullable(soul.get(DataComponentsTypeRegistry.UMADATA_RACE.get()))
-                .map(UmaDataRace::hasDebut)
+        return Optional.ofNullable(soul.get(DataComponentsTypeRegistry.UMADATA_RACE_STATUS.get()))
+                .map(UmaDataRaceStatus::hasDebut)
                 .orElse(false);
+    }
+
+    public static UmaDataRaceStatus getRaceStatus(ItemStack soul) {
+        return soul.getOrDefault(DataComponentsTypeRegistry.UMADATA_RACE_STATUS.get(), UmaDataRaceStatus.DEFAULT);
+    }
+
+    public static void setRaceStatus(ItemStack soul, UmaDataRaceStatus data) {
+        soul.set(DataComponentsTypeRegistry.UMADATA_RACE_STATUS.get(), data);
     }
 }

@@ -2,7 +2,6 @@ package net.tracen.umapyoi.item.data;
 
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceLocation;
 import net.tracen.umapyoi.Umapyoi;
@@ -13,6 +12,7 @@ import net.tracen.umapyoi.registry.umadata.Growth;
 import net.tracen.umapyoi.registry.umadata.UmaDataBasicStatus;
 import net.tracen.umapyoi.registry.umadata.UmaDataExtraStatus;
 import net.tracen.umapyoi.registry.umadata.UmaDataRace;
+import net.tracen.umapyoi.registry.umadata.UmaDataRaceStatus;
 import net.tracen.umapyoi.registry.umadata.UmaDataSkills;
 import net.tracen.umapyoi.registry.umadata.UmaDataTraining;
 
@@ -102,6 +102,14 @@ public class DataComponentsTypeRegistry {
                             .build()
             );
 
+    public static final RegistryObject<DataComponentType<UmaDataRaceStatus>> UMADATA_RACE_STATUS =
+            DATA_COMPONENTS.register("umadata_race_status",
+                    () -> DataComponentType.<UmaDataRaceStatus>builder()
+                            .persistent(UmaDataRaceStatus.CODEC)
+                            .networkSynchronized(UmaDataRaceStatus.STREAM_CODEC)
+                            .build()
+            );
+
     public static final RegistryObject<DataComponentType<Growth>> GROWTH =
             DATA_COMPONENTS.register("growth",
                     () -> DataComponentType.<Growth>builder()
@@ -115,14 +123,6 @@ public class DataComponentsTypeRegistry {
                     () -> DataComponentType.<List<FactorData>>builder()
                             .persistent(FactorData.CODEC.listOf())
                             .networkSynchronized(FactorData.STREAM.apply(ByteBufCodecs.list()))
-                            .build()
-            );
-
-    public static final RegistryObject<DataComponentType<CompoundTag>> ATTEND_RACE_TAG =
-            DATA_COMPONENTS.register("attend_race_tag",
-                    () -> DataComponentType.<CompoundTag>builder()
-                            .persistent(CompoundTag.CODEC)
-                            .networkSynchronized(ByteBufCodecs.COMPOUND_TAG)
                             .build()
             );
 }

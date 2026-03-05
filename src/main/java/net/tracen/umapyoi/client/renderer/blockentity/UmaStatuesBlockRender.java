@@ -1,5 +1,7 @@
 package net.tracen.umapyoi.client.renderer.blockentity;
 
+import static net.tracen.umapyoi.item.UmaSoulItem.getSuitTarget;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -9,6 +11,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -17,17 +20,23 @@ import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.block.UmaStatueBlock;
 import net.tracen.umapyoi.block.entity.UmaStatueBlockEntity;
-import net.tracen.umapyoi.client.model.SimpleBedrockModel;
-import net.tracen.umapyoi.client.model.bedrock.BedrockPart;
+import net.tracen.umapyoi.client.model.UmaPlayerModel;
+import net.tracen.umapyoi.client.model.pojo.BedrockModelPOJO;
+import net.tracen.umapyoi.data.tag.UmapyoiUmaDataTags;
+import net.tracen.umapyoi.item.AbstractSuitItem;
+import net.tracen.umapyoi.item.ItemRegistry;
+import net.tracen.umapyoi.registry.umadata.UmaData;
 import net.tracen.umapyoi.utils.ClientUtils;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
 public class UmaStatuesBlockRender implements BlockEntityRenderer<UmaStatueBlockEntity> {
     public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/three_goddesses.png");
-    private final SimpleBedrockModel model;
+    private final UmaPlayerModel<?> model;
+    private final UmaPlayerModel<?> costumeModel;
 
     public UmaStatuesBlockRender(BlockEntityRendererProvider.Context context) {
-        model = new SimpleBedrockModel();
+        model = new UmaPlayerModel<>();
+        costumeModel = new UmaPlayerModel<>();
     }
 
     @Override
@@ -43,24 +52,80 @@ public class UmaStatuesBlockRender implements BlockEntityRenderer<UmaStatueBlock
         }
     }
 
+    private static ResourceLocation getRenderTarget(UmaStatueBlockEntity tileEntity) {
+        ItemStack item = tileEntity.getStoredItem();
+        if (!tileEntity.isCostumeEmpty() && tileEntity.getCostume().getItem() instanceof AbstractSuitItem) {
+            return getSuitTarget(item, ClientUtils.getClientUmaDataRegistry()
+                    .getHolder(ResourceKey.create(UmaData.REGISTRY_KEY, UmaSoulUtils.getName(item)))
+                    .get().is(UmapyoiUmaDataTags.ALTER_MODEL));
+        }
+        return UmaSoulUtils.getName(item);
+    }
+
     private void renderModel(UmaStatueBlockEntity tileEntity, Direction direction, PoseStack poseStack,
                              MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
+        ItemStack item = tileEntity.getStoredItem();
+        BedrockModelPOJO pojo;
+        if (item.isEmpty() || !item.is(ItemRegistry.UMA_SOUL.get())) {
+            pojo = ClientUtils.getModelPOJO(ClientUtils.UMA_STATUES);
+        }
+        else {
+            ResourceLocation target = getRenderTarget(tileEntity);
+            pojo = ClientUtils.getModelPOJO(target);
+            if (pojo == null)
+                pojo = ClientUtils.getModelPOJO(ClientUtils.UMA_STATUES);
+        }
+
+        // will be null during resource reload
+        if (pojo == null)
+            return;
+
+        if (model.needRefresh(pojo))
+            model.loadModel(pojo);
+
+        model.leftArm.zRot = ClientUtils.convertRotation(-5);
+        model.rightArm.zRot = ClientUtils.convertRotation(5);
+
+        boolean doRenderSuit = false;
+
+        ResourceLocation costumeResource = null;
+
+        ItemStack costumeItem = tileEntity.getCostume();
+        if (item.is(ItemRegistry.UMA_SOUL.get()) && !tileEntity.isCostumeEmpty() && !tileEntity.isEmpty()) {
+            if (costumeItem.getItem() instanceof AbstractSuitItem renderer) {
+                boolean is_flat_chest = ClientUtils.isFlatUmamusume(item);
+                boolean is_tanned = ClientUtils.isTannedSkin(item);
+
+                var suitPojo = ClientUtils.getModelPOJO(is_flat_chest
+                        ? renderer.getFlatModel(costumeItem)
+                        : renderer.getModel(costumeItem));
+                if (suitPojo != null) {
+                    if (costumeModel.needRefresh(suitPojo))
+                        costumeModel.loadModel(suitPojo);
+
+                    costumeModel.leftArm.zRot = model.leftArm.zRot;
+                    costumeModel.rightArm.zRot = model.rightArm.zRot;
+                    costumeModel.head.visible = false;
+                    costumeModel.tail.visible = false;
+
+                    costumeResource = is_flat_chest ? renderer.getFlatTexture(costumeItem, is_tanned) : renderer.getTexture(costumeItem, is_tanned);
+                    doRenderSuit = true;
+                }
+            }
+        }
+
+        if (doRenderSuit) {
+            ClientUtils.setUmaModelVisibilityForSuit(model, costumeItem, costumeModel);
+        }
+        else {
+            model.setAllVisible(true);
+        }
 
         poseStack.pushPose();
         poseStack.translate(0.5D, 1.5D, 0.5D);
 
         poseStack.mulPose(Axis.YN.rotationDegrees(direction.toYRot()));
         poseStack.mulPose(Axis.XP.rotationDegrees(180));
-        ItemStack item = tileEntity.getStoredItem();
-        var pojo = tileEntity.isEmpty() ? ClientUtils.getModelPOJO(ClientUtils.UMA_STATUES) : ClientUtils.getModelPOJO(UmaSoulUtils.getName(item));
-
-        if (model.needRefresh(pojo))
-            model.loadModel(pojo);
-
-        var leftArm = model.getChild("left_arm") != null ? model.getChild("left_arm") : new BedrockPart();
-        var rightArm = model.getChild("right_arm") != null ? model.getChild("right_arm") : new BedrockPart();
-        leftArm.zRot = ClientUtils.convertRotation(-5);
-        rightArm.zRot = ClientUtils.convertRotation(5);
 
         VertexConsumer vertexConsumer = buffer
                 .getBuffer(RenderType.entityTranslucent(tileEntity.isEmpty() ? TEXTURE : ClientUtils.getTexture(UmaSoulUtils.getName(item))));
@@ -70,6 +135,11 @@ public class UmaStatuesBlockRender implements BlockEntityRenderer<UmaStatueBlock
             VertexConsumer emissiveConsumer = buffer
                     .getBuffer(RenderType.entityTranslucentEmissive(tileEntity.isEmpty() ? TEXTURE : ClientUtils.getEmissiveTexture(UmaSoulUtils.getName(item))));
             model.renderEmissiveParts(poseStack, emissiveConsumer, combinedLight, combinedOverlay, -1);
+        }
+
+        if (doRenderSuit) {
+            VertexConsumer vertexConsumerSuit = buffer.getBuffer(RenderType.entityTranslucentCull(costumeResource));
+            costumeModel.renderToBuffer(poseStack, vertexConsumerSuit, combinedLight, combinedOverlay, -1);
         }
 
         poseStack.popPose();

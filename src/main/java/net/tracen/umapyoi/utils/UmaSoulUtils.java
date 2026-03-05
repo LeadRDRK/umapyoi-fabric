@@ -1,11 +1,17 @@
 package net.tracen.umapyoi.utils;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.Level;
+import net.tracen.umapyoi.Umapyoi;
+import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.item.data.GachaRankingData;
 import net.tracen.umapyoi.registry.UmaSkillRegistry;
@@ -14,11 +20,16 @@ import net.tracen.umapyoi.registry.umadata.Motivations;
 import net.tracen.umapyoi.registry.umadata.UmaData;
 import net.tracen.umapyoi.registry.umadata.UmaDataBasicStatus;
 import net.tracen.umapyoi.registry.umadata.UmaDataExtraStatus;
+import net.tracen.umapyoi.registry.umadata.UmaDataRace;
+import net.tracen.umapyoi.registry.umadata.UmaDataRaceStatus;
 import net.tracen.umapyoi.registry.umadata.UmaDataSkills;
 import net.tracen.umapyoi.registry.umadata.UmaDataTraining;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 public class UmaSoulUtils {
 
@@ -49,7 +60,37 @@ public class UmaSoulUtils {
         );
         result.set(DataComponentsTypeRegistry.UMADATA_TRAINING.get(), new UmaDataTraining(1, 6));
         result.set(DataComponentsTypeRegistry.GROWTH.get(), Growth.UNTRAINED);
+        result.set(DataComponentsTypeRegistry.UMADATA_RACE.get(), new UmaDataRace(data.surfaceAptitude(), data.distanceAptitude()));
+        result.set(DataComponentsTypeRegistry.UMADATA_RACE_STATUS.get(), UmaDataRaceStatus.DEFAULT);
         return result;
+    }
+
+    public static Position getPosition(ItemStack stack, Level world) {
+        UmaData umaData = UmapyoiAPI.getUmaDataRegistry(world).getOptional(UmaSoulUtils.getName(stack)).orElseGet(() -> {
+            Umapyoi.getLogger().info("Warning: {} doesn't exist.", UmaSoulUtils.getName(stack));
+            return UmaData.DEFAULT_UMA;
+        });
+        return umaData.position();
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static Position getPosition(ItemStack stack) {
+        return getPosition(stack, Minecraft.getInstance().level);
+    }
+
+
+    public static List<Aptitude> getSurfaceAptitude(ItemStack stack) {
+        return Optional.ofNullable(stack.get(DataComponentsTypeRegistry.UMADATA_RACE.get()))
+                .map(UmaDataRace::surfaceAptitude)
+                .filter(surfaceAptitude -> surfaceAptitude.size() >= 3)
+                .orElseGet(() -> Arrays.stream(UmaData.DEFAULT_SURFACE_APTITUDE).toList());
+    }
+
+    public static List<Aptitude> getDistanceAptitude(ItemStack stack) {
+        return Optional.ofNullable(stack.get(DataComponentsTypeRegistry.UMADATA_RACE.get()))
+                .map(UmaDataRace::distanceAptitude)
+                .filter(distanceAptitude -> distanceAptitude.size() >= 4)
+                .orElseGet(() -> Arrays.stream(UmaData.DEFAULT_DISTANCE_APTITUDE).toList());
     }
 
     public static ResourceLocation getName(ItemStack stack) {
@@ -58,7 +99,23 @@ public class UmaSoulUtils {
 
     public static UmaDataBasicStatus getProperty(ItemStack stack) {
         return stack.getOrDefault(DataComponentsTypeRegistry.UMADATA_BASIC_STATUS.get(),
-                new UmaDataBasicStatus(1, 1, 1, 1, 1));
+                UmaDataBasicStatus.DEFAULT_STATUS);
+    }
+
+    public static void setProperty(ItemStack stack, UmaDataBasicStatus props) {
+        stack.set(DataComponentsTypeRegistry.UMADATA_BASIC_STATUS.get(), props);
+    }
+
+    public static UmaDataBasicStatus updatePropertyAsArray(ItemStack stack, Consumer<int[]> updater) {
+        return stack.update(
+                DataComponentsTypeRegistry.UMADATA_BASIC_STATUS.get(),
+                UmaDataBasicStatus.DEFAULT_STATUS,
+                data -> {
+                    var array = data.array();
+                    updater.accept(array);
+                    return UmaDataBasicStatus.init(array);
+                }
+        );
     }
 
     public static UmaDataBasicStatus getPropertyRate(ItemStack stack) {
@@ -66,9 +123,50 @@ public class UmaSoulUtils {
                 new UmaDataBasicStatus(0, 0, 0, 0, 0));
     }
 
+    public static void setPropertyRate(ItemStack stack, UmaDataBasicStatus props) {
+        stack.set(DataComponentsTypeRegistry.UMADATA_STATUS_RATE.get(), props);
+    }
+
+    public static UmaDataBasicStatus updatePropertyRateAsArray(ItemStack stack, Consumer<int[]> updater) {
+        return stack.update(
+                DataComponentsTypeRegistry.UMADATA_STATUS_RATE.get(),
+                new UmaDataBasicStatus(0, 0, 0, 0, 0),
+                data -> {
+                    var array = data.array();
+                    updater.accept(array);
+                    return UmaDataBasicStatus.init(array);
+                }
+        );
+    }
+
+    public static UmaDataExtraStatus getExtraProperty(ItemStack stack) {
+        return stack.getOrDefault(DataComponentsTypeRegistry.UMADATA_EXTRA_STATUS.get(),
+                UmaDataExtraStatus.DEFAULT);
+    }
+
+    public static void setExtraProperty(ItemStack stack, UmaDataExtraStatus props) {
+        stack.set(DataComponentsTypeRegistry.UMADATA_EXTRA_STATUS.get(), props);
+    }
+
     public static UmaDataBasicStatus getMaxProperty(ItemStack stack) {
         return stack.getOrDefault(DataComponentsTypeRegistry.UMADATA_MAX_BASIC_STATUS.get(),
-                new UmaDataBasicStatus(12, 12, 12, 12, 12));
+                UmaDataBasicStatus.DEFAULT_MAX_STATUS);
+    }
+
+    public static void setMaxProperty(ItemStack stack, UmaDataBasicStatus props) {
+        stack.set(DataComponentsTypeRegistry.UMADATA_MAX_BASIC_STATUS.get(), props);
+    }
+
+    public static UmaDataBasicStatus updateMaxPropertyAsArray(ItemStack stack, Consumer<int[]> updater) {
+        return stack.update(
+                DataComponentsTypeRegistry.UMADATA_MAX_BASIC_STATUS.get(),
+                UmaDataBasicStatus.DEFAULT_MAX_STATUS,
+                data -> {
+                    var array = data.array();
+                    updater.accept(array);
+                    return UmaDataBasicStatus.init(array);
+                }
+        );
     }
 
     public static Motivations getMotivation(ItemStack stack) {
@@ -218,5 +316,19 @@ public class UmaSoulUtils {
     public static void downLearningTimes(ItemStack stack) {
         int learns = Math.max(getLearningTimes(stack) - 1, 0);
         setLearningTimes(stack, learns);
+    }
+
+    public static boolean hasUmaSoulDebut(ItemStack soul) {
+        return Optional.ofNullable(soul.get(DataComponentsTypeRegistry.UMADATA_RACE_STATUS.get()))
+                .map(UmaDataRaceStatus::hasDebut)
+                .orElse(false);
+    }
+
+    public static UmaDataRaceStatus getRaceStatus(ItemStack soul) {
+        return soul.getOrDefault(DataComponentsTypeRegistry.UMADATA_RACE_STATUS.get(), UmaDataRaceStatus.DEFAULT);
+    }
+
+    public static void setRaceStatus(ItemStack soul, UmaDataRaceStatus data) {
+        soul.set(DataComponentsTypeRegistry.UMADATA_RACE_STATUS.get(), data);
     }
 }

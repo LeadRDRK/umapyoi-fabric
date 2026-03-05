@@ -22,6 +22,7 @@ import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.UmapyoiConfigModel;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
+import net.tracen.umapyoi.events.SupportCardGachaCallback;
 import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.training.card.SupportCard;
 import net.tracen.umapyoi.utils.ClientUtils;
@@ -191,6 +192,8 @@ public class SupportAlbumPedestalBlockEntity extends AbstractPedestalBlockEntity
         RandomSource rand = this.getLevel().getRandom();
         Registry<SupportCard> registry = UmapyoiAPI.getSupportCardRegistry(this.getLevel());
 
+        RandomSource copyRand = rand.fork();
+
         @NotNull
         Collection<ResourceLocation> keys = registry.keySet().stream()
                 .filter(this.getFilter(getLevel(), getStoredItem()))
@@ -200,7 +203,9 @@ public class SupportAlbumPedestalBlockEntity extends AbstractPedestalBlockEntity
                 .orElse(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "blank_card"));
 
         ItemStack result = SupportCard.init(key, registry.get(key));
-        return result;
+        var evt = new SupportCardGachaCallback.Context(getStoredItem(), keys, key, result, copyRand);
+        SupportCardGachaCallback.invoke(evt);
+        return evt.getOutput();
     }
 
     private boolean canWork() {

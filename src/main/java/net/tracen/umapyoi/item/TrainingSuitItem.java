@@ -7,23 +7,23 @@ import net.tracen.umapyoi.utils.ClientUtils;
 
 public class TrainingSuitItem extends AbstractSuitItem {
     @Override
-    protected ResourceLocation getModel(ItemStack stack) {
+    public ResourceLocation getModel(ItemStack stack) {
         return ClientUtils.TRAINING_SUIT;
     }
 
     @Override
-    protected ResourceLocation getTexture(ItemStack stack, boolean tanned) {
+    public ResourceLocation getTexture(ItemStack stack, boolean tanned) {
         return tanned ? ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/trainning_suit_tanned.png")
                 : ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/trainning_suit.png");
     }
 
     @Override
-    protected ResourceLocation getFlatModel(ItemStack stack) {
+    public ResourceLocation getFlatModel(ItemStack stack) {
         return ClientUtils.TRAINING_SUIT_FLAT;
     }
 
     @Override
-    protected ResourceLocation getFlatTexture(ItemStack stack, boolean tanned) {
+    public ResourceLocation getFlatTexture(ItemStack stack, boolean tanned) {
         return tanned ? ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/trainning_suit_tanned.png")
                 : ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/trainning_suit.png");
     }

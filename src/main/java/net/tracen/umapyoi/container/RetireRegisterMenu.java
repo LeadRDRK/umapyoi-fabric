@@ -16,9 +16,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.tracen.umapyoi.block.BlockRegistry;
-import net.tracen.umapyoi.item.ItemRegistry;
+import net.tracen.umapyoi.events.RetireCallback;
 import net.tracen.umapyoi.item.UmaSoulItem;
-import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.UmaFactorRegistry;
 import net.tracen.umapyoi.registry.UmaSkillRegistry;
 import net.tracen.umapyoi.registry.factors.FactorType;
@@ -29,7 +28,6 @@ import net.tracen.umapyoi.registry.factors.UmaFactorStack;
 import net.tracen.umapyoi.registry.skills.UmaSkill;
 import net.tracen.umapyoi.registry.umadata.Growth;
 import net.tracen.umapyoi.utils.ResultRankingUtils;
-import net.tracen.umapyoi.utils.UmaFactorUtils;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -80,12 +78,14 @@ public class RetireRegisterMenu extends AbstractContainerMenu {
         resultStack.onCraftedBy(player.level(), player, resultStack.getCount());
         this.resultSlots.awardUsedRecipes(player, List.of(resultStack));
         ItemStack inputSoul = this.inputSlots.getItem(0).copy();
+        ItemStack inputSoulCopy = inputSoul.copy();
         if (inputSoul.getItem() instanceof UmaSoulItem) {
             UmaSoulUtils.setGrowth(inputSoul, Growth.RETIRED);
-            this.inputSlots.setItem(0, inputSoul);
-            this.access.execute((level, pos) -> {
-                player.playSound(SoundEvents.PLAYER_LEVELUP, 1F, 1F);
-            });
+            var evt = new RetireCallback.Post.Context(inputSoulCopy, inputSoul, resultStack);
+            RetireCallback.Post.invoke(evt);
+            this.inputSlots.setItem(0, evt.getStackSoulPost());
+            if (player.level().isClientSide())
+                player.playSound(SoundEvents.PLAYER_LEVELUP, 1, 1);
         }
     }
 
@@ -157,7 +157,6 @@ public class RetireRegisterMenu extends AbstractContainerMenu {
     }
 
     private ItemStack getResultItem() {
-        ItemStack result = ItemRegistry.UMA_FACTOR_ITEM.get().getDefaultInstance();
         ItemStack inputSoul = this.inputSlots.getItem(0).copy();
         if (!(inputSoul.getItem() instanceof UmaSoulItem))
             return ItemStack.EMPTY;
@@ -165,10 +164,10 @@ public class RetireRegisterMenu extends AbstractContainerMenu {
 
         this.rand.setSeed(this.getFactorSeed().get());
         List<UmaFactorStack> stackList = createResultFactors(inputSoul, ranking);
+        var evt = new RetireCallback.Pre.Context(this.getFactorSeed().get(), stackList, inputSoul);
 
-        result.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), UmaSoulUtils.getName(inputSoul));
-        result.set(DataComponentsTypeRegistry.FACTOR_DATA.get(), UmaFactorUtils.serializeData(stackList));
-        return result;
+        if (RetireCallback.Pre.invoke(evt)) return ItemStack.EMPTY;
+        return evt.getOutputStack();
     }
 
     public List<UmaFactorStack> createResultFactors(ItemStack inputSoul, int ranking) {
@@ -179,18 +178,10 @@ public class RetireRegisterMenu extends AbstractContainerMenu {
                 .filter(fac -> fac.getFactorType() == FactorType.STATUS).count();
         StatusFactor statusFactor = (StatusFactor) status.skip(rand.nextLong(statusCount)).findFirst()
                 .orElse(UmaFactorRegistry.SPEED_FACTOR.get());
-
-        int statusProperty = 0;
-        switch (statusFactor.getStatusType()) {
-            case SPEED -> statusProperty = UmaSoulUtils.getProperty(inputSoul).speed();
-            case STAMINA -> statusProperty = UmaSoulUtils.getProperty(inputSoul).stamina();
-            case STRENGTH -> statusProperty = UmaSoulUtils.getProperty(inputSoul).strength();
-            case GUTS -> statusProperty = UmaSoulUtils.getProperty(inputSoul).guts();
-            case WISDOM -> statusProperty = UmaSoulUtils.getProperty(inputSoul).wisdom();
-        }
-        var i = statusProperty > 18 ? statusFactor.getMaxLevel() + 1 :
+        var statusProperty = UmaSoulUtils.getProperty(inputSoul).array()[statusFactor.getStatusType().getId()];
+        var i = statusProperty > 18 ? statusFactor.getMaxLevel():
                 statusProperty > 10 ? 3 :
-                2;
+                        2;
         var statusFactorStack = new UmaFactorStack(statusFactor,
                 rand.nextInt(i) + 1);
 

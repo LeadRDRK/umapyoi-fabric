@@ -21,6 +21,7 @@ import net.tracen.umapyoi.UmapyoiConfigModel;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.data.builtin.UmaDataRegistry;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
+import net.tracen.umapyoi.events.UmaSoulGachaCallback;
 import net.tracen.umapyoi.item.FadedUmaSoulItem;
 import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.umadata.UmaData;
@@ -114,6 +115,8 @@ public class SilverUmaPedestalBlockEntity extends AbstractPedestalBlockEntity im
         RandomSource rand = this.getLevel().getRandom();
         Registry<UmaData> registry = UmapyoiAPI.getUmaDataRegistry(this.getLevel());
 
+        RandomSource copyRand = rand.fork();
+
         @NotNull
         Collection<ResourceLocation> keys = registry.keySet().stream()
                 .filter(this.getFilter(getLevel(), getStoredItem()))
@@ -123,7 +126,9 @@ public class SilverUmaPedestalBlockEntity extends AbstractPedestalBlockEntity im
                 .orElse(UmaDataRegistry.COMMON_UMA.location());
 
         ItemStack result = FadedUmaSoulItem.genUmaSoul(holder, registry.get(holder));
-        return result;
+        var evt = new UmaSoulGachaCallback.Context(getStoredItem(), keys, holder, result, copyRand);
+        UmaSoulGachaCallback.invoke(evt);
+        return evt.getOutput();
     }
 
     private boolean canWork() {

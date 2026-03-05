@@ -2,3 +2,4 @@ accessWidener v2 named
 
 accessible field net/minecraft/client/model/PlayerModel slim Z
 accessible method net/minecraft/client/resources/model/ModelBakery getModel (Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/client/resources/model/UnbakedModel;
+accessible field net/minecraft/world/entity/ai/behavior/GiveGiftToHero GIFTS Ljava/util/Map;

@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class UmaSoulUtils {
 
@@ -105,6 +106,18 @@ public class UmaSoulUtils {
         stack.set(DataComponentsTypeRegistry.UMADATA_BASIC_STATUS.get(), props);
     }
 
+    public static UmaDataBasicStatus updatePropertyAsArray(ItemStack stack, Consumer<int[]> updater) {
+        return stack.update(
+                DataComponentsTypeRegistry.UMADATA_BASIC_STATUS.get(),
+                UmaDataBasicStatus.DEFAULT_STATUS,
+                data -> {
+                    var array = data.array();
+                    updater.accept(array);
+                    return UmaDataBasicStatus.init(array);
+                }
+        );
+    }
+
     public static UmaDataBasicStatus getPropertyRate(ItemStack stack) {
         return stack.getOrDefault(DataComponentsTypeRegistry.UMADATA_STATUS_RATE.get(),
                 new UmaDataBasicStatus(0, 0, 0, 0, 0));
@@ -112,6 +125,18 @@ public class UmaSoulUtils {
 
     public static void setPropertyRate(ItemStack stack, UmaDataBasicStatus props) {
         stack.set(DataComponentsTypeRegistry.UMADATA_STATUS_RATE.get(), props);
+    }
+
+    public static UmaDataBasicStatus updatePropertyRateAsArray(ItemStack stack, Consumer<int[]> updater) {
+        return stack.update(
+                DataComponentsTypeRegistry.UMADATA_STATUS_RATE.get(),
+                new UmaDataBasicStatus(0, 0, 0, 0, 0),
+                data -> {
+                    var array = data.array();
+                    updater.accept(array);
+                    return UmaDataBasicStatus.init(array);
+                }
+        );
     }
 
     public static UmaDataExtraStatus getExtraProperty(ItemStack stack) {
@@ -130,6 +155,18 @@ public class UmaSoulUtils {
 
     public static void setMaxProperty(ItemStack stack, UmaDataBasicStatus props) {
         stack.set(DataComponentsTypeRegistry.UMADATA_MAX_BASIC_STATUS.get(), props);
+    }
+
+    public static UmaDataBasicStatus updateMaxPropertyAsArray(ItemStack stack, Consumer<int[]> updater) {
+        return stack.update(
+                DataComponentsTypeRegistry.UMADATA_MAX_BASIC_STATUS.get(),
+                UmaDataBasicStatus.DEFAULT_MAX_STATUS,
+                data -> {
+                    var array = data.array();
+                    updater.accept(array);
+                    return UmaDataBasicStatus.init(array);
+                }
+        );
     }
 
     public static Motivations getMotivation(ItemStack stack) {

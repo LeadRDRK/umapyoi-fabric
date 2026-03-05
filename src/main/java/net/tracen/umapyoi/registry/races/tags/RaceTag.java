@@ -10,7 +10,6 @@ import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.races.Race;
-import net.tracen.umapyoi.registry.umadata.UmaDataBasicStatus;
 import net.tracen.umapyoi.registry.umadata.UmaDataRaceStatus;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
@@ -56,19 +55,17 @@ public record RaceTag(int maximum, ResourceLocation id, boolean isUnique, int[] 
             isFulfill = races.size() == this.maximum;
         }
         if (isFulfill) {
-            int[] properties = UmaSoulUtils.getProperty(soul).array();
-            int[] propertiesCeil = UmaSoulUtils.getMaxProperty(soul).array();
+            var propertiesCeil = UmaSoulUtils.updateMaxPropertyAsArray(soul, pPropertiesCeil -> {
+                for (int i = 0; i < 5; i++) {
+                    pPropertiesCeil[i] = Math.min(pPropertiesCeil[i] + propertyReward[i], 39);
+                }
+            }).array();
 
-            for (int i = 0; i < 5; i++) {
-                propertiesCeil[i] = Math.min(propertiesCeil[i] + propertyReward[i], 39);
-            }
-
-            for (int i = 0; i < 5; i++) {
-                properties[i] = Math.min(properties[i] + propertyReward[i], propertiesCeil[i]);
-            }
-
-            soul.set(DataComponentsTypeRegistry.UMADATA_BASIC_STATUS.get(), UmaDataBasicStatus.init(properties));
-            soul.set(DataComponentsTypeRegistry.UMADATA_MAX_BASIC_STATUS.get(), UmaDataBasicStatus.init(propertiesCeil));
+            UmaSoulUtils.updatePropertyAsArray(soul, properties -> {
+                for (int i = 0; i < 5; i++) {
+                    properties[i] = Math.min(properties[i] + propertyReward[i], propertiesCeil[i]);
+                }
+            });
         }
         soul.set(DataComponentsTypeRegistry.UMADATA_RACE_STATUS.get(), new UmaDataRaceStatus(
                 raceData.wonRaces(), raceData.attended(), raceData.lastAttendTime(), raceData.hasDebut(),

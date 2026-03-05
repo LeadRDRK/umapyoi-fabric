@@ -4,8 +4,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.Umapyoi;
-import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
-import net.tracen.umapyoi.registry.umadata.UmaDataBasicStatus;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 import net.tracen.umapyoi.utils.UmaStatusUtils;
 
@@ -35,14 +33,14 @@ public class BorealisSupport extends TrainingSupport {
         switch (AcupuncturistEventTypes.getRandomType(rand)) {
             case STATUS ->{
                 for(int i = 0; i < 5;i++) {
-                    var maxPropertyArray = UmaSoulUtils.getMaxProperty(soul).array();
-                    var propertyArray = UmaSoulUtils.getProperty(soul).array();
-                    maxPropertyArray[i] = Math.min(39, maxPropertyArray[i] + 1);
-                    soul.set(DataComponentsTypeRegistry.UMADATA_MAX_BASIC_STATUS.get(), UmaDataBasicStatus.init(maxPropertyArray));
-                    if (maxPropertyArray[i] > propertyArray[i]) {
-                        propertyArray[i] = Math.min(maxPropertyArray[i], propertyArray[i] + 1);
-                        soul.set(DataComponentsTypeRegistry.UMADATA_BASIC_STATUS.get(), UmaDataBasicStatus.init(propertyArray));
-                    }
+                    int statusType = i;
+                    var maxProp = UmaSoulUtils.updateMaxPropertyAsArray(soul, prop ->
+                            prop[statusType] = Math.min(39, prop[statusType] + 1)).array();
+                    UmaSoulUtils.updatePropertyAsArray(soul, prop -> {
+                        if (maxProp[statusType] > prop[statusType]) {
+                            prop[statusType] = Math.min(maxProp[statusType], prop[statusType] + 1);
+                        }
+                    });
                 }
             }
 

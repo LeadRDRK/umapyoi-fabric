@@ -63,6 +63,7 @@ public class Umapyoi implements ModInitializer {
         BlockEntityRegistry.BLOCK_ENTITIES.register();
         ItemRegistry.ITEMS.register();
         ContainerRegistry.CONTAINER_TYPES.register();
+        LootFunctionRegistry.LOOT_FUNCTION_TYPES.register();
         VillageRegistry.PROFESSIONS.register();
         VillageRegistry.registerPoi();
         VillageRegistry.registerHeroOfTheVillage();
@@ -70,7 +71,6 @@ public class Umapyoi implements ModInitializer {
         RecipeSerializerRegistry.RECIPE_SERIALIZER.register();
         TriggerRegistry.registerAll();
         SoundRegistry.SOUNDS.register();
-        LootFunctionRegistry.LOOT_FUNCTION_TYPES.register();
         CommandRegistry.register();
 
         CommonEvents.register();

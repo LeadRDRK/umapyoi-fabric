@@ -17,7 +17,7 @@ import net.tracen.umapyoi.effect.MoodBonus;
 import net.tracen.umapyoi.effect.NightOwlEffect;
 import net.tracen.umapyoi.effect.PanickingEffect;
 import net.tracen.umapyoi.events.AnvilUpdateCallback;
-import net.tracen.umapyoi.events.DatapackEvents;
+import net.tracen.umapyoi.events.handler.SetupEvents;
 import net.tracen.umapyoi.events.handler.AnvilEvents;
 import net.tracen.umapyoi.events.handler.CommonEvents;
 import net.tracen.umapyoi.events.handler.PassiveSkillEvents;
@@ -89,8 +89,8 @@ public class Umapyoi implements ModInitializer {
         ServerPlayNetworking.registerGlobalReceiver(EmptyResultPacket.TYPE, EmptyResultPacket::handler);
         GrantBookOnFirstJoin.PlayerJoinListener.register();
 
-        DatapackEvents.registerDatapackRegistries();
-        DatapackEvents.registerSerializers();
+        SetupEvents.registerDatapackRegistries();
+        SetupEvents.registerSerializers();
 
         AddLootTableModifier.registerListeners();
     }

@@ -7,7 +7,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.tracen.umapyoi.Umapyoi;
-import net.tracen.umapyoi.container.UmaSelectMenu;
+import net.tracen.umapyoi.container.IItemNameMutableMenu;
 
 public class EmptyResultPacket implements FabricPacket {
     public EmptyResultPacket() {
@@ -28,7 +28,7 @@ public class EmptyResultPacket implements FabricPacket {
     }
 
     public static void handler(EmptyResultPacket packet, ServerPlayer player, PacketSender responseSender) {
-        if (player.containerMenu instanceof UmaSelectMenu menu) {
+        if (player.containerMenu instanceof IItemNameMutableMenu menu) {
             menu.setItemName(null);
         }
     }

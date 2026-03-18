@@ -7,6 +7,7 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.item.ItemRegistry;
@@ -26,6 +27,7 @@ public class UmapyoiSkillLootTableProvider extends SimpleFabricLootTableProvider
     public void generate(BiConsumer<ResourceLocation, LootTable.Builder> consumer) {
         consumer.accept(SIMPLE_SKILLS, LootTable.lootTable().withPool(LootPool.lootPool()
                         .setRolls(UniformGenerator.between(0.0F, 4.0F))
+                        .conditionally(LootItemRandomChanceCondition.randomChance(0.15f).build())
                         .add(LootItem.lootTableItem(ItemRegistry.SKILL_BOOK.get()).setWeight(10).apply(UmaSkillLootFunction.setSkillLevel(1)))
                         .add(LootItem.lootTableItem(ItemRegistry.SKILL_BOOK.get()).setWeight(10).apply(UmaSkillLootFunction.setSkillLevel(1)))
                 )
@@ -33,6 +35,7 @@ public class UmapyoiSkillLootTableProvider extends SimpleFabricLootTableProvider
 
         consumer.accept(COMPLEX_SKILLS, LootTable.lootTable().withPool(LootPool.lootPool()
                         .setRolls(UniformGenerator.between(0.0F, 2.0F))
+                        .conditionally(LootItemRandomChanceCondition.randomChance(0.5f).build())
                         .add(LootItem.lootTableItem(ItemRegistry.SKILL_BOOK.get()).setWeight(10).apply(UmaSkillLootFunction.setSkillLevel(2)))
                         .add(LootItem.lootTableItem(ItemRegistry.SKILL_BOOK.get()).setWeight(10).apply(UmaSkillLootFunction.setSkillLevel(2)))
                 )

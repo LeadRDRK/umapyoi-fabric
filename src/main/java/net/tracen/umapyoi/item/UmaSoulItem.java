@@ -182,7 +182,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
             tooltip.add(Component.literal(""));
 
             tooltip.add(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.details").withStyle(ChatFormatting.AQUA));
-            Aptitude[] surfaceAptitudes = UmaSoulUtils.getSurfaceAptitudeReadonly(stack);
+            Aptitude[] surfaceAptitudes = UmaSoulUtils.getSurfaceAptitude(stack);
             tooltip.add(
                     Component.translatable("tooltip.umapyoi.uma_soul.aptitude.turf", surfaceAptitudes[0].styledComponent()).withStyle(ChatFormatting.GREEN)
                             .append(" / ").withStyle(ChatFormatting.RESET)
@@ -190,7 +190,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
                             .append(" / ").withStyle(ChatFormatting.RESET)
                             .append(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.synthetic", surfaceAptitudes[2].styledComponent()).withStyle(ChatFormatting.GOLD))
             );
-            Aptitude[] distanceAptitudes = UmaSoulUtils.getDistanceAptitudeReadonly(stack);
+            Aptitude[] distanceAptitudes = UmaSoulUtils.getDistanceAptitude(stack);
             tooltip.add(
                     Component.translatable("tooltip.umapyoi.uma_soul.aptitude.short", distanceAptitudes[0].styledComponent())
                             .append(" / ")

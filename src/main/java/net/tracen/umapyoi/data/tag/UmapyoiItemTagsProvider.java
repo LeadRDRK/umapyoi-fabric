@@ -71,19 +71,19 @@ public class UmapyoiItemTagsProvider extends ItemTagProvider {
                 .add(ItemRegistry.HACHIMI_BIG.get()).add(ItemRegistry.SWEET_CUPCAKE.get());
 
         getOrCreateTagBuilder(UmapyoiItemTags.getRaceMaterialTag(RaceRanking.PREOP))
-                .addTag(ConventionalItemTags.COPPER_INGOTS);
+                .forceAddTag(ConventionalItemTags.COPPER_INGOTS);
 
         getOrCreateTagBuilder(UmapyoiItemTags.getRaceMaterialTag(RaceRanking.OP))
-                .addTag(ConventionalItemTags.IRON_INGOTS);
+                .forceAddTag(ConventionalItemTags.IRON_INGOTS);
 
         getOrCreateTagBuilder(UmapyoiItemTags.getRaceMaterialTag(RaceRanking.GIII))
-                .addTag(ConventionalItemTags.GOLD_INGOTS);
+                .forceAddTag(ConventionalItemTags.GOLD_INGOTS);
 
         getOrCreateTagBuilder(UmapyoiItemTags.getRaceMaterialTag(RaceRanking.GII))
-                .addTag(ConventionalItemTags.EMERALDS);
+                .forceAddTag(ConventionalItemTags.EMERALDS);
 
         getOrCreateTagBuilder(UmapyoiItemTags.getRaceMaterialTag(RaceRanking.GI))
-                .addTag(ConventionalItemTags.DIAMONDS);
+                .forceAddTag(ConventionalItemTags.DIAMONDS);
 
         getOrCreateTagBuilder(UmapyoiItemTags.RACE_CHAMPIONS_MATERIAL).add(Items.ENDER_EYE);
     }

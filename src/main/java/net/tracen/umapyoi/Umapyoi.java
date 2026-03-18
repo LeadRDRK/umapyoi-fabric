@@ -12,8 +12,6 @@ import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.block.entity.BlockEntityRegistry;
 import net.tracen.umapyoi.command.CommandRegistry;
 import net.tracen.umapyoi.container.ContainerRegistry;
-import net.tracen.umapyoi.data.loot.AddLootTableModifier;
-import net.tracen.umapyoi.data.loot.LootFunctionRegistry;
 import net.tracen.umapyoi.effect.MobEffectRegistry;
 import net.tracen.umapyoi.effect.MoodBonus;
 import net.tracen.umapyoi.effect.NightOwlEffect;
@@ -24,6 +22,8 @@ import net.tracen.umapyoi.events.handler.AnvilEvents;
 import net.tracen.umapyoi.events.handler.CommonEvents;
 import net.tracen.umapyoi.events.handler.PassiveSkillEvents;
 import net.tracen.umapyoi.item.ItemRegistry;
+import net.tracen.umapyoi.loot.AddLootTableModifier;
+import net.tracen.umapyoi.loot.LootFunctionRegistry;
 import net.tracen.umapyoi.network.EmptyResultPacket;
 import net.tracen.umapyoi.network.SelectSkillPacket;
 import net.tracen.umapyoi.network.SetupResultPacket;
@@ -70,7 +70,7 @@ public class Umapyoi implements ModInitializer {
         RecipeSerializerRegistry.RECIPE_SERIALIZER.register();
         TriggerRegistry.registerAll();
         SoundRegistry.SOUNDS.register();
-        LootFunctionRegistry.LOOT_FUNCTIONS.register();
+        LootFunctionRegistry.LOOT_FUNCTION_TYPES.register();
         CommandRegistry.register();
 
         CommonEvents.register();

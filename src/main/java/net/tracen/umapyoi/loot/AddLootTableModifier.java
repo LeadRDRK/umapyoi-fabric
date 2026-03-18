@@ -1,4 +1,4 @@
-package net.tracen.umapyoi.data.loot;
+package net.tracen.umapyoi.loot;
 
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
 import net.fabricmc.fabric.api.loot.v2.LootTableSource;

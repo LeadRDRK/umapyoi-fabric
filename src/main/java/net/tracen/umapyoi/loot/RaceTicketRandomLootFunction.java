@@ -1,4 +1,4 @@
-package net.tracen.umapyoi.data.loot;
+package net.tracen.umapyoi.loot;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;

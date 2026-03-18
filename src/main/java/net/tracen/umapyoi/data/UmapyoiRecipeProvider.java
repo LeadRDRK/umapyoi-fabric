@@ -86,10 +86,20 @@ public class UmapyoiRecipeProvider extends FabricRecipeProvider {
                 .unlockedBy("has_item", has(ItemRegistry.HORSESHOE_RAINBOW.get())).save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, BlockRegistry.UMA_SELECT_BLOCK.get()).pattern(" J ").pattern("BLB").pattern("AAA")
-                .define('A', Items.DIAMOND)
+                .define('A', ConventionalItemTags.DIAMONDS)
                 .define('B', Items.NETHER_STAR).define('L', Items.LECTERN)
-                .define('J', ItemRegistry.JEWEL.get())
+                .define('J', ItemRegistry.BLANK_TICKET.get())
                 .unlockedBy("has_item", has(ItemRegistry.BLANK_TICKET.get())).save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, BlockRegistry.RACE_SELECT_BLOCK.get())
+                .pattern(" J ")
+                .pattern("BLB")
+                .pattern("AAA")
+                .define('A', ConventionalItemTags.GOLD_INGOTS)
+                .define('B', Items.NETHER_STAR).define('L', Items.LECTERN)
+                .define('J', ItemRegistry.UMA_RACE_TICKET.get())
+                .unlockedBy("has_item", has(ItemRegistry.UMA_RACE_TICKET.get())).save(consumer);
+
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, BlockRegistry.THREE_GODDESS.get()).pattern(" J ")
                 .pattern("JAJ").pattern("AAA").define('A', UmapyoiItemTags.STONES)
                 .define('J', ItemRegistry.JEWEL.get())

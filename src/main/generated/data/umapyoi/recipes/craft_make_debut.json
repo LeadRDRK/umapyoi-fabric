@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "c:emeralds"
+      "tag": "c:gems/emerald"
     },
     {
       "item": "umapyoi:blank_ticket"

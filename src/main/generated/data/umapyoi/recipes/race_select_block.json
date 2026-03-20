@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "A": {
-      "tag": "c:gold_ingots"
+      "tag": "c:ingots/gold"
     },
     "B": {
       "item": "minecraft:nether_star"
@@ -21,7 +21,7 @@
     "AAA"
   ],
   "result": {
-    "item": "umapyoi:race_select_block"
-  },
-  "show_notification": true
+    "count": 1,
+    "id": "umapyoi:race_select_block"
+  }
 }

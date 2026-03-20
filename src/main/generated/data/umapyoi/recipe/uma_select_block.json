@@ -3,13 +3,13 @@
   "category": "misc",
   "key": {
     "A": {
-      "item": "minecraft:diamond"
+      "tag": "c:gems/diamond"
     },
     "B": {
       "item": "minecraft:nether_star"
     },
     "J": {
-      "item": "umapyoi:jewel"
+      "item": "umapyoi:blank_ticket"
     },
     "L": {
       "item": "minecraft:lectern"

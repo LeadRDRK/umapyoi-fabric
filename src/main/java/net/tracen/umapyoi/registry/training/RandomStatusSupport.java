@@ -5,6 +5,8 @@ import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.registry.umadata.UmaDataBasicStatus;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
+import java.util.stream.IntStream;
+
 public class RandomStatusSupport extends TrainingSupport {
 
     public RandomStatusSupport() {
@@ -13,17 +15,22 @@ public class RandomStatusSupport extends TrainingSupport {
 
     @Override
     public boolean applySupport(ItemStack soul, RandomSource rand, SupportStack stack) {
-        for(int i = 0; i < stack.getLevel(); i++) {
-            int id = rand.nextInt(5);
-            var maxPropertyArray = UmaSoulUtils.getMaxProperty(soul).array();
-            var propertyArray = UmaSoulUtils.getProperty(soul).array();
-            if (maxPropertyArray[id] > propertyArray[id]) {
-                propertyArray[id] = Math.min(maxPropertyArray[id], propertyArray[id] + stack.getLevel());
-                UmaSoulUtils.setProperty(soul, UmaDataBasicStatus.init(propertyArray));
-                return true;
-            }
+        boolean hasApply = false;
+        int[] originalProperty = UmaSoulUtils.getProperty(soul).array();
+        int[] maxProperty = UmaSoulUtils.getMaxProperty(soul).array();
+        for (int i = 0; i < stack.getLevel(); i++) {
+            int[] available = IntStream.range(0, 5).filter(j -> originalProperty[j] < maxProperty[j]).toArray();
+            if (available.length == 0) break;
+            int id = available[rand.nextInt(available.length)];
+            originalProperty[id] = Math.min(
+                    maxProperty[id],
+                    originalProperty[id] + stack.getLevel());
+            hasApply = true;
         }
-        return false;
+        if (hasApply) {
+            UmaSoulUtils.setProperty(soul, UmaDataBasicStatus.init(originalProperty));
+        }
+        return hasApply;
     }
 
 }

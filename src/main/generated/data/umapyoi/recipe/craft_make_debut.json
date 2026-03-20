@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "minecraft:emerald"
+      "tag": "c:gems/emerald"
     },
     {
       "item": "umapyoi:blank_ticket"

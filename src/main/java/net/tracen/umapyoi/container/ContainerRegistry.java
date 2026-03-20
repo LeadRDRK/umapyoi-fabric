@@ -39,4 +39,7 @@ public class ContainerRegistry {
 
     public static final RegistryObject<MenuType<RaceContainer>> RACE_REGISTER = CONTAINER_TYPES
             .register("race_container", () -> new ExtendedScreenHandlerType<>(RaceContainer::new, BlockPos.STREAM_CODEC));
+
+    public static final RegistryObject<MenuType<RaceSelectMenu>> RACE_SELECT_MENU = CONTAINER_TYPES
+            .register("race_select_menu", () -> new MenuType<>((RaceSelectMenu::new), FeatureFlags.DEFAULT_FLAGS));
 }

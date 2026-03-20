@@ -1,4 +1,4 @@
-package net.tracen.umapyoi.data;
+package net.tracen.umapyoi.data.loot;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
@@ -9,8 +9,8 @@ import net.tracen.umapyoi.utils.ThreeBlockPart;
 
 import java.util.concurrent.CompletableFuture;
 
-public class UmapyoiLootTableProvider extends FabricBlockLootTableProvider {
-    public UmapyoiLootTableProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
+public class UmapyoiBlockLootTableProvider extends FabricBlockLootTableProvider {
+    public UmapyoiBlockLootTableProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
         super(dataOutput, registryLookup);
     }
 

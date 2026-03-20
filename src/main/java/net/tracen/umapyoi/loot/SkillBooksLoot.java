@@ -1,4 +1,4 @@
-package net.tracen.umapyoi.data.loot;
+package net.tracen.umapyoi.loot;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -9,7 +9,7 @@ import net.tracen.umapyoi.Umapyoi;
 
 import java.util.Set;
 
-public class TrainingBooksLoot implements AddLootTableModifier {
+public class SkillBooksLoot implements AddLootTableModifier {
     static private final Set<ResourceKey<LootTable>> TARGET_LOOT_TABLES = Set.of(
             BuiltInLootTables.ABANDONED_MINESHAFT,
             BuiltInLootTables.JUNGLE_TEMPLE,
@@ -19,16 +19,7 @@ public class TrainingBooksLoot implements AddLootTableModifier {
             BuiltInLootTables.SHIPWRECK_TREASURE,
             BuiltInLootTables.BURIED_TREASURE,
             BuiltInLootTables.DESERT_PYRAMID,
-            BuiltInLootTables.SPAWN_BONUS_CHEST,
-            BuiltInLootTables.BASTION_BRIDGE,
-            BuiltInLootTables.BASTION_HOGLIN_STABLE,
-            BuiltInLootTables.BASTION_OTHER,
-            BuiltInLootTables.BASTION_TREASURE,
-            BuiltInLootTables.END_CITY_TREASURE,
-            BuiltInLootTables.NETHER_BRIDGE,
-            BuiltInLootTables.STRONGHOLD_CORRIDOR,
-            BuiltInLootTables.UNDERWATER_RUIN_BIG,
-            BuiltInLootTables.PILLAGER_OUTPOST
+            BuiltInLootTables.SPAWN_BONUS_CHEST
     );
 
     @Override
@@ -40,7 +31,7 @@ public class TrainingBooksLoot implements AddLootTableModifier {
     public ResourceKey<LootTable> lootTable() {
         return ResourceKey.create(
                 Registries.LOOT_TABLE,
-                ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "supply_book")
+                ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "simple_skills")
         );
     }
 }

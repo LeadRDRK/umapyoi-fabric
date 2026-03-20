@@ -1,6 +1,7 @@
 plugins {
     id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
-    id 'maven-publish'
+    id "dev.ithundxr.silk" version "1.0.1"
+    id "me.modmuss50.mod-publish-plugin" version "1.1.0"
 }
 
 version = project.mod_version
@@ -131,20 +132,37 @@ jar {
     }
 }
 
-// configure the maven publication
-publishing {
-    publications {
-        create("mavenJava", MavenPublication) {
-            artifactId = project.archives_base_name
-            from components.java
-        }
+publishMods {
+    file = remapJar.archiveFile
+    displayName = "Umapyoi Fabricated $mod_version"
+    type = STABLE
+    changelog = silk.changelog
+    modLoaders.add("fabric")
+
+    modrinth {
+        accessToken = providers.gradleProperty("MODRINTH_TOKEN")
+        projectId = "x1Rd7p5W"
+        minecraftVersions.add(minecraft_version)
+
+        requires("fabric-api")
+        requires("trinkets")
+        requires("owo-lib")
+        optional("patchouli")
+        optional("create-fabric")
     }
 
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-    repositories {
-        // Add repositories to publish to here.
-        // Notice: This block does NOT have the same function as the block in the top level.
-        // The repositories here will be used for publishing your artifact, not for
-        // retrieving dependencies.
+    curseforge {
+        accessToken = providers.gradleProperty("CURSEFORGE_TOKEN")
+        projectId = "1414857"
+        minecraftVersions.add(minecraft_version)
+
+        clientRequired = true
+        serverRequired = true
+
+        requires("fabric-api")
+        requires("trinkets")
+        requires("owo-lib")
+        optional("patchouli-fabric")
+        optional("create-fabric")
     }
 }

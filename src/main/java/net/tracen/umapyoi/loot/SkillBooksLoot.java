@@ -1,4 +1,4 @@
-package net.tracen.umapyoi.data.loot;
+package net.tracen.umapyoi.loot;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -9,9 +9,17 @@ import net.tracen.umapyoi.Umapyoi;
 
 import java.util.Set;
 
-public class RaceTicketUpToGIILoot implements AddLootTableModifier {
+public class SkillBooksLoot implements AddLootTableModifier {
     static private final Set<ResourceKey<LootTable>> TARGET_LOOT_TABLES = Set.of(
-            BuiltInLootTables.PILLAGER_OUTPOST
+            BuiltInLootTables.ABANDONED_MINESHAFT,
+            BuiltInLootTables.JUNGLE_TEMPLE,
+            BuiltInLootTables.SIMPLE_DUNGEON,
+            BuiltInLootTables.STRONGHOLD_LIBRARY,
+            BuiltInLootTables.WOODLAND_MANSION,
+            BuiltInLootTables.SHIPWRECK_TREASURE,
+            BuiltInLootTables.BURIED_TREASURE,
+            BuiltInLootTables.DESERT_PYRAMID,
+            BuiltInLootTables.SPAWN_BONUS_CHEST
     );
 
     @Override
@@ -23,7 +31,7 @@ public class RaceTicketUpToGIILoot implements AddLootTableModifier {
     public ResourceKey<LootTable> lootTable() {
         return ResourceKey.create(
                 Registries.LOOT_TABLE,
-                new ResourceLocation(Umapyoi.MODID, "race/ticket/race_ticket_up_to_gii")
+                new ResourceLocation(Umapyoi.MODID, "simple_skills")
         );
     }
 }

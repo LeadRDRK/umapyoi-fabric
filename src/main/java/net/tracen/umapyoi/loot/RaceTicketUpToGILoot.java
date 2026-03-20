@@ -1,4 +1,4 @@
-package net.tracen.umapyoi.data.loot;
+package net.tracen.umapyoi.loot;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -9,26 +9,29 @@ import net.tracen.umapyoi.Umapyoi;
 
 import java.util.Set;
 
-public class RareSkillBooksLoot implements AddLootTableModifier {
+public class RaceTicketUpToGILoot implements AddLootTableModifier {
     static private final Set<ResourceKey<LootTable>> TARGET_LOOT_TABLES = Set.of(
             BuiltInLootTables.ABANDONED_MINESHAFT,
-            BuiltInLootTables.JUNGLE_TEMPLE,
-            BuiltInLootTables.SIMPLE_DUNGEON,
-            BuiltInLootTables.STRONGHOLD_LIBRARY,
-            BuiltInLootTables.WOODLAND_MANSION,
-            BuiltInLootTables.SHIPWRECK_TREASURE,
-            BuiltInLootTables.BURIED_TREASURE,
-            BuiltInLootTables.DESERT_PYRAMID,
-            BuiltInLootTables.SPAWN_BONUS_CHEST,
+            BuiltInLootTables.ANCIENT_CITY,
+            BuiltInLootTables.ANCIENT_CITY_ICE_BOX,
             BuiltInLootTables.BASTION_BRIDGE,
             BuiltInLootTables.BASTION_HOGLIN_STABLE,
             BuiltInLootTables.BASTION_OTHER,
             BuiltInLootTables.BASTION_TREASURE,
-            BuiltInLootTables.END_CITY_TREASURE,
+            BuiltInLootTables.DESERT_PYRAMID,
+            BuiltInLootTables.IGLOO_CHEST,
+            BuiltInLootTables.JUNGLE_TEMPLE,
             BuiltInLootTables.NETHER_BRIDGE,
+            BuiltInLootTables.SHIPWRECK_MAP,
+            BuiltInLootTables.SHIPWRECK_SUPPLY,
+            BuiltInLootTables.SHIPWRECK_TREASURE,
+            BuiltInLootTables.SIMPLE_DUNGEON,
             BuiltInLootTables.STRONGHOLD_CORRIDOR,
+            BuiltInLootTables.STRONGHOLD_CROSSING,
+            BuiltInLootTables.STRONGHOLD_LIBRARY,
             BuiltInLootTables.UNDERWATER_RUIN_BIG,
-            BuiltInLootTables.PILLAGER_OUTPOST
+            BuiltInLootTables.UNDERWATER_RUIN_SMALL,
+            BuiltInLootTables.WOODLAND_MANSION
     );
 
     @Override
@@ -40,7 +43,7 @@ public class RareSkillBooksLoot implements AddLootTableModifier {
     public ResourceKey<LootTable> lootTable() {
         return ResourceKey.create(
                 Registries.LOOT_TABLE,
-                new ResourceLocation(Umapyoi.MODID, "complex_skills")
+                new ResourceLocation(Umapyoi.MODID, "race/ticket/race_ticket_up_to_gi")
         );
     }
 }

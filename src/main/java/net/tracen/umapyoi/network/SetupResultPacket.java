@@ -8,7 +8,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.tracen.umapyoi.Umapyoi;
-import net.tracen.umapyoi.container.UmaSelectMenu;
+import net.tracen.umapyoi.container.IItemNameMutableMenu;
 
 public record SetupResultPacket(String message) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<SetupResultPacket> TYPE =
@@ -28,7 +28,7 @@ public record SetupResultPacket(String message) implements CustomPacketPayload {
 
     public static void handler(SetupResultPacket packet, ServerPlayNetworking.Context context) {
         var player = context.player();
-        if (player.containerMenu instanceof UmaSelectMenu menu) {
+        if (player.containerMenu instanceof IItemNameMutableMenu menu) {
             String s = packet.message;
             if (s.length() <= 50) {
                 menu.setItemName(ResourceLocation.tryParse(s));

@@ -27,6 +27,7 @@ public class UmapyoiBlockStateProvider {
         horizontalBlock(BlockRegistry.REGISTER_LECTERN.get(), Umapyoi.id("block/register_lectern"));
         horizontalBlock(BlockRegistry.UMA_SELECT_BLOCK.get(), Umapyoi.id("block/uma_select_block"));
         horizontalBlock(BlockRegistry.RACE_REGISTER_BLOCK.get(), Umapyoi.id("block/race_register"));
+        horizontalBlock(BlockRegistry.RACE_SELECT_BLOCK.get(), Umapyoi.id("block/race_select_block"));
 
         registerGate();
 

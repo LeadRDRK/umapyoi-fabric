@@ -2,7 +2,7 @@ package net.tracen.umapyoi.container;
 
 import com.google.common.collect.Lists;
 
-import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -18,26 +18,33 @@ import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
-import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
+import net.tracen.umapyoi.item.ItemRegistry;
+import net.tracen.umapyoi.item.UmaRaceTicketItem;
+import net.tracen.umapyoi.registry.races.Race;
+import net.tracen.umapyoi.registry.races.RaceRegistry;
+import net.tracen.umapyoi.utils.RaceRanking;
 
+import java.util.AbstractMap;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-public class UmaSelectMenu extends AbstractContainerMenu implements IItemNameMutableMenu {
+public class RaceSelectMenu extends AbstractContainerMenu implements IItemNameMutableMenu{
 
     private final ContainerLevelAccess access;
-    private final Level level;
+    public final Level level;
     private ResourceLocation itemName;
     private List<ResourceLocation> recipes = Lists.newArrayList();
 
     private ItemStack inputTicket = ItemStack.EMPTY;
-    private ItemStack inputLapis = ItemStack.EMPTY;
+    private ItemStack inputMaterial = ItemStack.EMPTY;
 
     final Slot inputTicketSlot;
-    final Slot inputLapisSlot;
+    final Slot inputMaterialSlot;
     final Slot resultSlot;
     Runnable slotUpdateListener = () -> {
     };
@@ -48,23 +55,23 @@ public class UmaSelectMenu extends AbstractContainerMenu implements IItemNameMut
          */
         public void setChanged() {
             super.setChanged();
-            UmaSelectMenu.this.slotsChanged(this);
-            UmaSelectMenu.this.slotUpdateListener.run();
+            RaceSelectMenu.this.slotsChanged(this);
+            RaceSelectMenu.this.slotUpdateListener.run();
         }
     };
     /** The inventory that stores the output of the crafting recipe. */
     final ResultContainer resultContainer = new ResultContainer();
 
-    public UmaSelectMenu(int pContainerId, Inventory pPlayerInventory) {
+    public RaceSelectMenu(int pContainerId, Inventory pPlayerInventory) {
         this(pContainerId, pPlayerInventory, ContainerLevelAccess.NULL);
     }
 
-    public UmaSelectMenu(int pContainerId, Inventory pPlayerInventory, ContainerLevelAccess pAccess) {
-        this(ContainerRegistry.UMA_SELECT_MENU.get(), pContainerId, pPlayerInventory, pAccess);
+    public RaceSelectMenu(int pContainerId, Inventory pPlayerInventory, ContainerLevelAccess pAccess) {
+        this(ContainerRegistry.RACE_SELECT_MENU.get(), pContainerId, pPlayerInventory, pAccess);
     }
 
-    public UmaSelectMenu(@Nullable MenuType<?> pType, int pContainerId, Inventory pPlayerInventory,
-                         ContainerLevelAccess pAccess) {
+    public RaceSelectMenu(@Nullable MenuType<?> pType, int pContainerId, Inventory pPlayerInventory,
+                          ContainerLevelAccess pAccess) {
         super(pType, pContainerId);
         this.access = pAccess;
         this.level = pPlayerInventory.player.level();
@@ -72,16 +79,16 @@ public class UmaSelectMenu extends AbstractContainerMenu implements IItemNameMut
         this.inputTicketSlot = this.addSlot(new Slot(this.container, 0, 19, 35) {
             @Override
             public boolean mayPlace(ItemStack pStack) {
-                return (pStack.is(UmapyoiItemTags.UMA_TICKET) || pStack.is(UmapyoiItemTags.CARD_TICKET))
-                        && !pStack.is(UmapyoiItemTags.COMMON_GACHA_ITEM);
+                return pStack.is(ItemRegistry.UMA_RACE_TICKET.get()) &&
+                        UmaRaceTicketItem.getRaceID(pStack).equals(RaceRegistry.MAKE_DEBUT.location());
             }
 
         });
 
-        this.inputLapisSlot = this.addSlot(new Slot(this.container, 1, 19, 65) {
+        this.inputMaterialSlot = this.addSlot(new Slot(this.container, 1, 19, 65) {
             @Override
             public boolean mayPlace(ItemStack pStack) {
-                return pStack.is(ConventionalItemTags.LAPIS_GEMS);
+                return isValidMaterial(pStack);
             }
         });
 
@@ -94,10 +101,10 @@ public class UmaSelectMenu extends AbstractContainerMenu implements IItemNameMut
             public void onTake(Player player, ItemStack stack) {
                 stack.onCraftedBy(player.level(), player, stack.getCount());
 
-                var ticket = UmaSelectMenu.this.inputTicketSlot.remove(1);
-                var lapis = UmaSelectMenu.this.inputLapisSlot.remove(1);
+                var ticket = RaceSelectMenu.this.inputTicketSlot.remove(1);
+                var lapis = RaceSelectMenu.this.inputMaterialSlot.remove(1);
                 if (!ticket.isEmpty() && !lapis.isEmpty()) {
-                    UmaSelectMenu.this.setupResultSlot();
+                    RaceSelectMenu.this.setupResultSlot();
                 }
 
                 super.onTake(player, stack);
@@ -118,7 +125,7 @@ public class UmaSelectMenu extends AbstractContainerMenu implements IItemNameMut
 
     @Override
     public boolean stillValid(Player playerIn) {
-        return stillValid(access, playerIn, BlockRegistry.UMA_SELECT_BLOCK.get());
+        return stillValid(access, playerIn, BlockRegistry.RACE_SELECT_BLOCK.get());
     }
 
     @Override
@@ -136,7 +143,7 @@ public class UmaSelectMenu extends AbstractContainerMenu implements IItemNameMut
                 slot.onQuickCraft(itemstack1, itemstack);
             } else if (pIndex != 0 && pIndex != 1) {
                 if (pIndex >= 3 && pIndex < 39) {
-                    int i = this.shouldQuickMoveToAdditionalSlot(itemstack) ? 1 : 0;
+                    int i = this.isValidMaterial(itemstack) ? 1 : 0;
                     if (!this.moveItemStackTo(itemstack1, i, 2, false)) {
                         return ItemStack.EMPTY;
                     }
@@ -161,8 +168,11 @@ public class UmaSelectMenu extends AbstractContainerMenu implements IItemNameMut
         return itemstack;
     }
 
-    protected boolean shouldQuickMoveToAdditionalSlot(ItemStack pStack) {
-        return pStack.is(ConventionalItemTags.LAPIS_GEMS);
+    protected boolean isValidMaterial(ItemStack pStack) {
+        for (RaceRanking r: RaceRanking.values()) {
+            if (pStack.is(UmapyoiItemTags.getRaceMaterialTag(r))) return true;
+        }
+        return pStack.is(UmapyoiItemTags.RACE_CHAMPIONS_MATERIAL);
     }
 
     public List<ResourceLocation> getRecipes() {
@@ -170,7 +180,7 @@ public class UmaSelectMenu extends AbstractContainerMenu implements IItemNameMut
     }
 
     public boolean hasInputItem() {
-        return this.inputTicketSlot.hasItem() && this.inputLapisSlot.hasItem() && !this.recipes.isEmpty();
+        return this.inputTicketSlot.hasItem() && this.inputMaterialSlot.hasItem() && !this.recipes.isEmpty();
     }
 
     public void registerUpdateListener(Runnable pListener) {
@@ -182,18 +192,18 @@ public class UmaSelectMenu extends AbstractContainerMenu implements IItemNameMut
      */
     public void slotsChanged(Container pInventory) {
         ItemStack ticket = this.inputTicketSlot.getItem();
-        ItemStack lapis = this.inputLapisSlot.getItem();
+        ItemStack material = this.inputMaterialSlot.getItem();
         boolean setupFlag = false;
-        if (!ticket.is(this.inputTicket.getItem())) {
+        if (!ticket.is(this.inputTicket.getItem()) || !Objects.equals(UmaRaceTicketItem.getRace(ticket, level), UmaRaceTicketItem.getRace(this.inputTicket))) {
             this.inputTicket = ticket.copy();
             setupFlag = true;
         }
-        if (!lapis.is(this.inputLapis.getItem())) {
-            this.inputLapis = lapis.copy();
+        if (!material.is(this.inputMaterial.getItem())) {
+            this.inputMaterial = material.copy();
             setupFlag = true;
         }
         if (setupFlag) {
-            this.setupRecipeList(pInventory, this.inputTicket, this.inputLapis);
+            this.setupRecipeList(pInventory, this.inputTicket, this.inputMaterial);
         }
     }
 
@@ -212,23 +222,22 @@ public class UmaSelectMenu extends AbstractContainerMenu implements IItemNameMut
         this.recipes.clear();
         this.resultSlot.set(ItemStack.EMPTY);
         if (!ticket.isEmpty() && !lapis.isEmpty()) {
-            this.recipes = ticket.is(UmapyoiItemTags.CARD_TICKET)
-                    ? UmapyoiAPI.getSupportCardRegistry(level).keySet().stream().sorted(SelectComparator.INSTANCE)
-                    .collect(Collectors.toCollection(Lists::newArrayList))
-                    : UmapyoiAPI.getUmaDataRegistry(level).keySet().stream().sorted(SelectComparator.INSTANCE)
+            this.recipes = UmapyoiAPI.getRaceRegistry(level).entrySet().stream()
+                    .sorted(UmaRaceTicketItem.RaceEntryComparator.INSTANCE)
+                    .map(Map.Entry::getKey)
+                    .map(ResourceKey::location)
                     .collect(Collectors.toCollection(Lists::newArrayList));
         }
         this.broadcastChanges();
     }
 
     private void setupResultSlot() {
-        if (!this.recipes.isEmpty() && this.getItemName()!=null) {
-            ItemStack result = this.inputTicket.copy();
-            result.setCount(1);
-            result.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), this.getItemName());
+        if (!this.recipes.isEmpty() && this.getItemName() != null) {
+            ItemStack result = ItemRegistry.UMA_RACE_TICKET.get().getDefaultInstance();
+            result.getOrCreateTag().putString("race", this.getItemName().toString());
             this.resultSlot.set(result);
         } else {
-            UmaSelectMenu.this.itemName = null;
+            RaceSelectMenu.this.itemName = null;
             this.resultSlot.set(ItemStack.EMPTY);
         }
 
@@ -251,13 +260,16 @@ public class UmaSelectMenu extends AbstractContainerMenu implements IItemNameMut
     }
 
     public static class SelectComparator implements Comparator<ResourceLocation> {
-        public static final SelectComparator INSTANCE = new SelectComparator();
-        private SelectComparator() {}
+        private Level level;
+        public SelectComparator(Level level) { this.level = level; }
         @Override
         public int compare(ResourceLocation left, ResourceLocation right) {
-            String leftName = left.toString();
-            String rightName = right.toString();
-            return leftName.compareToIgnoreCase(rightName);
+            Race leftRace = UmapyoiAPI.getRaceRegistry(level).get(left);
+            Race rightRace = UmapyoiAPI.getRaceRegistry(level).get(right);
+            return UmaRaceTicketItem.RacePairComparator.INSTANCE.compare(
+                    new AbstractMap.SimpleEntry<>(left, leftRace),
+                    new AbstractMap.SimpleEntry<>(right, rightRace)
+            );
         }
     }
 }

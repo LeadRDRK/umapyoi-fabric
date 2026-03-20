@@ -3,13 +3,13 @@
   "category": "misc",
   "key": {
     "A": {
-      "tag": "c:diamonds"
+      "tag": "c:gold_ingots"
     },
     "B": {
       "item": "minecraft:nether_star"
     },
     "J": {
-      "item": "umapyoi:blank_ticket"
+      "item": "umapyoi:race_ticket"
     },
     "L": {
       "item": "minecraft:lectern"
@@ -21,7 +21,7 @@
     "AAA"
   ],
   "result": {
-    "count": 1,
-    "id": "umapyoi:uma_select_block"
-  }
+    "item": "umapyoi:race_select_block"
+  },
+  "show_notification": true
 }

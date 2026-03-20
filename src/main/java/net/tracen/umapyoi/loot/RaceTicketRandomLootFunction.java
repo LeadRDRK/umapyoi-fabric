@@ -1,6 +1,11 @@
 package net.tracen.umapyoi.loot;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -13,10 +18,11 @@ import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.registry.races.Race;
 import net.tracen.umapyoi.utils.RaceRanking;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
 
 public record RaceTicketRandomLootFunction(RaceRanking least, RaceRanking most, boolean mode,
                                            Set<String> predicate) implements LootItemFunction {

@@ -2,6 +2,7 @@ package net.tracen.umapyoi.container;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -233,8 +234,10 @@ public class RaceSelectMenu extends AbstractContainerMenu implements IItemNameMu
 
     private void setupResultSlot() {
         if (!this.recipes.isEmpty() && this.getItemName() != null) {
-            ItemStack result = ItemRegistry.UMA_RACE_TICKET.get().getDefaultInstance();
-            result.getOrCreateTag().putString("race", this.getItemName().toString());
+            var id = this.getItemName();
+            Race race = UmapyoiAPI.getRaceRegistry(this.level)
+                    .get(ResourceKey.create(Race.REGISTRY_KEY, id));
+            var result = UmaRaceTicketItem.init(id, race);
             this.resultSlot.set(result);
         } else {
             RaceSelectMenu.this.itemName = null;

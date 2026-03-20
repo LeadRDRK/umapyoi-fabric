@@ -12,6 +12,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -24,6 +25,7 @@ import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.container.RaceSelectMenu;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
 import net.tracen.umapyoi.item.ItemRegistry;
+import net.tracen.umapyoi.item.UmaRaceTicketItem;
 import net.tracen.umapyoi.network.EmptyResultPacket;
 import net.tracen.umapyoi.network.SetupResultPacket;
 import net.tracen.umapyoi.registry.races.Race;
@@ -273,9 +275,9 @@ public class RaceSelectScreen extends AbstractContainerScreen<RaceSelectMenu> im
     }
 
     private ItemStack getResultItem(ResourceLocation name) {
-        ItemStack result = ItemRegistry.UMA_RACE_TICKET.get().getDefaultInstance();
-        result.getOrCreateTag().putString("race", name.toString());
-        return result;
+        Race race = UmapyoiAPI.getRaceRegistry(this.menu.level)
+                .get(ResourceKey.create(Race.REGISTRY_KEY, name));
+        return UmaRaceTicketItem.init(name, race);
     }
 
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {

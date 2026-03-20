@@ -1,6 +1,7 @@
 package net.tracen.umapyoi.loot;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.Util;
@@ -13,6 +14,7 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.item.ItemRegistry;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.UmaSkillRegistry;
 
 import java.util.*;
@@ -21,7 +23,7 @@ public class UmaSkillLootFunction extends LootItemConditionalFunction {
     private final Optional<Set<ResourceLocation>> skills;
     private int level;
 
-    public static final Codec<UmaSkillLootFunction> CODEC = RecordCodecBuilder.create(instance -> commonFields(instance)
+    public static final MapCodec<UmaSkillLootFunction> CODEC = RecordCodecBuilder.mapCodec(instance -> commonFields(instance)
             .and(instance.group(
                     ResourceLocation.CODEC.listOf().xmap(Set::copyOf, List::copyOf).optionalFieldOf("skills").forGetter(UmaSkillLootFunction::getSkills),
                     Codec.INT.fieldOf("level").forGetter(UmaSkillLootFunction::getLevel)))
@@ -34,7 +36,7 @@ public class UmaSkillLootFunction extends LootItemConditionalFunction {
     }
 
     @Override
-    public LootItemFunctionType getType() {
+    public LootItemFunctionType<? extends LootItemConditionalFunction> getType() {
         return LootFunctionRegistry.UMASKILL_WITH_LEVEL.get();
     }
 
@@ -65,7 +67,7 @@ public class UmaSkillLootFunction extends LootItemConditionalFunction {
             } else {
                 ResourceLocation skill = optional.get();
                 if(stack.is(ItemRegistry.SKILL_BOOK.get())) {
-                    stack.getOrCreateTag().putString("skill", skill.toString());
+                    stack.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), skill);
                 }
             }
             return stack; } catch (Exception e) {

@@ -36,8 +36,7 @@ import java.util.stream.Collectors;
 
 public class RaceSelectScreen extends AbstractContainerScreen<RaceSelectMenu> implements ContainerListener {
 
-    private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation(Umapyoi.MODID,
-            "textures/gui/select_test.png");
+    private static final ResourceLocation BACKGROUND_TEXTURE = Umapyoi.id("textures/gui/select_test.png");
 
     private EditBox searchBox;
 

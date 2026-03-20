@@ -27,7 +27,7 @@ public class UmapyoiSkillLootTableProvider extends SimpleFabricLootTableProvider
     }
 
     @Override
-    public void generate(HolderLookup.Provider registries, BiConsumer<ResourceKey<LootTable>, LootTable.Builder> consumer) {
+    public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> consumer) {
         consumer.accept(SIMPLE_SKILLS, LootTable.lootTable().withPool(LootPool.lootPool()
                         .setRolls(UniformGenerator.between(0.0F, 4.0F))
                         .conditionally(LootItemRandomChanceCondition.randomChance(0.15f).build())

@@ -8,7 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.tracen.umapyoi.Umapyoi;
-import net.tracen.umapyoi.container.UmaSelectMenu;
+import net.tracen.umapyoi.container.IItemNameMutableMenu;
 
 public class SetupResultPacket implements FabricPacket {
     private final String message;
@@ -35,7 +35,7 @@ public class SetupResultPacket implements FabricPacket {
     }
 
     public static void handler(SetupResultPacket packet, ServerPlayer player, PacketSender responseSender) {
-        if (player.containerMenu instanceof UmaSelectMenu menu) {
+        if (player.containerMenu instanceof IItemNameMutableMenu menu) {
             String s = SharedConstants.filterText(packet.message);
             //Umapyoi.getLogger().info("Packet received:{}",s);
             if (s.length() <= 50) {

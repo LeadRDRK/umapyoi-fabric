@@ -58,7 +58,7 @@ public class UmaStatusUtils {
         var evt = new MotivationCallback.Context(motivation, resultMotivation, triggerMood, stack, entity);
         if (MotivationCallback.invoke(evt)) return;
 
-        if (evt.getDoTriggerBonus()) {
+        if (evt.getDoTriggerBonus() && entity != null) {
             int level = Optional.ofNullable(entity.getEffect(MobEffectRegistry.MOOD_BONUS.get()))
                     .map(MobEffectInstance::getAmplifier).orElse(-1) + 1;
             entity.addEffect(new MobEffectInstance(MobEffectRegistry.MOOD_BONUS.get(), 1200, level));

@@ -1,4 +1,4 @@
-package net.tracen.umapyoi.data.loot;
+package net.tracen.umapyoi.loot;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -19,17 +19,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class RaceTicketRandomLootFunction implements LootItemFunction {
-    public final RaceRanking least;
-    public final RaceRanking most;
-    public final boolean mode;
-    public final Set<String> predicate;
-    public RaceTicketRandomLootFunction(RaceRanking least, RaceRanking most, boolean mode, Set<String> predicate) {
-        this.least = least;
-        this.most = most;
-        this.mode = mode;
-        this.predicate = predicate;
-    }
+public record RaceTicketRandomLootFunction(RaceRanking least, RaceRanking most, boolean mode,
+                                           Set<String> predicate) implements LootItemFunction {
 
     public static final Codec<RaceTicketRandomLootFunction> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(RaceRanking.CODEC.optionalFieldOf("least", RaceRanking.DEBUT).forGetter(RaceTicketRandomLootFunction::getLeast),

@@ -17,7 +17,9 @@ import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.UmaSkillRegistry;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 public class UmaSkillLootFunction extends LootItemConditionalFunction {
     private final Optional<Set<ResourceLocation>> skills;

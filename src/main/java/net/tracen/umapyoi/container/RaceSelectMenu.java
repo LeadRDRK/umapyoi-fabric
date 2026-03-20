@@ -2,7 +2,6 @@ package net.tracen.umapyoi.container;
 
 import com.google.common.collect.Lists;
 
-import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;

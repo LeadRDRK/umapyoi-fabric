@@ -24,7 +24,6 @@ import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.container.RaceSelectMenu;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
-import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.item.UmaRaceTicketItem;
 import net.tracen.umapyoi.network.EmptyResultPacket;
 import net.tracen.umapyoi.network.SetupResultPacket;

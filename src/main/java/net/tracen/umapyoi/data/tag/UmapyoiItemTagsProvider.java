@@ -2,10 +2,12 @@ package net.tracen.umapyoi.data.tag;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider.ItemTagProvider;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.tracen.umapyoi.item.ItemRegistry;
+import net.tracen.umapyoi.utils.RaceRanking;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -67,6 +69,23 @@ public class UmapyoiItemTagsProvider extends ItemTagProvider {
 
         getOrCreateTagBuilder(UmapyoiItemTags.SLOW_METABOLISM)
                 .add(ItemRegistry.HACHIMI_BIG.get()).add(ItemRegistry.SWEET_CUPCAKE.get());
+
+        getOrCreateTagBuilder(UmapyoiItemTags.getRaceMaterialTag(RaceRanking.PREOP))
+                .forceAddTag(ConventionalItemTags.COPPER_INGOTS);
+
+        getOrCreateTagBuilder(UmapyoiItemTags.getRaceMaterialTag(RaceRanking.OP))
+                .forceAddTag(ConventionalItemTags.IRON_INGOTS);
+
+        getOrCreateTagBuilder(UmapyoiItemTags.getRaceMaterialTag(RaceRanking.GIII))
+                .forceAddTag(ConventionalItemTags.GOLD_INGOTS);
+
+        getOrCreateTagBuilder(UmapyoiItemTags.getRaceMaterialTag(RaceRanking.GII))
+                .forceAddTag(ConventionalItemTags.EMERALDS);
+
+        getOrCreateTagBuilder(UmapyoiItemTags.getRaceMaterialTag(RaceRanking.GI))
+                .forceAddTag(ConventionalItemTags.DIAMONDS);
+
+        getOrCreateTagBuilder(UmapyoiItemTags.RACE_CHAMPIONS_MATERIAL).add(Items.ENDER_EYE);
     }
 
 }

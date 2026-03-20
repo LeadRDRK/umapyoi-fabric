@@ -35,7 +35,7 @@ import java.util.Random;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class SilverSupportAlbumPedestalBlockEntity extends SyncedInventoryEntity implements Gachable{
+public class SilverSupportAlbumPedestalBlockEntity extends AbstractPedestalBlockEntity implements Gachable{
 
     public int time;
     public float flip;

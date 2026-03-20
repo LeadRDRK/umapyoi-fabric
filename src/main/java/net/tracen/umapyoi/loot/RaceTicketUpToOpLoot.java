@@ -1,4 +1,4 @@
-package net.tracen.umapyoi.data.loot;
+package net.tracen.umapyoi.loot;
 
 import net.minecraft.resources.ResourceLocation;
 import net.tracen.umapyoi.Umapyoi;

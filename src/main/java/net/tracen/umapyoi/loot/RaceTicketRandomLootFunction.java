@@ -1,4 +1,4 @@
-package net.tracen.umapyoi.data.loot;
+package net.tracen.umapyoi.loot;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -19,23 +19,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class RaceTicketRandomLootFunction implements LootItemFunction {
-    public final RaceRanking least;
-    public final RaceRanking most;
-    public final boolean mode;
-    public final Set<String> predicate;
-    public RaceTicketRandomLootFunction(RaceRanking least, RaceRanking most, boolean mode, Set<String> predicate) {
-        this.least = least;
-        this.most = most;
-        this.mode = mode;
-        this.predicate = predicate;
-    }
+public record RaceTicketRandomLootFunction(RaceRanking least, RaceRanking most, boolean mode,
+                                           Set<String> predicate) implements LootItemFunction {
 
     public static final Codec<RaceTicketRandomLootFunction> CODEC = RecordCodecBuilder.create(instance -> instance
-            .group(RaceRanking.CODEC.optionalFieldOf("least", RaceRanking.DEBUT).forGetter(RaceTicketRandomLootFunction::getLeast),
-                    RaceRanking.CODEC.optionalFieldOf("most", RaceRanking.GI).forGetter(RaceTicketRandomLootFunction::getMost),
-                    Codec.BOOL.optionalFieldOf("mode", true).forGetter(RaceTicketRandomLootFunction::getMode),
-                    Codec.STRING.listOf().<Set<String>>xmap(HashSet::new, s -> s.stream().toList()).optionalFieldOf("predicate", Collections.emptySet()).forGetter(RaceTicketRandomLootFunction::getPredicate))
+            .group(RaceRanking.CODEC.optionalFieldOf("least", RaceRanking.DEBUT).forGetter(RaceTicketRandomLootFunction::least),
+                    RaceRanking.CODEC.optionalFieldOf("most", RaceRanking.GI).forGetter(RaceTicketRandomLootFunction::most),
+                    Codec.BOOL.optionalFieldOf("mode", true).forGetter(RaceTicketRandomLootFunction::mode),
+                    Codec.STRING.listOf().<Set<String>>xmap(HashSet::new, s -> s.stream().toList()).optionalFieldOf("predicate", Collections.emptySet()).forGetter(RaceTicketRandomLootFunction::predicate))
             .apply(instance, RaceTicketRandomLootFunction::new));
 
     @Override
@@ -56,21 +47,5 @@ public class RaceTicketRandomLootFunction implements LootItemFunction {
         ResourceLocation id = raceDeterm.id;
         stack.getOrCreateTag().putString("race", id.toString());
         return stack;
-    }
-
-    public RaceRanking getLeast() {
-        return least;
-    }
-
-    public RaceRanking getMost() {
-        return most;
-    }
-
-    public boolean getMode() {
-        return mode;
-    }
-
-    public Set<String> getPredicate() {
-        return predicate;
     }
 }

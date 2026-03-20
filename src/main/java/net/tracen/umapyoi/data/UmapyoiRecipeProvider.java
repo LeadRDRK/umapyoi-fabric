@@ -2,6 +2,7 @@ package net.tracen.umapyoi.data;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
@@ -82,10 +83,20 @@ public class UmapyoiRecipeProvider extends FabricRecipeProvider {
                 .unlockedBy("has_item", has(ItemRegistry.HORSESHOE_RAINBOW.get())).save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, BlockRegistry.UMA_SELECT_BLOCK.get()).pattern(" J ").pattern("BLB").pattern("AAA")
-                .define('A', Items.DIAMOND)
+                .define('A', ConventionalItemTags.DIAMONDS)
                 .define('B', Items.NETHER_STAR).define('L', Items.LECTERN)
-                .define('J', ItemRegistry.JEWEL.get())
+                .define('J', ItemRegistry.BLANK_TICKET.get())
                 .unlockedBy("has_item", has(ItemRegistry.BLANK_TICKET.get())).save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, BlockRegistry.RACE_SELECT_BLOCK.get())
+                .pattern(" J ")
+                .pattern("BLB")
+                .pattern("AAA")
+                .define('A', ConventionalItemTags.GOLD_INGOTS)
+                .define('B', Items.NETHER_STAR).define('L', Items.LECTERN)
+                .define('J', ItemRegistry.UMA_RACE_TICKET.get())
+                .unlockedBy("has_item", has(ItemRegistry.UMA_RACE_TICKET.get())).save(consumer);
+
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, BlockRegistry.THREE_GODDESS.get()).pattern(" J ")
                 .pattern("JAJ").pattern("AAA").define('A', UmapyoiItemTags.STONES)
                 .define('J', ItemRegistry.JEWEL.get())
@@ -146,16 +157,17 @@ public class UmapyoiRecipeProvider extends FabricRecipeProvider {
                 .define('C', Items.CRAFTING_TABLE).unlockedBy("has_item", has(ItemRegistry.JEWEL.get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ItemRegistry.SUMMER_UNIFORM.get()).pattern("IJI").pattern("ILI").pattern("ILI")
-                .define('I', Items.PURPLE_WOOL).define('L', Items.WHITE_WOOL).define('J', ItemRegistry.JEWEL.get())
-                .unlockedBy("has_item", has(ItemRegistry.JEWEL.get())).save(consumer);
-
         ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ItemRegistry.GATE_DOOR.get()).pattern("BB")
                 .define('B', Items.IRON_BARS).unlockedBy("has_item", has(Items.IRON_BARS)).save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ItemRegistry.GATE.get()).pattern("GYG")
                 .pattern("B B").pattern("B B").define('G', Items.GREEN_CONCRETE)
                 .define('Y', Items.YELLOW_CONCRETE).define('B', Items.IRON_BARS).unlockedBy("has_item", has(Items.IRON_BARS))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ItemRegistry.SUMMER_UNIFORM.get()).pattern("IJI")
+                .pattern("ILI").pattern("ILI").define('I', Items.PURPLE_WOOL).define('L', Items.WHITE_WOOL)
+                .define('J', ItemRegistry.JEWEL.get()).unlockedBy("has_item", has(ItemRegistry.JEWEL.get()))
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ItemRegistry.WINTER_UNIFORM.get()).pattern("IJI").pattern("III").pattern("III")
@@ -205,7 +217,7 @@ public class UmapyoiRecipeProvider extends FabricRecipeProvider {
                 .unlockedBy("has_item", has(Items.CARROT)).save(consumer);
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ItemRegistry.UMA_RACE_TICKET.get())
-                .requires(Items.EMERALD).requires(ItemRegistry.BLANK_TICKET.get())
+                .requires(ConventionalItemTags.EMERALDS).requires(ItemRegistry.BLANK_TICKET.get())
                 .unlockedBy("has_item", has(ItemRegistry.BLANK_TICKET.get()))
                 .save(new ShapelessRaceTicketRecipe.ComposeOutput(consumer,
                         RaceRegistry.MAKE_DEBUT.location()), Umapyoi.id("craft_make_debut"));

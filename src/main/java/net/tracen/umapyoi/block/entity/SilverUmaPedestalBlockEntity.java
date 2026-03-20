@@ -33,7 +33,7 @@ import java.util.Collection;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class SilverUmaPedestalBlockEntity extends SyncedInventoryEntity implements Gachable {
+public class SilverUmaPedestalBlockEntity extends AbstractPedestalBlockEntity implements Gachable {
 
     public static final int MAX_PROCESS_TIME = 200;
     private final NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);

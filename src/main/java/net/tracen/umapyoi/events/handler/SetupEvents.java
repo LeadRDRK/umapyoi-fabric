@@ -1,4 +1,4 @@
-package net.tracen.umapyoi.events;
+package net.tracen.umapyoi.events.handler;
 
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
@@ -10,7 +10,7 @@ import net.tracen.umapyoi.registry.races.tags.RaceTag;
 import net.tracen.umapyoi.registry.training.card.SupportCard;
 import net.tracen.umapyoi.registry.umadata.UmaData;
 
-public class DatapackEvents {
+public class SetupEvents {
     public static void registerDatapackRegistries() {
         DynamicRegistries.registerSynced(UmaData.REGISTRY_KEY, UmaData.CODEC);
         DynamicRegistries.registerSynced(SupportCard.REGISTRY_KEY, SupportCard.CODEC);

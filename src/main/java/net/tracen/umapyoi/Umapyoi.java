@@ -12,18 +12,18 @@ import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.block.entity.BlockEntityRegistry;
 import net.tracen.umapyoi.command.CommandRegistry;
 import net.tracen.umapyoi.container.ContainerRegistry;
-import net.tracen.umapyoi.data.loot.AddLootTableModifier;
-import net.tracen.umapyoi.data.loot.LootFunctionRegistry;
 import net.tracen.umapyoi.effect.MobEffectRegistry;
 import net.tracen.umapyoi.effect.MoodBonus;
 import net.tracen.umapyoi.effect.NightOwlEffect;
 import net.tracen.umapyoi.effect.PanickingEffect;
 import net.tracen.umapyoi.events.AnvilUpdateCallback;
-import net.tracen.umapyoi.events.DatapackEvents;
+import net.tracen.umapyoi.events.handler.SetupEvents;
 import net.tracen.umapyoi.events.handler.AnvilEvents;
 import net.tracen.umapyoi.events.handler.CommonEvents;
 import net.tracen.umapyoi.events.handler.PassiveSkillEvents;
 import net.tracen.umapyoi.item.ItemRegistry;
+import net.tracen.umapyoi.loot.AddLootTableModifier;
+import net.tracen.umapyoi.loot.LootFunctionRegistry;
 import net.tracen.umapyoi.network.EmptyResultPacket;
 import net.tracen.umapyoi.network.SelectSkillPacket;
 import net.tracen.umapyoi.network.SetupResultPacket;
@@ -63,6 +63,7 @@ public class Umapyoi implements ModInitializer {
         BlockEntityRegistry.BLOCK_ENTITIES.register();
         ItemRegistry.ITEMS.register();
         ContainerRegistry.CONTAINER_TYPES.register();
+        LootFunctionRegistry.LOOT_FUNCTION_TYPES.register();
         VillageRegistry.PROFESSIONS.register();
         VillageRegistry.registerPoi();
         VillageRegistry.registerHeroOfTheVillage();
@@ -70,7 +71,6 @@ public class Umapyoi implements ModInitializer {
         RecipeSerializerRegistry.RECIPE_SERIALIZER.register();
         TriggerRegistry.registerAll();
         SoundRegistry.SOUNDS.register();
-        LootFunctionRegistry.LOOT_FUNCTIONS.register();
         CommandRegistry.register();
 
         CommonEvents.register();
@@ -89,8 +89,8 @@ public class Umapyoi implements ModInitializer {
         ServerPlayNetworking.registerGlobalReceiver(EmptyResultPacket.TYPE, EmptyResultPacket::handler);
         GrantBookOnFirstJoin.PlayerJoinListener.register();
 
-        DatapackEvents.registerDatapackRegistries();
-        DatapackEvents.registerSerializers();
+        SetupEvents.registerDatapackRegistries();
+        SetupEvents.registerSerializers();
 
         AddLootTableModifier.registerListeners();
     }

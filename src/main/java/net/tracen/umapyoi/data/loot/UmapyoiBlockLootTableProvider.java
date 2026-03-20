@@ -1,4 +1,4 @@
-package net.tracen.umapyoi.data;
+package net.tracen.umapyoi.data.loot;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
@@ -6,8 +6,8 @@ import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.utils.ThreeBlockPart;
 
-public class UmapyoiLootTableProvider extends FabricBlockLootTableProvider {
-    public UmapyoiLootTableProvider(FabricDataOutput dataOutput) {
+public class UmapyoiBlockLootTableProvider extends FabricBlockLootTableProvider {
+    public UmapyoiBlockLootTableProvider(FabricDataOutput dataOutput) {
         super(dataOutput);
     }
 

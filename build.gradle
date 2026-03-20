@@ -156,6 +156,9 @@ publishMods {
         projectId = "1414857"
         minecraftVersions.add(minecraft_version)
 
+        clientRequired = true
+        serverRequired = true
+
         requires("fabric-api")
         requires("trinkets")
         requires("owo-lib")

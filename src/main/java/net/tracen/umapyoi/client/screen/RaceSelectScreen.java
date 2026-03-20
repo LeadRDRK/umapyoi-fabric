@@ -82,7 +82,6 @@ public class RaceSelectScreen extends AbstractContainerScreen<RaceSelectMenu> im
 
     public void containerTick() {
         super.containerTick();
-        this.searchBox.tick();
     }
 
     public void renderFg(GuiGraphics pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
@@ -162,7 +161,6 @@ public class RaceSelectScreen extends AbstractContainerScreen<RaceSelectMenu> im
     }
 
     protected void renderBg(GuiGraphics pPoseStack, float pPartialTick, int pX, int pY) {
-        this.renderBackground(pPoseStack);
         int i = this.leftPos;
         int j = this.topPos;
         pPoseStack.blit(BACKGROUND_TEXTURE, i, j, 0, 0, this.imageWidth, this.imageHeight);

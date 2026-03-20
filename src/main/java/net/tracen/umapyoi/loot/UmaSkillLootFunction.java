@@ -1,9 +1,8 @@
 package net.tracen.umapyoi.loot;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
@@ -17,14 +16,19 @@ import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.registry.UmaSkillRegistry;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class UmaSkillLootFunction extends LootItemConditionalFunction {
     private final Optional<Set<ResourceLocation>> skills;
     private int level;
 
+    public static final Codec<UmaSkillLootFunction> CODEC = RecordCodecBuilder.create(instance -> commonFields(instance)
+            .and(instance.group(
+                    ResourceLocation.CODEC.listOf().xmap(Set::copyOf, List::copyOf).optionalFieldOf("skills").forGetter(UmaSkillLootFunction::getSkills),
+                    Codec.INT.fieldOf("level").forGetter(UmaSkillLootFunction::getLevel)))
+            .apply(instance, UmaSkillLootFunction::new));
+
     public UmaSkillLootFunction(List<LootItemCondition> predicates, Optional<Set<ResourceLocation>> skills, int level) {
-        super(predicates.toArray(new LootItemCondition[0]));
+        super(predicates);
         this.skills = skills;
         this.level = level;
     }
@@ -34,8 +38,16 @@ public class UmaSkillLootFunction extends LootItemConditionalFunction {
         return LootFunctionRegistry.UMASKILL_WITH_LEVEL.get();
     }
 
+    public Optional<Set<ResourceLocation>> getSkills() {
+        return skills;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
     public static <T> Builder<?> setSkillLevel(int level) {
-        return simpleBuilder(p_331753_ -> new UmaSkillLootFunction(Arrays.stream(p_331753_).collect(Collectors.toCollection(ArrayList::new)), Optional.empty(), level));
+        return simpleBuilder(predicates -> new UmaSkillLootFunction(predicates, Optional.empty(), level));
     }
 
     @Override
@@ -61,33 +73,4 @@ public class UmaSkillLootFunction extends LootItemConditionalFunction {
             return null;
         }
     }
-
-    public static class Serializer extends LootItemConditionalFunction.Serializer<UmaSkillLootFunction> {
-        @Override
-        public UmaSkillLootFunction deserialize(JsonObject pObject, JsonDeserializationContext pDeserializationContext, LootItemCondition[] pConditions) {
-            Optional<Set<ResourceLocation>> skillSet = Optional.empty();
-            if (pObject.has("skills")) {
-                JsonArray array = pObject.getAsJsonArray("skills");
-                ArrayList<String> stringOfArray = new ArrayList<>();
-                array.forEach(e -> stringOfArray.add(e.getAsString()));
-                skillSet = Optional.of(stringOfArray.stream().map(ResourceLocation::tryParse)
-                        .filter(UmaSkillRegistry.REGISTRY.get()::containsKey).collect(Collectors.toSet()));
-            }
-            int level = pObject.get("level").getAsInt();
-            return new UmaSkillLootFunction(Arrays.asList(pConditions), skillSet, level);
-        }
-
-        @Override
-        public void serialize(JsonObject pJson, UmaSkillLootFunction pLootItemConditionalFunction, JsonSerializationContext pSerializationContext) {
-            super.serialize(pJson, pLootItemConditionalFunction, pSerializationContext);
-
-            pLootItemConditionalFunction.skills.ifPresent(s -> {
-                JsonArray array = new JsonArray();
-                s.forEach(i -> array.add(i.toString()));
-                pJson.add("skills", array);
-            });
-            pJson.addProperty("level", pLootItemConditionalFunction.level);
-        }
-    }
-
 }

@@ -23,10 +23,10 @@ public record RaceTicketRandomLootFunction(RaceRanking least, RaceRanking most, 
                                            Set<String> predicate) implements LootItemFunction {
 
     public static final Codec<RaceTicketRandomLootFunction> CODEC = RecordCodecBuilder.create(instance -> instance
-            .group(RaceRanking.CODEC.optionalFieldOf("least", RaceRanking.DEBUT).forGetter(RaceTicketRandomLootFunction::getLeast),
-                    RaceRanking.CODEC.optionalFieldOf("most", RaceRanking.GI).forGetter(RaceTicketRandomLootFunction::getMost),
-                    Codec.BOOL.optionalFieldOf("mode", true).forGetter(RaceTicketRandomLootFunction::getMode),
-                    Codec.STRING.listOf().<Set<String>>xmap(HashSet::new, s -> s.stream().toList()).optionalFieldOf("predicate", Collections.emptySet()).forGetter(RaceTicketRandomLootFunction::getPredicate))
+            .group(RaceRanking.CODEC.optionalFieldOf("least", RaceRanking.DEBUT).forGetter(RaceTicketRandomLootFunction::least),
+                    RaceRanking.CODEC.optionalFieldOf("most", RaceRanking.GI).forGetter(RaceTicketRandomLootFunction::most),
+                    Codec.BOOL.optionalFieldOf("mode", true).forGetter(RaceTicketRandomLootFunction::mode),
+                    Codec.STRING.listOf().<Set<String>>xmap(HashSet::new, s -> s.stream().toList()).optionalFieldOf("predicate", Collections.emptySet()).forGetter(RaceTicketRandomLootFunction::predicate))
             .apply(instance, RaceTicketRandomLootFunction::new));
 
     @Override
@@ -47,21 +47,5 @@ public record RaceTicketRandomLootFunction(RaceRanking least, RaceRanking most, 
         ResourceLocation id = raceDeterm.id;
         stack.getOrCreateTag().putString("race", id.toString());
         return stack;
-    }
-
-    public RaceRanking getLeast() {
-        return least;
-    }
-
-    public RaceRanking getMost() {
-        return most;
-    }
-
-    public boolean getMode() {
-        return mode;
-    }
-
-    public Set<String> getPredicate() {
-        return predicate;
     }
 }

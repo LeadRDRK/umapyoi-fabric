@@ -38,15 +38,7 @@ public class PlayerFoodExhaustionMixin {
     }
 
     private double propertyPercentage(ItemStack stack, StatusType type) {
-        int x = 0;
-        switch (type) {
-            case SPEED -> x = UmaSoulUtils.getProperty(stack).speed();
-            case STAMINA -> x = UmaSoulUtils.getProperty(stack).stamina();
-            case STRENGTH -> x = UmaSoulUtils.getProperty(stack).strength();
-            case GUTS -> x = UmaSoulUtils.getProperty(stack).guts();
-            case WISDOM -> x = UmaSoulUtils.getProperty(stack).wisdom();
-        }
-
+        int x = UmaSoulUtils.getProperty(stack).get(type);
         var statLimit = Umapyoi.CONFIG.STAT_LIMIT_VALUE();
         var denominator = 1 + Math.pow(Math.E,
                 (x > statLimit ? (-0.125 * Umapyoi.CONFIG.STAT_LIMIT_REDUCTION_RATE()) : -0.125) *

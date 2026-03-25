@@ -65,7 +65,7 @@ public class UmaCostumeItem extends AbstractSuitItem implements CreativeModeTabF
     }
 
     @Override
-    protected ResourceLocation getModel(ItemStack stack) {
+    public ResourceLocation getModel(ItemStack stack) {
         ResourceLocation loc = stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
 
         CosmeticData data = ClientUtils.getClientCosmeticDataRegistry().get(loc)
@@ -75,7 +75,7 @@ public class UmaCostumeItem extends AbstractSuitItem implements CreativeModeTabF
     }
 
     @Override
-    protected ResourceLocation getTexture(ItemStack stack, boolean tanned) {
+    public ResourceLocation getTexture(ItemStack stack, boolean tanned) {
         ResourceLocation loc = stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
         CosmeticData data = ClientUtils.getClientCosmeticDataRegistry().get(loc)
                 .map(Reference::value).orElse(null);
@@ -83,7 +83,7 @@ public class UmaCostumeItem extends AbstractSuitItem implements CreativeModeTabF
     }
 
     @Override
-    protected ResourceLocation getFlatModel(ItemStack stack) {
+    public ResourceLocation getFlatModel(ItemStack stack) {
         ResourceLocation loc = stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
         CosmeticData data = ClientUtils.getClientCosmeticDataRegistry().get(loc)
                 .map(Reference::value).orElse(null);
@@ -92,7 +92,7 @@ public class UmaCostumeItem extends AbstractSuitItem implements CreativeModeTabF
     }
 
     @Override
-    protected ResourceLocation getFlatTexture(ItemStack stack, boolean tanned) {
+    public ResourceLocation getFlatTexture(ItemStack stack, boolean tanned) {
         ResourceLocation loc = stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get());
         CosmeticData data = ClientUtils.getClientCosmeticDataRegistry().get(loc)
                 .map(Reference::value).orElse(null);

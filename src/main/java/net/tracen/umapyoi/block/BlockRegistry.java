@@ -8,7 +8,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.tracen.umapyoi.Umapyoi;
+import net.tracen.umapyoi.registry.RegistryObject;
 
 import java.util.function.Function;
 
@@ -34,7 +36,7 @@ public class BlockRegistry {
             BlockBehaviour.Properties.ofLegacyCopy(Blocks.POLISHED_ANDESITE).noOcclusion());
 
     public static final Block THREE_GODDESS_UPPER = register("three_goddess_upper",
-            p -> new StatuesUpperBlock(THREE_GODDESS, p),
+            p -> new StatuesUpperBlock(THREE_GODDESS, Shapes.block(), true, p),
             BlockBehaviour.Properties.ofLegacyCopy(Blocks.POLISHED_ANDESITE).noOcclusion());
 
     public static final Block TRAINING_FACILITY = register("training_facility",
@@ -58,12 +60,28 @@ public class BlockRegistry {
             BlockBehaviour.Properties.ofLegacyCopy(Blocks.STONE).noOcclusion());
     
     public static final Block UMA_STATUES_UPPER = register("uma_statues_upper",
-            p -> new StatuesUpperBlock(UMA_STATUES, Block.box(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D), p),
+            p -> new StatuesUpperBlock(UMA_STATUES, Block.box(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D), true, p),
             BlockBehaviour.Properties.ofLegacyCopy(Blocks.STONE).noOcclusion());
 
     public static final Block UMA_SELECT_BLOCK = register("uma_select_block",
             UmaSelectBlock::new,
             BlockBehaviour.Properties.ofLegacyCopy(Blocks.OAK_WOOD));
+
+    public static final RegistryObject<Block> RACE_SELECT_BLOCK = BLOCKS.register("race_select_block",
+            RaceSelectBlock::new);
+
+    public static final RegistryObject<Block> FACTOR_DECOMPOSE_TABLE = BLOCKS.register("factor_decompose_table",
+            FactorDecomposeTable::new);
+
+    public static final RegistryObject<Block> FACTOR_RESEARCH_TABLE = BLOCKS.register("factor_research_table",
+            FactorResearchTableBlock::new);
+
+    public static final RegistryObject<Block> RACE_REGISTER_BLOCK = BLOCKS.register("race_register",
+            RaceRegisterBlock::new);
+
+    public static final RegistryObject<Block> GATE_DOOR = BLOCKS.register("gate_door", GateDoor::new);
+
+    public static final RegistryObject<Block> GATE = BLOCKS.register("gate", Gate::new);
 
     private static ResourceKey<Block> modBlockId(String name) {
         return ResourceKey.create(Registries.BLOCK,

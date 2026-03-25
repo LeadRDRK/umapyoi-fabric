@@ -11,6 +11,8 @@ import net.tracen.umapyoi.registry.factors.FactorData;
 import net.tracen.umapyoi.registry.umadata.Growth;
 import net.tracen.umapyoi.registry.umadata.UmaDataBasicStatus;
 import net.tracen.umapyoi.registry.umadata.UmaDataExtraStatus;
+import net.tracen.umapyoi.registry.umadata.UmaDataRace;
+import net.tracen.umapyoi.registry.umadata.UmaDataRaceStatus;
 import net.tracen.umapyoi.registry.umadata.UmaDataSkills;
 import net.tracen.umapyoi.registry.umadata.UmaDataTraining;
 
@@ -89,6 +91,22 @@ public class DataComponentsTypeRegistry {
                     () -> DataComponentType.<UmaDataTraining>builder()
                             .persistent(UmaDataTraining.CODEC)
                             .networkSynchronized(UmaDataTraining.STREAM)
+                            .build()
+            );
+
+    public static final RegistryObject<DataComponentType<UmaDataRace>> UMADATA_RACE =
+            DATA_COMPONENTS.register("umadata_race",
+                    () -> DataComponentType.<UmaDataRace>builder()
+                            .persistent(UmaDataRace.CODEC)
+                            .networkSynchronized(UmaDataRace.STREAM_CODEC)
+                            .build()
+            );
+
+    public static final RegistryObject<DataComponentType<UmaDataRaceStatus>> UMADATA_RACE_STATUS =
+            DATA_COMPONENTS.register("umadata_race_status",
+                    () -> DataComponentType.<UmaDataRaceStatus>builder()
+                            .persistent(UmaDataRaceStatus.CODEC)
+                            .networkSynchronized(UmaDataRaceStatus.STREAM_CODEC)
                             .build()
             );
 

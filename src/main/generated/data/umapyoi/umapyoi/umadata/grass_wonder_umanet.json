@@ -1,0 +1,23 @@
+{
+  "distance_aptitude": [
+    0,
+    6,
+    5,
+    6
+  ],
+  "identifier": "umapyoi:grass_wonder",
+  "position": "late_surger",
+  "propertyRate": [
+    15,
+    0,
+    10,
+    0,
+    15
+  ],
+  "ranking": "ssr",
+  "surface_aptitude": [
+    6,
+    0,
+    5
+  ]
+}

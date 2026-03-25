@@ -138,11 +138,11 @@ public abstract class AbstractSuitItem extends TrinketItem implements TrinketRen
         }
     }
 
-    protected abstract ResourceLocation getModel(ItemStack stack);
+    public abstract ResourceLocation getModel(ItemStack stack);
 
-    protected abstract ResourceLocation getTexture(ItemStack stack, boolean tanned);
+    public abstract ResourceLocation getTexture(ItemStack stack, boolean tanned);
 
-    protected abstract ResourceLocation getFlatModel(ItemStack stack);
+    public abstract ResourceLocation getFlatModel(ItemStack stack);
 
-    protected abstract ResourceLocation getFlatTexture(ItemStack stack, boolean tanned);
+    public abstract ResourceLocation getFlatTexture(ItemStack stack, boolean tanned);
 }

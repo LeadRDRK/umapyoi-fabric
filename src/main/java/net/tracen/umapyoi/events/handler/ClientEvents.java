@@ -5,7 +5,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,11 +16,8 @@ import net.tracen.umapyoi.client.model.UmaPlayerModel;
 import net.tracen.umapyoi.client.model.bedrock.BedrockPart;
 import net.tracen.umapyoi.client.model.pojo.BedrockModelPOJO;
 import net.tracen.umapyoi.client.renderer.BedrockPartRenderer;
-import net.tracen.umapyoi.data.tag.UmapyoiCostumeDataTags;
 import net.tracen.umapyoi.events.client.RenderArmCallback;
 import net.tracen.umapyoi.events.client.RenderingModelCallback;
-import net.tracen.umapyoi.item.UmaCostumeItem;
-import net.tracen.umapyoi.registry.cosmetics.CosmeticData;
 import net.tracen.umapyoi.utils.ClientUtils;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
@@ -32,22 +28,8 @@ public class ClientEvents {
         var model = event.getModel();
 
         if (UmapyoiAPI.isUmaSuitRendering(entity)) {
-            model.setAllVisible(false);
-            model.setHeadVisible(true);
-            model.setTailVisible(true);
-            if (UmapyoiAPI.isUmaSuitHasHat(event.getRenderState())) {
-                ResourceLocation loc = UmaCostumeItem.getCostumeID(UmapyoiAPI.getUmaSuit(entity));
-                var costumeData = ClientUtils.getClientCosmeticDataRegistry().get(
-                        ResourceKey.create(CosmeticData.REGISTRY_KEY, loc)
-                );
-                if (costumeData.get().is(UmapyoiCostumeDataTags.HAT_HIDEHAIR)) {
-                    model.setLongHairPartsVisible(false);
-                }
-                model.setHatAndEarsVisible(false, true);
-            }
-            else {
-                model.setHatAndEarsVisible(true, true);
-            }
+            var suitItem = UmapyoiAPI.getUmaSuit(entity);
+            ClientUtils.setUmaModelVisibilityForSuit(model, suitItem);
         }
 
         // continue
@@ -55,29 +37,6 @@ public class ClientEvents {
     }
 
     private static final UmaPlayerModel<HumanoidRenderState> baseModel = new UmaPlayerModel<>();
-
-    public static boolean onPlayerArmRendering(RenderArmCallback.Context event) {
-        Player player = event.getPlayer();
-        ItemStack umasoul = UmapyoiAPI.getRenderingUmaSoul(player);
-        ItemStack umasuit = UmapyoiAPI.getUmaSuit(player);
-        if (!umasoul.isEmpty()) {
-            ResourceLocation name = UmaSoulUtils.getName(umasoul);
-            BedrockModelPOJO pojo;
-            RenderType renderType;
-            if (umasuit.isEmpty()) {
-                renderType = RenderType.entityTranslucent(getTexture(name));
-                pojo = ClientUtils.getModelPOJO(name);
-            }
-            else {
-                boolean tanned = ClientUtils.isTannedSkin(umasoul);
-                renderType = RenderType.entityTranslucent(UmaCostumeModelUtils.getCostumeTexture(umasuit, tanned));
-                pojo = ClientUtils.getModelPOJO(UmaCostumeModelUtils.getCostumeModel(umasuit));
-            }
-            renderArmModel(event, name, renderType, pojo);
-            return true;
-        }
-        return false;
-    }
 
     private static void renderArmModel(RenderArmCallback.Context event, ResourceLocation name,
                                        RenderType renderType, BedrockModelPOJO pojo) {
@@ -116,7 +75,26 @@ public class ClientEvents {
         armPart.x -= xOffset;
     }
 
-    private static ResourceLocation getTexture(ResourceLocation name) {
-        return ResourceLocation.fromNamespaceAndPath(name.getNamespace(), "textures/model/" + name.getPath() + ".png");
+    public static boolean onPlayerArmRendering(RenderArmCallback.Context event) {
+        Player player = event.getPlayer();
+        ItemStack umasoul = UmapyoiAPI.getRenderingUmaSoul(player);
+        ItemStack umasuit = UmapyoiAPI.getUmaSuit(player);
+        if (!umasoul.isEmpty()) {
+            ResourceLocation name = UmaSoulUtils.getName(umasoul);
+            BedrockModelPOJO pojo;
+            RenderType renderType;
+            if (umasuit.isEmpty()) {
+                renderType = RenderType.entityTranslucent(ClientUtils.getTexture(name));
+                pojo = ClientUtils.getModelPOJO(name);
+            }
+            else {
+                boolean tanned = ClientUtils.isTannedSkin(umasoul);
+                renderType = RenderType.entityTranslucent(UmaCostumeModelUtils.getCostumeTexture(umasuit, tanned));
+                pojo = ClientUtils.getModelPOJO(UmaCostumeModelUtils.getCostumeModel(umasuit));
+            }
+            renderArmModel(event, name, renderType, pojo);
+            return true;
+        }
+        return false;
     }
 }

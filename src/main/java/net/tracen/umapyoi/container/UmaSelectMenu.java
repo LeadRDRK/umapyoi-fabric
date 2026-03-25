@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-public class UmaSelectMenu extends AbstractContainerMenu {
+public class UmaSelectMenu extends AbstractContainerMenu implements IItemNameMutableMenu {
 
     private final ContainerLevelAccess access;
     private final Level level;

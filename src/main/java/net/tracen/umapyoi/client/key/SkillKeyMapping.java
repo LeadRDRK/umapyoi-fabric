@@ -9,6 +9,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.tracen.umapyoi.Umapyoi;
+import net.tracen.umapyoi.client.screen.setting.OverlayScreen;
 import net.tracen.umapyoi.network.SelectSkillPacket;
 import net.tracen.umapyoi.network.UseSkillPacket;
 
@@ -37,6 +38,12 @@ public class SkillKeyMapping {
             GLFW.GLFW_KEY_DOWN,
             CATEGORY
     );
+    public static final KeyMapping KEY_CONFIGURE_GUI = new KeyMapping(
+            "key.umapyoi.configure",
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_F10,
+            CATEGORY
+    );
 
     public static void onEndClientTick(Minecraft client) {
         while (KEY_USE_SKILL.consumeClick()) {
@@ -47,6 +54,9 @@ public class SkillKeyMapping {
         }
         while (KEY_LATTER_SKILL.consumeClick()) {
             ClientPlayNetworking.send(new SelectSkillPacket(SelectSkillPacket.LATTER_SLOT));
+        }
+        while (KEY_CONFIGURE_GUI.consumeClick()) {
+            Minecraft.getInstance().setScreen(new OverlayScreen());
         }
     }
 }

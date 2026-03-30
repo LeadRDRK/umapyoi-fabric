@@ -78,4 +78,10 @@ public class SilverUmaPedestalBlock extends AbstractPedestalBlock {
         return createTickerHelper(blockEntity, BlockEntityRegistry.SILVER_UMA_PEDESTAL.get(),
                 SilverUmaPedestalBlockEntity::workingTick);
     }
+
+    @Override
+    protected void transformOnBook(Level level, BlockPos pos) {
+        level.destroyBlock(pos, false);
+        level.setBlock(pos, BlockRegistry.SILVER_SUPPORT_ALBUM_PEDESTAL.get().defaultBlockState(), UPDATE_ALL);
+    }
 }

@@ -1,5 +1,5 @@
 ------------------------------------------------------
-Version 1.12.72-1.20.1+fabric.13
+Version 1.12.72-1.20.2+fabric.13
 ------------------------------------------------------
 This release is equivalent to version 1.12.72-1.20.1 of the original mod.
 - Fixed book interaction on pedestals.

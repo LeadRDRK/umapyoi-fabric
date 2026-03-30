@@ -96,4 +96,8 @@ public class SilverSupportAlbumPedestalBlock extends AbstractPedestalBlock {
         return createTickerHelper(blockEntity, BlockEntityRegistry.SILVER_SUPPORT_ALBUM_PEDESTAL.get(),
                 SilverSupportAlbumPedestalBlockEntity::workingTick);
     }
+
+    @Override
+    protected void transformOnBook(Level level, BlockPos pos) {
+    }
 }

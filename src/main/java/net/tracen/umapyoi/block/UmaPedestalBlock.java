@@ -91,4 +91,10 @@ public class UmaPedestalBlock extends AbstractPedestalBlock {
         return createTickerHelper(blockEntity, BlockEntityRegistry.UMA_PEDESTAL.get(),
                 UmaPedestalBlockEntity::workingTick);
     }
+
+    @Override
+    protected void transformOnBook(Level level, BlockPos pos) {
+        level.destroyBlock(pos, false);
+        level.setBlock(pos, BlockRegistry.SUPPORT_ALBUM_PEDESTAL.get().defaultBlockState(), UPDATE_ALL);
+    }
 }

@@ -2,7 +2,7 @@ package net.tracen.umapyoi.data.tag;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider.ItemTagProvider;
-import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
@@ -40,7 +40,7 @@ public class UmapyoiItemTagsProvider extends ItemTagProvider {
                 .addTag(UmapyoiItemTags.SR_CARD_TICKET).addTag(UmapyoiItemTags.SSR_CARD_TICKET);
 
         getOrCreateTagBuilder(UmapyoiItemTags.HORSESHOE).add(ItemRegistry.HORSESHOE_GOLD.get())
-            .add(ItemRegistry.HORSESHOE_SILVER.get()).add(ItemRegistry.HORSESHOE_RAINBOW.get());
+                .add(ItemRegistry.HORSESHOE_SILVER.get()).add(ItemRegistry.HORSESHOE_RAINBOW.get());
 
         getOrCreateTagBuilder(UmapyoiItemTags.getMotivationFoodTag(1))
                 .add(ItemRegistry.HACHIMI_MID.get())
@@ -66,10 +66,10 @@ public class UmapyoiItemTagsProvider extends ItemTagProvider {
                 .forceAddTag(ConventionalItemTags.GOLD_INGOTS);
 
         getOrCreateTagBuilder(UmapyoiItemTags.getRaceMaterialTag(RaceRanking.GII))
-                .forceAddTag(ConventionalItemTags.EMERALDS);
+                .forceAddTag(ConventionalItemTags.EMERALD_GEMS);
 
         getOrCreateTagBuilder(UmapyoiItemTags.getRaceMaterialTag(RaceRanking.GI))
-                .forceAddTag(ConventionalItemTags.DIAMONDS);
+                .forceAddTag(ConventionalItemTags.DIAMOND_GEMS);
 
         getOrCreateTagBuilder(UmapyoiItemTags.RACE_CHAMPIONS_MATERIAL).add(Items.ENDER_EYE);
     }

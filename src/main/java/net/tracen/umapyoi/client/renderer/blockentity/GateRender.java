@@ -19,7 +19,6 @@ import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.block.GateDoor;
 import net.tracen.umapyoi.block.ThreeGoddessBlock;
 import net.tracen.umapyoi.block.entity.GateEntity;
-import net.tracen.umapyoi.client.model.SimpleBedrockModel;
 import net.tracen.umapyoi.client.model.pojo.BedrockModelPOJO;
 import net.tracen.umapyoi.client.renderer.BedrockModelRenderer;
 import net.tracen.umapyoi.client.renderer.blockentity.state.GateRenderState;
@@ -29,10 +28,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class GateRender implements BlockEntityRenderer<GateEntity, GateRenderState> {
     public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/gate_door.png");
-    private final SimpleBedrockModel model;
 
     public GateRender(BlockEntityRendererProvider.Context ctx) {
-        model = new SimpleBedrockModel();
     }
 
     @Override
@@ -50,12 +47,7 @@ public class GateRender implements BlockEntityRenderer<GateEntity, GateRenderSta
         poseStack.mulPose(Axis.YN.rotationDegrees(renderState.direction.toYRot() + 180));
         poseStack.mulPose(Axis.XP.rotationDegrees(180));
         // poseStack.translate(0d, 0d, 7d/16d);
-        BedrockModelPOJO pojo = ClientUtils.getModelPOJO(Umapyoi.id("gate_door"));
-        if (model.needRefresh(pojo)) model.loadModel(pojo);
-        double angle = renderState.angle;
-        model.getChild("door_left").yRot = (float) -angle;
-        model.getChild("door_right").yRot = (float) angle;
-        var modelRenderer = new BedrockModelRenderer(model, renderState.lightCoords,
+        var modelRenderer = new BedrockModelRenderer(renderState.model, renderState.lightCoords,
                 OverlayTexture.NO_OVERLAY, -1);
         var renderType = RenderType.entityCutout(TEXTURE);
         nodeCollector.submitCustomGeometry(poseStack, renderType, modelRenderer);
@@ -84,6 +76,12 @@ public class GateRender implements BlockEntityRenderer<GateEntity, GateRenderSta
         }
         float tuneTick = isOpen ? partialTick : -partialTick;
         float renderProgress = Mth.clamp(((float) blockEntity.open) + tuneTick, 0f, (float) GateEntity.MAX_OPEN) / (float) GateEntity.MAX_OPEN;
-        renderState.angle = Math.toRadians(Mth.rotLerp(renderProgress, 15f, 90f));
+        double angle = Math.toRadians(Mth.rotLerp(renderProgress, 15f, 90f));
+
+        var model = renderState.model;
+        BedrockModelPOJO pojo = ClientUtils.getModelPOJO(Umapyoi.id("gate_door"));
+        if (model.needRefresh(pojo)) model.loadModel(pojo);
+        model.getChild("door_left").yRot = (float) -angle;
+        model.getChild("door_right").yRot = (float) angle;
     }
 }

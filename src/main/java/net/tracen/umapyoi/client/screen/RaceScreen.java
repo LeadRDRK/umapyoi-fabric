@@ -5,6 +5,7 @@ import static net.tracen.umapyoi.item.UmaRaceTicketItem.getRaceNameInStyledCompo
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -87,8 +88,8 @@ public class RaceScreen extends AbstractContainerScreen<RaceContainer> {
     protected void renderLabels(GuiGraphics graphic, int mouseX, int mouseY) {
         graphic.drawString(this.font, this.title,
                 (this.imageWidth / 2) - (this.font.width(this.title.getVisualOrderText()) / 2),
-                this.titleLabelY - 3, 0xFFFFFF);
-        graphic.drawString(this.font, this.playerInventoryTitle, 8, this.imageHeight - 96 + 2, 4210752, false);
+                this.titleLabelY - 3, 0xFFFFFFFF);
+        graphic.drawString(this.font, this.playerInventoryTitle, 8, this.imageHeight - 96 + 2, 0xFF404040, false);
     }
 
     @Override
@@ -97,7 +98,7 @@ public class RaceScreen extends AbstractContainerScreen<RaceContainer> {
             return;
         }
         // Background image (with slot)
-        graphic.blit(BACKGROUND_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth,
+        graphic.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth,
                 this.imageHeight, 420, 256);
         this.renderDetail(graphic);
     }
@@ -119,7 +120,7 @@ public class RaceScreen extends AbstractContainerScreen<RaceContainer> {
         int startPixel = (int) Mth.lerp(mapped, 13d, 143d);
         int uOffset = mapped >= 0.75d ? 182 : 208;
         int vOffset = 81 + 24 * variance;
-        pGuiGraphics.blit(BACKGROUND_TEXTURE, this.leftPos + startPixel, this.topPos + 35, uOffset, vOffset,
+        pGuiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos + startPixel, this.topPos + 35, uOffset, vOffset,
                 17, 19, 420, 256);
     }
 
@@ -134,15 +135,15 @@ public class RaceScreen extends AbstractContainerScreen<RaceContainer> {
         if ((backgroundWidth & 1) == 1) backgroundWidth += 1;
         int repeatZone = backgroundWidth - 46;
         int startPos = this.leftPos + (this.imageWidth / 2) - (backgroundWidth / 2);
-        graphic.blit(BACKGROUND_TEXTURE, startPos, this.topPos + 16, 184, 4, 16, 12, 420, 256);
+        graphic.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, startPos, this.topPos + 16, 184, 4, 16, 12, 420, 256);
         startPos += 16;
         while (repeatZone > 0) {
             int renderChunkWidth = Math.min(repeatZone, 20);
-            graphic.blit(BACKGROUND_TEXTURE, startPos, this.topPos + 16, 200, 4, renderChunkWidth, 12, 420, 256);
+            graphic.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, startPos, this.topPos + 16, 200, 4, renderChunkWidth, 12, 420, 256);
             repeatZone -= renderChunkWidth;
             startPos += renderChunkWidth;
         }
-        graphic.blit(BACKGROUND_TEXTURE, startPos, this.topPos + 16, 220, 4, 30, 12, 420, 256);
+        graphic.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, startPos, this.topPos + 16, 220, 4, 30, 12, 420, 256);
     }
 
     private void renderDetail(GuiGraphics graphic) {
@@ -156,7 +157,7 @@ public class RaceScreen extends AbstractContainerScreen<RaceContainer> {
             return;
         }
         // Goal (Most underlay)
-        graphic.blit(BACKGROUND_TEXTURE, this.leftPos + 143, this.topPos + 31,
+        graphic.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos + 143, this.topPos + 31,
                 232, 82 + this.menu.getGoalType() * 26, 19, 23,
                 420, 256);
 
@@ -185,7 +186,7 @@ public class RaceScreen extends AbstractContainerScreen<RaceContainer> {
         renderMainUma(graphic, progress * factors[0], this.menu.getSoulTactic());
         // Render anything here that is closer to camera (overlay)
         // Starting gates
-        graphic.blit(BACKGROUND_TEXTURE, this.leftPos + 13, this.topPos + 31, 346, 225,
+        graphic.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos + 13, this.topPos + 31, 346, 225,
                 22, 24, 420, 256);
 
         // Race label
@@ -196,14 +197,14 @@ public class RaceScreen extends AbstractContainerScreen<RaceContainer> {
             int fullWidth = this.font.width(component.getVisualOrderText());
             if (fullWidth <= 157) {
                 if (fullWidth <= 61) {
-                    graphic.blit(BACKGROUND_TEXTURE, this.leftPos + 55, this.topPos + 16, 184, 4,
+                    graphic.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos + 55, this.topPos + 16, 184, 4,
                             66, 12, 420, 256);
                 } else {
                     int backgroundWidth = fullWidth + 5;
                     renderLabelImage(graphic, backgroundWidth);
                 }
                 graphic.drawString(this.font, component,
-                        this.leftPos + (this.imageWidth / 2) - fullWidth / 2, this.topPos + 18, 0xFFFFFF);
+                        this.leftPos + (this.imageWidth / 2) - fullWidth / 2, this.topPos + 18, 0xFFFFFFFF);
             } else {
                 int ellipseWidth = this.font.width("...");
                 int maxWidth = 157 - ellipseWidth;
@@ -215,7 +216,7 @@ public class RaceScreen extends AbstractContainerScreen<RaceContainer> {
                 renderLabelImage(graphic, textWidth + 5);
                 graphic.drawString(this.font, combinedSequence,
                         this.leftPos + (this.imageWidth / 2) - textWidth / 2,
-                        this.topPos + 18, 0xffffff);
+                        this.topPos + 18, 0xFFFFFFFF);
             }
         } else {
             raceLabel = null;

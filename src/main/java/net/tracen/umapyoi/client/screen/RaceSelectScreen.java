@@ -11,6 +11,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
@@ -88,9 +89,9 @@ public class RaceSelectScreen extends AbstractContainerScreen<RaceSelectMenu> im
     protected void renderLabels(GuiGraphics pPoseStack, int pMouseX, int pMouseY) {
         pPoseStack.drawString(this.font, this.title,
                 (this.imageWidth / 2) - (this.font.width(this.title.getVisualOrderText()) / 2),
-                this.titleLabelY - 3, 0xFFFFFF);
+                this.titleLabelY - 3, 0xFFFFFFFF);
         pPoseStack.drawString(this.font, this.playerInventoryTitle,
-                this.inventoryLabelX,this.inventoryLabelY + 20, 4210752, false);
+                this.inventoryLabelX,this.inventoryLabelY + 20, 0xFF404040, false);
     }
 
     protected void subInit() {
@@ -160,9 +161,9 @@ public class RaceSelectScreen extends AbstractContainerScreen<RaceSelectMenu> im
     protected void renderBg(GuiGraphics pPoseStack, float pPartialTick, int pX, int pY) {
         int i = this.leftPos;
         int j = this.topPos;
-        pPoseStack.blit(BACKGROUND_TEXTURE, i, j, 0, 0, this.imageWidth, this.imageHeight, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+        pPoseStack.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, i, j, 0, 0, this.imageWidth, this.imageHeight, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
         int k = (int) (41.0F * this.scrollOffs);
-        pPoseStack.blit(BACKGROUND_TEXTURE, i + 116, j + 31 + k, 176 + (this.isScrollBarActive() ? 0 : SCROLLER_WIDTH), 0,
+        pPoseStack.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, i + 116, j + 31 + k, 176 + (this.isScrollBarActive() ? 0 : SCROLLER_WIDTH), 0,
                 SCROLLER_WIDTH, SCROLLER_HEIGHT, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
         int l = this.leftPos + RECIPES_X;
         int i1 = this.topPos + RECIPES_Y;
@@ -206,7 +207,7 @@ public class RaceSelectScreen extends AbstractContainerScreen<RaceSelectMenu> im
                     j1 += 36;
                 }
 
-                pPoseStack.blit(BACKGROUND_TEXTURE, k, i1 - 1, 176, j1, RECIPES_IMAGE_SIZE_WIDTH, RECIPES_IMAGE_SIZE_HEIGHT, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+                pPoseStack.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, k, i1 - 1, 176, j1, RECIPES_IMAGE_SIZE_WIDTH, RECIPES_IMAGE_SIZE_HEIGHT, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
             }
         }
     }

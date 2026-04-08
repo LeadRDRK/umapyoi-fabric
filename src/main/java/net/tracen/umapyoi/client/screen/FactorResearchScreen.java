@@ -32,8 +32,8 @@ public class FactorResearchScreen extends ItemCombinerScreen<FactorResearchMenu>
     protected void renderLabels(GuiGraphics graphic, int mouseX, int mouseY) {
         graphic.drawString(this.font, this.title,
                 (this.imageWidth / 2) - (this.font.width(this.title.getVisualOrderText()) / 2),
-                this.titleLabelY - 3, 0xFFFFFF);
-        graphic.drawString(this.font, this.playerInventoryTitle, 8, this.imageHeight - 96 + 2, 4210752, false);
+                this.titleLabelY - 3, 0xFFFFFFFF);
+        graphic.drawString(this.font, this.playerInventoryTitle, 8, this.imageHeight - 96 + 2, 0xFF404040, false);
     }
 
     @Override
@@ -77,12 +77,12 @@ public class FactorResearchScreen extends ItemCombinerScreen<FactorResearchMenu>
             } else {
                 sequenceDetailDesc = componentDetailDesc.getVisualOrderText();
             }
-            guiGraphics.drawString(this.font, sequenceDesc, leftPos + 50, topPos + 19, 4210752, false);
-            guiGraphics.drawString(this.font, sequenceDetailDesc, leftPos + 50, topPos + 30, 4210752, false);
+            guiGraphics.drawString(this.font, sequenceDesc, leftPos + 50, topPos + 19, 0xFF404040, false);
+            guiGraphics.drawString(this.font, sequenceDetailDesc, leftPos + 50, topPos + 30, 0xFF404040, false);
         } else {
             needTooltip = true;
-            guiGraphics.drawString(this.font, Component.translatable("gui.umapyoi.multiple_factor", String.valueOf(listFactors.size())), leftPos + 50, topPos + 19, 4210752, false);
-            guiGraphics.drawString(this.font, Component.translatable("gui.umapyoi.hover_for_tooltip"), leftPos + 50, topPos + 30, 4210752, false);
+            guiGraphics.drawString(this.font, Component.translatable("gui.umapyoi.multiple_factor", String.valueOf(listFactors.size())), leftPos + 50, topPos + 19, 0xFF404040, false);
+            guiGraphics.drawString(this.font, Component.translatable("gui.umapyoi.hover_for_tooltip"), leftPos + 50, topPos + 30, 0xFF404040, false);
         }
     }
 

@@ -3,6 +3,7 @@ package net.tracen.umapyoi.client.screen;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.ItemCombinerScreen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
@@ -38,13 +39,13 @@ public class FactorResearchScreen extends ItemCombinerScreen<FactorResearchMenu>
     @Override
     protected void renderErrorIcon(GuiGraphics graphic, int x, int y) {
         if ((this.menu.getSlot(0).hasItem() || this.menu.getSlot(1).hasItem()) && !this.menu.getSlot(this.menu.getResultSlot()).hasItem()) {
-            graphic.blit(BACKGROUND_TEXTURE, x + 99, y + 45, this.imageWidth, 0, 28, 21);
+            graphic.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, x + 99, y + 45, this.imageWidth, 0, 28, 21, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
         }
     }
 
     @Override
-    protected void renderFg(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-        super.renderFg(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
+    public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.renderContents(guiGraphics, mouseX, mouseY, partialTick);
         if (!this.menu.getSlot(1).hasItem()) return;
 
         List<UmaFactorStack> listFactors = FactorReport.getFactorStacks(this.menu.getSlot(1).getItem());
@@ -55,8 +56,8 @@ public class FactorResearchScreen extends ItemCombinerScreen<FactorResearchMenu>
             case EXTRASTATUS -> 1;
             default -> 2;
         };
-        pGuiGraphics.blit(BACKGROUND_TEXTURE, this.leftPos + 28, this.topPos + 16, 0, v, 121, 25);
-        pGuiGraphics.blit(BACKGROUND_TEXTURE, this.leftPos + 32, this.topPos + 20, 176, 21, 16, 16);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos + 28, this.topPos + 16, 0, v, 121, 25, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos + 32, this.topPos + 20, 176, 21, 16, 16, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
         if (listFactors.size() == 1) {
             UmaFactor factor = stackFirst.getFactor();
             Component componentDesc = factor.getDescription(stackFirst).copy().withStyle(ChatFormatting.RESET);
@@ -76,12 +77,12 @@ public class FactorResearchScreen extends ItemCombinerScreen<FactorResearchMenu>
             } else {
                 sequenceDetailDesc = componentDetailDesc.getVisualOrderText();
             }
-            pGuiGraphics.drawString(this.font, sequenceDesc, leftPos + 50, topPos + 19, 4210752, false);
-            pGuiGraphics.drawString(this.font, sequenceDetailDesc, leftPos + 50, topPos + 30, 4210752, false);
+            guiGraphics.drawString(this.font, sequenceDesc, leftPos + 50, topPos + 19, 4210752, false);
+            guiGraphics.drawString(this.font, sequenceDetailDesc, leftPos + 50, topPos + 30, 4210752, false);
         } else {
             needTooltip = true;
-            pGuiGraphics.drawString(this.font, Component.translatable("gui.umapyoi.multiple_factor", String.valueOf(listFactors.size())), leftPos + 50, topPos + 19, 4210752, false);
-            pGuiGraphics.drawString(this.font, Component.translatable("gui.umapyoi.hover_for_tooltip"), leftPos + 50, topPos + 30, 4210752, false);
+            guiGraphics.drawString(this.font, Component.translatable("gui.umapyoi.multiple_factor", String.valueOf(listFactors.size())), leftPos + 50, topPos + 19, 4210752, false);
+            guiGraphics.drawString(this.font, Component.translatable("gui.umapyoi.hover_for_tooltip"), leftPos + 50, topPos + 30, 4210752, false);
         }
     }
 
@@ -111,7 +112,7 @@ public class FactorResearchScreen extends ItemCombinerScreen<FactorResearchMenu>
                 }
                 components.add(factor.getDescriptionDetail().copy().withStyle(ChatFormatting.DARK_GRAY));
             });
-            pGuiGraphics.renderComponentTooltip(this.font, components, pX, pY);
+            pGuiGraphics.setComponentTooltipForNextFrame(this.font, components, pX, pY);
         }
     }
 }

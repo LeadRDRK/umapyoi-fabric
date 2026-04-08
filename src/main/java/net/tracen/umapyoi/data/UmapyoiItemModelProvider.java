@@ -1,17 +1,16 @@
 package net.tracen.umapyoi.data;
 
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.model.ModelLocationUtils;
+import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.models.BlockModelGenerators;
-import net.minecraft.data.models.ItemModelGenerators;
-import net.minecraft.data.models.model.ModelLocationUtils;
-import net.minecraft.data.models.model.ModelTemplates;
-import net.minecraft.data.models.model.TextureMapping;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.item.ItemRegistry;
-import net.tracen.umapyoi.registry.RegistryObject;
 import net.tracen.umapyoi.utils.GachaRanking;
 import net.tracen.umapyoi.utils.RaceRanking;
 
@@ -21,7 +20,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 public class UmapyoiItemModelProvider {
-    private static final Set<RegistryObject<Item>> CUSTOM_MODEL_ITEMS = Set.of(
+    private static final Set<Item> CUSTOM_MODEL_ITEMS = Set.of(
             ItemRegistry.BASEBALL_BAT,
             ItemRegistry.HACHIMI_BIG,
             ItemRegistry.HACHIMI_MID,
@@ -29,12 +28,12 @@ public class UmapyoiItemModelProvider {
             ItemRegistry.UMA_SOUL_DISPLAY
     );
 
-    private static final Set<RegistryObject<Item>> BLOCK_ITEMS_WITH_FLAT_MODEL = Set.of(
+    private static final Set<Item> BLOCK_ITEMS_WITH_FLAT_MODEL = Set.of(
             ItemRegistry.THREE_GODDESS,
             ItemRegistry.UMA_STATUE
     );
 
-    private static final Set<RegistryObject<Item>> EXCLUDE_ITEMS = Set.of(
+    private static final Set<Item> EXCLUDE_ITEMS = Set.of(
             ItemRegistry.GATE,
             ItemRegistry.GATE_DOOR
     );
@@ -46,16 +45,15 @@ public class UmapyoiItemModelProvider {
     }
 
     public void registerModels() {
-        for (RegistryObject<Item> entry : ItemRegistry.ITEMS.getEntries()) {
-            if (registerDynamicModels(entry))
+        for (Item item : ItemRegistry.ITEMS) {
+            if (registerDynamicModels(item))
                 continue;
 
-            Item item = entry.get();
-            if (EXCLUDE_ITEMS.contains(entry)
-                    || (item instanceof BlockItem && !BLOCK_ITEMS_WITH_FLAT_MODEL.contains(entry)))
+            if (EXCLUDE_ITEMS.contains(item)
+                    || (item instanceof BlockItem && !BLOCK_ITEMS_WITH_FLAT_MODEL.contains(item)))
                 continue;
 
-            if (CUSTOM_MODEL_ITEMS.contains(entry)) {
+            if (CUSTOM_MODEL_ITEMS.contains(item)) {
                 declareCustomModelItem(item);
             }
             else {
@@ -65,16 +63,16 @@ public class UmapyoiItemModelProvider {
     }
 
     private void declareCustomModelItem(Item item) {
-        // STUB: not needed until 1.21.5+
+        generator.declareCustomModelItem(item);
     }
 
-    private boolean registerDynamicModels(RegistryObject<Item> item) {
+    private boolean registerDynamicModels(Item item) {
         if (item == ItemRegistry.SUPPORT_CARD) {
-            String basePath = item.getId().getPath();
+            String basePath = BuiltInRegistries.ITEM.getKey(item).getPath();
             ModelTemplates.FLAT_ITEM.create(
-                    ModelLocationUtils.getModelLocation(item.get()),
+                    ModelLocationUtils.getModelLocation(item),
                     TextureMapping.layer0(Umapyoi.id("item/" + basePath + "_ssr")),
-                    generator.output
+                    generator.modelOutput
             );
             for (GachaRanking rank: GachaRanking.values()) {
                 String path = basePath + "_" + rank.name().toLowerCase();
@@ -91,18 +89,18 @@ public class UmapyoiItemModelProvider {
                 ModelTemplates.FLAT_ITEM.create(
                         Umapyoi.id(finalPath),
                         TextureMapping.layer0(Umapyoi.id("item/" + path)),
-                        generator.output
+                        generator.modelOutput
                 );
             }
             return true;
         }
 
         if (item == ItemRegistry.UMA_RACE_TICKET) {
-            String basePath = item.getId().getPath();
+            String basePath = BuiltInRegistries.ITEM.getKey(item).getPath();
             ModelTemplates.FLAT_ITEM.create(
-                    ModelLocationUtils.getModelLocation(item.get()),
+                    ModelLocationUtils.getModelLocation(item),
                     TextureMapping.layer0(Umapyoi.id("item/" + basePath + "_common")),
-                    generator.output
+                    generator.modelOutput
             );
 
             Stream.concat(
@@ -123,7 +121,7 @@ public class UmapyoiItemModelProvider {
                 ModelTemplates.FLAT_ITEM.create(
                         Umapyoi.id(finalPath),
                         TextureMapping.layer0(Umapyoi.id("item/" + path)),
-                        generator.output
+                        generator.modelOutput
                 );
             });
             return true;
@@ -144,30 +142,24 @@ public class UmapyoiItemModelProvider {
         }
 
         public void registerModels() {
-            for (RegistryObject<Item> entry : ItemRegistry.ITEMS.getEntries()) {
-                if (EXCLUDE_ITEMS.contains(entry)) continue;
+            for (Item item : ItemRegistry.ITEMS) {
+                if (EXCLUDE_ITEMS.contains(item)) continue;
 
-                Item item = entry.get();
-                if (item instanceof BlockItem blockItem && !BLOCK_ITEMS_WITH_FLAT_MODEL.contains(entry)) {
+                if (item instanceof BlockItem blockItem && !BLOCK_ITEMS_WITH_FLAT_MODEL.contains(item)) {
                     // the pedestal blocks's model locations are distinct from their block id
                     String modelName;
-                    if (item == ItemRegistry.UMA_PEDESTAL.get()) {
+                    if (item == ItemRegistry.UMA_PEDESTAL) {
                         modelName = "pedestal";
                     }
-                    else if (item == ItemRegistry.SILVER_UMA_PEDESTAL.get()) {
+                    else if (item == ItemRegistry.SILVER_UMA_PEDESTAL) {
                         modelName = "silver_pedestal";
                     }
                     else {
                         modelName = BuiltInRegistries.BLOCK.getKey(blockItem.getBlock()).getPath();
                     }
 
-                    generator.delegateItemModel(item, blockModel(modelName));
+                    generator.registerSimpleItemModel(item, blockModel(modelName));
                 }
-            }
-
-            for (RegistryObject<Item> entry : EXCLUDE_ITEMS) {
-                if (entry.get() instanceof BlockItem blockItem)
-                    generator.skipAutoItemBlock(blockItem.getBlock());
             }
         }
 

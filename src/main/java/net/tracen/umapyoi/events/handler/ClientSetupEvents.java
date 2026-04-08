@@ -4,6 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
@@ -12,6 +13,8 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
@@ -26,6 +29,7 @@ import net.tracen.umapyoi.client.model.DynamicItemBakedModel;
 import net.tracen.umapyoi.client.model.SupportCardItemModel;
 import net.tracen.umapyoi.client.model.UmaCostumeItemModel;
 import net.tracen.umapyoi.client.model.UmaRaceTicketItemModel;
+import net.tracen.umapyoi.client.model.UnbakedExtraItemModel;
 import net.tracen.umapyoi.client.renderer.blockentity.GateRender;
 import net.tracen.umapyoi.client.renderer.blockentity.SupportAlbumPedestalBlockRenderer;
 import net.tracen.umapyoi.client.renderer.blockentity.ThreeGoddessBlockRenderer;
@@ -35,10 +39,8 @@ import net.tracen.umapyoi.item.AbstractSuitItem;
 import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.item.UmaSoulItem;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Objects;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 @Environment(EnvType.CLIENT)
@@ -80,24 +82,36 @@ public class ClientSetupEvents {
 
     public static void registerModelLoadingPlugin() {
         ModelLoadingPlugin.register(pluginContext -> {
+            DynamicItemBakedModel.MODELS.clear();
+
             Stream.of("costume", "race_ticket", "support_card").forEachOrdered((type) -> {
                 FileToIdConverter.json("models/item/" + type)
                         .listMatchingResources(Minecraft.getInstance().getResourceManager())
                         .keySet()
                         .stream()
                         .map(ClientSetupEvents::resolveModelLocation)
-                        .forEach(pluginContext::addModels);
+                        .forEach(location -> {
+                            var model = new UnbakedExtraItemModel(location);
+                            var costumeId = ResourceLocation.fromNamespaceAndPath(
+                                    location.getNamespace(),
+                                    location.getPath().substring("item/costume/".length())
+                            );
+                            var key = ExtraModelKey.<ItemModel>create(location::toString);
+
+                            pluginContext.addModel(key, model);
+                            DynamicItemBakedModel.MODELS.put(costumeId, key);
+                        });
             });
 
-            var afterBakeEvent = pluginContext.modifyModelAfterBake();
+            var afterBakeEvent = pluginContext.modifyItemModelAfterBake();
 
-            afterBakeEvent.register(new BakedModelHandler(ItemRegistry.UMA_COSTUME.getId(),
+            afterBakeEvent.register(new BakedModelHandler(BuiltInRegistries.ITEM.getKey(ItemRegistry.UMA_COSTUME),
                     UmaCostumeItemModel::new));
 
-            afterBakeEvent.register(new BakedModelHandler(ItemRegistry.UMA_RACE_TICKET.getId(),
+            afterBakeEvent.register(new BakedModelHandler(BuiltInRegistries.ITEM.getKey(ItemRegistry.UMA_RACE_TICKET),
                     UmaRaceTicketItemModel::new));
 
-            afterBakeEvent.register(new BakedModelHandler(ItemRegistry.SUPPORT_CARD.getId(),
+            afterBakeEvent.register(new BakedModelHandler(BuiltInRegistries.ITEM.getKey(ItemRegistry.SUPPORT_CARD),
                     SupportCardItemModel::new));
         });
     }
@@ -112,17 +126,16 @@ public class ClientSetupEvents {
     }
 
     private record BakedModelHandler(
-            ResourceLocation namespace,
-            BiFunction<BakedModel, ModelBakery, DynamicItemBakedModel> constructor
-    ) implements ModelModifier.AfterBake {
+            ResourceLocation id,
+            Function<ItemModel, DynamicItemBakedModel> constructor
+    ) implements ModelModifier.AfterBakeItem {
         @Override
-        public @Nullable BakedModel modifyModelAfterBake(@Nullable BakedModel bakedModel, Context context) {
-            ModelResourceLocation origin = new ModelResourceLocation(namespace, "inventory");
-            if (Objects.equals(context.topLevelId(), origin) || Objects.equals(context.resourceId(), origin.id())) {
-                return constructor.apply(bakedModel, context.loader());
+        public ItemModel modifyModelAfterBake(ItemModel model, Context context) {
+            if (Objects.equals(context.itemId(), this.id)) {
+                return constructor.apply(model);
             }
 
-            return bakedModel;
+            return model;
         }
     }
 

@@ -59,6 +59,7 @@ import net.tracen.umapyoi.utils.UmaStatusUtils;
 import net.tracen.umapyoi.utils.UmaStatusUtils.StatusType;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -165,11 +166,11 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
                             UmaStatusUtils.getStatusLevel(property.wisdom()),
                             UmaStatusUtils.getStatusLevel(maxProperty.wisdom()))
                     .withStyle(ChatFormatting.DARK_GREEN));
-            tooltip.add(Component.literal(""));
+            tooltipAdder.accept(Component.literal(""));
 
-            tooltip.add(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.details").withStyle(ChatFormatting.AQUA));
+            tooltipAdder.accept(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.details").withStyle(ChatFormatting.AQUA));
             List<Aptitude> surfaceAptitudes = UmaSoulUtils.getSurfaceAptitude(stack);
-            tooltip.add(
+            tooltipAdder.accept(
                     Component.translatable("tooltip.umapyoi.uma_soul.aptitude.turf", surfaceAptitudes.get(0).styledComponent()).withStyle(ChatFormatting.GREEN)
                             .append(" / ").withStyle(ChatFormatting.RESET)
                             .append(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.dirt", surfaceAptitudes.get(1).styledComponent()).withStyle(ChatFormatting.GOLD))
@@ -177,7 +178,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
                             .append(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.synthetic", surfaceAptitudes.get(2).styledComponent()).withStyle(ChatFormatting.GOLD))
             );
             List<Aptitude> distanceAptitudes = UmaSoulUtils.getDistanceAptitude(stack);
-            tooltip.add(
+            tooltipAdder.accept(
                     Component.translatable("tooltip.umapyoi.uma_soul.aptitude.short", distanceAptitudes.get(0).styledComponent())
                             .append(" / ")
                             .append(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.miles", distanceAptitudes.get(1).styledComponent())
@@ -186,7 +187,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
                                     .append(" / ")
                                     .append(Component.translatable("tooltip.umapyoi.uma_soul.aptitude.long", distanceAptitudes.get(3).styledComponent())))
             );
-            tooltip.add(
+            tooltipAdder.accept(
                     Component.translatable("tooltip.umapyoi.uma_soul.aptitude.strategy", Component.translatable("tooltip.umapyoi.uma_soul.aptitude.strategy." + UmaSoulUtils.getPosition(stack).name().toLowerCase()))
             );
         } else {

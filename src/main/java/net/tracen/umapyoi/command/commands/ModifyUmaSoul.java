@@ -182,7 +182,7 @@ public class ModifyUmaSoul {
 
     public static ItemStack getItemStackByMode(String mode, ServerPlayer player, Consumer<Component> sendFailure, Consumer<String> modeCallback) {
         ItemStack handStack = player.getMainHandItem();
-        if (handStack.isEmpty() || !handStack.is(ItemRegistry.UMA_SOUL.get())) {
+        if (handStack.isEmpty() || !handStack.is(ItemRegistry.UMA_SOUL)) {
             handStack = player.getOffhandItem();
         }
         if (mode.equals("hand")) {
@@ -190,7 +190,7 @@ public class ModifyUmaSoul {
                 sendFailure.accept(Component.translatable("umapyoi.command.modify.emptyhand"));
                 return null;
             }
-            if (!handStack.is(ItemRegistry.UMA_SOUL.get())) {
+            if (!handStack.is(ItemRegistry.UMA_SOUL)) {
                 sendFailure.accept(Component.translatable("umapyoi.command.modify.notumasoul"));
                 return null;
             }
@@ -210,7 +210,7 @@ public class ModifyUmaSoul {
             sendFailure.accept(Component.translatable("umapyoi.command.modify.emptytarget"));
             return null;
         }
-        if (handStack.is(ItemRegistry.UMA_SOUL.get())) {
+        if (handStack.is(ItemRegistry.UMA_SOUL)) {
             modeCallback.accept("hand");
             return handStack;
         } else {

@@ -1,36 +1,30 @@
 package net.tracen.umapyoi.client.model;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 
+import org.jetbrains.annotations.Nullable;
+
 public class SupportCardItemModel extends DynamicItemBakedModel {
-    public SupportCardItemModel(BakedModel original, ModelBakery loader) {
-        super(original, loader);
+    public SupportCardItemModel(ItemModel original) {
+        super(original);
     }
 
     @Override
-    public BakedModel resolveModel(BakedModel original, ItemStack stack, ClientLevel world, LivingEntity entity, int seed) {
+    public ItemModel resolveModel(ItemModel original, ItemStack stack, @Nullable ClientLevel level,
+                                  @Nullable ItemOwner owner, int seed) {
         if (!stack.isEmpty()) {
-            if (stack.getItem() == ItemRegistry.SUPPORT_CARD.get()) {
+            if (stack.getItem() == ItemRegistry.SUPPORT_CARD) {
                 var ranking = stack.get(DataComponentsTypeRegistry.GACHA_RANKING.get());
                 if (ranking == null) return this.getOriginalModel();
-                ModelResourceLocation modelPath = new ModelResourceLocation(
-                        ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "support_card/support_card_" +
-                                ranking.ranking().name().toLowerCase()),
-                        "inventory"
-                );
-                BakedModel model = Minecraft.getInstance().getModelManager().getModel(modelPath);
-                if (model == Minecraft.getInstance().getModelManager().getMissingModel()) return this.getOriginalModel();
-                return model;
+                var modelPath = Umapyoi.id("support_card/support_card_"
+                        + ranking.ranking().name().toLowerCase());
+                return getModel(modelPath);
             }
         }
         return this.getOriginalModel();

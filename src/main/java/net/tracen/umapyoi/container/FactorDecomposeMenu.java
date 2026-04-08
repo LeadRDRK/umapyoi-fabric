@@ -68,7 +68,7 @@ public class FactorDecomposeMenu extends AbstractContainerMenu {
         this.addSlot(new Slot(this.inputSlots, 0, 44, 94) {
             @Override
             public boolean mayPlace(ItemStack pStack) {
-                return super.mayPlace(pStack) && pStack.is(UMA_FACTOR_ITEM.get());
+                return super.mayPlace(pStack) && pStack.is(UMA_FACTOR_ITEM);
             }
         });
         outputSlots = IntStream.range(0, 9).mapToObj(i -> new Slot(this.resultSlots, i, 98 + (i % 3) * 18, 76 + (i / 3) * 18) {
@@ -154,7 +154,7 @@ public class FactorDecomposeMenu extends AbstractContainerMenu {
     @Override
     public boolean stillValid(@Nonnull Player pPlayer) {
         return this.access.evaluate((level, pos) ->
-                        level.getBlockState(pos).is(FACTOR_DECOMPOSE_TABLE.get()) &&
+                        level.getBlockState(pos).is(FACTOR_DECOMPOSE_TABLE) &&
                                 pPlayer.distanceToSqr(
                                         (double) pos.getX() + 0.5D,
                                         (double) pos.getY() + 0.5D,
@@ -170,7 +170,7 @@ public class FactorDecomposeMenu extends AbstractContainerMenu {
                 return false;
             }
         }
-        return this.inputSlots.getItem(0).is(UMA_FACTOR_ITEM.get());
+        return this.inputSlots.getItem(0).is(UMA_FACTOR_ITEM);
     }
 
     @Override
@@ -182,7 +182,7 @@ public class FactorDecomposeMenu extends AbstractContainerMenu {
     }
 
     public static boolean AllowContinueDefaultLogic(ItemStack factorStackCandidate) {
-        if (!factorStackCandidate.is(UMA_FACTOR_ITEM.get())) return false;
+        if (!factorStackCandidate.is(UMA_FACTOR_ITEM)) return false;
         return Optional.ofNullable(factorStackCandidate.get(DataComponentsTypeRegistry.FACTOR_DATA.get()))
                 .map(factors -> factors.stream().anyMatch(data -> data.level() > 0))
                 .orElse(false);
@@ -198,7 +198,7 @@ public class FactorDecomposeMenu extends AbstractContainerMenu {
             hasResult.set(1);
             int i = 0;
             List<ItemStack> returnStacks = evt.getListOfReturn().stream().map(s -> {
-                ItemStack returnStack = new ItemStack(FACTOR_SHARD.get(), 1);
+                ItemStack returnStack = new ItemStack(FACTOR_SHARD, 1);
                 returnStack.set(DataComponentsTypeRegistry.FACTOR_DATA.get(),
                         UmaFactorUtils.serializeData(List.of(s)));
                 return returnStack;
@@ -248,9 +248,9 @@ public class FactorDecomposeMenu extends AbstractContainerMenu {
     protected void onTake(Player player, ItemStack resultStack) {
         if (!isTaking()) {
             ItemStack factorItem = this.inputSlots.getItem(0);
-            if (factorItem.is(UMA_FACTOR_ITEM.get())) {
+            if (factorItem.is(UMA_FACTOR_ITEM)) {
                 isTaking.set(1);
-                resultStack.onCraftedBy(player.level(), player, resultStack.getCount());
+                resultStack.onCraftedBy(player, resultStack.getCount());
                 this.resultSlots.awardUsedRecipes(player, List.of(factorItem));
                 factorItem.shrink(1);
                 this.inputSlots.setItem(0, factorItem);

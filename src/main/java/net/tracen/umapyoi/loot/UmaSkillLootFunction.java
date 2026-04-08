@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.Util;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
@@ -61,14 +62,18 @@ public class UmaSkillLootFunction extends LootItemConditionalFunction {
             List<ResourceLocation> list = this.skills
                     .orElseGet(() -> UmaSkillRegistry.REGISTRY.get().keySet())
                     .stream()
-                    .filter(e -> UmaSkillRegistry.REGISTRY.get().get(e).getSkillLevel() == level)
+                    .filter(e -> UmaSkillRegistry.REGISTRY.get()
+                            .get(e)
+                            .map(Holder::value)
+                            .map(skill -> skill.getSkillLevel() == level)
+                            .orElse(false))
                     .toList();
             Optional<ResourceLocation> optional = Util.getRandomSafe(list, random);
             if (optional.isEmpty()) {
                 Umapyoi.getLogger().warn("Couldn't find a compatible skill for {}", stack);
             } else {
                 ResourceLocation skill = optional.get();
-                if(stack.is(ItemRegistry.SKILL_BOOK.get())) {
+                if(stack.is(ItemRegistry.SKILL_BOOK)) {
                     stack.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), skill);
                 }
             }

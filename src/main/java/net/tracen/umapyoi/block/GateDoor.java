@@ -12,7 +12,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -22,9 +21,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -35,7 +35,7 @@ import net.tracen.umapyoi.registry.SoundRegistry;
 import javax.annotation.Nullable;
 
 public class GateDoor extends BaseEntityBlock {
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty OPEN = BlockStateProperties.OPEN;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
@@ -81,16 +81,15 @@ public class GateDoor extends BaseEntityBlock {
             Block.box(0, 0, 0, 8.5, 24, 1)
     );
 
-    public static final MapCodec<GateDoor> CODEC = simpleCodec(
-            p -> new GateDoor());
+    public static final MapCodec<GateDoor> CODEC = simpleCodec(GateDoor::new);
 
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
     }
 
-    public GateDoor() {
-        super(Properties.ofLegacyCopy(Blocks.IRON_BARS).noOcclusion());
+    public GateDoor(Properties p) {
+        super(p);
     }
 
     @Override
@@ -137,15 +136,15 @@ public class GateDoor extends BaseEntityBlock {
     }
 
     @Override
-    public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock, BlockPos pFromPos, boolean pIsMoving) {
-        boolean flag = pLevel.hasNeighborSignal(pPos);
-        if (!this.defaultBlockState().is(pBlock) && flag != pState.getValue(POWERED)) {
-            if (flag != pState.getValue(OPEN)) {
-                this.playSound(null, pLevel, pPos, flag);
-                pLevel.gameEvent(null, flag ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, pPos);
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, @Nullable Orientation orientation, boolean movedByPiston) {
+        boolean flag = level.hasNeighborSignal(pos);
+        if (!this.defaultBlockState().is(neighborBlock) && flag != state.getValue(POWERED)) {
+            if (flag != state.getValue(OPEN)) {
+                this.playSound(null, level, pos, flag);
+                level.gameEvent(null, flag ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, pos);
             }
 
-            pLevel.setBlock(pPos, pState.setValue(POWERED, Boolean.valueOf(flag)).setValue(OPEN, Boolean.valueOf(flag)), 2);
+            level.setBlock(pos, state.setValue(POWERED, Boolean.valueOf(flag)).setValue(OPEN, Boolean.valueOf(flag)), 2);
         }
     }
 
@@ -180,7 +179,7 @@ public class GateDoor extends BaseEntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        if (pLevel.isClientSide)
+        if (pLevel.isClientSide())
             return createTickerHelper(pBlockEntityType, BlockEntityRegistry.GATE.get(), GateEntity::animationTick);
         return null;
     }

@@ -51,7 +51,7 @@ public class RaceContainer extends AbstractContainerMenu {
 
         @Override
         public boolean mayPlace(@Nonnull ItemStack stack) {
-            return stack.is(ItemRegistry.UMA_SOUL.get());
+            return stack.is(ItemRegistry.UMA_SOUL);
         }
 
         @Override
@@ -71,7 +71,7 @@ public class RaceContainer extends AbstractContainerMenu {
         this.addSlot(new Slot(te, 1, 44, 83){
             @Override
             public boolean mayPlace(@NotNull ItemStack stack) {
-                return stack.is(ItemRegistry.UMA_RACE_TICKET.get());
+                return stack.is(ItemRegistry.UMA_RACE_TICKET);
             }
         });
 
@@ -137,7 +137,7 @@ public class RaceContainer extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player playerIn) {
-        return stillValid(canInteractWithCallable, playerIn, BlockRegistry.RACE_REGISTER_BLOCK.get());
+        return stillValid(canInteractWithCallable, playerIn, BlockRegistry.RACE_REGISTER_BLOCK);
     }
 
     public int getProgressInTick() {

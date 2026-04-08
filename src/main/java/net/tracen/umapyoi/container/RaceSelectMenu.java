@@ -2,6 +2,7 @@ package net.tracen.umapyoi.container;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -79,7 +80,7 @@ public class RaceSelectMenu extends AbstractContainerMenu implements IItemNameMu
         this.inputTicketSlot = this.addSlot(new Slot(this.container, 0, 19, 35) {
             @Override
             public boolean mayPlace(ItemStack pStack) {
-                return pStack.is(ItemRegistry.UMA_RACE_TICKET.get()) &&
+                return pStack.is(ItemRegistry.UMA_RACE_TICKET) &&
                         UmaRaceTicketItem.getRaceID(pStack).equals(RaceRegistry.MAKE_DEBUT.location());
             }
 
@@ -99,7 +100,7 @@ public class RaceSelectMenu extends AbstractContainerMenu implements IItemNameMu
             }
 
             public void onTake(Player player, ItemStack stack) {
-                stack.onCraftedBy(player.level(), player, stack.getCount());
+                stack.onCraftedBy(player, stack.getCount());
 
                 var ticket = RaceSelectMenu.this.inputTicketSlot.remove(1);
                 var lapis = RaceSelectMenu.this.inputMaterialSlot.remove(1);
@@ -125,7 +126,7 @@ public class RaceSelectMenu extends AbstractContainerMenu implements IItemNameMu
 
     @Override
     public boolean stillValid(Player playerIn) {
-        return stillValid(access, playerIn, BlockRegistry.RACE_SELECT_BLOCK.get());
+        return stillValid(access, playerIn, BlockRegistry.RACE_SELECT_BLOCK);
     }
 
     @Override
@@ -235,7 +236,9 @@ public class RaceSelectMenu extends AbstractContainerMenu implements IItemNameMu
         if (!this.recipes.isEmpty() && this.getItemName() != null) {
             var id = this.getItemName();
             Race race = UmapyoiAPI.getRaceRegistry(this.level)
-                    .get(ResourceKey.create(Race.REGISTRY_KEY, id));
+                    .get(ResourceKey.create(Race.REGISTRY_KEY, id))
+                    .map(Holder::value)
+                    .orElse(null);
             var result = UmaRaceTicketItem.init(id, race);
             this.resultSlot.set(result);
         } else {
@@ -266,8 +269,12 @@ public class RaceSelectMenu extends AbstractContainerMenu implements IItemNameMu
         public SelectComparator(Level level) { this.level = level; }
         @Override
         public int compare(ResourceLocation left, ResourceLocation right) {
-            Race leftRace = UmapyoiAPI.getRaceRegistry(level).get(left);
-            Race rightRace = UmapyoiAPI.getRaceRegistry(level).get(right);
+            Race leftRace = UmapyoiAPI.getRaceRegistry(level).get(left)
+                    .map(Holder::value)
+                    .orElse(null);
+            Race rightRace = UmapyoiAPI.getRaceRegistry(level).get(right)
+                    .map(Holder::value)
+                    .orElse(null);
             return UmaRaceTicketItem.RacePairComparator.INSTANCE.compare(
                     new AbstractMap.SimpleEntry<>(left, leftRace),
                     new AbstractMap.SimpleEntry<>(right, rightRace)

@@ -31,16 +31,16 @@ public class UmapyoiSkillLootTableProvider extends SimpleFabricLootTableProvider
         consumer.accept(SIMPLE_SKILLS, LootTable.lootTable().withPool(LootPool.lootPool()
                         .setRolls(UniformGenerator.between(0.0F, 4.0F))
                         .conditionally(LootItemRandomChanceCondition.randomChance(0.15f).build())
-                        .add(LootItem.lootTableItem(ItemRegistry.SKILL_BOOK.get()).setWeight(10).apply(UmaSkillLootFunction.setSkillLevel(1)))
-                        .add(LootItem.lootTableItem(ItemRegistry.SKILL_BOOK.get()).setWeight(10).apply(UmaSkillLootFunction.setSkillLevel(1)))
+                        .add(LootItem.lootTableItem(ItemRegistry.SKILL_BOOK).setWeight(10).apply(UmaSkillLootFunction.setSkillLevel(1)))
+                        .add(LootItem.lootTableItem(ItemRegistry.SKILL_BOOK).setWeight(10).apply(UmaSkillLootFunction.setSkillLevel(1)))
                 )
         );
 
         consumer.accept(COMPLEX_SKILLS, LootTable.lootTable().withPool(LootPool.lootPool()
                         .setRolls(UniformGenerator.between(0.0F, 2.0F))
                         .conditionally(LootItemRandomChanceCondition.randomChance(0.5f).build())
-                        .add(LootItem.lootTableItem(ItemRegistry.SKILL_BOOK.get()).setWeight(10).apply(UmaSkillLootFunction.setSkillLevel(2)))
-                        .add(LootItem.lootTableItem(ItemRegistry.SKILL_BOOK.get()).setWeight(10).apply(UmaSkillLootFunction.setSkillLevel(2)))
+                        .add(LootItem.lootTableItem(ItemRegistry.SKILL_BOOK).setWeight(10).apply(UmaSkillLootFunction.setSkillLevel(2)))
+                        .add(LootItem.lootTableItem(ItemRegistry.SKILL_BOOK).setWeight(10).apply(UmaSkillLootFunction.setSkillLevel(2)))
                 )
         );
     }

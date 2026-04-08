@@ -9,12 +9,14 @@ import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.client.model.SimpleBedrockModel;
 import net.tracen.umapyoi.client.model.bedrock.BedrockPart;
+import net.tracen.umapyoi.client.screen.pip.GuiBedrockModelRenderer;
 import net.tracen.umapyoi.container.FactorDecomposeMenu;
 import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.umadata.UmaData;
 import net.tracen.umapyoi.utils.ClientUtils;
 
 import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,13 +54,13 @@ public class FactorDecomposeScreen extends AbstractContainerScreen<FactorDecompo
         if (this.minecraft == null) {
             return;
         }
-        graphic.blit(BACKGROUND_TEXTURE, this.leftPos + 20, this.topPos + 17, 176, 55, 64, 64);
+        graphic.blit(BACKGROUND_TEXTURE, this.leftPos + 20, this.topPos + 17, 176, 55, 64, 64, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
         this.renderUma(graphic);
-        graphic.blit(BACKGROUND_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        graphic.blit(BACKGROUND_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
 //        graphic.blit(BACKGROUND_TEXTURE, this.leftPos + 15, this.topPos + 23, 88, 93, 25, 28, 128, 128);
 
         if (this.menu.getSlot(0).hasItem() && (!this.menu.getSlot(1).hasItem() || this.menu.isTaking()))
-            graphic.blit(BACKGROUND_TEXTURE, this.leftPos + 69, this.topPos + 94, 176, 0, 22, 15);
+            graphic.blit(BACKGROUND_TEXTURE, this.leftPos + 69, this.topPos + 94, 176, 0, 22, 15, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
     }
 
     protected void renderUma(GuiGraphics graphic) {
@@ -74,6 +76,13 @@ public class FactorDecomposeScreen extends AbstractContainerScreen<FactorDecompo
             }
         };
         Optional.ofNullable(model.getModelMap().get("long_hair")).ifPresent(i -> i.xRot = (float) (Math.PI / 6f));
-        ClientUtils.renderModelInInventory(graphic, this.leftPos + 52, this.topPos + 60, 50, new Quaternionf().rotateXYZ((float) (Math.PI / 6f), (float) (-Math.PI / 4f), 0), model, name);
+        int x = this.leftPos + 52;
+        int y = this.topPos + 60;
+        Vector3f translation = new Vector3f(-0.2f, -1.64f, 0.0f);
+        Quaternionf rotation = new Quaternionf().rotateXYZ((float) (Math.PI / 6f), (float) (-Math.PI / 4f), 0);
+        graphic.guiRenderState.submitPicturesInPictureState(new GuiBedrockModelRenderer.RenderState(
+                model, name, translation, rotation, x, y,
+                x + 40, y + 62, 25f, graphic.scissorStack.peek()
+        ));
     }
 }

@@ -13,11 +13,10 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -26,11 +25,11 @@ import net.tracen.umapyoi.container.FactorDecomposeMenu;
 import javax.annotation.Nullable;
 
 public class FactorDecomposeTable extends Block {
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     private static final Component CONTAINER_TITLE = Component.translatable("container.umapyoi.factor_decompose");
 
-    public FactorDecomposeTable() {
-        super(Properties.ofLegacyCopy(Blocks.ANDESITE).noOcclusion());
+    public FactorDecomposeTable(Properties p) {
+        super(p);
     }
 
     @Override

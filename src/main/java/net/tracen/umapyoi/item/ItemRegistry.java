@@ -14,7 +14,6 @@ import net.minecraft.world.level.block.Block;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.item.factor.FactorReport;
-import net.tracen.umapyoi.item.factor.FactorReport;
 import net.tracen.umapyoi.item.factor.UmaFactorContainerItem;
 import net.tracen.umapyoi.item.food.EnergyDrinkMethods;
 import net.tracen.umapyoi.item.food.UmaDrinkItem;
@@ -22,7 +21,6 @@ import net.tracen.umapyoi.item.food.UmaFoodItem;
 import net.tracen.umapyoi.item.info.FoodInfo;
 import net.tracen.umapyoi.item.weapon.BaseballBatItem;
 import net.tracen.umapyoi.item.weapon.GrassNaginataItem;
-import net.tracen.umapyoi.registry.RegistryObject;
 import net.tracen.umapyoi.registry.TrainingSupportRegistry;
 import net.tracen.umapyoi.registry.training.SupportType;
 
@@ -61,22 +59,21 @@ public class ItemRegistry {
     public static final Item UMA_SELECT_BLOCK = registerBlock("uma_select_block",
             BlockRegistry.UMA_SELECT_BLOCK);
 
-    public static final RegistryObject<Item> RACE_SELECT_BLOCK = register("race_select_block",
-            () -> new BlockItem(BlockRegistry.RACE_SELECT_BLOCK.get(), Umapyoi.defaultItemProperties()));
+    public static final Item RACE_SELECT_BLOCK = registerBlock("race_select_block",
+            BlockRegistry.RACE_SELECT_BLOCK);
 
-    public static final RegistryObject<Item> RACE_REGISTER_BLOCK = register("race_register",
-            () -> new BlockItem(BlockRegistry.RACE_REGISTER_BLOCK.get(), Umapyoi.defaultItemProperties()));
+    public static final Item RACE_REGISTER_BLOCK = registerBlock("race_register",
+            BlockRegistry.RACE_REGISTER_BLOCK);
 
-    public static final RegistryObject<Item> FACTOR_DECOMPOSE_TABLE = register("factor_decompose_table",
-            () -> new BlockItem(BlockRegistry.FACTOR_DECOMPOSE_TABLE.get(), Umapyoi.defaultItemProperties()));
+    public static final Item FACTOR_DECOMPOSE_TABLE = registerBlock("factor_decompose_table",
+            BlockRegistry.FACTOR_DECOMPOSE_TABLE);
 
-    public static final RegistryObject<Item> FACTOR_RESEARCH_TABLE = register("factor_research_table",
-            () -> new BlockItem(BlockRegistry.FACTOR_RESEARCH_TABLE.get(), Umapyoi.defaultItemProperties()));
+    public static final Item FACTOR_RESEARCH_TABLE = registerBlock("factor_research_table",
+            BlockRegistry.FACTOR_RESEARCH_TABLE);
 
-    public static final RegistryObject<Item> GATE_DOOR = register("gate_door", () -> new BlockItem(BlockRegistry.GATE_DOOR.get(),
-            Umapyoi.defaultItemProperties()));
+    public static final Item GATE_DOOR = registerBlock("gate_door", BlockRegistry.GATE_DOOR);
 
-    public static final RegistryObject<Item> GATE = register("gate", () -> new BlockItem(BlockRegistry.GATE.get(), Umapyoi.defaultItemProperties()));
+    public static final Item GATE = registerBlock("gate", BlockRegistry.GATE);
 
     public static final Item BLANK_UMA_SOUL = registerItem("blank_uma_soul",
             FadedUmaSoulItem::new,
@@ -172,7 +169,7 @@ public class ItemRegistry {
                             ItemRegistry.HORSESHOE_RAINBOW.builtInRegistryHolder()
                     ))));
 
-    public static final RegistryObject<Item> UMA_RACE_TICKET = register("race_ticket", UmaRaceTicketItem::new);
+    public static final Item UMA_RACE_TICKET = registerItem("race_ticket", UmaRaceTicketItem::new);
 
     public static final Item HACHIMI_MID = registerItem("hachimi_mid",
             p -> new UmaDrinkItem(p, e -> {},
@@ -226,7 +223,7 @@ public class ItemRegistry {
             BaseballBatItem::new,
             BaseballBatItem.createProperties());
 
-    public static final RegistryObject<Item> FACTOR_SHARD = register("uma_factor_shard", FactorReport::new);
+    public static final Item FACTOR_SHARD = registerItem("uma_factor_shard", FactorReport::new);
 
     // dummy manual item to load the model for modonomicon
     public static final Item MANUAL_CLOSED = registerItem("manual_closed");
@@ -288,5 +285,9 @@ public class ItemRegistry {
 
         ITEMS.add(item);
         return Registry.register(BuiltInRegistries.ITEM, key, item);
+    }
+
+    public static void register() {
+        // dummy
     }
 }

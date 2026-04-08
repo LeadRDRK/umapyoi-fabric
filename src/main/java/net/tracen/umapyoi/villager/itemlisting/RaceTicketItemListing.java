@@ -42,7 +42,7 @@ public class RaceTicketItemListing implements VillagerTrades.ItemListing {
         int baseValPrice = 5 * this.level;
         int price = pRandom.nextIntBetweenInclusive(-2, 2) + baseValPrice;
         return new MerchantOffer(
-                new ItemCost(ItemRegistry.JEWEL.get(), price),
+                new ItemCost(ItemRegistry.JEWEL, price),
                 result, 12, 6 * this.level, 0.2f
         );
     }

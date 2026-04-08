@@ -2,12 +2,12 @@ package net.tracen.umapyoi.data.tag;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.data.tags.KeyTagProvider;
 import net.tracen.umapyoi.registry.cosmetics.CosmeticData;
 
 import java.util.concurrent.CompletableFuture;
 
-public class CosmeticDataTagProvider extends TagsProvider<CosmeticData> {
+public class CosmeticDataTagProvider extends KeyTagProvider<CosmeticData> {
     public CosmeticDataTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
         super(output, CosmeticData.REGISTRY_KEY, provider);
     }

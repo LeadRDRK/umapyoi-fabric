@@ -46,36 +46,36 @@ public class UmapyoiItemTagsProvider extends ItemTagProvider {
             .add(ItemRegistry.HORSESHOE_SILVER).add(ItemRegistry.HORSESHOE_RAINBOW);
         valueLookupBuilder(UmapyoiItemTags.HORSESHOE_RAINBOW).add(ItemRegistry.HORSESHOE_RAINBOW);
 
-        getOrCreateTagBuilder(UmapyoiItemTags.getMotivationFoodTag(1))
-                .add(ItemRegistry.HACHIMI_MID.get())
-                .add(ItemRegistry.CUPCAKE.get());
+        valueLookupBuilder(UmapyoiItemTags.getMotivationFoodTag(1))
+                .add(ItemRegistry.HACHIMI_MID)
+                .add(ItemRegistry.CUPCAKE);
 
-        getOrCreateTagBuilder(UmapyoiItemTags.getMotivationFoodTag(2))
-                .add(ItemRegistry.HACHIMI_BIG.get())
-                .add(ItemRegistry.SWEET_CUPCAKE.get());
+        valueLookupBuilder(UmapyoiItemTags.getMotivationFoodTag(2))
+                .add(ItemRegistry.HACHIMI_BIG)
+                .add(ItemRegistry.SWEET_CUPCAKE);
 
-        getOrCreateTagBuilder(UmapyoiItemTags.getMotivationFoodTag(-1))
-                .add(ItemRegistry.ROYAL_BITTER.get());
+        valueLookupBuilder(UmapyoiItemTags.getMotivationFoodTag(-1))
+                .add(ItemRegistry.ROYAL_BITTER);
 
-        getOrCreateTagBuilder(UmapyoiItemTags.SLOW_METABOLISM)
-                .add(ItemRegistry.HACHIMI_BIG.get()).add(ItemRegistry.SWEET_CUPCAKE.get());
+        valueLookupBuilder(UmapyoiItemTags.SLOW_METABOLISM)
+                .add(ItemRegistry.HACHIMI_BIG).add(ItemRegistry.SWEET_CUPCAKE);
 
-        getOrCreateTagBuilder(UmapyoiItemTags.getRaceMaterialTag(RaceRanking.PREOP))
+        valueLookupBuilder(UmapyoiItemTags.getRaceMaterialTag(RaceRanking.PREOP))
                 .forceAddTag(ConventionalItemTags.COPPER_INGOTS);
 
-        getOrCreateTagBuilder(UmapyoiItemTags.getRaceMaterialTag(RaceRanking.OP))
+        valueLookupBuilder(UmapyoiItemTags.getRaceMaterialTag(RaceRanking.OP))
                 .forceAddTag(ConventionalItemTags.IRON_INGOTS);
 
-        getOrCreateTagBuilder(UmapyoiItemTags.getRaceMaterialTag(RaceRanking.GIII))
+        valueLookupBuilder(UmapyoiItemTags.getRaceMaterialTag(RaceRanking.GIII))
                 .forceAddTag(ConventionalItemTags.GOLD_INGOTS);
 
-        getOrCreateTagBuilder(UmapyoiItemTags.getRaceMaterialTag(RaceRanking.GII))
+        valueLookupBuilder(UmapyoiItemTags.getRaceMaterialTag(RaceRanking.GII))
                 .forceAddTag(ConventionalItemTags.EMERALDS);
 
-        getOrCreateTagBuilder(UmapyoiItemTags.getRaceMaterialTag(RaceRanking.GI))
+        valueLookupBuilder(UmapyoiItemTags.getRaceMaterialTag(RaceRanking.GI))
                 .forceAddTag(ConventionalItemTags.DIAMONDS);
 
-        getOrCreateTagBuilder(UmapyoiItemTags.RACE_CHAMPIONS_MATERIAL).add(Items.ENDER_EYE);
+        valueLookupBuilder(UmapyoiItemTags.RACE_CHAMPIONS_MATERIAL).add(Items.ENDER_EYE);
     }
 
 }

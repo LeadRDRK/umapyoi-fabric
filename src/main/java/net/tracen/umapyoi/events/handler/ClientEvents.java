@@ -27,9 +27,10 @@ public class ClientEvents {
         LivingEntity entity = event.getWearer();
         var model = event.getModel();
 
-        if (UmapyoiAPI.isUmaSuitRendering(entity)) {
+        var suitModel = event.getRenderState().umapyoi$getSuitModel();
+        if (suitModel != null && UmapyoiAPI.isUmaSuitRendering(entity)) {
             var suitItem = UmapyoiAPI.getUmaSuit(entity);
-            ClientUtils.setUmaModelVisibilityForSuit(model, suitItem);
+            ClientUtils.setUmaModelVisibilityForSuit(model, suitItem, suitModel);
         }
 
         // continue

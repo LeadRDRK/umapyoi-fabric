@@ -3,8 +3,6 @@ package net.tracen.umapyoi.client.screen;
 import static net.tracen.umapyoi.item.UmaRaceTicketItem.getRaceNameInRawComponent;
 import static net.tracen.umapyoi.item.UmaRaceTicketItem.getRaceNameInStyledComponent;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -98,7 +96,6 @@ public class RaceScreen extends AbstractContainerScreen<RaceContainer> {
         if (this.minecraft == null) {
             return;
         }
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         // Background image (with slot)
         graphic.blit(BACKGROUND_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth,
                 this.imageHeight, 420, 256);
@@ -112,7 +109,7 @@ public class RaceScreen extends AbstractContainerScreen<RaceContainer> {
         super.renderTooltip(pGuiGraphics, pX, pY);
         if (raceLabel == null) return;
         if (this.isHovering(55, 16, 66, 12, pX, pY)) {
-            pGuiGraphics.renderComponentTooltip(this.font, List.of(this.raceLabel), pX, pY);
+            pGuiGraphics.setComponentTooltipForNextFrame(this.font, List.of(this.raceLabel), pX, pY);
         }
     }
 
@@ -193,7 +190,7 @@ public class RaceScreen extends AbstractContainerScreen<RaceContainer> {
 
         // Race label
         ItemStack stackOfTicket = this.menu.tileEntity.getItem(1);
-        if (stackOfTicket.is(ItemRegistry.UMA_RACE_TICKET.get())) {
+        if (stackOfTicket.is(ItemRegistry.UMA_RACE_TICKET)) {
             MutableComponent component = getRaceNameInRawComponent(stackOfTicket);
             raceLabel = getRaceNameInStyledComponent(stackOfTicket);
             int fullWidth = this.font.width(component.getVisualOrderText());

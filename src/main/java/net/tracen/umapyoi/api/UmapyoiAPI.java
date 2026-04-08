@@ -121,17 +121,17 @@ public class UmapyoiAPI {
 
     public static Registry<Race> getRaceRegistry(Level level) {
         if (level.isClientSide()) return ClientUtils.getRaceRegistry();
-        return level.registryAccess().registryOrThrow(Race.REGISTRY_KEY);
+        return level.registryAccess().lookupOrThrow(Race.REGISTRY_KEY);
     }
 
     public static Registry<RaceTag> getRaceTagRegistry(Level level) {
         if (level.isClientSide()) return ClientUtils.getRaceTagRegistry();
-        return level.registryAccess().registryOrThrow(RaceTag.REGISTRY_KEY);
+        return level.registryAccess().lookupOrThrow(RaceTag.REGISTRY_KEY);
     }
 
     public static Registry<RaceField> getRaceFieldRegistry(Level level) {
         if (level.isClientSide()) return ClientUtils.getRaceFieldRegistry();
-        return level.registryAccess().registryOrThrow(RaceField.REGISTRY_KEY);
+        return level.registryAccess().lookupOrThrow(RaceField.REGISTRY_KEY);
     }
 
     public static HolderLookup.RegistryLookup<Race> getRaceRegistry(HolderLookup.Provider provider) {

@@ -23,7 +23,11 @@ public interface UseSkillCallback {
         // Left for old api capabilities. DO NOT USE.
         @Deprecated
         public Context(ResourceLocation skill, Level level, Player user) {
-            this(skill, level, user, UmaSkillRegistry.REGISTRY.get().get(skill).getActionPoint());
+            this(skill, level, user, UmaSkillRegistry.REGISTRY.get()
+                    .get(skill)
+                    .orElseThrow(RuntimeException::new)
+                    .value()
+                    .getActionPoint());
         }
 
         public Level getLevel() {

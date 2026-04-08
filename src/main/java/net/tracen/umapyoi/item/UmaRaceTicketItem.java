@@ -16,8 +16,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
-import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.races.Race;
@@ -30,13 +30,12 @@ import net.tracen.umapyoi.utils.Year;
 
 import java.util.AbstractMap;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
@@ -47,8 +46,8 @@ import javax.annotation.Nullable;
 
 
 public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
-    public UmaRaceTicketItem() {
-        super(Umapyoi.defaultItemProperties());
+    public UmaRaceTicketItem(Properties p) {
+        super(p);
     }
 
     public static ItemStack init(ResourceLocation id, @Nullable Race race, ItemStack result) {
@@ -64,7 +63,7 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
     }
 
     public static ItemStack init(ResourceLocation id, @Nullable Race race) {
-        ItemStack result = new ItemStack(ItemRegistry.UMA_RACE_TICKET.get());
+        ItemStack result = new ItemStack(ItemRegistry.UMA_RACE_TICKET);
         return init(id, race, result);
     }
 
@@ -142,19 +141,6 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
         return init(RaceRegistry.DEFAULT.location(), null);
     }
 
-    @Override
-    public boolean isValidRepairItem(ItemStack stack, ItemStack repairCandidate) {
-        return false;
-    }
-
-    @Override
-    @Deprecated
-    @Nonnull
-    public String getDescriptionId(@Nonnull ItemStack pStack) {
-        if (getRaceID(pStack).equals(RaceRegistry.DEFAULT.location())) return super.getDescriptionId(pStack);
-        return Util.makeDescriptionId("race", getRaceID(pStack)) + ".name";
-    }
-
     public static MutableComponent getRaceNameInRawComponent(@Nonnull ItemStack pStack) {
         return Component.translatable(Util.makeDescriptionId("race", getRaceID(pStack)) + ".name");
     }
@@ -169,7 +155,8 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
     @Override
     public Component getName(@Nonnull ItemStack pStack) {
         if (getRaceID(pStack).equals(RaceRegistry.DEFAULT.location())) return super.getName(pStack);
-        return Component.translatable(this.getDescriptionId(pStack)).withStyle(
+        var id = Util.makeDescriptionId("race", getRaceID(pStack)) + ".name";
+        return Component.translatable(id).withStyle(
                 Optional.ofNullable(getRace(pStack)).map(r -> r.ranking).orElse(RaceRanking.DEBUT).color
         );
     }
@@ -187,7 +174,12 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
         try {
             ResourceLocation loc = getRaceID(stack);
             if (loc.equals(RaceRegistry.DEFAULT.location())) return null;
-            return Optional.ofNullable(world).map(UmapyoiAPI::getRaceRegistry).orElse(ClientUtils.getRaceRegistry()).get(loc);
+            return Optional.ofNullable(world)
+                    .map(UmapyoiAPI::getRaceRegistry)
+                    .orElse(ClientUtils.getRaceRegistry())
+                    .get(loc)
+                    .map(Holder::value)
+                    .orElse(null);
         } catch (Exception _ignored) {
             return null;
         }
@@ -222,9 +214,10 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents,
-                                TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context,
+                                TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder,
+                                TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         ResourceLocation raceID = getRaceID(stack);
         if (raceID == RaceRegistry.DEFAULT.location()) return;
         Race raceObj = getRace(stack);
@@ -233,15 +226,15 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
                 .map(s -> Component.translatable("tooltip.umapyoi.race.time." + s))
                 .collect(new ComponentCollector());
         year = year.append(" ").append(Component.translatable("tooltip.umapyoi.race.time." + raceObj.time));
-        tooltipComponents.add(year);
+        tooltipAdder.accept(year);
 
         RaceRanking ranking = raceObj.ranking;
-        tooltipComponents.add(Component.translatable("tooltip.umapyoi.race.tier.hint").append(
+        tooltipAdder.accept(Component.translatable("tooltip.umapyoi.race.tier.hint").append(
                 Component.translatable("race.umapyoi.tier." + ranking.name().toLowerCase()).withStyle(ranking.color)
         ));
 
         Surface surface = raceObj.surface;
-        tooltipComponents.add(Component.translatable("tooltip.umapyoi.race.surface").append(
+        tooltipAdder.accept(Component.translatable("tooltip.umapyoi.race.surface").append(
                 Component.translatable("race.umapyoi.surface." + surface.name().toLowerCase()).withStyle(surface.color)
         ));
 
@@ -254,25 +247,27 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
                             .append(Component.translatable("tooltip.umapyoi.race.unit")));
         }
 
-        tooltipComponents.add(baseComponent);
+        tooltipAdder.accept(baseComponent);
 
         ResourceLocation locField = raceObj.field;
-        tooltipComponents.add(Component.translatable("tooltip.umapyoi.race.field").append(
+        tooltipAdder.accept(Component.translatable("tooltip.umapyoi.race.field").append(
                 Component.translatable("race." + locField.getNamespace() + ".field." + locField.getPath())
         ));
 
         if (!raceObj.tags.isEmpty()) {
-            tooltipComponents.add(Component.literal(""));
-            tooltipComponents.add(Component.translatable("tooltip.umapyoi.race.gainable_tags").withStyle(ChatFormatting.BLUE));
+            tooltipAdder.accept(Component.literal(""));
+            tooltipAdder.accept(Component.translatable("tooltip.umapyoi.race.gainable_tags").withStyle(ChatFormatting.BLUE));
             raceObj.tags.stream().sorted()
                     .map(ClientUtils.getRaceTagRegistry()::get)
-                    .filter(Objects::nonNull)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .map(Holder::value)
                     .map(rl ->
                             Component.literal(" ")
                                     .append(Component.translatable("race." + rl.id().getNamespace() + ".tags." + rl.id().getPath()))
                                     .withStyle(ChatFormatting.DARK_GREEN)
                     )
-                    .forEach(tooltipComponents::add);
+                    .forEach(tooltipAdder);
         }
     }
 }

@@ -22,21 +22,22 @@ import net.tracen.umapyoi.registry.races.Race;
 import org.jetbrains.annotations.Nullable;
 
 public class ShapelessRaceTicketRecipe extends ShapelessRecipe implements RaceTicketRecipe<CraftingInput> {
-    public static final RecipeSerializer<ShapelessRaceTicketRecipe> SERIALIZER = new RaceTicketRecipeSerializer<>(
+    public static final RecipeSerializer<ShapelessRecipe> SERIALIZER = new RaceTicketRecipeSerializer<>(
             RecipeSerializer.SHAPELESS_RECIPE, ShapelessRaceTicketRecipe::new
     );
 
     private final ResourceLocation baseItemOrKey;
     public ShapelessRaceTicketRecipe(ShapelessRecipe compose, ResourceLocation loc) {
-        super(compose.getGroup(), compose.category(),
-                getResultItem(loc), compose.getIngredients());
+        super(compose.group(), compose.category(),
+                getResultItem(loc), compose.placementInfo().ingredients());
         this.baseItemOrKey = loc;
     }
 
     private static ItemStack getResultItem(ResourceLocation loc) {
-        return (BuiltInRegistries.ITEM.containsKey(loc) ?
-                BuiltInRegistries.ITEM.get(loc) :
-                ItemRegistry.UMA_RACE_TICKET.get()).getDefaultInstance();
+        return BuiltInRegistries.ITEM.get(loc)
+                .map(Holder::value)
+                .orElse(ItemRegistry.UMA_RACE_TICKET)
+                .getDefaultInstance();
     }
 
     @Override
@@ -44,11 +45,6 @@ public class ShapelessRaceTicketRecipe extends ShapelessRecipe implements RaceTi
 
     @Override
     public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
-        return this.getResultItem(registries).copy();
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
         ItemStack result = getResultItem(this.baseItemOrKey).copy();
         if(registries == RegistryAccess.EMPTY)
             return result;
@@ -64,20 +60,25 @@ public class ShapelessRaceTicketRecipe extends ShapelessRecipe implements RaceTi
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<ShapelessRecipe> getSerializer() {
         return SERIALIZER;
     }
 
     public record ComposeOutput(RecipeOutput compose, ResourceLocation raceId) implements RecipeOutput {
         @Override
-        public void accept(ResourceLocation location, Recipe<?> recipe, @Nullable AdvancementHolder advancement) {
+        public void accept(ResourceKey<Recipe<?>> key, Recipe<?> recipe, @Nullable AdvancementHolder advancement) {
             var composeRecipe = new ShapelessRaceTicketRecipe((ShapelessRecipe) recipe, raceId);
-            compose.accept(location, composeRecipe, advancement);
+            compose.accept(key, composeRecipe, advancement);
         }
 
         @Override
         public Advancement.Builder advancement() {
             return compose.advancement();
+        }
+
+        @Override
+        public void includeRootAdvancement() {
+            compose.includeRootAdvancement();
         }
     }
 }

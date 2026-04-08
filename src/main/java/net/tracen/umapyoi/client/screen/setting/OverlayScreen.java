@@ -7,6 +7,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.client.MotivationOverlay;
@@ -62,16 +64,16 @@ public class OverlayScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if (buttonSave.isMouseOver(pMouseX, pMouseY) || buttonDiscard.isMouseOver(pMouseX, pMouseY)) {
-            return super.mouseClicked(pMouseX, pMouseY, pButton);
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+        if (buttonSave.isMouseOver(event.x(), event.y()) || buttonDiscard.isMouseOver(event.x(), event.y())) {
+            return super.mouseClicked(event, isDoubleClick);
         }
-        if (pMouseX >= x + this.skillX && pMouseX <= x + this.skillX + 96 && pMouseY >= this.height + this.skillY && pMouseY <= this.height + this.skillY + 20) {
+        if (event.x() >= x + this.skillX && event.x() <= x + this.skillX + 96 && event.y() >= this.height + this.skillY && event.y() <= this.height + this.skillY + 20) {
             this.isDraggingOn = DragOnType.SKILL;
             this.lastClicked = DragOnType.SKILL;
             return true;
         }
-        if (pMouseX >= x + this.motivationX && pMouseX <= x + this.motivationX + 64 && pMouseY >= this.height + this.motivationY && pMouseY <= this.height + this.motivationY + 14) {
+        if (event.x() >= x + this.motivationX && event.x() <= x + this.motivationX + 64 && event.y() >= this.height + this.motivationY && event.y() <= this.height + this.motivationY + 14) {
             this.isDraggingOn = DragOnType.MOTIVATION;
             this.lastClicked = DragOnType.MOTIVATION;
             return true;
@@ -84,8 +86,8 @@ public class OverlayScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
-        if (pKeyCode == GLFW.GLFW_KEY_R) {
+    public boolean keyPressed(KeyEvent event) {
+        if (event.key() == GLFW.GLFW_KEY_R) {
             var config = Umapyoi.CONFIG;
             this.skillX = (int) config.optionForKey(config.keys.TOPLEFT_COORD_SKILL_X).defaultValue();
             this.skillY = (int) config.optionForKey(config.keys.TOPLEFT_COORD_SKILL_Y).defaultValue();
@@ -93,43 +95,43 @@ public class OverlayScreen extends Screen {
             this.motivationY = (int) config.optionForKey(config.keys.TOPLEFT_COORD_MOTIVATION_Y).defaultValue();
             return true;
         }
-        if (lastClicked == null) return super.keyPressed(pKeyCode, pScanCode, pModifiers);
+        if (lastClicked == null) return super.keyPressed(event);
         switch (this.lastClicked) {
             case SKILL:
-                if (pKeyCode == GLFW.GLFW_KEY_UP) skillY += 1;
-                if (pKeyCode == GLFW.GLFW_KEY_DOWN) skillY -= 1;
-                if (pKeyCode == GLFW.GLFW_KEY_LEFT) skillX -= 1;
-                if (pKeyCode == GLFW.GLFW_KEY_RIGHT) skillX += 1;
+                if (event.key() == GLFW.GLFW_KEY_UP) skillY += 1;
+                if (event.key() == GLFW.GLFW_KEY_DOWN) skillY -= 1;
+                if (event.key() == GLFW.GLFW_KEY_LEFT) skillX -= 1;
+                if (event.key() == GLFW.GLFW_KEY_RIGHT) skillX += 1;
             case MOTIVATION:
-                if (pKeyCode == GLFW.GLFW_KEY_UP) motivationY += 1;
-                if (pKeyCode == GLFW.GLFW_KEY_DOWN) motivationY -= 1;
-                if (pKeyCode == GLFW.GLFW_KEY_LEFT) motivationX -= 1;
-                if (pKeyCode == GLFW.GLFW_KEY_RIGHT) motivationX += 1;
+                if (event.key() == GLFW.GLFW_KEY_UP) motivationY += 1;
+                if (event.key() == GLFW.GLFW_KEY_DOWN) motivationY -= 1;
+                if (event.key() == GLFW.GLFW_KEY_LEFT) motivationX -= 1;
+                if (event.key() == GLFW.GLFW_KEY_RIGHT) motivationX += 1;
         }
         return true;
     }
 
     @Override
-    public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
+    public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
         if (this.isDraggingOn != null) {
             switch (this.isDraggingOn) {
                 case SKILL:
-                    this.skillX += pDragX;
-                    this.skillY += pDragY;
+                    this.skillX += dragX;
+                    this.skillY += dragY;
                     break;
                 case MOTIVATION:
-                    this.motivationX += pDragX;
-                    this.motivationY += pDragY;
+                    this.motivationX += dragX;
+                    this.motivationY += dragY;
             }
             return true;
         }
-        return super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
+        return super.mouseDragged(event, dragX, dragY);
     }
 
     @Override
-    public boolean mouseReleased(double pMouseX, double pMouseY, int pButton) {
+    public boolean mouseReleased(MouseButtonEvent event) {
         this.isDraggingOn = null;
-        return super.mouseReleased(pMouseX, pMouseY, pButton);
+        return super.mouseReleased(event);
     }
 
     @Override

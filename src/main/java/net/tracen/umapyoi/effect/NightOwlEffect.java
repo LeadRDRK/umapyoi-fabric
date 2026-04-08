@@ -1,9 +1,9 @@
 package net.tracen.umapyoi.effect;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.events.MotivationCallback;
@@ -20,12 +20,11 @@ public class NightOwlEffect extends MobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
-        Level level = pLivingEntity.level();
-        if (level.isClientSide) return true;
-        if (UmapyoiAPI.getUmaSoul(pLivingEntity).isEmpty()) return true;
+    public boolean applyEffectTick(ServerLevel level, LivingEntity entity, int amplifier) {
+        if (level.isClientSide()) return true;
+        if (UmapyoiAPI.getUmaSoul(entity).isEmpty()) return true;
         if (level.random.nextDouble() <= Umapyoi.CONFIG.NIGHT_OWL_PROBABILITY_DOWN_MOTIVATION()) {
-            UmaStatusUtils.changeMotivation(pLivingEntity, -1);
+            UmaStatusUtils.changeMotivation(entity, -1);
         }
         return true;
     }

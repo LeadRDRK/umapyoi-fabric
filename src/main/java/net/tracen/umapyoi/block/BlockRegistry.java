@@ -10,7 +10,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.tracen.umapyoi.Umapyoi;
-import net.tracen.umapyoi.registry.RegistryObject;
 
 import java.util.function.Function;
 
@@ -67,21 +66,29 @@ public class BlockRegistry {
             UmaSelectBlock::new,
             BlockBehaviour.Properties.ofLegacyCopy(Blocks.OAK_WOOD));
 
-    public static final RegistryObject<Block> RACE_SELECT_BLOCK = BLOCKS.register("race_select_block",
-            RaceSelectBlock::new);
+    public static final Block RACE_SELECT_BLOCK = register("race_select_block",
+            RaceSelectBlock::new,
+            BlockBehaviour.Properties.ofLegacyCopy(Blocks.OAK_WOOD));
 
-    public static final RegistryObject<Block> FACTOR_DECOMPOSE_TABLE = BLOCKS.register("factor_decompose_table",
-            FactorDecomposeTable::new);
+    public static final Block FACTOR_DECOMPOSE_TABLE = register("factor_decompose_table",
+            FactorDecomposeTable::new,
+            BlockBehaviour.Properties.ofLegacyCopy(Blocks.ANDESITE).noOcclusion());
 
-    public static final RegistryObject<Block> FACTOR_RESEARCH_TABLE = BLOCKS.register("factor_research_table",
-            FactorResearchTableBlock::new);
+    public static final Block FACTOR_RESEARCH_TABLE = register("factor_research_table",
+            FactorResearchTableBlock::new,
+            BlockBehaviour.Properties.ofLegacyCopy(Blocks.ANDESITE).noOcclusion());
 
-    public static final RegistryObject<Block> RACE_REGISTER_BLOCK = BLOCKS.register("race_register",
-            RaceRegisterBlock::new);
+    public static final Block RACE_REGISTER_BLOCK = register("race_register",
+            RaceRegisterBlock::new,
+            BlockBehaviour.Properties.ofLegacyCopy(Blocks.IRON_BLOCK).noOcclusion());
 
-    public static final RegistryObject<Block> GATE_DOOR = BLOCKS.register("gate_door", GateDoor::new);
+    public static final Block GATE_DOOR = register("gate_door",
+            GateDoor::new,
+            BlockBehaviour.Properties.ofLegacyCopy(Blocks.IRON_BARS).noOcclusion());
 
-    public static final RegistryObject<Block> GATE = BLOCKS.register("gate", Gate::new);
+    public static final Block GATE = register("gate",
+            Gate::new,
+            BlockBehaviour.Properties.ofLegacyCopy(Blocks.IRON_BLOCK).noOcclusion());
 
     private static ResourceKey<Block> modBlockId(String name) {
         return ResourceKey.create(Registries.BLOCK,
@@ -95,5 +102,9 @@ public class BlockRegistry {
     public static Block register(ResourceKey<Block> resourceKey, Function<BlockBehaviour.Properties, Block> factory, BlockBehaviour.Properties properties) {
         Block block = factory.apply(properties.setId(resourceKey));
         return Registry.register(BuiltInRegistries.BLOCK, resourceKey, block);
+    }
+
+    public static void register() {
+        // dummy
     }
 }

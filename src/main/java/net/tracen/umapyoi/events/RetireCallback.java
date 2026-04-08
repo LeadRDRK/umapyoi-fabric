@@ -48,7 +48,7 @@ public interface RetireCallback {
             }
 
             public static ItemStack getDefaultOutputStack(ItemStack soul, List<UmaFactorStack> factors) {
-                ItemStack result = ItemRegistry.UMA_FACTOR_ITEM.get().getDefaultInstance();
+                ItemStack result = ItemRegistry.UMA_FACTOR_ITEM.getDefaultInstance();
                 result.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), UmaSoulUtils.getName(soul));
                 result.set(DataComponentsTypeRegistry.FACTOR_DATA.get(), UmaFactorUtils.serializeData(factors));
                 return result;

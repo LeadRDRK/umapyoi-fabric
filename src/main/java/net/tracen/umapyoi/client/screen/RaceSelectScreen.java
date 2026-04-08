@@ -1,7 +1,6 @@
 package net.tracen.umapyoi.client.screen;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
@@ -10,7 +9,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -75,17 +77,11 @@ public class RaceSelectScreen extends AbstractContainerScreen<RaceSelectMenu> im
 
     public void render(GuiGraphics pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
-        RenderSystem.disableBlend();
-        this.renderFg(pPoseStack, pMouseX, pMouseY, pPartialTick);
         this.renderTooltip(pPoseStack, pMouseX, pMouseY);
     }
 
     public void containerTick() {
         super.containerTick();
-    }
-
-    public void renderFg(GuiGraphics pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        this.searchBox.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
     }
 
     @Override
@@ -109,7 +105,7 @@ public class RaceSelectScreen extends AbstractContainerScreen<RaceSelectMenu> im
         this.searchBox.setMaxLength(50);
         this.searchBox.setResponder(this::onNameChanged);
         this.searchBox.setValue("");
-        this.addWidget(this.searchBox);
+        this.addRenderableWidget(this.searchBox);
         this.setInitialFocus(this.searchBox);
         this.searchBox.setEditable(false);
     }
@@ -135,13 +131,14 @@ public class RaceSelectScreen extends AbstractContainerScreen<RaceSelectMenu> im
         this.menu.removeSlotListener(this);
     }
 
-    public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
-        if (pKeyCode == 256) {
+    @Override
+    public boolean keyPressed(KeyEvent event) {
+        if (event.key() == 256) {
             this.minecraft.player.closeContainer();
         }
 
-        return !this.searchBox.keyPressed(pKeyCode, pScanCode, pModifiers) && !this.searchBox.canConsumeInput()
-                ? super.keyPressed(pKeyCode, pScanCode, pModifiers)
+        return !this.searchBox.keyPressed(event) && !this.searchBox.canConsumeInput()
+                ? super.keyPressed(event)
                 : true;
     }
 
@@ -163,10 +160,10 @@ public class RaceSelectScreen extends AbstractContainerScreen<RaceSelectMenu> im
     protected void renderBg(GuiGraphics pPoseStack, float pPartialTick, int pX, int pY) {
         int i = this.leftPos;
         int j = this.topPos;
-        pPoseStack.blit(BACKGROUND_TEXTURE, i, j, 0, 0, this.imageWidth, this.imageHeight);
+        pPoseStack.blit(BACKGROUND_TEXTURE, i, j, 0, 0, this.imageWidth, this.imageHeight, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
         int k = (int) (41.0F * this.scrollOffs);
         pPoseStack.blit(BACKGROUND_TEXTURE, i + 116, j + 31 + k, 176 + (this.isScrollBarActive() ? 0 : SCROLLER_WIDTH), 0,
-                SCROLLER_WIDTH, SCROLLER_HEIGHT);
+                SCROLLER_WIDTH, SCROLLER_HEIGHT, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
         int l = this.leftPos + RECIPES_X;
         int i1 = this.topPos + RECIPES_Y;
         int j1 = this.startIndex + SCROLLER_WIDTH;
@@ -187,7 +184,7 @@ public class RaceSelectScreen extends AbstractContainerScreen<RaceSelectMenu> im
                 int j1 = i + i1 % RECIPES_COLUMNS * RECIPES_IMAGE_SIZE_WIDTH;
                 int k1 = j + i1 / RECIPES_COLUMNS * RECIPES_IMAGE_SIZE_HEIGHT + 2;
                 if (pX >= j1 && pX < j1 + RECIPES_IMAGE_SIZE_WIDTH && pY >= k1 && pY < k1 + RECIPES_IMAGE_SIZE_HEIGHT) {
-                    pPoseStack.renderTooltip(this.font, this.getResultItem(list.get(l)), pX, pY);
+                    pPoseStack.setTooltipForNextFrame(this.font, this.getResultItem(list.get(l)), pX, pY);
                 }
             }
         }
@@ -209,7 +206,7 @@ public class RaceSelectScreen extends AbstractContainerScreen<RaceSelectMenu> im
                     j1 += 36;
                 }
 
-                pPoseStack.blit(BACKGROUND_TEXTURE, k, i1 - 1, 176, j1, RECIPES_IMAGE_SIZE_WIDTH, RECIPES_IMAGE_SIZE_HEIGHT);
+                pPoseStack.blit(BACKGROUND_TEXTURE, k, i1 - 1, 176, j1, RECIPES_IMAGE_SIZE_WIDTH, RECIPES_IMAGE_SIZE_HEIGHT, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
             }
         }
     }
@@ -236,7 +233,10 @@ public class RaceSelectScreen extends AbstractContainerScreen<RaceSelectMenu> im
 
     public Predicate<? super ResourceLocation> getFilter(ItemStack input) {
         return resloc -> {
-            Race race = UmapyoiAPI.getRaceRegistry(this.menu.level).get(resloc);
+            Race race = UmapyoiAPI.getRaceRegistry(this.menu.level)
+                    .get(resloc)
+                    .map(Holder::value)
+                    .orElse(null);
             if (race == null) return false;
 
             String s = this.getName().toLowerCase(Locale.ROOT);
@@ -274,11 +274,14 @@ public class RaceSelectScreen extends AbstractContainerScreen<RaceSelectMenu> im
 
     private ItemStack getResultItem(ResourceLocation name) {
         Race race = UmapyoiAPI.getRaceRegistry(this.menu.level)
-                .get(ResourceKey.create(Race.REGISTRY_KEY, name));
+                .get(ResourceKey.create(Race.REGISTRY_KEY, name))
+                .map(Holder::value)
+                .orElse(null);
         return UmaRaceTicketItem.init(name, race);
     }
 
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+    @Override
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         this.scrolling = false;
         if (this.displayRecipes) {
             int i = this.leftPos + RECIPES_X;
@@ -287,10 +290,10 @@ public class RaceSelectScreen extends AbstractContainerScreen<RaceSelectMenu> im
 
             for (int l = this.startIndex; l < k; ++l) {
                 if(l >= this.getResults().size())
-                    return super.mouseClicked(pMouseX, pMouseY, pButton);
+                    return super.mouseClicked(event, isDoubleClick);
                 int i1 = l - this.startIndex;
-                double d0 = pMouseX - (double) (i + i1 % RECIPES_COLUMNS * RECIPES_IMAGE_SIZE_WIDTH);
-                double d1 = pMouseY - (double) (j + i1 / RECIPES_COLUMNS * 18);
+                double d0 = event.x() - (double) (i + i1 % RECIPES_COLUMNS * RECIPES_IMAGE_SIZE_WIDTH);
+                double d1 = event.y() - (double) (j + i1 / RECIPES_COLUMNS * 18);
                 if (d0 >= 0.0D && d1 >= 0.0D && d0 < 16.0D && d1 < 18.0D) {
                     Minecraft.getInstance().getSoundManager()
                             .play(SimpleSoundInstance.forUI(SoundEvents.UI_STONECUTTER_SELECT_RECIPE, 1.0F));
@@ -303,33 +306,35 @@ public class RaceSelectScreen extends AbstractContainerScreen<RaceSelectMenu> im
 
             i = this.leftPos + 119;
             j = this.topPos + 9;
-            if (pMouseX >= (double) i && pMouseX < (double) (i + SCROLLER_WIDTH) && pMouseY >= (double) j
-                    && pMouseY < (double) (j + SCROLLER_FULL_HEIGHT)) {
+            if (event.x() >= (double) i && event.x() < (double) (i + SCROLLER_WIDTH) && event.y() >= (double) j
+                    && event.y() < (double) (j + SCROLLER_FULL_HEIGHT)) {
                 this.scrolling = true;
             }
         }
 
-        return super.mouseClicked(pMouseX, pMouseY, pButton);
+        return super.mouseClicked(event, isDoubleClick);
     }
 
-    public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
+    @Override
+    public boolean mouseDragged(MouseButtonEvent event, double mouseX, double mouseY) {
         if (this.scrolling && this.isScrollBarActive()) {
             int i = this.topPos + RECIPES_Y;
             int j = i + SCROLLER_FULL_HEIGHT;
-            this.scrollOffs = ((float) pMouseY - (float) i - 7.5F) / ((float) (j - i) - 15.0F);
+            this.scrollOffs = ((float) event.y() - (float) i - 7.5F) / ((float) (j - i) - 15.0F);
             this.scrollOffs = Mth.clamp(this.scrollOffs, 0.0F, 1.0F);
             this.startIndex = (int) ((double) (this.scrollOffs * (float) this.getOffscreenRows()) + 0.5D)
                     * RECIPES_COLUMNS;
             return true;
         } else {
-            return super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
+            return super.mouseDragged(event, mouseX, mouseY);
         }
     }
 
-    public boolean mouseScrolled(double pMouseX, double pMouseY, double pDelta) {
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         if (this.isScrollBarActive()) {
             int i = this.getOffscreenRows();
-            float f = (float) pDelta / (float) i;
+            float f = (float) scrollY / (float) i;
             this.scrollOffs = Mth.clamp(this.scrollOffs - f, 0.0F, 1.0F);
             this.startIndex = (int) ((double) (this.scrollOffs * (float) i) + 0.5D) * RECIPES_COLUMNS;
         }

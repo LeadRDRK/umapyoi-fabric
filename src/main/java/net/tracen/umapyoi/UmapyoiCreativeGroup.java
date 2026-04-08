@@ -43,13 +43,13 @@ public class UmapyoiCreativeGroup {
 
     public static final RegistryObject<CreativeModeTab> UMAPYOI_RACETICKETS = CREATIVE_MODE_TABS.register("umapyoi_racetickets",
             () -> FabricItemGroup.builder()
-                    .icon(() -> new ItemStack(ItemRegistry.UMA_RACE_TICKET.get()))
+                    .icon(() -> new ItemStack(ItemRegistry.UMA_RACE_TICKET))
                     .title(Component.translatable("itemGroup.umapyoi.race_tickets"))
                     .build());
 
     public static final RegistryObject<CreativeModeTab> UMAPYOI_FACTORSHARDS = CREATIVE_MODE_TABS.register("umapyoi_factorshards",
             () -> FabricItemGroup.builder()
-                    .icon(() -> new ItemStack(ItemRegistry.FACTOR_SHARD.get()))
+                    .icon(() -> new ItemStack(ItemRegistry.FACTOR_SHARD))
                     .title(Component.translatable("itemGroup.umapyoi.factor_shards"))
                     .build());
 
@@ -94,13 +94,13 @@ public class UmapyoiCreativeGroup {
         ItemGroupEvents
                 .modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, UMAPYOI_RACETICKETS.getId()))
                 .register(entries -> {
-                    ((CreativeModeTabFiller) ItemRegistry.UMA_RACE_TICKET.get()).fillItemCategory(entries);
+                    ((CreativeModeTabFiller) ItemRegistry.UMA_RACE_TICKET).fillItemCategory(entries);
                 });
 
         ItemGroupEvents
                 .modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, UMAPYOI_FACTORSHARDS.getId()))
                 .register(entries -> {
-                    ((CreativeModeTabFiller) ItemRegistry.FACTOR_SHARD.get()).fillItemCategory(entries);
+                    ((CreativeModeTabFiller) ItemRegistry.FACTOR_SHARD).fillItemCategory(entries);
                 });
     }
 }

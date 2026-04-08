@@ -12,6 +12,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -292,12 +293,15 @@ public class GiveUmaSoul {
                                   @Nullable Integer ap, @Nullable Integer[] props, @Nullable Integer[] maxprops,
                                   @Nullable Integer[] extras) {
         Level level = ctx.getSource().getLevel();
-        UmaData umaData = UmapyoiAPI.getUmaDataRegistry(level).get(uma);
+        UmaData umaData = UmapyoiAPI.getUmaDataRegistry(level)
+                .get(uma)
+                .map(Holder::value)
+                .orElse(null);
         if (umaData == null) {
             ctx.getSource().sendFailure(Component.translatable("umapyoi.command.parse.unknown.umadata", uma));
             return 0;
         }
-        ItemStack umaSoul = UmaSoulUtils.initUmaSoul(ItemRegistry.UMA_SOUL.get().getDefaultInstance(), uma, umaData).copy();
+        ItemStack umaSoul = UmaSoulUtils.initUmaSoul(ItemRegistry.UMA_SOUL.getDefaultInstance(), uma, umaData).copy();
 
         UmaSoulUtils.setGrowth(umaSoul, growth);
         UmaSoulUtils.setMotivation(umaSoul, motivation);

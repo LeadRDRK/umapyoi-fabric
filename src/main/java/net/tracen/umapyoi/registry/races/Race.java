@@ -6,6 +6,7 @@ import com.google.common.base.Functions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -34,7 +35,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -108,7 +108,9 @@ public class Race {
             List<RaceField> fieldCandidate = makeupMap.entrySet().stream().filter(et -> (minimum == -1 || et.getValue() == minimum)).map(Map.Entry::getKey).sorted().toList(); // 确保可复现性
             return fieldCandidate.get(world.getRandom().nextInt(0, fieldCandidate.size()));
         }
-        return registry.get(this.field);
+        return registry.get(this.field)
+                .map(Holder::value)
+                .orElse(null);
     }
     public final Set<Integer> attrCorr;
     private final double[] correction;
@@ -169,7 +171,7 @@ public class Race {
 
     public boolean isAvailableToUmaSoul(ItemStack stack) {
         if (this.id.equals(RaceRegistry.DEFAULT.location())) return false;
-        if (!(stack.is(ItemRegistry.UMA_SOUL.get()) &&
+        if (!(stack.is(ItemRegistry.UMA_SOUL) &&
                 ((this.ranking == RaceRanking.DEBUT) ^ UmaSoulUtils.hasUmaSoulDebut(stack)))) return false;
         var raceData = UmaSoulUtils.getRaceStatus(stack);
         int last = raceData.lastAttendTime();
@@ -246,7 +248,10 @@ public class Race {
 
         var wonRaces = raceData.wonRaces();
         if (this.isPassed(stack, level)) {
-            tags.stream().map(UmapyoiAPI.getRaceTagRegistry(level)::get).filter(Objects::nonNull)
+            tags.stream().map(UmapyoiAPI.getRaceTagRegistry(level)::get)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .map(Holder::value)
                     .forEach((t) -> t.applyToUmaSoul(stack, this));
             wonRaces = new HashSet<>(wonRaces);
             wonRaces.add(this.id);

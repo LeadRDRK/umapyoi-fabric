@@ -2,20 +2,20 @@ package net.tracen.umapyoi.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.PathComputationType;
@@ -27,7 +27,7 @@ import net.tracen.umapyoi.utils.ThreeBlockPart;
 import javax.annotation.Nullable;
 
 public class Gate extends Block {
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     public static final EnumProperty<ThreeBlockPart> PART = ThreeBlockPart.PART;
 
     protected static final VoxelShape LOW_BASE = Shapes.or(
@@ -119,8 +119,8 @@ public class Gate extends Block {
             Block.box(0, 5, 6, 1, 9, 10)
     );
 
-    public Gate() {
-        super(Properties.ofLegacyCopy(Blocks.IRON_BLOCK).noOcclusion());
+    public Gate(Properties p) {
+        super(p);
     }
 
     @Override
@@ -148,15 +148,28 @@ public class Gate extends Block {
     }
 
     @Override
-    public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
-        ThreeBlockPart part = pState.getValue(PART);
-        if (pFacing.getAxis() == Direction.Axis.Y) {
-            int checkOrdinal = part.ordinal() + (pFacing == Direction.UP ? 1 : -1);
+    public BlockState updateShape(
+            BlockState state,
+            LevelReader level,
+            ScheduledTickAccess ticks,
+            BlockPos pos,
+            Direction direction,
+            BlockPos neighborPos,
+            BlockState neighborState,
+            RandomSource random
+    ) {
+        ThreeBlockPart part = state.getValue(PART);
+        if (direction.getAxis() == Direction.Axis.Y) {
+            int checkOrdinal = part.ordinal() + (direction == Direction.UP ? 1 : -1);
             if (0 <= checkOrdinal && checkOrdinal <= 2) {
-                return pFacingState.is(this) && pFacingState.getValue(PART) == ThreeBlockPart.values()[checkOrdinal] ? pState.setValue(FACING, pFacingState.getValue(FACING)) : Blocks.AIR.defaultBlockState();
+                return neighborState.is(this) && neighborState.getValue(PART) == ThreeBlockPart.values()[checkOrdinal]
+                        ? state.setValue(FACING, neighborState.getValue(FACING))
+                        : Blocks.AIR.defaultBlockState();
             }
         }
-        return part == ThreeBlockPart.LOWER && pFacing == Direction.DOWN && !pState.canSurvive(pLevel, pCurrentPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(pState, pFacing, pFacingState, pLevel, pCurrentPos, pFacingPos);
+        return part == ThreeBlockPart.LOWER && direction == Direction.DOWN && !state.canSurvive(level, pos)
+                ? Blocks.AIR.defaultBlockState()
+                : super.updateShape(state, level, ticks, pos, direction, neighborPos, neighborState, random);
     }
 
     public static void preventCreativeDropFromOtherPart(Level pLevel, BlockPos pPos, BlockState pState, Player pPlayer) {
@@ -177,7 +190,7 @@ public class Gate extends Block {
 
     @Override
     public BlockState playerWillDestroy(Level pLevel, BlockPos pPos, BlockState pState, Player pPlayer) {
-        if (!pLevel.isClientSide && pPlayer.isCreative()) {
+        if (!pLevel.isClientSide() && pPlayer.isCreative()) {
             preventCreativeDropFromOtherPart(pLevel, pPos, pState, pPlayer);
         }
 
@@ -197,7 +210,7 @@ public class Gate extends Block {
     public BlockState getStateForPlacement(BlockPlaceContext pContext) {
         BlockPos blockpos = pContext.getClickedPos();
         Level level = pContext.getLevel();
-        if (blockpos.getY() < level.getMaxBuildHeight() - 2
+        if (blockpos.getY() < level.getMaxY() - 2
                 && level.getBlockState(blockpos.above()).canBeReplaced(pContext)
                 && level.getBlockState(blockpos.above().above()).canBeReplaced(pContext)) {
             return this.defaultBlockState().setValue(FACING, pContext.getHorizontalDirection()).setValue(PART, ThreeBlockPart.LOWER);

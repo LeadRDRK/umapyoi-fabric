@@ -36,7 +36,7 @@ public class FactorResearchMenu extends ItemCombinerMenu {
     }
 
     public FactorResearchMenu(int pContainerId, Inventory pPlayerInventory, ContainerLevelAccess pAccess) {
-        super(ContainerRegistry.FACTOR_RESEARCH_MENU.get(), pContainerId, pPlayerInventory, pAccess);
+        super(ContainerRegistry.FACTOR_RESEARCH_MENU.get(), pContainerId, pPlayerInventory, pAccess, createInputSlotDefinitions());
     }
 
     @Override
@@ -107,7 +107,7 @@ public class FactorResearchMenu extends ItemCombinerMenu {
                                 (rightStack.getLevel() > leftStatusSingle.getLevel() ? rightStack : leftStatusSingle))
                         .orElse(leftStatusSingle));
             }
-            ItemStack returnItem = isFactorItem(left) ? left.copyWithCount(1) : new ItemStack(ItemRegistry.FACTOR_SHARD.get(), 1);
+            ItemStack returnItem = isFactorItem(left) ? left.copyWithCount(1) : new ItemStack(ItemRegistry.FACTOR_SHARD, 1);
             // todo: I am not sure about it, but, it seems that both can be simply copied with left.copyWithCount(1)
             returnItem.set(DataComponentsTypeRegistry.FACTOR_DATA.get(), UmaFactorUtils.serializeData(outputs));
             this.resultSlots.setItem(0, returnItem);
@@ -116,7 +116,7 @@ public class FactorResearchMenu extends ItemCombinerMenu {
 
     @Override
     protected boolean isValidBlock(BlockState pState) {
-        return pState.is(BlockRegistry.FACTOR_RESEARCH_TABLE.get());
+        return pState.is(BlockRegistry.FACTOR_RESEARCH_TABLE);
     }
 
     @Override
@@ -128,15 +128,14 @@ public class FactorResearchMenu extends ItemCombinerMenu {
         return isFactorItem(stack) || isFactorResearch(stack);
     }
     private static boolean isFactorItem(ItemStack stack) {
-        return stack.is(UMA_FACTOR_ITEM.get());
+        return stack.is(UMA_FACTOR_ITEM);
     }
     private static boolean isFactorResearch(ItemStack stack) {
-        return stack.is(ItemRegistry.FACTOR_SHARD.get());
+        return stack.is(ItemRegistry.FACTOR_SHARD);
     }
 
     @Nonnull
-    @Override
-    protected ItemCombinerMenuSlotDefinition createInputSlotDefinitions() {
+    protected static ItemCombinerMenuSlotDefinition createInputSlotDefinitions() {
         return ItemCombinerMenuSlotDefinition.create()
                 .withSlot(0, 27, 47, FactorResearchMenu::isSrcAvailable)
                 .withSlot(1, 76, 47, FactorResearchMenu::isFactorResearch)
@@ -156,7 +155,7 @@ public class FactorResearchMenu extends ItemCombinerMenu {
 
     @Override
     protected void onTake(Player player, ItemStack resultStack) {
-        resultStack.onCraftedBy(player.level(), player, resultStack.getCount());
+        resultStack.onCraftedBy(player, resultStack.getCount());
         this.resultSlots.awardUsedRecipes(player, this.getRelevantItems());
         this.shrinkStackInSlot(0);
         this.shrinkStackInSlot(1);

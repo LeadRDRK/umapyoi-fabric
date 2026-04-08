@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.item.CreativeModeTabFiller;
 import net.tracen.umapyoi.item.ItemRegistry;
@@ -22,10 +23,11 @@ import net.tracen.umapyoi.utils.UmaFactorUtils;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class FactorReport extends Item implements CreativeModeTabFiller {
-    public FactorReport() {
-        super(Umapyoi.defaultItemProperties());
+    public FactorReport(Properties p) {
+        super(p);
     }
 
     public static List<UmaFactorStack> getFactorStacks(ItemStack stack) {
@@ -35,18 +37,19 @@ public class FactorReport extends Item implements CreativeModeTabFiller {
 
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents,
-                                TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context,
+                                TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder,
+                                TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         getFactorStacks(stack).stream().forEach(factor -> {
-            tooltipComponents.add(factor.getDescription().copy().withStyle(switch (factor.getFactor().getFactorType()) {
+            tooltipAdder.accept(factor.getDescription().copy().withStyle(switch (factor.getFactor().getFactorType()) {
                 case STATUS -> ChatFormatting.BLUE;
                 case UNIQUE -> ChatFormatting.GREEN;
                 case EXTRASTATUS -> ChatFormatting.RED;
                 default -> ChatFormatting.GRAY;
             }));
-            if(tooltipFlag.isAdvanced() || Umapyoi.CONFIG.DISPLAY_DETAIL()) {
-                tooltipComponents.add(factor.getDescriptionDetail().copy().withStyle(ChatFormatting.DARK_GRAY));
+            if(flag.isAdvanced() || Umapyoi.CONFIG.DISPLAY_DETAIL()) {
+                tooltipAdder.accept(factor.getDescriptionDetail().copy().withStyle(ChatFormatting.DARK_GRAY));
             }
         });
     }
@@ -61,7 +64,7 @@ public class FactorReport extends Item implements CreativeModeTabFiller {
                 .map(RegistryObject::get)
                 .map(i -> new UmaFactorStack(i, i.getMaxLevel()))
                 .map(i -> {
-                    ItemStack result = ItemRegistry.FACTOR_SHARD.get().getDefaultInstance();
+                    ItemStack result = ItemRegistry.FACTOR_SHARD.getDefaultInstance();
                     result.set(DataComponentsTypeRegistry.FACTOR_DATA.get(),
                             UmaFactorUtils.serializeData(List.of(i)));
                     return result;

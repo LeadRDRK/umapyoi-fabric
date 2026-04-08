@@ -20,7 +20,6 @@ import net.tracen.umapyoi.client.model.bedrock.BedrockVersion;
 import net.tracen.umapyoi.client.model.pojo.BedrockModelPOJO;
 import net.tracen.umapyoi.data.tag.UmapyoiCostumeDataTags;
 import net.tracen.umapyoi.data.tag.UmapyoiUmaDataTags;
-import net.tracen.umapyoi.item.AbstractSuitItem;
 import net.tracen.umapyoi.item.UmaCostumeItem;
 import net.tracen.umapyoi.registry.cosmetics.CosmeticData;
 import net.tracen.umapyoi.registry.races.Race;
@@ -78,15 +77,15 @@ public class ClientUtils {
     }
 
     public static Registry<Race> getRaceRegistry() {
-        return Minecraft.getInstance().getConnection().registryAccess().registryOrThrow(Race.REGISTRY_KEY);
+        return Minecraft.getInstance().getConnection().registryAccess().lookupOrThrow(Race.REGISTRY_KEY);
     }
 
     public static Registry<RaceTag> getRaceTagRegistry() {
-        return Minecraft.getInstance().getConnection().registryAccess().registryOrThrow(RaceTag.REGISTRY_KEY);
+        return Minecraft.getInstance().getConnection().registryAccess().lookupOrThrow(RaceTag.REGISTRY_KEY);
     }
 
     public static Registry<RaceField> getRaceFieldRegistry() {
-        return Minecraft.getInstance().getConnection().registryAccess().registryOrThrow(RaceField.REGISTRY_KEY);
+        return Minecraft.getInstance().getConnection().registryAccess().lookupOrThrow(RaceField.REGISTRY_KEY);
     }
 
     public static boolean isFlatUmamusume(ItemStack stack) {
@@ -116,19 +115,13 @@ public class ClientUtils {
         }
     }
 
-    public static void setUmaModelVisibilityForSuit(UmaPlayerModel<?> model, ItemStack suitItem) {
-        if (suitItem.getItem() instanceof AbstractSuitItem suit) {
-            setUmaModelVisibilityForSuit(model, suitItem, suit.getBaseModel());
-        }
-    }
-
     public static void setUmaModelVisibilityForSuit(UmaPlayerModel<?> model, ItemStack suitItem, UmaPlayerModel<?> suitModel) {
         model.setAllVisible(false);
         model.setHeadVisible(true);
         model.setTailVisible(true);
         if (!suitModel.getChild("hat").isEmpty()) {
             ResourceLocation loc = UmaCostumeItem.getCostumeID(suitItem);
-            var costumeData = ClientUtils.getClientCosmeticDataRegistry().getHolder(
+            var costumeData = ClientUtils.getClientCosmeticDataRegistry().get(
                     ResourceKey.create(CosmeticData.REGISTRY_KEY, loc)
             );
             if (costumeData.get().is(UmapyoiCostumeDataTags.HAT_HIDEHAIR)) {

@@ -4,6 +4,7 @@ import static net.tracen.umapyoi.item.UmaRaceTicketItem.getRaceID;
 
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.Registries;
@@ -13,6 +14,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
@@ -22,6 +24,9 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -80,11 +85,11 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
     }
 
     protected static boolean umaSoulConstraint(ItemStack stack) {
-        return stack.is(ItemRegistry.UMA_SOUL.get());
+        return stack.is(ItemRegistry.UMA_SOUL);
     }
 
     protected static boolean raceConstraint(ItemStack stack) {
-        return stack.is(ItemRegistry.UMA_RACE_TICKET.get());
+        return stack.is(ItemRegistry.UMA_RACE_TICKET);
     }
 
     @Override
@@ -107,28 +112,30 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
     // NBT: {RecipeTime: this.recipeTime, Inventory: [...this.inventory]}
 
     @Override
-    public void loadAdditional(CompoundTag compound, HolderLookup.Provider registries) {
-        super.loadAdditional(compound, registries);
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
         clearContent();
-        ContainerHelper.loadAllItems(compound, items, registries);
-        recipeTime = compound.getInt("RecipeTime");
-        winnerRenderSeed = compound.getLong("WinnerRenderSeed");
+        ContainerHelper.loadAllItems(input, items);
+        recipeTime = input.getInt("RecipeTime").orElse(0);
+        winnerRenderSeed = input.getLong("WinnerRenderSeed").orElse(0L);
     }
 
     @Override
-    public void saveAdditional(CompoundTag compound, HolderLookup.Provider registries) {
-        super.saveAdditional(compound, registries);
-        compound.putInt("RecipeTime", recipeTime);
-        ContainerHelper.saveAllItems(compound, items, registries);
-        compound.putLong("WinnerRenderSeed", this.safeGetWinnerRenderSeed());
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        output.putInt("RecipeTime", recipeTime);
+        ContainerHelper.saveAllItems(output, items);
+        output.putLong("WinnerRenderSeed", this.safeGetWinnerRenderSeed());
     }
 
     @Nonnull
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        CompoundTag tag = new CompoundTag();
-        this.saveAdditional(tag, registries);
-        return tag;
+        try (var reporter = new ProblemReporter.ScopedCollector(this.problemPath(), Umapyoi.getLogger())) {
+            var output = TagValueOutput.createWithContext(reporter, registries);
+            this.saveAdditional(output);
+            return output.buildResult();
+        }
     }
 
     public static final int DATA_SLOT_SIZE = 9;
@@ -233,7 +240,9 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
         }
 
         ResourceLocation raceID = getRaceID(this.getItem(1));
-        Race race = UmapyoiAPI.getRaceRegistry(this.level).get(raceID);
+        var race = UmapyoiAPI.getRaceRegistry(this.level).get(raceID)
+                .map(Holder::value)
+                .orElse(null);
         if (race == null) {
             this.maxRecipeTime = 0;
             return false;
@@ -275,7 +284,9 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
     public ItemStack getResultItem(ResourceLocation raceID) {
         if (this.level == null) return ItemStack.EMPTY;
 
-        Race race = UmapyoiAPI.getRaceRegistry(this.level).get(raceID);
+        Race race = UmapyoiAPI.getRaceRegistry(this.level).get(raceID)
+                .map(Holder::value)
+                .orElse(null);
         ResourceLocation lootSpecify = ResourceLocation.fromNamespaceAndPath(raceID.getNamespace(), "race/id/" + raceID.getPath());
         var registries = Objects.requireNonNull(this.level.getServer()).reloadableRegistries();
         LootTable table = registries.getLootTable(ResourceKey.create(Registries.LOOT_TABLE, lootSpecify));
@@ -324,7 +335,9 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
         if (!umaSoulConstraint(stackSoul)) return false;
         if (!raceConstraint(stackRace)) return false;
         if (this.level == null) return false;
-        Race race = UmapyoiAPI.getRaceRegistry(this.level).get(getRaceID(stackRace));
+        Race race = UmapyoiAPI.getRaceRegistry(this.level).get(getRaceID(stackRace))
+                .map(Holder::value)
+                .orElse(null);
         if (race == null) return false;
         return race.isAvailableToUmaSoul(stackSoul);
     }
@@ -361,7 +374,9 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
         ItemStack stackRace = this.getItem(1);
         if (stackRace.isEmpty()) return false;
         if (this.level == null) return false;
-        Race race = UmapyoiAPI.getRaceRegistry(this.level).get(getRaceID(stackRace));
+        Race race = UmapyoiAPI.getRaceRegistry(this.level).get(getRaceID(stackRace))
+                .map(Holder::value)
+                .orElse(null);
         if (race == null) return false;
         return race.isPassed(stackSoul, this.level);
     }
@@ -370,7 +385,9 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
         ItemStack stackRace = this.getItem(1);
         if (stackRace.isEmpty()) return -1;
         if (level == null) return -1;
-        Race race = UmapyoiAPI.getRaceRegistry(level).get(getRaceID(stackRace));
+        Race race = UmapyoiAPI.getRaceRegistry(level).get(getRaceID(stackRace))
+                .map(Holder::value)
+                .orElse(null);
         if (race == null) return -1;
         if (race.texturePredicateOverride != null) {
             return switch (race.texturePredicateOverride) {
@@ -387,7 +404,9 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
         ItemStack stackRace = this.getItem(1);
         if (stackRace.isEmpty()) return 1d;
         if (this.level == null) return 1d;
-        Race race = UmapyoiAPI.getRaceRegistry(this.level).get(getRaceID(stackRace));
+        Race race = UmapyoiAPI.getRaceRegistry(this.level).get(getRaceID(stackRace))
+                .map(Holder::value)
+                .orElse(null);
         if (race == null) return 1d;
         double retValue = race.offScalar(stackSoul, this.level);
         return retValue;

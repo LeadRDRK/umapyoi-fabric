@@ -27,11 +27,11 @@ public class UmapyoiBlockLootTableProvider extends FabricBlockLootTableProvider 
         dropSelf(BlockRegistry.UMA_STATUES);
         dropOther(BlockRegistry.SUPPORT_ALBUM_PEDESTAL, ItemRegistry.UMA_PEDESTAL);
         dropOther(BlockRegistry.SILVER_SUPPORT_ALBUM_PEDESTAL, ItemRegistry.SILVER_UMA_PEDESTAL);
-        dropSelf(BlockRegistry.FACTOR_DECOMPOSE_TABLE.get());
-        dropSelf(BlockRegistry.FACTOR_RESEARCH_TABLE.get());
-        dropSelf(BlockRegistry.GATE.get());
-        dropSelf(BlockRegistry.GATE_DOOR.get());
-        dropSelf(BlockRegistry.RACE_REGISTER_BLOCK.get());
-        add(BlockRegistry.GATE.get(), block -> createSinglePropConditionTable(block, ThreeBlockPart.PART, ThreeBlockPart.LOWER));
+        dropSelf(BlockRegistry.FACTOR_DECOMPOSE_TABLE);
+        dropSelf(BlockRegistry.FACTOR_RESEARCH_TABLE);
+        dropSelf(BlockRegistry.GATE);
+        dropSelf(BlockRegistry.GATE_DOOR);
+        dropSelf(BlockRegistry.RACE_REGISTER_BLOCK);
+        add(BlockRegistry.GATE, block -> createSinglePropConditionTable(block, ThreeBlockPart.PART, ThreeBlockPart.LOWER));
     }
 }

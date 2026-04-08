@@ -20,9 +20,9 @@ public class UmapyoiBlockTagProvider extends BlockTagProvider {
                 .add(BlockRegistry.SUPPORT_ALBUM_PEDESTAL).add(BlockRegistry.UMA_PEDESTAL)
                 .add(BlockRegistry.SILVER_SUPPORT_ALBUM_PEDESTAL).add(BlockRegistry.SILVER_UMA_PEDESTAL)
                 .add(BlockRegistry.UMA_STATUES).add(BlockRegistry.THREE_GODDESS_UPPER)
-                .add(BlockRegistry.TRAINING_FACILITY).add(BlockRegistry.FACTOR_DECOMPOSE_TABLE.get())
-                .add(BlockRegistry.FACTOR_RESEARCH_TABLE.get()).add(BlockRegistry.GATE.get())
-                .add(BlockRegistry.GATE_DOOR.get()).add(BlockRegistry.RACE_REGISTER_BLOCK.get());
+                .add(BlockRegistry.TRAINING_FACILITY).add(BlockRegistry.FACTOR_DECOMPOSE_TABLE)
+                .add(BlockRegistry.FACTOR_RESEARCH_TABLE).add(BlockRegistry.GATE)
+                .add(BlockRegistry.GATE_DOOR).add(BlockRegistry.RACE_REGISTER_BLOCK);
 
         valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE).add(BlockRegistry.DISASSEMBLY_BLOCK).add(BlockRegistry.SKILL_LEARNING_TABLE)
                 .add(BlockRegistry.REGISTER_LECTERN).add(BlockRegistry.UMA_SELECT_BLOCK);
@@ -43,12 +43,12 @@ public class UmapyoiBlockTagProvider extends BlockTagProvider {
         valueLookupBuilder(UmapyoiBlockTags.TRACK_SNOW)
                 .forceAddTag(BlockTags.SNOW);
 
-        getOrCreateTagBuilder(UmapyoiBlockTags.PEDESTAL_UMA)
-                .add(BlockRegistry.UMA_PEDESTAL.get())
-                .add(BlockRegistry.SILVER_UMA_PEDESTAL.get());
+        valueLookupBuilder(UmapyoiBlockTags.PEDESTAL_UMA)
+                .add(BlockRegistry.UMA_PEDESTAL)
+                .add(BlockRegistry.SILVER_UMA_PEDESTAL);
 
-        getOrCreateTagBuilder(UmapyoiBlockTags.PEDESTAL_SUPPORT)
-                .add(BlockRegistry.SUPPORT_ALBUM_PEDESTAL.get())
-                .add(BlockRegistry.SILVER_SUPPORT_ALBUM_PEDESTAL.get());
+        valueLookupBuilder(UmapyoiBlockTags.PEDESTAL_SUPPORT)
+                .add(BlockRegistry.SUPPORT_ALBUM_PEDESTAL)
+                .add(BlockRegistry.SILVER_SUPPORT_ALBUM_PEDESTAL);
     }
 }

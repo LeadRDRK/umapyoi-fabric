@@ -8,6 +8,7 @@ import com.mojang.serialization.MapLike;
 import com.mojang.serialization.RecordBuilder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
@@ -54,7 +55,7 @@ public class RaceTicketRecipeSerializer<T extends Recipe<?>, U extends T> implem
                             ops.mergeToMap(map, ops.createString("result"), ops.createMap(
                                     Stream.of(Pair.of(
                                             ops.createString("id"),
-                                            ops.createString(ItemRegistry.UMA_RACE_TICKET.getId().toString())
+                                            ops.createString(BuiltInRegistries.ITEM.getKey(ItemRegistry.UMA_RACE_TICKET).toString())
                                     ))
                             ))
                     ).getOrThrow();

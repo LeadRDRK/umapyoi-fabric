@@ -22,7 +22,7 @@ public class ShapelessSupportCardRecipe extends ShapelessRecipe {
 
     public ShapelessSupportCardRecipe(ShapelessRecipe compose, ResourceLocation outputBlade) {
         super(compose.group(), compose.category(),
-                getResultItem(outputBlade), compose.placementInfo().ingredients());
+                getResultItem(outputBlade), compose.ingredients);
         this.outputUma = outputBlade;
     }
 

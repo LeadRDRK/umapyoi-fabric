@@ -29,7 +29,7 @@ public class ShapelessRaceTicketRecipe extends ShapelessRecipe implements RaceTi
     private final ResourceLocation baseItemOrKey;
     public ShapelessRaceTicketRecipe(ShapelessRecipe compose, ResourceLocation loc) {
         super(compose.group(), compose.category(),
-                getResultItem(loc), compose.placementInfo().ingredients());
+                getResultItem(loc), compose.ingredients);
         this.baseItemOrKey = loc;
     }
 

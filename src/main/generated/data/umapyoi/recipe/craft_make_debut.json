@@ -2,12 +2,8 @@
   "type": "umapyoi:shapeless_race_ticket",
   "category": "misc",
   "ingredients": [
-    {
-      "tag": "c:gems/emerald"
-    },
-    {
-      "item": "umapyoi:blank_ticket"
-    }
+    "#c:gems/emerald",
+    "umapyoi:blank_ticket"
   ],
   "race": "umapyoi:make_debut",
   "result": {

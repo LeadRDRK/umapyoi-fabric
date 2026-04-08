@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:ingots/gold"
-    },
-    "B": {
-      "item": "minecraft:nether_star"
-    },
-    "J": {
-      "item": "umapyoi:race_ticket"
-    },
-    "L": {
-      "item": "minecraft:lectern"
-    }
+    "A": "#c:ingots/gold",
+    "B": "minecraft:nether_star",
+    "J": "umapyoi:race_ticket",
+    "L": "minecraft:lectern"
   },
   "pattern": [
     " J ",

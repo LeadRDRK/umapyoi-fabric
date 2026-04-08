@@ -5,8 +5,7 @@
       "y": 90
     },
     "facing=north": {
-      "model": "umapyoi:block/uma_select_block",
-      "y": 0
+      "model": "umapyoi:block/uma_select_block"
     },
     "facing=south": {
       "model": "umapyoi:block/uma_select_block",

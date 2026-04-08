@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "item": "minecraft:iron_bars"
-    },
-    "G": {
-      "item": "minecraft:green_concrete"
-    },
-    "Y": {
-      "item": "minecraft:yellow_concrete"
-    }
+    "B": "minecraft:iron_bars",
+    "G": "minecraft:green_concrete",
+    "Y": "minecraft:yellow_concrete"
   },
   "pattern": [
     "GYG",

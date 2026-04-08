@@ -5,8 +5,7 @@
       "y": 90
     },
     "facing=north": {
-      "model": "umapyoi:block/uma_statue",
-      "y": 0
+      "model": "umapyoi:block/uma_statue"
     },
     "facing=south": {
       "model": "umapyoi:block/uma_statue",

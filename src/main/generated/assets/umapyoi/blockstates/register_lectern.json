@@ -5,8 +5,7 @@
       "y": 90
     },
     "facing=north": {
-      "model": "umapyoi:block/register_lectern",
-      "y": 0
+      "model": "umapyoi:block/register_lectern"
     },
     "facing=south": {
       "model": "umapyoi:block/register_lectern",

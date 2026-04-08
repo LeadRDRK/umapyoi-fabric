@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "umapyoi:item/support_card_ssr"
+    "layer0": "umapyoi:item/manual_closed"
   }
 }

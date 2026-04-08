@@ -5,8 +5,7 @@
       "y": 90
     },
     "facing=north": {
-      "model": "umapyoi:block/factor_research_table",
-      "y": 0
+      "model": "umapyoi:block/factor_research_table"
     },
     "facing=south": {
       "model": "umapyoi:block/factor_research_table",

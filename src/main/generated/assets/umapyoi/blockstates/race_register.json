@@ -5,8 +5,7 @@
       "y": 90
     },
     "facing=north": {
-      "model": "umapyoi:block/race_register",
-      "y": 0
+      "model": "umapyoi:block/race_register"
     },
     "facing=south": {
       "model": "umapyoi:block/race_register",

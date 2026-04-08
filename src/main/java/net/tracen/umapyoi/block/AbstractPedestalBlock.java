@@ -78,6 +78,5 @@ public abstract class AbstractPedestalBlock extends BaseEntityBlock
         }
     }
 
-    protected void transformOnBook(Level level, BlockPos pos) {
-    }
+    protected abstract void transformOnBook(Level level, BlockPos pos);
 }

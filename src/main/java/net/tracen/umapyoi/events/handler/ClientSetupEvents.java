@@ -92,14 +92,14 @@ public class ClientSetupEvents {
                         .map(ClientSetupEvents::resolveModelLocation)
                         .forEach(location -> {
                             var model = new UnbakedExtraItemModel(location);
-                            var costumeId = ResourceLocation.fromNamespaceAndPath(
+                            var modelId = ResourceLocation.fromNamespaceAndPath(
                                     location.getNamespace(),
-                                    location.getPath().substring("item/costume/".length())
+                                    location.getPath().substring("item/".length())
                             );
                             var key = ExtraModelKey.<ItemModel>create(location::toString);
 
                             pluginContext.addModel(key, model);
-                            DynamicItemBakedModel.MODELS.put(costumeId, key);
+                            DynamicItemBakedModel.MODELS.put(modelId, key);
                         });
             });
 

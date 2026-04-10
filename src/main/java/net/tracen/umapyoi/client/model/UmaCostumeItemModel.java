@@ -19,7 +19,8 @@ public class UmaCostumeItemModel extends DynamicItemBakedModel {
         if (!stack.isEmpty()) {
             if (stack.getItem() instanceof UmaCostumeItem) {
                 var costumeId = UmaCostumeItem.getCostumeID(stack);
-                return getModel(costumeId);
+                var modelId = costumeId.withPath("costume/" + costumeId.getPath());
+                return getModel(modelId);
             }
         }
         return this.getOriginalModel();

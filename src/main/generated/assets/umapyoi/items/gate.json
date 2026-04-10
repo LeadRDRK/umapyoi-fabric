@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "umapyoi:block/gate"
+    "model": "umapyoi:item/gate"
   }
 }

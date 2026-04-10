@@ -25,7 +25,9 @@ public class UmapyoiItemModelProvider {
             ItemRegistry.HACHIMI_BIG,
             ItemRegistry.HACHIMI_MID,
             ItemRegistry.NAGINATA,
-            ItemRegistry.UMA_SOUL_DISPLAY
+            ItemRegistry.UMA_SOUL_DISPLAY,
+            ItemRegistry.GATE,
+            ItemRegistry.GATE_DOOR
     );
 
     private static final Set<Item> BLOCK_ITEMS_WITH_FLAT_MODEL = Set.of(
@@ -34,8 +36,6 @@ public class UmapyoiItemModelProvider {
     );
 
     private static final Set<Item> EXCLUDE_ITEMS = Set.of(
-            ItemRegistry.GATE,
-            ItemRegistry.GATE_DOOR
     );
 
     private final ItemModelGenerators generator;
@@ -46,17 +46,13 @@ public class UmapyoiItemModelProvider {
 
     public void registerModels() {
         for (Item item : ItemRegistry.ITEMS) {
-            if (registerDynamicModels(item))
-                continue;
-
-            if (EXCLUDE_ITEMS.contains(item)
-                    || (item instanceof BlockItem && !BLOCK_ITEMS_WITH_FLAT_MODEL.contains(item)))
+            if (EXCLUDE_ITEMS.contains(item) || registerDynamicModels(item))
                 continue;
 
             if (CUSTOM_MODEL_ITEMS.contains(item)) {
                 declareCustomModelItem(item);
             }
-            else {
+            else if (!(item instanceof BlockItem) || BLOCK_ITEMS_WITH_FLAT_MODEL.contains(item)) {
                 generator.generateFlatItem(item, ModelTemplates.FLAT_ITEM);
             }
         }
@@ -145,7 +141,8 @@ public class UmapyoiItemModelProvider {
             for (Item item : ItemRegistry.ITEMS) {
                 if (EXCLUDE_ITEMS.contains(item)) continue;
 
-                if (item instanceof BlockItem blockItem && !BLOCK_ITEMS_WITH_FLAT_MODEL.contains(item)) {
+                if (item instanceof BlockItem blockItem && !BLOCK_ITEMS_WITH_FLAT_MODEL.contains(item)
+                        && !CUSTOM_MODEL_ITEMS.contains(item)) {
                     // the pedestal blocks's model locations are distinct from their block id
                     String modelName;
                     if (item == ItemRegistry.UMA_PEDESTAL) {

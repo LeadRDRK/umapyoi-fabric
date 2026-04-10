@@ -9,6 +9,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.client.MotivationOverlay;
@@ -142,9 +143,9 @@ public class OverlayScreen extends Screen {
     @Override
     public void render(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         super.render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
-        pGuiGraphics.blit(SkillOverlay.HUD, (int) (x + this.skillX), (int) (this.height + this.skillY), 0, 0, 96, 20, 128, 64);
+        pGuiGraphics.blit(RenderPipelines.GUI_TEXTURED, SkillOverlay.HUD, (int) (x + this.skillX), (int) (this.height + this.skillY), 0, 0, 96, 20, 128, 64);
         renderSkill(UmaSkillRegistry.BASIC_PACE.get(), Minecraft.getInstance().font, pGuiGraphics, (int) (x + this.skillX), (int) (this.height + this.skillY));
-        pGuiGraphics.blit(MotivationOverlay.HUD, (int) (x + this.motivationX), (int) (this.height + this.motivationY), 0, 0, 64, 14, 64, 96);
+        pGuiGraphics.blit(RenderPipelines.GUI_TEXTURED, MotivationOverlay.HUD, (int) (x + this.motivationX), (int) (this.height + this.motivationY), 0, 0, 64, 14, 64, 96);
         pGuiGraphics.drawString(Minecraft.getInstance().font, Component.translatable("umapyoi.motivation.perfect"),
                 (int) (x + this.motivationX + 14), (int) (this.height + this.motivationY + 3), 0XFFFFFF);
 

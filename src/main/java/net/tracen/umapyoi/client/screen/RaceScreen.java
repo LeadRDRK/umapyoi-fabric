@@ -126,7 +126,7 @@ public class RaceScreen extends AbstractContainerScreen<RaceContainer> {
 
     private void renderDummyUma(GuiGraphics pGuiGrapahics, double progress, DummyUmaDefinition umaDefinition) {
         int startPixel = (int) Mth.lerp(mapProgress(progress, umaDefinition.tactic), umaDefinition.start, umaDefinition.end);
-        pGuiGrapahics.blit(umaDefinition.texture, this.leftPos + startPixel,
+        pGuiGrapahics.blit(RenderPipelines.GUI_TEXTURED, umaDefinition.texture, this.leftPos + startPixel,
                 this.topPos + 54 - umaDefinition.height, umaDefinition.uOffset, umaDefinition.vOffset,
                 umaDefinition.width, umaDefinition.height, umaDefinition.textureWidth, umaDefinition.textureHeight);
     }

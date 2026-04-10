@@ -86,6 +86,7 @@ public class UmaStatueBlockRenderer implements BlockEntityRenderer<UmaStatueBloc
         BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, partialTick, cameraPosition, breakProgress);
 
         var soul = blockEntity.getStoredItem();
+        var suit = blockEntity.getCostume();
         var useDefaultModel = !soul.is(ItemRegistry.UMA_SOUL);
 
         var umaId = UmaSoulUtils.getName(soul);
@@ -108,16 +109,19 @@ public class UmaStatueBlockRenderer implements BlockEntityRenderer<UmaStatueBloc
                 renderState.emissiveTexture = renderState.model.isEmissive()
                         ? ClientUtils.getEmissiveTexture(umaId)
                         : null;
+
+                if (renderState.suitModel != null) {
+                    ClientUtils.setUmaModelVisibilityForSuit(model, suit, renderState.suitModel);
+                }
             }
         }
 
         // no need to check for suit if soul isn't present
         if (useDefaultModel) return;
 
-        var suit = blockEntity.getCostume();
         var doRenderSuit = false;
         if (suit.getItem() instanceof AbstractSuitItem suitItem) {
-            boolean isFlat = ClientUtils.isFlatUmamusume(suit);
+            boolean isFlat = ClientUtils.isFlatUmamusume(soul);
             var suitPojo = ClientUtils.getModelPOJO(isFlat
                     ? suitItem.getFlatModel(suit)
                     : suitItem.getModel(suit));
@@ -135,17 +139,20 @@ public class UmaStatueBlockRenderer implements BlockEntityRenderer<UmaStatueBloc
                     suitModel.head.visible = false;
                     suitModel.tail.visible = false;
 
-                    boolean isTanned = ClientUtils.isTannedSkin(suit);
+                    boolean isTanned = ClientUtils.isTannedSkin(soul);
                     renderState.suitTexture = isFlat
                             ? suitItem.getFlatTexture(suit, isTanned)
                             : suitItem.getTexture(suit, isTanned);
+
+                    ClientUtils.setUmaModelVisibilityForSuit(model, suit, renderState.suitModel);
                 }
             }
         }
 
-        if (!doRenderSuit) {
+        if (!doRenderSuit && renderState.suitModel != null) {
             renderState.suitModel = null;
             renderState.suitTexture = null;
+            model.setAllVisible(true);
         }
     }
 }

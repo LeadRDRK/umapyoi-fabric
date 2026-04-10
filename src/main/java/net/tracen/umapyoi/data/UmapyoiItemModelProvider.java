@@ -2,6 +2,7 @@ package net.tracen.umapyoi.data;
 
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.model.ItemModelUtils;
 import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
@@ -65,11 +66,13 @@ public class UmapyoiItemModelProvider {
     private boolean registerDynamicModels(Item item) {
         if (item == ItemRegistry.SUPPORT_CARD) {
             String basePath = BuiltInRegistries.ITEM.getKey(item).getPath();
-            ModelTemplates.FLAT_ITEM.create(
+            var defaultModel = ModelTemplates.FLAT_ITEM.create(
                     ModelLocationUtils.getModelLocation(item),
                     TextureMapping.layer0(Umapyoi.id("item/" + basePath + "_ssr")),
                     generator.modelOutput
             );
+            generator.itemModelOutput.accept(item, ItemModelUtils.plainModel(defaultModel));
+
             for (GachaRanking rank: GachaRanking.values()) {
                 String path = basePath + "_" + rank.name().toLowerCase();
                 String[] sep = path.split("/");
@@ -93,11 +96,12 @@ public class UmapyoiItemModelProvider {
 
         if (item == ItemRegistry.UMA_RACE_TICKET) {
             String basePath = BuiltInRegistries.ITEM.getKey(item).getPath();
-            ModelTemplates.FLAT_ITEM.create(
+            var defaultModel = ModelTemplates.FLAT_ITEM.create(
                     ModelLocationUtils.getModelLocation(item),
                     TextureMapping.layer0(Umapyoi.id("item/" + basePath + "_common")),
                     generator.modelOutput
             );
+            generator.itemModelOutput.accept(item, ItemModelUtils.plainModel(defaultModel));
 
             Stream.concat(
                     Arrays.stream(RaceRanking.values()).map(r -> r.textureSuffix),

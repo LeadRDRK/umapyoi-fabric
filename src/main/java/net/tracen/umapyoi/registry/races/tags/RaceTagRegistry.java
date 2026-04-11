@@ -2,7 +2,7 @@ package net.tracen.umapyoi.registry.races.tags;
 
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.tracen.umapyoi.Umapyoi;
 
 import java.util.HashMap;
@@ -28,10 +28,10 @@ public class RaceTagRegistry {
     public static ResourceKey<RaceTag> DIRT = simpleRegister("dirt", 2, true,
             new int[]{1, 1, 1, 1, 1}); //note: 春秋沙地赛（二月锦标+日本冠军）
 
-    private static HashMap<ResourceKey<RaceTag>, Function<ResourceLocation, RaceTag>> forDataGenMap;
+    private static HashMap<ResourceKey<RaceTag>, Function<Identifier, RaceTag>> forDataGenMap;
 
     public static ResourceKey<RaceTag> simpleRegister(String name, int max, boolean isUnique, int[] propertyReward) {
-        ResourceLocation rLoc = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, name);
+        Identifier rLoc = Identifier.fromNamespaceAndPath(Umapyoi.MODID, name);
         ResourceKey<RaceTag> rKey = ResourceKey.create(RaceTag.REGISTRY_KEY, rLoc);
         if (forDataGenMap == null) forDataGenMap = new HashMap<>();
         forDataGenMap.put(rKey, (rLocs) -> new RaceTag(max, rLocs, isUnique, propertyReward));
@@ -39,7 +39,7 @@ public class RaceTagRegistry {
     }
 
     public static ResourceKey<RaceTag> simpleRegister(String name, int max, boolean isUnique) {
-        ResourceLocation rLoc = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, name);
+        Identifier rLoc = Identifier.fromNamespaceAndPath(Umapyoi.MODID, name);
         ResourceKey<RaceTag> rKey = ResourceKey.create(RaceTag.REGISTRY_KEY, rLoc);
         if (forDataGenMap == null) forDataGenMap = new HashMap<>();
         forDataGenMap.put(rKey, (rLocs) -> new RaceTag(max, rLocs, isUnique, new int[5]));

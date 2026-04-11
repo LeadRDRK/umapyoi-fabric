@@ -3,14 +3,14 @@ package net.tracen.umapyoi.client.renderer.blockentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,7 +27,7 @@ import net.tracen.umapyoi.utils.ClientUtils;
 import org.jetbrains.annotations.Nullable;
 
 public class GateRender implements BlockEntityRenderer<GateEntity, GateRenderState> {
-    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/gate_door.png");
+    public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/gate_door.png");
 
     public GateRender(BlockEntityRendererProvider.Context ctx) {
     }
@@ -49,7 +49,7 @@ public class GateRender implements BlockEntityRenderer<GateEntity, GateRenderSta
         // poseStack.translate(0d, 0d, 7d/16d);
         var modelRenderer = new BedrockModelRenderer(renderState.model, renderState.lightCoords,
                 OverlayTexture.NO_OVERLAY, -1);
-        var renderType = RenderType.entityCutout(TEXTURE);
+        var renderType = RenderTypes.entityCutout(TEXTURE);
         nodeCollector.submitCustomGeometry(poseStack, renderType, modelRenderer);
         poseStack.popPose();
     }

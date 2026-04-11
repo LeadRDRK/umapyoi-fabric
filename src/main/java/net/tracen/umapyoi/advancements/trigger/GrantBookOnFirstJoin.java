@@ -1,13 +1,14 @@
 package net.tracen.umapyoi.advancements.trigger;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.advancements.critereon.ContextAwarePredicate;
-import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
-import net.minecraft.resources.ResourceLocation;
+import org.jspecify.annotations.NullMarked;
+import net.minecraft.advancements.criterion.ContextAwarePredicate;
+import net.minecraft.advancements.criterion.SimpleCriterionTrigger;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -15,13 +16,13 @@ import net.tracen.umapyoi.Umapyoi;
 
 import java.util.Optional;
 
-@MethodsReturnNonnullByDefault
+@NullMarked
 public class GrantBookOnFirstJoin extends SimpleCriterionTrigger<GrantBookOnFirstJoin.Instance> {
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "grant_book_on_first_join");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(Umapyoi.MODID, "grant_book_on_first_join");
 
     @Override
     public Codec<Instance> codec() {
-        return Codec.unit(Instance::new);
+        return MapCodec.unitCodec(Instance::new);
     }
 
     public static class Instance implements SimpleCriterionTrigger.SimpleInstance {

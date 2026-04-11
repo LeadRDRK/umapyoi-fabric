@@ -2,7 +2,7 @@ package net.tracen.umapyoi.events;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 
@@ -10,7 +10,7 @@ import java.util.Collection;
 
 public interface UmaSoulGachaCallback {
     class Context extends GachaContext {
-        public Context(ItemStack input, Collection<ResourceLocation> fulfills, ResourceLocation target,
+        public Context(ItemStack input, Collection<Identifier> fulfills, Identifier target,
                        ItemStack defaultResult, RandomSource src) {
             super(input, fulfills, target, defaultResult, src);
         }

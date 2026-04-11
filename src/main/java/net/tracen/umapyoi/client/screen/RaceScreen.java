@@ -8,7 +8,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
 
 public class RaceScreen extends AbstractContainerScreen<RaceContainer> {
 
-    private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID,
+    private static final Identifier BACKGROUND_TEXTURE = Identifier.fromNamespaceAndPath(Umapyoi.MODID,
             "textures/gui/race_screen.png");
 
     public RaceScreen(RaceContainer container, Inventory inv, Component title) {
@@ -236,11 +236,11 @@ public class RaceScreen extends AbstractContainerScreen<RaceContainer> {
         public final int start;
         public final int end;
         public final Position tactic;
-        public final ResourceLocation texture;
+        public final Identifier texture;
         public final int textureHeight;
         public final int textureWidth;
 
-        DummyUmaDefinition(int w, int h, int u, int v, int s, int e, Position tactic, ResourceLocation rl, int textureWidth, int textureHeight) {
+        DummyUmaDefinition(int w, int h, int u, int v, int s, int e, Position tactic, Identifier rl, int textureWidth, int textureHeight) {
             this.width = w;
             this.height = h;
             this.uOffset = u;

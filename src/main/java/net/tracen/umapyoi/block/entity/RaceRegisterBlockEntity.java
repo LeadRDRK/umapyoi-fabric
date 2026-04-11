@@ -11,7 +11,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ProblemReporter;
@@ -239,7 +239,7 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
             return false;
         }
 
-        ResourceLocation raceID = getRaceID(this.getItem(1));
+        Identifier raceID = getRaceID(this.getItem(1));
         var race = UmapyoiAPI.getRaceRegistry(this.level).get(raceID)
                 .map(Holder::value)
                 .orElse(null);
@@ -281,13 +281,13 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
         return true;
     }
 
-    public ItemStack getResultItem(ResourceLocation raceID) {
+    public ItemStack getResultItem(Identifier raceID) {
         if (this.level == null) return ItemStack.EMPTY;
 
         Race race = UmapyoiAPI.getRaceRegistry(this.level).get(raceID)
                 .map(Holder::value)
                 .orElse(null);
-        ResourceLocation lootSpecify = ResourceLocation.fromNamespaceAndPath(raceID.getNamespace(), "race/id/" + raceID.getPath());
+        Identifier lootSpecify = Identifier.fromNamespaceAndPath(raceID.getNamespace(), "race/id/" + raceID.getPath());
         var registries = Objects.requireNonNull(this.level.getServer()).reloadableRegistries();
         LootTable table = registries.getLootTable(ResourceKey.create(Registries.LOOT_TABLE, lootSpecify));
         if (table == LootTable.EMPTY) {
@@ -301,17 +301,17 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
             if (stackSoul.equals(ItemStack.EMPTY)) {
                 Umapyoi.getLogger().error("Umasoul is no longer present.");
                 table = registries.getLootTable(ResourceKey.create(Registries.LOOT_TABLE,
-                        ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "race/generic/race_"
+                        Identifier.fromNamespaceAndPath(Umapyoi.MODID, "race/generic/race_"
                                 + rank.name().toLowerCase())));
             } else {
-                ResourceLocation field = race.field(this.level, stackSoul).id();
+                Identifier field = race.field(this.level, stackSoul).id();
                 table = registries.getLootTable(ResourceKey.create(Registries.LOOT_TABLE,
-                        ResourceLocation.fromNamespaceAndPath(field.getNamespace(), "race/generic/field/race_"
+                        Identifier.fromNamespaceAndPath(field.getNamespace(), "race/generic/field/race_"
                                 + field.getPath() + "_" + rank.name().toLowerCase())));
                 if (table == LootTable.EMPTY) {
                     Umapyoi.getLogger().debug("There doesn't exist a loot table for {} {}, falling back to generic table", field, rank);
                     table = registries.getLootTable(ResourceKey.create(Registries.LOOT_TABLE,
-                            ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "race/generic/race_"
+                            Identifier.fromNamespaceAndPath(Umapyoi.MODID, "race/generic/race_"
                                     + rank.name().toLowerCase())));
                 }
             }
@@ -423,7 +423,7 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
         ItemStack stackSoul = this.getItem(0);
         if (stackSoul.isEmpty()) return Position.FRONT_RUNNER.ordinal();
         if (level == null) return Position.FRONT_RUNNER.ordinal();
-        ResourceLocation nameLoc = UmaSoulUtils.getName(stackSoul);
+        Identifier nameLoc = UmaSoulUtils.getName(stackSoul);
         UmaData umaData = UmapyoiAPI.getUmaDataRegistry(level).getOptional(nameLoc).orElseGet(() -> {
             Umapyoi.getLogger().info("Warning: {} doesn't exist.", nameLoc);
             return UmaData.DEFAULT_UMA;

@@ -5,7 +5,7 @@ import com.mojang.logging.LogUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.tracen.umapyoi.advancements.trigger.GrantBookOnFirstJoin;
 import net.tracen.umapyoi.advancements.trigger.TriggerRegistry;
@@ -50,8 +50,8 @@ public class Umapyoi implements ModInitializer {
         return new Item.Properties();
     }
 
-    public static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, path);
+    public static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(MODID, path);
     }
 
     @Override

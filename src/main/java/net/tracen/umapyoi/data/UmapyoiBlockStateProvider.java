@@ -7,7 +7,7 @@ import net.minecraft.client.data.models.MultiVariant;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.blockstates.PropertyDispatch;
 import net.minecraft.client.renderer.block.model.Variant;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -59,7 +59,7 @@ public class UmapyoiBlockStateProvider {
         );
     }
 
-    private void simpleBlock(Block block, ResourceLocation modelLoc) {
+    private void simpleBlock(Block block, Identifier modelLoc) {
         generator.blockStateOutput.accept(
                 MultiVariantGenerator.dispatch(block,
                         new MultiVariant(WeightedList.of(new Variant(modelLoc))))
@@ -68,7 +68,7 @@ public class UmapyoiBlockStateProvider {
 
     private static final int DEFAULT_ANGLE_OFFSET = 180;
 
-    private void horizontalBlock(Block block, ResourceLocation modelLoc, int rotation) {
+    private void horizontalBlock(Block block, Identifier modelLoc, int rotation) {
         PropertyDispatch<MultiVariant> dispatch = PropertyDispatch.initial(BlockStateProperties.HORIZONTAL_FACING)
                 .generate(facing -> new MultiVariant(WeightedList.of(
                         new Variant(modelLoc)
@@ -79,7 +79,7 @@ public class UmapyoiBlockStateProvider {
         );
     }
 
-    private void horizontalBlock(Block block, ResourceLocation modelLoc) {
+    private void horizontalBlock(Block block, Identifier modelLoc) {
         horizontalBlock(block, modelLoc, DEFAULT_ANGLE_OFFSET);
     }
 }

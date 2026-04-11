@@ -1,6 +1,6 @@
 package net.tracen.umapyoi.events;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 
@@ -10,14 +10,14 @@ import java.util.Collection;
 import java.util.Objects;
 
 public abstract class GachaContext {
-    private final Collection<ResourceLocation> fulfills;
-    private final ResourceLocation target;
+    private final Collection<Identifier> fulfills;
+    private final Identifier target;
     private final ItemStack defaultResult;
     private ItemStack output = null;
     private final RandomSource rnd;
     private final ItemStack input;
 
-    public GachaContext(ItemStack input, Collection<ResourceLocation> fulfills, ResourceLocation target, ItemStack defaultResult, RandomSource src) {
+    public GachaContext(ItemStack input, Collection<Identifier> fulfills, Identifier target, ItemStack defaultResult, RandomSource src) {
         this.fulfills = fulfills;
         this.target = target;
         this.defaultResult = defaultResult;
@@ -41,11 +41,11 @@ public abstract class GachaContext {
         this.output = output;
     }
 
-    public ResourceLocation getOriginalTarget() {
+    public Identifier getOriginalTarget() {
         return this.target;
     }
 
-    public Collection<ResourceLocation> getOriginalFulfills() {
+    public Collection<Identifier> getOriginalFulfills() {
         return this.fulfills;
     }
 

@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
@@ -48,7 +48,7 @@ public record RaceTicketRandomLootFunction(RaceRanking least, RaceRanking most, 
                 .toList();
         if (raceListOfPredicate.isEmpty()) return ItemStack.EMPTY;
         Race raceDeterm = raceListOfPredicate.get(rand.nextInt(raceListOfPredicate.size()));
-        ResourceLocation id = raceDeterm.id;
+        Identifier id = raceDeterm.id;
         var race = lootContext.getResolver().lookupOrThrow(Race.REGISTRY_KEY)
                 .get(ResourceKey.create(Race.REGISTRY_KEY, id))
                 .map(Holder::value)

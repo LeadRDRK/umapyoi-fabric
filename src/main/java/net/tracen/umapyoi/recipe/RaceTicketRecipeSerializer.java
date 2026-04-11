@@ -7,11 +7,11 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.MapLike;
 import com.mojang.serialization.RecordBuilder;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.tracen.umapyoi.item.ItemRegistry;
@@ -23,18 +23,18 @@ public class RaceTicketRecipeSerializer<T extends Recipe<?>, U extends T> implem
     private final MapCodec<U> codec;
     private final StreamCodec<RegistryFriendlyByteBuf, U> streamCodec;
 
-    public RaceTicketRecipeSerializer(RecipeSerializer<T> compose, BiFunction<T, ResourceLocation, U> converter) {
+    public RaceTicketRecipeSerializer(RecipeSerializer<T> compose, BiFunction<T, Identifier, U> converter) {
         this.codec = makeCodec(compose, converter);
         this.streamCodec = makeStreamCodec(compose, converter);
     }
 
     private static <T extends Recipe<?>, U extends T> MapCodec<U> makeCodec(RecipeSerializer<T> compose,
-                                                                            BiFunction<T, ResourceLocation, U> converter) {
+                                                                            BiFunction<T, Identifier, U> converter) {
         var mapCodec = compose.codec();
         return new MapCodec<>() {
             @Override
             public <V> RecordBuilder<V> encode(U input, DynamicOps<V> ops, RecordBuilder<V> prefix) {
-                var race = ResourceLocation.CODEC
+                var race = Identifier.CODEC
                         .encodeStart(ops, ((RaceTicketRecipe<?>) input).getKey());
                 return mapCodec.encode(input, ops, prefix)
                         .add(ops.createString("race"), race);
@@ -69,11 +69,11 @@ public class RaceTicketRecipeSerializer<T extends Recipe<?>, U extends T> implem
 
                 var recipeResult = mapCodec.decode(ops, newInput);
                 return recipeResult.flatMap(recipe -> {
-                    var outputResult = ResourceLocation.CODEC.optionalFieldOf("race").decode(ops, newInput);
+                    var outputResult = Identifier.CODEC.optionalFieldOf("race").decode(ops, newInput);
                     return outputResult.map(outputOpt -> {
                         var output = outputOpt
                                 .orElseGet(() -> // result.id MUST be present for the base recipe to even decode correctly
-                                        ResourceLocation.CODEC.fieldOf("id").codec()
+                                        Identifier.CODEC.fieldOf("id").codec()
                                                 .decode(ops, resultField)
                                                 .result()
                                                 .orElseThrow()
@@ -97,22 +97,22 @@ public class RaceTicketRecipeSerializer<T extends Recipe<?>, U extends T> implem
 
     private static <T extends Recipe<?>, U extends T>
     StreamCodec<RegistryFriendlyByteBuf, U> makeStreamCodec(RecipeSerializer<T> compose,
-                                                            BiFunction<T, ResourceLocation, U> converter) {
+                                                            BiFunction<T, Identifier, U> converter) {
         return StreamCodec.composite(
                 compose.streamCodec(), recipe -> recipe,
-                ResourceLocation.STREAM_CODEC, recipe -> ((RaceTicketRecipe<?>) recipe).getKey(),
+                Identifier.STREAM_CODEC, recipe -> ((RaceTicketRecipe<?>) recipe).getKey(),
                 converter
         );
     }
 
     @Override
-    @MethodsReturnNonnullByDefault
+    @NullMarked
     public MapCodec<U> codec() {
         return codec;
     }
 
     @Override
-    @MethodsReturnNonnullByDefault
+    @NullMarked
     public StreamCodec<RegistryFriendlyByteBuf, U> streamCodec() {
         return streamCodec;
     }

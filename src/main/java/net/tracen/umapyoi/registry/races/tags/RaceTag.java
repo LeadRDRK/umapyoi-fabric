@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
@@ -21,11 +21,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.IntStream;
 
-public record RaceTag(int maximum, ResourceLocation id, boolean isUnique, int[] propertyReward) {
+public record RaceTag(int maximum, Identifier id, boolean isUnique, int[] propertyReward) {
     public static final Codec<RaceTag> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(
                     Codec.INT.fieldOf("max").forGetter(RaceTag::maximum),
-                    ResourceLocation.CODEC.fieldOf("id").forGetter(RaceTag::id),
+                    Identifier.CODEC.fieldOf("id").forGetter(RaceTag::id),
                     Codec.BOOL.fieldOf("is_unique").forGetter(RaceTag::isUnique),
                     Codec.INT_STREAM.xmap(IntStream::toArray, Arrays::stream)
                             .optionalFieldOf("property_reward", new int[5])
@@ -33,7 +33,7 @@ public record RaceTag(int maximum, ResourceLocation id, boolean isUnique, int[] 
             ).apply(instance, RaceTag::new));
 
     public static final ResourceKey<Registry<RaceTag>> REGISTRY_KEY = ResourceKey
-            .createRegistryKey(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "race_tags"));
+            .createRegistryKey(Identifier.fromNamespaceAndPath(Umapyoi.MODID, "race_tags"));
 
     public boolean applyToUmaSoul(ItemStack soul, Race race) {
         boolean isFulfill;
@@ -74,25 +74,25 @@ public record RaceTag(int maximum, ResourceLocation id, boolean isUnique, int[] 
         return true;
     }
 
-    public static Map<ResourceLocation, Integer> queryUmaSoulTags(ItemStack soul) {
+    public static Map<Identifier, Integer> queryUmaSoulTags(ItemStack soul) {
         var raceData = UmaSoulUtils.getRaceStatus(soul);
         var attendRaceTag = raceData.attendRaceTag();
         var attendRaceTagUnique = raceData.attendRaceTagUnique();
         if (attendRaceTag.isEmpty() && attendRaceTagUnique.isEmpty())
             return Map.of();
 
-        HashMap<ResourceLocation, Integer> hmap = new HashMap<>();
+        HashMap<Identifier, Integer> hmap = new HashMap<>();
         attendRaceTag.keySet().forEach(l -> hmap.put(l, queryUmaSoulTagCount(raceData, l)));
         attendRaceTagUnique.keySet().forEach(l -> hmap.put(l, queryUmaSoulTagCount(raceData, l)));
         return hmap;
     }
 
-    public static int queryUmaSoulTagCount(ItemStack soul, ResourceLocation id) {
+    public static int queryUmaSoulTagCount(ItemStack soul, Identifier id) {
         var raceData = UmaSoulUtils.getRaceStatus(soul);
         return queryUmaSoulTagCount(raceData, id);
     }
 
-    public static int queryUmaSoulTagCount(UmaDataRaceStatus raceData, ResourceLocation id) {
+    public static int queryUmaSoulTagCount(UmaDataRaceStatus raceData, Identifier id) {
         return Optional.ofNullable(raceData.attendRaceTagUnique().get(id))
                 .or(() -> Optional.ofNullable(raceData.attendRaceTag().get(id)).map(Set::size))
                 .orElse(0);

@@ -4,7 +4,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.Umapyoi;
@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 public class FactorDecomposeScreen extends AbstractContainerScreen<FactorDecomposeMenu> {
-    private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID,
+    private static final Identifier BACKGROUND_TEXTURE = Identifier.fromNamespaceAndPath(Umapyoi.MODID,
             "textures/gui/factor_decompose.png");
 
     public FactorDecomposeScreen(FactorDecomposeMenu screenContainer, Inventory inv, Component titleIn) {
@@ -67,7 +67,7 @@ public class FactorDecomposeScreen extends AbstractContainerScreen<FactorDecompo
     protected void renderUma(GuiGraphics graphic) {
         ItemStack rawStack = this.menu.getSlot(0).getItem();
         if (rawStack.isEmpty()) return;
-        ResourceLocation name = Optional.ofNullable(rawStack.get(DataComponentsTypeRegistry.DATA_LOCATION.get()))
+        Identifier name = Optional.ofNullable(rawStack.get(DataComponentsTypeRegistry.DATA_LOCATION.get()))
                 .orElse(UmaData.DEFAULT_UMA_ID);
         if (!ClientUtils.getClientUmaDataRegistry().containsKey(name)) name = UmaData.DEFAULT_UMA_ID;
         SimpleBedrockModel model = new SimpleBedrockModel(ClientUtils.getModelPOJO(name)) {

@@ -1,7 +1,7 @@
 package net.tracen.umapyoi.container;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public interface IItemNameMutableMenu {
-    void setItemName(ResourceLocation name);
+    void setItemName(Identifier name);
 }

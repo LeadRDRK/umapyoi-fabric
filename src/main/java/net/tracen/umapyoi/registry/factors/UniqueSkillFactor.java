@@ -45,15 +45,15 @@ public class UniqueSkillFactor extends UmaFactor {
     public boolean withStackEquals(UmaFactorStack left, UmaFactorStack right) {
         return super.withStackEquals(left, right) &&
                 Objects.equals(
-                        left.getOrCreateTag().getString("skill").map(ResourceLocation::tryParse).orElse(null),
-                        right.getOrCreateTag().getString("skill").map(ResourceLocation::tryParse).orElse(null));
+                        left.getOrCreateTag().getString("skill").map(Identifier::tryParse).orElse(null),
+                        right.getOrCreateTag().getString("skill").map(Identifier::tryParse).orElse(null));
     }
 
     @Override
     public int hashCode(UmaFactorStack stack) {
         return Objects.hash(
                 super.hashCode(stack),
-                stack.getOrCreateTag().getString("skill").map(ResourceLocation::tryParse).orElse(null)
+                stack.getOrCreateTag().getString("skill").map(Identifier::tryParse).orElse(null)
         );
     }
 }

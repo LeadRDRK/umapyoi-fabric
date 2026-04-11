@@ -4,14 +4,14 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -50,7 +50,7 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
         super(p);
     }
 
-    public static ItemStack init(ResourceLocation id, @Nullable Race race, ItemStack result) {
+    public static ItemStack init(Identifier id, @Nullable Race race, ItemStack result) {
         result.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), id);
 
         RaceRanking ranking = Optional.ofNullable(race).map(r -> r.ranking).orElse(RaceRanking.DEBUT);
@@ -62,17 +62,17 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
         return result;
     }
 
-    public static ItemStack init(ResourceLocation id, @Nullable Race race) {
+    public static ItemStack init(Identifier id, @Nullable Race race) {
         ItemStack result = new ItemStack(ItemRegistry.UMA_RACE_TICKET);
         return init(id, race, result);
     }
 
-    public static class RacePairComparator implements Comparator<Map.Entry<ResourceLocation, Race>> {
+    public static class RacePairComparator implements Comparator<Map.Entry<Identifier, Race>> {
         private RacePairComparator() {}
         public static final RacePairComparator INSTANCE = new RacePairComparator();
 
         @Override
-        public int compare(Map.Entry<ResourceLocation, Race> o1, Map.Entry<ResourceLocation, Race> o2) {
+        public int compare(Map.Entry<Identifier, Race> o1, Map.Entry<Identifier, Race> o2) {
             Year minLeft = o1.getValue().year.stream().min(Year::compareTo).orElse(null);
             Year minRight = o2.getValue().year.stream().min(Year::compareTo).orElse(null);
             if (minLeft == null) return 1;
@@ -90,8 +90,8 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
             int lengthLeft = o1.getValue().length;
             int lengthRight = o2.getValue().length;
             if (lengthLeft != lengthRight) return lengthRight - lengthLeft;
-            ResourceLocation locLeft = o1.getKey();
-            ResourceLocation locRight = o2.getKey();
+            Identifier locLeft = o1.getKey();
+            Identifier locRight = o2.getKey();
             return locLeft.compareTo(locRight);
         }
     }
@@ -103,8 +103,8 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
         @Override
         public int compare(Map.Entry<ResourceKey<Race>, Race> o1, Map.Entry<ResourceKey<Race>, Race> o2) {
             return RacePairComparator.INSTANCE.compare(
-                    new AbstractMap.SimpleEntry<>(o1.getKey().location(), o1.getValue()),
-                    new AbstractMap.SimpleEntry<>(o2.getKey().location(), o2.getValue())
+                    new AbstractMap.SimpleEntry<>(o1.getKey().identifier(), o1.getValue()),
+                    new AbstractMap.SimpleEntry<>(o2.getKey().identifier(), o2.getValue())
             );
         }
     }
@@ -129,8 +129,8 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
     @Override
     public void fillItemCategory(FabricItemGroupEntries entries) {
         sortedRaceList(entries.getContext().holders()).forEachOrdered(race -> {
-            if (race.key().location().equals(RaceRegistry.DEFAULT.location())) return;
-            ItemStack result = init(race.key().location(), race.value());
+            if (race.key().identifier().equals(RaceRegistry.DEFAULT.identifier())) return;
+            ItemStack result = init(race.key().identifier(), race.value());
             entries.accept(result);
         });
     }
@@ -138,7 +138,7 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
     @Nonnull
     @Override
     public ItemStack getDefaultInstance() {
-        return init(RaceRegistry.DEFAULT.location(), null);
+        return init(RaceRegistry.DEFAULT.identifier(), null);
     }
 
     public static MutableComponent getRaceNameInRawComponent(@Nonnull ItemStack pStack) {
@@ -154,16 +154,16 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
     @Nonnull
     @Override
     public Component getName(@Nonnull ItemStack pStack) {
-        if (getRaceID(pStack).equals(RaceRegistry.DEFAULT.location())) return super.getName(pStack);
+        if (getRaceID(pStack).equals(RaceRegistry.DEFAULT.identifier())) return super.getName(pStack);
         var id = Util.makeDescriptionId("race", getRaceID(pStack)) + ".name";
         return Component.translatable(id).withStyle(
                 Optional.ofNullable(getRace(pStack)).map(r -> r.ranking).orElse(RaceRanking.DEBUT).color
         );
     }
 
-    public static ResourceLocation getRaceID(ItemStack stack) {
+    public static Identifier getRaceID(ItemStack stack) {
         return Optional.ofNullable(stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get()))
-                .orElseGet(RaceRegistry.DEFAULT::location);
+                .orElseGet(RaceRegistry.DEFAULT::identifier);
     }
 
     public static Race getRace(ItemStack stack) {
@@ -172,8 +172,8 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
 
     public static Race getRace(ItemStack stack, Level world) {
         try {
-            ResourceLocation loc = getRaceID(stack);
-            if (loc.equals(RaceRegistry.DEFAULT.location())) return null;
+            Identifier loc = getRaceID(stack);
+            if (loc.equals(RaceRegistry.DEFAULT.identifier())) return null;
             return Optional.ofNullable(world)
                     .map(UmapyoiAPI::getRaceRegistry)
                     .orElse(ClientUtils.getRaceRegistry())
@@ -218,8 +218,8 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
                                 TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder,
                                 TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        ResourceLocation raceID = getRaceID(stack);
-        if (raceID == RaceRegistry.DEFAULT.location()) return;
+        Identifier raceID = getRaceID(stack);
+        if (raceID == RaceRegistry.DEFAULT.identifier()) return;
         Race raceObj = getRace(stack);
         if (raceObj == null) return;
         MutableComponent year = raceObj.year.stream().sorted().map(Year::name).map(String::toLowerCase)
@@ -249,7 +249,7 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
 
         tooltipAdder.accept(baseComponent);
 
-        ResourceLocation locField = raceObj.field;
+        Identifier locField = raceObj.field;
         tooltipAdder.accept(Component.translatable("tooltip.umapyoi.race.field").append(
                 Component.translatable("race." + locField.getNamespace() + ".field." + locField.getPath())
         ));

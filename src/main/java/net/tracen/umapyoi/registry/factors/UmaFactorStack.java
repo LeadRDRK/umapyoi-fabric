@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.events.ApplyFactorCallback;
 import net.tracen.umapyoi.registry.UmaFactorRegistry;
@@ -37,8 +37,8 @@ public class UmaFactorStack {
             UmaFactor leftFactor = o1.getFactor();
             UmaFactor rightFactor = o2.getFactor();
             if (leftFactor != rightFactor) {
-                ResourceLocation leftLoc = UmaFactorRegistry.REGISTRY.get().getKey(leftFactor);
-                ResourceLocation rightLoc = UmaFactorRegistry.REGISTRY.get().getKey(rightFactor);
+                Identifier leftLoc = UmaFactorRegistry.REGISTRY.get().getKey(leftFactor);
+                Identifier rightLoc = UmaFactorRegistry.REGISTRY.get().getKey(rightFactor);
                 return UmaFactor.UmaFactorComparator.compare(leftFactor, leftLoc, rightFactor, rightLoc);
             }
             return o1.level - o2.level;

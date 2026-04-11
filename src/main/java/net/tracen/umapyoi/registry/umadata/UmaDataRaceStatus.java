@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,12 +17,12 @@ import java.util.Set;
 import io.netty.buffer.ByteBuf;
 
 public record UmaDataRaceStatus(
-        Set<ResourceLocation> wonRaces,
-        Map<ResourceLocation, Integer> attended,
+        Set<Identifier> wonRaces,
+        Map<Identifier, Integer> attended,
         int lastAttendTime,
         boolean hasDebut,
-        Map<ResourceLocation, Set<ResourceLocation>> attendRaceTag,
-        Map<ResourceLocation, Integer> attendRaceTagUnique
+        Map<Identifier, Set<Identifier>> attendRaceTag,
+        Map<Identifier, Integer> attendRaceTagUnique
 ) {
     public static final UmaDataRaceStatus DEFAULT = new UmaDataRaceStatus(
             Collections.emptySet(),
@@ -34,21 +34,21 @@ public record UmaDataRaceStatus(
     );
 
     public static final Codec<UmaDataRaceStatus> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ResourceLocation.CODEC.listOf().xmap(Set::copyOf, List::copyOf).fieldOf("won_races").forGetter(UmaDataRaceStatus::wonRaces),
-            Codec.unboundedMap(ResourceLocation.CODEC, Codec.INT).fieldOf("attended").forGetter(UmaDataRaceStatus::attended),
+            Identifier.CODEC.listOf().xmap(Set::copyOf, List::copyOf).fieldOf("won_races").forGetter(UmaDataRaceStatus::wonRaces),
+            Codec.unboundedMap(Identifier.CODEC, Codec.INT).fieldOf("attended").forGetter(UmaDataRaceStatus::attended),
             Codec.INT.fieldOf("last_attend_time").forGetter(UmaDataRaceStatus::lastAttendTime),
             Codec.BOOL.fieldOf("has_debut").forGetter(UmaDataRaceStatus::hasDebut),
-            Codec.unboundedMap(ResourceLocation.CODEC, ResourceLocation.CODEC.listOf().xmap(Set::copyOf, List::copyOf)).fieldOf("attend_race_tag").forGetter(UmaDataRaceStatus::attendRaceTag),
-            Codec.unboundedMap(ResourceLocation.CODEC, Codec.INT).fieldOf("attend_race_tag_unique").forGetter(UmaDataRaceStatus::attendRaceTagUnique)
+            Codec.unboundedMap(Identifier.CODEC, Identifier.CODEC.listOf().xmap(Set::copyOf, List::copyOf)).fieldOf("attend_race_tag").forGetter(UmaDataRaceStatus::attendRaceTag),
+            Codec.unboundedMap(Identifier.CODEC, Codec.INT).fieldOf("attend_race_tag_unique").forGetter(UmaDataRaceStatus::attendRaceTagUnique)
     ).apply(instance, UmaDataRaceStatus::new));
 
     public static final StreamCodec<ByteBuf, UmaDataRaceStatus> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.collection(HashSet::new, ResourceLocation.STREAM_CODEC), UmaDataRaceStatus::wonRaces,
-            ByteBufCodecs.map(HashMap::new, ResourceLocation.STREAM_CODEC, ByteBufCodecs.INT), UmaDataRaceStatus::attended,
+            ByteBufCodecs.collection(HashSet::new, Identifier.STREAM_CODEC), UmaDataRaceStatus::wonRaces,
+            ByteBufCodecs.map(HashMap::new, Identifier.STREAM_CODEC, ByteBufCodecs.INT), UmaDataRaceStatus::attended,
             ByteBufCodecs.INT, UmaDataRaceStatus::lastAttendTime,
             ByteBufCodecs.BOOL, UmaDataRaceStatus::hasDebut,
-            ByteBufCodecs.map(HashMap::new, ResourceLocation.STREAM_CODEC, ByteBufCodecs.collection(HashSet::new, ResourceLocation.STREAM_CODEC)), UmaDataRaceStatus::attendRaceTag,
-            ByteBufCodecs.map(HashMap::new, ResourceLocation.STREAM_CODEC, ByteBufCodecs.INT), UmaDataRaceStatus::attendRaceTagUnique,
+            ByteBufCodecs.map(HashMap::new, Identifier.STREAM_CODEC, ByteBufCodecs.collection(HashSet::new, Identifier.STREAM_CODEC)), UmaDataRaceStatus::attendRaceTag,
+            ByteBufCodecs.map(HashMap::new, Identifier.STREAM_CODEC, ByteBufCodecs.INT), UmaDataRaceStatus::attendRaceTagUnique,
             UmaDataRaceStatus::new
     );
 }

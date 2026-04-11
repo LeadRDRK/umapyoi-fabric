@@ -9,7 +9,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
@@ -41,30 +41,30 @@ import java.util.stream.Collectors;
 
 public class Race {
     public static final ResourceKey<Registry<Race>> REGISTRY_KEY = ResourceKey
-            .createRegistryKey(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "races"));
+            .createRegistryKey(Identifier.fromNamespaceAndPath(Umapyoi.MODID, "races"));
 
     public static Codec<Race> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(
-                    ResourceLocation.CODEC.fieldOf("id").forGetter(Race::id),
+                    Identifier.CODEC.fieldOf("id").forGetter(Race::id),
                     RaceRanking.CODEC.fieldOf("ranking").forGetter(Race::ranking),
                     Codec.INT.fieldOf("length").forGetter(Race::length),
                     Codec.INT.fieldOf("time").forGetter(Race::time),
                     Year.CODEC.listOf().fieldOf("year").forGetter((r) -> r.year.stream().toList()),
                     Surface.CODEC.fieldOf("surface").forGetter(Race::surface),
-                    ResourceLocation.CODEC.listOf().fieldOf("tags").forGetter((r) -> r.tags.stream().toList()),
-                    ResourceLocation.CODEC.fieldOf("field").forGetter(Race::field),
+                    Identifier.CODEC.listOf().fieldOf("tags").forGetter((r) -> r.tags.stream().toList()),
+                    Identifier.CODEC.fieldOf("field").forGetter(Race::field),
                     Codec.INT.listOf().optionalFieldOf("attribute_correction", List.of()).forGetter((r) -> r.attrCorr.stream().toList()),
                     Codec.INT.optionalFieldOf("reference_level", 5).forGetter(Race::referenceLevel),
                     Codec.STRING.xmap(s -> Growth.valueOf(s.toUpperCase()), g -> g.name().toLowerCase()).listOf().optionalFieldOf("allow_status", List.of(Growth.TRAINED, Growth.RETIRED)).forGetter((r) -> r.allowStatus.stream().toList()),
                     Codec.BOOL.optionalFieldOf("exclusive", true).forGetter(Race::exclusive),
                     Codec.INT.optionalFieldOf("later_then", 0).forGetter(Race::laterThen),
-                    ResourceLocation.CODEC.listOf().optionalFieldOf("after_race", List.of()).forGetter((r) -> r.afterRace.stream().toList()),
+                    Identifier.CODEC.listOf().optionalFieldOf("after_race", List.of()).forGetter((r) -> r.afterRace.stream().toList()),
                     Codec.STRING.optionalFieldOf("texture_predicate_override").forGetter(r -> Optional.ofNullable(r.texturePredicateOverride))
             ).apply(instance, Race::new)
     );
 
-    public final ResourceLocation id;
-    public ResourceLocation id() { return this.id; }
+    public final Identifier id;
+    public Identifier id() { return this.id; }
 
     public final RaceRanking ranking;
     public RaceRanking ranking() { return this.ranking; }
@@ -88,15 +88,15 @@ public class Race {
     }
 
     public final Set<Year> year;
-    public final Set<ResourceLocation> tags;
+    public final Set<Identifier> tags;
     public final Surface surface;
     public Surface surface() { return this.surface; }
     public Surface surface(ItemStack stack) {
         return this.surface != Surface.ADAPTIVE ? this.surface : Surface.AdaptiveCollapse(stack);
     }
     public final Distance distance;
-    public final ResourceLocation field;
-    public ResourceLocation field() { return this.field; }
+    public final Identifier field;
+    public Identifier field() { return this.field; }
     public RaceField field(Level world, ItemStack stack) {
         Registry<RaceField> registry = UmapyoiAPI.getRaceFieldRegistry(world);
         if (this.field.equals(CONST_ADAPTIVE)) {
@@ -121,14 +121,14 @@ public class Race {
     public boolean exclusive() { return this.exclusive; }
     public final int laterThen;
     public int laterThen() { return this.laterThen; }
-    public final Set<ResourceLocation> afterRace;
+    public final Set<Identifier> afterRace;
     public final String texturePredicateOverride;
     public String texturePredicateOverride() {
         return this.texturePredicateOverride;
     }
-    public Race(ResourceLocation id, RaceRanking ranking, int length, int time, Set<Year> year, Surface surface,
-                Set<ResourceLocation> tags, ResourceLocation field, Set<Integer> attrCorr, int referenceLevel, Set<Growth> allowStatus,
-                boolean exclusive, int laterThen, Set<ResourceLocation> afterRace, String texturePredicateOverride) {
+    public Race(Identifier id, RaceRanking ranking, int length, int time, Set<Year> year, Surface surface,
+                Set<Identifier> tags, Identifier field, Set<Integer> attrCorr, int referenceLevel, Set<Growth> allowStatus,
+                boolean exclusive, int laterThen, Set<Identifier> afterRace, String texturePredicateOverride) {
         this.id = id;
         this.ranking = ranking;
         this.length = length;
@@ -154,9 +154,9 @@ public class Race {
         this.texturePredicateOverride = texturePredicateOverride;
     }
 
-    public Race(ResourceLocation id, RaceRanking ranking, int length, int time, List<Year> year, Surface surface,
-                List<ResourceLocation> tags, ResourceLocation field, List<Integer> attrCorr, int referenceLevel, List<Growth> allowStatus,
-                boolean exclusive, int laterThen, List<ResourceLocation> afterRace, Optional<String> texture) {
+    public Race(Identifier id, RaceRanking ranking, int length, int time, List<Year> year, Surface surface,
+                List<Identifier> tags, Identifier field, List<Integer> attrCorr, int referenceLevel, List<Growth> allowStatus,
+                boolean exclusive, int laterThen, List<Identifier> afterRace, Optional<String> texture) {
         this(id, ranking, length, time,
                 new HashSet<>(year),
                 surface,
@@ -188,7 +188,7 @@ public class Race {
         if (!this.afterRace.isEmpty()) {
             var attended = raceData.attended();
             boolean canAttend = false;
-            for (ResourceLocation key : attended.keySet()){
+            for (Identifier key : attended.keySet()){
                 if (this.afterRace.contains(key)) {
                     canAttend = true;
                     break;
@@ -202,7 +202,7 @@ public class Race {
     public double getUmaFactorCorrection(ItemStack stack, Level world) {
         int[] propertiesAsLevel = UmaSoulUtils.getProperty(stack).array();
         int fieldSituation = world.getRandom().nextIntBetweenInclusive(0, 3);
-        ResourceLocation nameLoc = UmaSoulUtils.getName(stack);
+        Identifier nameLoc = UmaSoulUtils.getName(stack);
         UmaData umaData = UmapyoiAPI.getUmaDataRegistry(world).getOptional(nameLoc).orElseGet(() -> {
             Umapyoi.getLogger().info("Warning: {} doesn't exist.", nameLoc);
             return UmaData.DEFAULT_UMA;
@@ -220,7 +220,7 @@ public class Race {
     }
 
     public double getSelfProp(ItemStack stack, Level world) {
-        ResourceLocation nameLoc = UmaSoulUtils.getName(stack);
+        Identifier nameLoc = UmaSoulUtils.getName(stack);
         UmaData umaData = UmapyoiAPI.getUmaDataRegistry(world).getOptional(nameLoc).orElseGet(() -> {
             Umapyoi.getLogger().info("Warning: {} doesn't exist.", nameLoc);
             return UmaData.DEFAULT_UMA;
@@ -283,15 +283,15 @@ public class Race {
         private int length;
         private int time;
         private final Set<Year> year;
-        private final Set<ResourceLocation> tags;
+        private final Set<Identifier> tags;
         private Surface surface;
-        private ResourceLocation field;
+        private Identifier field;
         private final Set<Integer> attrCorr;
         private Integer referenceLevel;
         private boolean exclusive;
         private Set<Growth> allowStatus;
         private int later;
-        private Set<ResourceLocation> afterRace;
+        private Set<Identifier> afterRace;
         private String texturePredicateOverride;
 
         public RaceBuilder() {
@@ -301,7 +301,7 @@ public class Race {
             this.surface = Surface.TURF;
             this.year = new HashSet<>();
             this.tags = new HashSet<>();
-            this.field = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "unknown");
+            this.field = Identifier.fromNamespaceAndPath(Umapyoi.MODID, "unknown");
             this.attrCorr = new HashSet<>();
             this.referenceLevel = null;
             this.exclusive = true;
@@ -335,7 +335,7 @@ public class Race {
             return this;
         }
 
-        public RaceBuilder addTags(ResourceLocation... locs) {
+        public RaceBuilder addTags(Identifier... locs) {
             Collections.addAll(this.tags, locs);
             return this;
         }
@@ -352,14 +352,14 @@ public class Race {
         }
 
         public RaceBuilder setField(String field) {
-            return this.setField(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, field));
+            return this.setField(Identifier.fromNamespaceAndPath(Umapyoi.MODID, field));
         }
 
         public RaceBuilder setField(ResourceKey<RaceField> field) {
             return this.setField(field.location());
         }
 
-        public RaceBuilder setField(ResourceLocation field) {
+        public RaceBuilder setField(Identifier field) {
             this.field = field;
             return this;
         }
@@ -394,7 +394,7 @@ public class Race {
             return this;
         }
 
-        public RaceBuilder onlyIfLaterThen(ResourceLocation... races){
+        public RaceBuilder onlyIfLaterThen(Identifier... races){
             this.afterRace.addAll(Arrays.stream(races).toList());
             return this;
         }
@@ -404,7 +404,7 @@ public class Race {
             return this;
         }
 
-        public Race create(ResourceLocation id) {
+        public Race create(Identifier id) {
             return new Race(id, this.ranking, this.length, this.time, this.year, this.surface, this.tags, this.field,
                     this.attrCorr, Optional.ofNullable(this.referenceLevel).orElseGet(() ->
                     switch (this.ranking) {

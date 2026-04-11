@@ -7,7 +7,7 @@ import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.tracen.umapyoi.Umapyoi;
@@ -130,8 +130,8 @@ public class UmapyoiItemModelProvider {
         return false;
     }
 
-    private ResourceLocation mcLoc(String name) {
-        return ResourceLocation.withDefaultNamespace(name);
+    private Identifier mcLoc(String name) {
+        return Identifier.withDefaultNamespace(name);
     }
 
     public static class FromBlockModels {
@@ -164,7 +164,7 @@ public class UmapyoiItemModelProvider {
             }
         }
 
-        private static ResourceLocation blockModel(String name) {
+        private static Identifier blockModel(String name) {
             return Umapyoi.id("block/" + name);
         }
     }

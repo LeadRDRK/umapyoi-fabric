@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.FileToIdConverter;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.block.entity.BlockEntityRegistry;
@@ -92,7 +92,7 @@ public class ClientSetupEvents {
                         .map(ClientSetupEvents::resolveModelLocation)
                         .forEach(location -> {
                             var model = new UnbakedExtraItemModel(location);
-                            var modelId = ResourceLocation.fromNamespaceAndPath(
+                            var modelId = Identifier.fromNamespaceAndPath(
                                     location.getNamespace(),
                                     location.getPath().substring("item/".length())
                             );
@@ -116,8 +116,8 @@ public class ClientSetupEvents {
         });
     }
 
-    private static ResourceLocation resolveModelLocation(ResourceLocation location) {
-        return ResourceLocation.fromNamespaceAndPath(location.getNamespace(),
+    private static Identifier resolveModelLocation(Identifier location) {
+        return Identifier.fromNamespaceAndPath(location.getNamespace(),
                 location.getPath().substring(
                         "models/".length(),
                         location.getPath().length() - ".json".length()
@@ -126,7 +126,7 @@ public class ClientSetupEvents {
     }
 
     private record BakedModelHandler(
-            ResourceLocation id,
+            Identifier id,
             Function<ItemModel, DynamicItemBakedModel> constructor
     ) implements ModelModifier.AfterBakeItem {
         @Override

@@ -185,7 +185,7 @@ public class AnvilEvents {
             if (!itemName.equalsIgnoreCase("synchro")) return Optional.empty();
 
             var registry = UmapyoiAPI.getUmaDataRegistry(player.level());
-            ResourceLocation name = soul.has(DataComponentsTypeRegistry.DATA_LOCATION.get()) ?
+            Identifier name = soul.has(DataComponentsTypeRegistry.DATA_LOCATION.get()) ?
                     soul.get(DataComponentsTypeRegistry.DATA_LOCATION.get()) : UmaDataRegistry.COMMON_UMA.location();
             if(!registry.containsKey(name) ||
                     !registry.get(name).orElseThrow().value().identifier().equals(UmaDataRegistry.SILENCE_SUZUKA.location())) // meant to compare with identifier, but it's the same here

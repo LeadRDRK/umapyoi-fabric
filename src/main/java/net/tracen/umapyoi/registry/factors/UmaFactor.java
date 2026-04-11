@@ -25,7 +25,7 @@ public class UmaFactor extends RegistryNameHolder {
             return compare(o1.get(), o1.getId(), o2.get(), o2.getId());
         }
 
-        public static int compare(UmaFactor leftFactor, ResourceLocation leftLocation, UmaFactor rightFactor, ResourceLocation rightLocation) {
+        public static int compare(UmaFactor leftFactor, Identifier leftLocation, UmaFactor rightFactor, Identifier rightLocation) {
             if (leftFactor.type != rightFactor.type) return leftFactor.type.compareTo(rightFactor.type);
             return leftLocation == null || rightLocation == null ? 0 : leftLocation.compareTo(rightLocation);
         }

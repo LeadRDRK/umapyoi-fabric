@@ -13,10 +13,10 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.commands.arguments.IdentifierArgument;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.api.UmapyoiAPI;
@@ -136,7 +136,7 @@ public class ModifyUmaSoul {
                 ),
                 Commands.literal("skills").then(
                         Commands.literal("add").then(
-                                Commands.argument("id", ResourceLocationArgument.id())
+                                Commands.argument("id", IdentifierArgument.id())
                                         .suggests((ctx, builder) -> SharedSuggestionProvider.suggestResource(
                                                 UmaSkillRegistry.REGISTRY.get().keySet(), builder
                                         )).executes(ctx -> addSkills(k, ctx, false)).then(
@@ -149,7 +149,7 @@ public class ModifyUmaSoul {
                         ).then(
                                 Commands.literal("all").executes(ctx -> removeAllSkill(k, ctx))
                         ).then(
-                                Commands.argument("id", ResourceLocationArgument.id())
+                                Commands.argument("id", IdentifierArgument.id())
                                         .suggests((ctx, builder) -> SharedSuggestionProvider.suggestResource(
                                                 UmaSkillRegistry.REGISTRY.get().keySet(), builder
                                         )).executes(ctx -> removeSpecificSkill(k, ctx))
@@ -568,7 +568,7 @@ public class ModifyUmaSoul {
             ctx.getSource().sendFailure(Component.translatable("umapyoi.skill.slot_needed"));
             return 0;
         }
-        ResourceLocation rl = ResourceLocationArgument.getId(ctx, "id");
+        Identifier rl = IdentifierArgument.getId(ctx, "id");
         if (!UmaSkillRegistry.REGISTRY.get().containsKey(rl)) {
             ctx.getSource().sendFailure(Component.translatable("umapyoi.command.parse.unknown.skill", rl));
             return 0;
@@ -593,7 +593,7 @@ public class ModifyUmaSoul {
         ItemStack soul = getItemStackByMode(mode, player, ctx.getSource()::sendFailure, typeString::set);
         if (soul == null) return 0;
 
-        ResourceLocation rl = ResourceLocationArgument.getId(ctx, "id");
+        Identifier rl = IdentifierArgument.getId(ctx, "id");
         if (!UmaSkillRegistry.REGISTRY.get().containsKey(rl)) {
             ctx.getSource().sendFailure(Component.translatable("umapyoi.command.parse.unknown.skill", rl));
             return 0;
@@ -603,7 +603,7 @@ public class ModifyUmaSoul {
             return 0;
         }
         var skillData = soul.getOrDefault(DataComponentsTypeRegistry.UMADATA_SKILLS.get(), UmaDataSkills.DEFAULT);
-        List<ResourceLocation> skills = skillData.skills()
+        List<Identifier> skills = skillData.skills()
                 .stream()
                 .filter(id -> !Objects.equals(id, rl))
                 .collect(Collectors.toCollection(ArrayList::new));
@@ -633,7 +633,7 @@ public class ModifyUmaSoul {
         if (soul == null) return 0;
 
         var skillData = soul.getOrDefault(DataComponentsTypeRegistry.UMADATA_SKILLS.get(), UmaDataSkills.DEFAULT);
-        List<ResourceLocation> skills = new ArrayList<>(skillData.skills());
+        List<Identifier> skills = new ArrayList<>(skillData.skills());
         skills.remove(UmaSoulUtils.getSkills(soul).size() - 1);
         if (skills.isEmpty()) {
             skills.add(BASIC_PACE.getId());
@@ -661,7 +661,7 @@ public class ModifyUmaSoul {
         if (soul == null) return 0;
 
         var skillData = soul.getOrDefault(DataComponentsTypeRegistry.UMADATA_SKILLS.get(), UmaDataSkills.DEFAULT);
-        List<ResourceLocation> skills = List.of(BASIC_PACE.getId());
+        List<Identifier> skills = List.of(BASIC_PACE.getId());
         soul.set(DataComponentsTypeRegistry.UMADATA_SKILLS.get(), new UmaDataSkills(
                 skillData.skillSlot(), 0, skills));
 

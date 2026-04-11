@@ -8,7 +8,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Recipe;
@@ -26,14 +26,14 @@ public class ShapelessRaceTicketRecipe extends ShapelessRecipe implements RaceTi
             RecipeSerializer.SHAPELESS_RECIPE, ShapelessRaceTicketRecipe::new
     );
 
-    private final ResourceLocation baseItemOrKey;
-    public ShapelessRaceTicketRecipe(ShapelessRecipe compose, ResourceLocation loc) {
+    private final Identifier baseItemOrKey;
+    public ShapelessRaceTicketRecipe(ShapelessRecipe compose, Identifier loc) {
         super(compose.group(), compose.category(),
                 getResultItem(loc), compose.ingredients);
         this.baseItemOrKey = loc;
     }
 
-    private static ItemStack getResultItem(ResourceLocation loc) {
+    private static ItemStack getResultItem(Identifier loc) {
         return BuiltInRegistries.ITEM.get(loc)
                 .map(Holder::value)
                 .orElse(ItemRegistry.UMA_RACE_TICKET)
@@ -41,7 +41,7 @@ public class ShapelessRaceTicketRecipe extends ShapelessRecipe implements RaceTi
     }
 
     @Override
-    public ResourceLocation getKey() { return this.baseItemOrKey; }
+    public Identifier getKey() { return this.baseItemOrKey; }
 
     @Override
     public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
@@ -64,7 +64,7 @@ public class ShapelessRaceTicketRecipe extends ShapelessRecipe implements RaceTi
         return SERIALIZER;
     }
 
-    public record ComposeOutput(RecipeOutput compose, ResourceLocation raceId) implements RecipeOutput {
+    public record ComposeOutput(RecipeOutput compose, Identifier raceId) implements RecipeOutput {
         @Override
         public void accept(ResourceKey<Recipe<?>> key, Recipe<?> recipe, @Nullable AdvancementHolder advancement) {
             var composeRecipe = new ShapelessRaceTicketRecipe((ShapelessRecipe) recipe, raceId);

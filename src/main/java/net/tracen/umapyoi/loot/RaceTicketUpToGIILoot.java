@@ -2,7 +2,7 @@ package net.tracen.umapyoi.loot;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.tracen.umapyoi.Umapyoi;
@@ -23,7 +23,7 @@ public class RaceTicketUpToGIILoot implements AddLootTableModifier {
     public ResourceKey<LootTable> lootTable() {
         return ResourceKey.create(
                 Registries.LOOT_TABLE,
-                ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "race/ticket/race_ticket_up_to_gii")
+                Identifier.fromNamespaceAndPath(Umapyoi.MODID, "race/ticket/race_ticket_up_to_gii")
         );
     }
 }

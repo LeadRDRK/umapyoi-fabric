@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.item.MissingItemModel;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -21,7 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /** Ported from MMLib **/
 public abstract class DynamicItemBakedModel implements ItemModel {
-    public static Map<ResourceLocation, ExtraModelKey<ItemModel>> MODELS = new HashMap<>();
+    public static Map<Identifier, ExtraModelKey<ItemModel>> MODELS = new HashMap<>();
 
     private final ItemModel original;
 
@@ -47,7 +47,7 @@ public abstract class DynamicItemBakedModel implements ItemModel {
         }
     }
 
-    protected ItemModel getModel(ResourceLocation id) {
+    protected ItemModel getModel(Identifier id) {
         var key = MODELS.get(id);
         if (key == null)
             return this.getOriginalModel();

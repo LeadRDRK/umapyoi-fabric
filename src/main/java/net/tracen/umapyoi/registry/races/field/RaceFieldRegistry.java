@@ -2,7 +2,7 @@ package net.tracen.umapyoi.registry.races.field;
 
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.utils.Distance;
 
@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 public class RaceFieldRegistry {
-    public static final ResourceLocation CONST_ADAPTIVE = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "adaptive");
+    public static final Identifier CONST_ADAPTIVE = Identifier.fromNamespaceAndPath(Umapyoi.MODID, "adaptive");
 
     public static final ResourceKey<RaceField> HAKODATE = simpleRegister("hakodate", Set.of(Distance.SPRINT), Set.of(), Set.of()); //函馆
     public static final ResourceKey<RaceField> CHUKYO = simpleRegister("chukyo"); //中京
@@ -28,14 +28,14 @@ public class RaceFieldRegistry {
     public static final ResourceKey<RaceField> MORIOKA = simpleRegister("morioka"); //盛岡
     public static final ResourceKey<RaceField> OHI = simpleRegister("ohi"); //大井
 
-    private static HashMap<ResourceKey<RaceField>, Function<ResourceLocation, RaceField>> forDataGenMap;
+    private static HashMap<ResourceKey<RaceField>, Function<Identifier, RaceField>> forDataGenMap;
 
     public static ResourceKey<RaceField> simpleRegister(String name) {
         return simpleRegister(name, Set.of(), Set.of(), Set.of());
     }
 
     public static ResourceKey<RaceField> simpleRegister(String name, Set<Distance> turf, Set<Distance> dirt, Set<Distance> synthetic){
-        ResourceLocation rLoc = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, name);
+        Identifier rLoc = Identifier.fromNamespaceAndPath(Umapyoi.MODID, name);
         ResourceKey<RaceField> rKey = ResourceKey.create(RaceField.REGISTRY_KEY, rLoc);
         if (forDataGenMap == null) forDataGenMap = new HashMap<>();
         forDataGenMap.put(rKey, (id) -> new RaceField(id, turf, dirt, synthetic));

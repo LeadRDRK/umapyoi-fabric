@@ -3,7 +3,7 @@ package net.tracen.umapyoi.villager;
 import com.google.common.collect.Lists;
 
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
-import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.tracen.umapyoi.data.builtin.CostumeDataRegistry;
@@ -55,7 +55,7 @@ public class VillagerTradeRegistry {
             factories.add(new RandomPriceOrderItemListing(new ItemStack(ItemRegistry.TRAINING_SUIT), 1, 1, 1, 8, 30, 0.2F))
         );
 
-        var kindergartenUniform = UmaCostumeItem.getCostume(CostumeDataRegistry.KINDERGARTEN_UNIFORM.location());
+        var kindergartenUniform = UmaCostumeItem.getCostume(CostumeDataRegistry.KINDERGARTEN_UNIFORM.identifier());
         TradeOfferHelper.registerVillagerOffers(VillagerProfession.SHEPHERD, 5, factories ->
             factories.add(new RandomPriceOrderItemListing(kindergartenUniform, 1, 1, 1, 8, 30, 0.2F))
         );

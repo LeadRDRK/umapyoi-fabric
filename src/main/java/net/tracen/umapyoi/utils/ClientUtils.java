@@ -120,7 +120,7 @@ public class ClientUtils {
         model.setHeadVisible(true);
         model.setTailVisible(true);
         if (!suitModel.getChild("hat").isEmpty()) {
-            ResourceLocation loc = UmaCostumeItem.getCostumeID(suitItem);
+            Identifier loc = UmaCostumeItem.getCostumeID(suitItem);
             var costumeData = ClientUtils.getClientCosmeticDataRegistry().get(
                     ResourceKey.create(CosmeticData.REGISTRY_KEY, loc)
             );

@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -38,8 +38,8 @@ public class RaceSelectMenu extends AbstractContainerMenu implements IItemNameMu
 
     private final ContainerLevelAccess access;
     public final Level level;
-    private ResourceLocation itemName;
-    private List<ResourceLocation> recipes = Lists.newArrayList();
+    private Identifier itemName;
+    private List<Identifier> recipes = Lists.newArrayList();
 
     private ItemStack inputTicket = ItemStack.EMPTY;
     private ItemStack inputMaterial = ItemStack.EMPTY;
@@ -176,7 +176,7 @@ public class RaceSelectMenu extends AbstractContainerMenu implements IItemNameMu
         return pStack.is(UmapyoiItemTags.RACE_CHAMPIONS_MATERIAL);
     }
 
-    public List<ResourceLocation> getRecipes() {
+    public List<Identifier> getRecipes() {
         return this.recipes;
     }
 
@@ -208,11 +208,11 @@ public class RaceSelectMenu extends AbstractContainerMenu implements IItemNameMu
         }
     }
 
-    public ResourceLocation getItemName() {
+    public Identifier getItemName() {
         return itemName;
     }
 
-    public void setItemName(ResourceLocation itemName) {
+    public void setItemName(Identifier itemName) {
         if(this.itemName == null || !this.itemName.equals(itemName)) {
             this.itemName = itemName;
             this.setupResultSlot();
@@ -264,11 +264,11 @@ public class RaceSelectMenu extends AbstractContainerMenu implements IItemNameMu
         });
     }
 
-    public static class SelectComparator implements Comparator<ResourceLocation> {
+    public static class SelectComparator implements Comparator<Identifier> {
         private Level level;
         public SelectComparator(Level level) { this.level = level; }
         @Override
-        public int compare(ResourceLocation left, ResourceLocation right) {
+        public int compare(Identifier left, Identifier right) {
             Race leftRace = UmapyoiAPI.getRaceRegistry(level).get(left)
                     .map(Holder::value)
                     .orElse(null);

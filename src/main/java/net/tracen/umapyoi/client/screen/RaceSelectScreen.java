@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
@@ -16,7 +16,7 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 
 public class RaceSelectScreen extends AbstractContainerScreen<RaceSelectMenu> implements ContainerListener {
 
-    private static final ResourceLocation BACKGROUND_TEXTURE = Umapyoi.id("textures/gui/select_test.png");
+    private static final Identifier BACKGROUND_TEXTURE = Umapyoi.id("textures/gui/select_test.png");
 
     private EditBox searchBox;
 
@@ -112,9 +112,9 @@ public class RaceSelectScreen extends AbstractContainerScreen<RaceSelectMenu> im
     }
 
     @Override
-    public void resize(Minecraft pMinecraft, int pWidth, int pHeight) {
+    public void resize(int width, int height) {
         String s = this.searchBox.getValue();
-        this.init(pMinecraft, pWidth, pHeight);
+        this.init(width, height);
         this.searchBox.setValue(s);
         this.searchBox.setEditable(this.hasRequestItems());
     }
@@ -178,7 +178,7 @@ public class RaceSelectScreen extends AbstractContainerScreen<RaceSelectMenu> im
             int i = this.leftPos + RECIPES_X;
             int j = this.topPos + RECIPES_Y;
             int k = this.startIndex + SCROLLER_WIDTH;
-            List<ResourceLocation> list = this.getResults();
+            List<Identifier> list = this.getResults();
 
             for (int l = this.startIndex; l < k && l < this.getResults().size(); ++l) {
                 int i1 = l - this.startIndex;
@@ -214,7 +214,7 @@ public class RaceSelectScreen extends AbstractContainerScreen<RaceSelectMenu> im
 
     private void renderRecipes(GuiGraphics pPoseStack,int pLeft, int pTop, int pRecipeIndexOffsetMax) {
         if (this.displayRecipes) {
-            List<ResourceLocation> list = getResults();
+            List<Identifier> list = getResults();
 
             for (int i = this.startIndex; i < pRecipeIndexOffsetMax && i < this.getResults().size(); ++i) {
                 int j = i - this.startIndex;
@@ -226,13 +226,13 @@ public class RaceSelectScreen extends AbstractContainerScreen<RaceSelectMenu> im
         }
     }
 
-    public List<ResourceLocation> getResults() {
-        List<ResourceLocation> list = this.menu.getRecipes();
+    public List<Identifier> getResults() {
+        List<Identifier> list = this.menu.getRecipes();
         return list.stream().filter(this.getFilter(this.menu.getSlot(1).getItem()))
                 .sorted(new RaceSelectMenu.SelectComparator(this.menu.level)).collect(Collectors.toCollection(Lists::newArrayList));
     }
 
-    public Predicate<? super ResourceLocation> getFilter(ItemStack input) {
+    public Predicate<? super Identifier> getFilter(ItemStack input) {
         return resloc -> {
             Race race = UmapyoiAPI.getRaceRegistry(this.menu.level)
                     .get(resloc)
@@ -273,7 +273,7 @@ public class RaceSelectScreen extends AbstractContainerScreen<RaceSelectMenu> im
         this.name = name;
     }
 
-    private ItemStack getResultItem(ResourceLocation name) {
+    private ItemStack getResultItem(Identifier name) {
         Race race = UmapyoiAPI.getRaceRegistry(this.menu.level)
                 .get(ResourceKey.create(Race.REGISTRY_KEY, name))
                 .map(Holder::value)

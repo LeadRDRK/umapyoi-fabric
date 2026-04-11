@@ -11,10 +11,10 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.commands.arguments.IdentifierArgument;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -215,7 +215,7 @@ public class GiveUmaSoul {
     }
 
     public static LiteralArgumentBuilder<CommandSourceStack> registry(LiteralArgumentBuilder<CommandSourceStack> builder) {
-        var lastPosFix = Commands.argument("uma", ResourceLocationArgument.id()) // umapyoi give <uma>
+        var lastPosFix = Commands.argument("uma", IdentifierArgument.id()) // umapyoi give <uma>
                 .suggests((ctx, suggestionsBuilder)
                                 -> SharedSuggestionProvider.suggestResource(
                                 UmapyoiAPI.getUmaDataRegistry(ctx.getSource().getLevel()).keySet(), suggestionsBuilder
@@ -233,7 +233,7 @@ public class GiveUmaSoul {
     private static class GiveBuilder {
         public final CommandContext<CommandSourceStack> ctx;
         public final ServerPlayer player;
-        public final ResourceLocation umaLocation;
+        public final Identifier umaLocation;
         private Growth growth;
         private Motivations motivation;
         private Integer ap;
@@ -243,7 +243,7 @@ public class GiveUmaSoul {
         public GiveBuilder(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
             this.ctx = ctx;
             this.player = EntityArgument.getPlayer(ctx, "target");
-            this.umaLocation = ResourceLocationArgument.getId(ctx, "uma");
+            this.umaLocation = IdentifierArgument.getId(ctx, "uma");
             this.growth = Growth.UNTRAINED;
             this.motivation = Motivations.NORMAL;
             this.ap = null;
@@ -289,7 +289,7 @@ public class GiveUmaSoul {
     }
 
     private static int givePlayer(@Nonnull CommandContext<CommandSourceStack> ctx, @Nonnull ServerPlayer player,
-                                  @Nonnull ResourceLocation uma, Growth growth, Motivations motivation,
+                                  @Nonnull Identifier uma, Growth growth, Motivations motivation,
                                   @Nullable Integer ap, @Nullable Integer[] props, @Nullable Integer[] maxprops,
                                   @Nullable Integer[] extras) {
         Level level = ctx.getSource().getLevel();

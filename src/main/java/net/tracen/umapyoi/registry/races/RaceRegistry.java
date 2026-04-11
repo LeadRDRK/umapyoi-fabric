@@ -28,7 +28,7 @@ import static net.tracen.umapyoi.registry.races.tags.RaceTagRegistry.TRIPLE_TIAR
 
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.registry.umadata.Growth;
 import net.tracen.umapyoi.utils.Distance;
@@ -3433,10 +3433,10 @@ public class RaceRegistry {
                     ::create
     );
 
-    private static HashMap<ResourceKey<Race>, Function<ResourceLocation, Race>> forDataGenMap;
+    private static HashMap<ResourceKey<Race>, Function<Identifier, Race>> forDataGenMap;
 
-    public static ResourceKey<Race> simpleRegister(String name, Function<ResourceLocation, Race> factory){
-        ResourceLocation rLoc = ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, name);
+    public static ResourceKey<Race> simpleRegister(String name, Function<Identifier, Race> factory){
+        Identifier rLoc = Identifier.fromNamespaceAndPath(Umapyoi.MODID, name);
         ResourceKey<Race> rKey = ResourceKey.create(Race.REGISTRY_KEY, rLoc);
         if (forDataGenMap == null) forDataGenMap = new HashMap<>();
         forDataGenMap.put(rKey, factory);

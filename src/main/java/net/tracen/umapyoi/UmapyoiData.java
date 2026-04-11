@@ -2,9 +2,9 @@ package net.tracen.umapyoi;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.minecraft.core.RegistrySetBuilder;
 import net.tracen.umapyoi.data.UmapyoiAtlasProvider;
 import net.tracen.umapyoi.data.UmapyoiModelProvider;
-import net.minecraft.core.RegistrySetBuilder;
 import net.tracen.umapyoi.data.UmapyoiRecipeProvider;
 import net.tracen.umapyoi.data.UmapyoiRegistryProvider;
 import net.tracen.umapyoi.data.builtin.CostumeDataRegistry;

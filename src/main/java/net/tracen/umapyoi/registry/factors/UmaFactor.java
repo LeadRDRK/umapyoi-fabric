@@ -12,9 +12,25 @@ import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.registry.RegistryNameHolder;
+import net.tracen.umapyoi.registry.RegistryObject;
 import net.tracen.umapyoi.registry.UmaFactorRegistry;
 
+import java.util.Comparator;
+
 public class UmaFactor extends RegistryNameHolder {
+    public static class UmaFactorComparator implements Comparator<RegistryObject<UmaFactor>> {
+        public static UmaFactorComparator INSTANCE = new UmaFactorComparator();
+        @Override
+        public int compare(RegistryObject<UmaFactor> o1, RegistryObject<UmaFactor> o2) {
+            return compare(o1.get(), o1.getId(), o2.get(), o2.getId());
+        }
+
+        public static int compare(UmaFactor leftFactor, ResourceLocation leftLocation, UmaFactor rightFactor, ResourceLocation rightLocation) {
+            if (leftFactor.type != rightFactor.type) return leftFactor.type.compareTo(rightFactor.type);
+            return leftLocation == null || rightLocation == null ? 0 : leftLocation.compareTo(rightLocation);
+        }
+    }
+
     private final FactorType type;
     private String descriptionId;
     private String detailId;
@@ -89,5 +105,13 @@ public class UmaFactor extends RegistryNameHolder {
 
     public String getDetailDescriptionId() {
         return this.getOrCreateDescriptionDetail();
+    }
+
+    public boolean withStackEquals(UmaFactorStack left, UmaFactorStack right) {
+        return left.getFactor() == right.getFactor();
+    }
+
+    public int hashCode(UmaFactorStack stack) {
+        return this.hashCode();
     }
 }

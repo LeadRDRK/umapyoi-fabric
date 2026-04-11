@@ -5,9 +5,12 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.events.ApplyFactorCallback;
+import net.tracen.umapyoi.registry.UmaFactorRegistry;
 
+import java.util.Comparator;
 import java.util.Optional;
 
 import javax.annotation.Nullable;
@@ -25,6 +28,22 @@ public class UmaFactorStack {
                             CompoundTag.CODEC.optionalFieldOf("Tag")
                                     .forGetter(stack -> Optional.ofNullable(stack.getTag())))
                     .apply(instance, UmaFactorStack::new));
+
+    public static class UmaFactorStackComparator implements Comparator<UmaFactorStack> {
+        public static UmaFactorStackComparator INSTANCE = new UmaFactorStackComparator();
+
+        @Override
+        public int compare(UmaFactorStack o1, UmaFactorStack o2) {
+            UmaFactor leftFactor = o1.getFactor();
+            UmaFactor rightFactor = o2.getFactor();
+            if (leftFactor != rightFactor) {
+                ResourceLocation leftLoc = UmaFactorRegistry.REGISTRY.get().getKey(leftFactor);
+                ResourceLocation rightLoc = UmaFactorRegistry.REGISTRY.get().getKey(rightFactor);
+                return UmaFactor.UmaFactorComparator.compare(leftFactor, leftLoc, rightFactor, rightLoc);
+            }
+            return o1.level - o2.level;
+        }
+    }
 
     public UmaFactorStack(UmaFactor factor, int level) {
         this.factor = factor;
@@ -70,6 +89,13 @@ public class UmaFactorStack {
         if (obj instanceof UmaFactorStack stack)
             return stack.level == this.level && stack.factor == this.factor;
         return false;
+    }
+
+    public boolean equalsFactorStackIgnoreVersion(UmaFactorStack other) {
+        if (other == this) return true;
+        if (other == null) return false;
+        UmaFactor thisFactor = this.factor;
+        return thisFactor.withStackEquals(this, other);
     }
 
     @Override

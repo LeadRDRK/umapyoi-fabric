@@ -13,6 +13,7 @@ import net.minecraft.world.item.enchantment.Repairable;
 import net.minecraft.world.level.block.Block;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.block.BlockRegistry;
+import net.tracen.umapyoi.item.factor.FactorReport;
 import net.tracen.umapyoi.item.factor.UmaFactorContainerItem;
 import net.tracen.umapyoi.item.food.EnergyDrinkMethods;
 import net.tracen.umapyoi.item.food.UmaDrinkItem;
@@ -22,7 +23,6 @@ import net.tracen.umapyoi.item.weapon.BaseballBatItem;
 import net.tracen.umapyoi.item.weapon.GrassNaginataItem;
 import net.tracen.umapyoi.registry.TrainingSupportRegistry;
 import net.tracen.umapyoi.registry.training.SupportType;
-import net.tracen.umapyoi.utils.UmaStatusUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +58,22 @@ public class ItemRegistry {
 
     public static final Item UMA_SELECT_BLOCK = registerBlock("uma_select_block",
             BlockRegistry.UMA_SELECT_BLOCK);
+
+    public static final Item RACE_SELECT_BLOCK = registerBlock("race_select_block",
+            BlockRegistry.RACE_SELECT_BLOCK);
+
+    public static final Item RACE_REGISTER_BLOCK = registerBlock("race_register",
+            BlockRegistry.RACE_REGISTER_BLOCK);
+
+    public static final Item FACTOR_DECOMPOSE_TABLE = registerBlock("factor_decompose_table",
+            BlockRegistry.FACTOR_DECOMPOSE_TABLE);
+
+    public static final Item FACTOR_RESEARCH_TABLE = registerBlock("factor_research_table",
+            BlockRegistry.FACTOR_RESEARCH_TABLE);
+
+    public static final Item GATE_DOOR = registerBlock("gate_door", BlockRegistry.GATE_DOOR);
+
+    public static final Item GATE = registerBlock("gate", BlockRegistry.GATE);
 
     public static final Item BLANK_UMA_SOUL = registerItem("blank_uma_soul",
             FadedUmaSoulItem::new,
@@ -153,17 +169,17 @@ public class ItemRegistry {
                             ItemRegistry.HORSESHOE_RAINBOW.builtInRegistryHolder()
                     ))));
 
+    public static final Item UMA_RACE_TICKET = registerItem("race_ticket", UmaRaceTicketItem::new);
+
     public static final Item HACHIMI_MID = registerItem("hachimi_mid",
-            p -> new UmaDrinkItem(p, UmaStatusUtils::addMotivation,
+            p -> new UmaDrinkItem(p, e -> {},
                     FoodInfo.builder().name("hachimi_mid").alwaysEat().amountAndCalories(2, 0.6F).water(30F)
                             .nutrients(2F, 2F, 0F, 0F, 0F).decayModifier(1.0F).heatCapacity(1F).cookingTemp(480F)
                             .build()));
 
-    public static final Item HACHIMI_BIG = registerItem("hachimi_big", p -> new UmaDrinkItem(p, status -> {
-        UmaStatusUtils.addMotivation(status);
-        UmaStatusUtils.addMotivation(status);
-    }, FoodInfo.builder().name("hachimi_big").alwaysEat().amountAndCalories(4, 0.8F).water(60F)
-            .nutrients(4F, 4F, 0F, 0F, 0F).decayModifier(1.0F).heatCapacity(1F).cookingTemp(480F).build()));
+    public static final Item HACHIMI_BIG = registerItem("hachimi_big", p -> new UmaDrinkItem(p, e -> {},
+            FoodInfo.builder().name("hachimi_big").alwaysEat().amountAndCalories(4, 0.8F).water(60F)
+                    .nutrients(4F, 4F, 0F, 0F, 0F).decayModifier(1.0F).heatCapacity(1F).cookingTemp(480F).build()));
 
     public static final Item ROYAL_BITTER = registerItem("royal_bitter",
             p -> new UmaDrinkItem(p, EnergyDrinkMethods::royalBitter,
@@ -172,16 +188,14 @@ public class ItemRegistry {
                             .heatCapacity(1F).cookingTemp(480F).build()));
 
     public static final Item CUPCAKE = registerItem("cupcake",
-            p -> new UmaFoodItem(p, UmaStatusUtils::addMotivation,
+            p -> new UmaFoodItem(p, e -> {},
                     FoodInfo.builder().name("cupcake").amountAndCalories(5, 0.6F).water(0F)
                             .nutrients(2F, 2F, 2F, 0F, 2F).decayModifier(1.5F).heatCapacity(1F).cookingTemp(480F)
                             .build()));
 
-    public static final Item SWEET_CUPCAKE = registerItem("sweet_cupcake", p -> new UmaFoodItem(p, status -> {
-        UmaStatusUtils.addMotivation(status);
-        UmaStatusUtils.addMotivation(status);
-    }, FoodInfo.builder().name("sweet_cupcake").amountAndCalories(7, 0.6F).water(0F).nutrients(4F, 4F, 2F, 0F, 4F)
-            .decayModifier(1.5F).heatCapacity(1F).cookingTemp(480F).build()));
+    public static final Item SWEET_CUPCAKE = registerItem("sweet_cupcake", p -> new UmaFoodItem(p, e -> {},
+            FoodInfo.builder().name("sweet_cupcake").amountAndCalories(7, 0.6F).water(0F).nutrients(4F, 4F, 2F, 0F, 4F)
+                    .decayModifier(1.5F).heatCapacity(1F).cookingTemp(480F).build()));
 
     public static final Item SMALL_ENERGY_DRINK = registerItem("small_energy_drink",
             p -> new UmaDrinkItem(p, EnergyDrinkMethods::smallEnergy,
@@ -208,6 +222,8 @@ public class ItemRegistry {
     public static final Item BASEBALL_BAT = registerItem("baseball_bat",
             BaseballBatItem::new,
             BaseballBatItem.createProperties());
+
+    public static final Item FACTOR_SHARD = registerItem("uma_factor_shard", FactorReport::new);
 
     // dummy manual item to load the model for modonomicon
     public static final Item MANUAL_CLOSED = registerItem("manual_closed");
@@ -269,5 +285,9 @@ public class ItemRegistry {
 
         ITEMS.add(item);
         return Registry.register(BuiltInRegistries.ITEM, key, item);
+    }
+
+    public static void register() {
+        // dummy
     }
 }

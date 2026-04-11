@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.tracen.umapyoi.utils.UmaStatusUtils;
 
 import io.netty.buffer.ByteBuf;
 
@@ -35,5 +36,15 @@ public record UmaDataBasicStatus(int speed, int stamina, int strength, int guts,
 
     public int[] array() {
         return new int[] { speed, stamina, strength, guts, wisdom };
+    }
+
+    public int get(UmaStatusUtils.StatusType type) {
+        return switch (type) {
+            case SPEED -> speed;
+            case STAMINA -> stamina;
+            case STRENGTH -> strength;
+            case GUTS -> guts;
+            case WISDOM -> wisdom;
+        };
     }
 }

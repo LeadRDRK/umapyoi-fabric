@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "#c:ingots/gold",
+    "B": "minecraft:nether_star",
+    "J": "umapyoi:race_ticket",
+    "L": "minecraft:lectern"
+  },
+  "pattern": [
+    " J ",
+    "BLB",
+    "AAA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "umapyoi:race_select_block"
+  }
+}

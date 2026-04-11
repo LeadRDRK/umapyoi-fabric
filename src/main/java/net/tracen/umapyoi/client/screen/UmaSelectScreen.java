@@ -8,8 +8,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -88,17 +86,12 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
     @Override
     public void render(GuiGraphics pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
-        this.renderFg(pPoseStack, pMouseX, pMouseY, pPartialTick);
         this.renderTooltip(pPoseStack, pMouseX, pMouseY);
     }
 
     @Override
     public void containerTick() {
         super.containerTick();
-    }
-
-    public void renderFg(GuiGraphics pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        this.searchBox.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
     }
 
     @Override
@@ -121,7 +114,7 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
         this.searchBox.setMaxLength(50);
         this.searchBox.setResponder(this::onNameChanged);
         this.searchBox.setValue("");
-        this.addWidget(this.searchBox);
+        this.addRenderableWidget(this.searchBox);
         this.setInitialFocus(this.searchBox);
         this.searchBox.setEditable(false);
     }
@@ -202,12 +195,7 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
                 int j1 = i + i1 % RECIPES_COLUMNS * RECIPES_IMAGE_SIZE_WIDTH;
                 int k1 = j + i1 / RECIPES_COLUMNS * RECIPES_IMAGE_SIZE_HEIGHT + 2;
                 if (pX >= j1 && pX < j1 + RECIPES_IMAGE_SIZE_WIDTH && pY >= k1 && pY < k1 + RECIPES_IMAGE_SIZE_HEIGHT) {
-                    var resultItem = this.getResultItem(list.get(l));
-                    resultItem.getTooltipImage().ifPresent(component -> {
-                        var components = List.of(ClientTooltipComponent.create(component));
-                        pPoseStack.renderTooltip(this.font, components, pX, pY,
-                                DefaultTooltipPositioner.INSTANCE, null);
-                    });
+                    pPoseStack.setTooltipForNextFrame(this.font, this.getResultItem(list.get(l)), pX, pY);
                 }
             }
         }
@@ -382,10 +370,11 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
         }
     }
 
-    public boolean mouseScrolled(double pMouseX, double pMouseY, double pDelta) {
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         if (this.isScrollBarActive()) {
             int i = this.getOffscreenRows();
-            float f = (float) pDelta / (float) i;
+            float f = (float) scrollY / (float) i;
             this.scrollOffs = Mth.clamp(this.scrollOffs - f, 0.0F, 1.0F);
             this.startIndex = (int) ((double) (this.scrollOffs * (float) i) + 0.5D) * RECIPES_COLUMNS;
         }

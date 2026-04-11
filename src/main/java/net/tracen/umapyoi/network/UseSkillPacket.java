@@ -8,7 +8,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.Umapyoi;
@@ -54,11 +53,15 @@ public record UseSkillPacket() implements CustomPacketPayload {
                 return;
 
             int ap = UmaSoulUtils.getActionPoint(umaSoul);
-            if (ap >= selectedSkill.getActionPoint() && player.level() instanceof ServerLevel level) {
+            var evt = new UseSkillCallback.Context(selectedSkillName, player.level(), player, selectedSkill.getActionPoint());
+            if (UseSkillCallback.invoke(evt))
+                return;
+            int apNeeded = evt.getAp();
+            if (ap >= apNeeded) {
                 player.connection.send(new ClientboundSoundPacket(Holder.direct(selectedSkill.getSound()), SoundSource.PLAYERS,
                         player.getX(), player.getY(), player.getZ(), 1F, 1F, 0L));
-                selectedSkill.applySkill(level, player);
-                UmaSoulUtils.setActionPoint(umaSoul, ap - selectedSkill.getActionPoint());
+                selectedSkill.applySkill(player.level(), player);
+                UmaSoulUtils.setActionPoint(umaSoul, ap - apNeeded);
 
                 var applyEvent = new ApplySkillCallback.Context(UmaSkillRegistry.REGISTRY.get().getKey(selectedSkill), player.level(), player);
                 ApplySkillCallback.invoke(applyEvent);

@@ -138,11 +138,11 @@ public abstract class AbstractSuitItem extends TrinketItem implements TrinketRen
         }
     }
 
-    protected abstract Identifier getModel(ItemStack stack);
+    public abstract Identifier getModel(ItemStack stack);
 
-    protected abstract Identifier getTexture(ItemStack stack, boolean tanned);
+    public abstract Identifier getTexture(ItemStack stack, boolean tanned);
 
-    protected abstract Identifier getFlatModel(ItemStack stack);
+    public abstract Identifier getFlatModel(ItemStack stack);
 
-    protected abstract Identifier getFlatTexture(ItemStack stack, boolean tanned);
+    public abstract Identifier getFlatTexture(ItemStack stack, boolean tanned);
 }

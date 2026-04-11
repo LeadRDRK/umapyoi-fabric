@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": "umapyoi:uma_factor_item",
+    "J": "umapyoi:jewel",
+    "P": "minecraft:paper",
+    "S": "#c:stones"
+  },
+  "pattern": [
+    "PJF",
+    "SSS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "umapyoi:factor_decompose_table"
+  }
+}

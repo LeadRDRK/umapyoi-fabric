@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "minecraft:book",
+    "F": "umapyoi:uma_factor_item",
+    "J": "umapyoi:jewel",
+    "S": "#c:stones"
+  },
+  "pattern": [
+    "BJF",
+    "SSS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "umapyoi:factor_research_table"
+  }
+}

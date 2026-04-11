@@ -59,7 +59,7 @@ public class UmaFactorContainerItem extends Item implements CreativeModeTabFille
                     .withStyle(ChatFormatting.AQUA));
             List<UmaFactorStack> stackList = UmaFactorUtils.deserializeData(datas);
 
-            stackList.forEach(factor -> {
+            stackList.stream().sorted(UmaFactorStack.UmaFactorStackComparator.INSTANCE).forEach(factor -> {
                 switch (factor.getFactor().getFactorType()) {
                     case STATUS -> tooltipAdder.accept(factor.getDescription().copy().withStyle(ChatFormatting.BLUE));
                     case UNIQUE -> tooltipAdder.accept(factor.getDescription().copy().withStyle(ChatFormatting.GREEN));

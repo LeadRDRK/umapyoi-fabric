@@ -33,4 +33,10 @@ public class BlockEntityRegistry {
     
     public static final RegistryObject<BlockEntityType<UmaStatueBlockEntity>> UMA_STATUES = BLOCK_ENTITIES
             .register("uma_statues", () -> new BlockEntityType<>(UmaStatueBlockEntity::new, Set.of(BlockRegistry.UMA_STATUES)));
+
+    public static final RegistryObject<BlockEntityType<RaceRegisterBlockEntity>> RACE_REGISTER_BLOCK_ENTITY = BLOCK_ENTITIES
+            .register("race_register_block_entity", () -> new BlockEntityType<>(RaceRegisterBlockEntity::new, Set.of(BlockRegistry.RACE_REGISTER_BLOCK)));
+
+    public static final RegistryObject<BlockEntityType<GateEntity>> GATE = BLOCK_ENTITIES
+            .register("gate_entity", () -> new BlockEntityType<>(GateEntity::new, Set.of(BlockRegistry.GATE_DOOR)));
 }

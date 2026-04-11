@@ -13,9 +13,9 @@ import net.tracen.umapyoi.item.info.FoodInfo;
 import java.util.function.Consumer;
 
 public class UmaFoodItem extends ItemFoodBase {
-    private final Consumer<ItemStack> consumer;
+    private final Consumer<LivingEntity> consumer;
 
-    public UmaFoodItem(Item.Properties properties, Consumer<ItemStack> consumer, FoodInfo info) {
+    public UmaFoodItem(Item.Properties properties, Consumer<LivingEntity> consumer, FoodInfo info) {
         super(properties, info);
         this.consumer = consumer;
     }
@@ -46,7 +46,7 @@ public class UmaFoodItem extends ItemFoodBase {
                     stack.shrink(1);
                 return stack;
             } else {
-                this.consumer.accept(UmapyoiAPI.getUmaSoul(player));
+                this.consumer.accept(player);
             }
         }
         return super.finishUsingItem(stack, level, entity);

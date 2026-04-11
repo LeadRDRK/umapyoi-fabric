@@ -21,7 +21,7 @@ public class ShapelessCostumeRecipe extends ShapelessRecipe {
 
     public ShapelessCostumeRecipe(ShapelessRecipe compose, Identifier output) {
         super(compose.group(), compose.category(),
-                getResultItem(output), compose.placementInfo().ingredients());
+                getResultItem(output), compose.ingredients);
         this.output = output;
     }
 

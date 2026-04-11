@@ -11,23 +11,23 @@ public class TrainingSuitItem extends AbstractSuitItem {
     }
 
     @Override
-    protected Identifier getModel(ItemStack stack) {
+    public Identifier getModel(ItemStack stack) {
         return ClientUtils.TRAINING_SUIT;
     }
 
     @Override
-    protected Identifier getTexture(ItemStack stack, boolean tanned) {
+    public Identifier getTexture(ItemStack stack, boolean tanned) {
         return tanned ? Identifier.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/trainning_suit_tanned.png")
                 : Identifier.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/trainning_suit.png");
     }
 
     @Override
-    protected Identifier getFlatModel(ItemStack stack) {
+    public Identifier getFlatModel(ItemStack stack) {
         return ClientUtils.TRAINING_SUIT_FLAT;
     }
 
     @Override
-    protected Identifier getFlatTexture(ItemStack stack, boolean tanned) {
+    public Identifier getFlatTexture(ItemStack stack, boolean tanned) {
         return tanned ? Identifier.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/trainning_suit_tanned.png")
                 : Identifier.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/trainning_suit.png");
     }

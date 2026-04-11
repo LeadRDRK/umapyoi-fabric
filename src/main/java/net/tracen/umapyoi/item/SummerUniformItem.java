@@ -11,23 +11,23 @@ public class SummerUniformItem extends AbstractSuitItem {
     }
 
     @Override
-    protected Identifier getModel(ItemStack stack) {
+    public Identifier getModel(ItemStack stack) {
         return ClientUtils.SUMMER_UNIFORM;
     }
 
     @Override
-    protected Identifier getTexture(ItemStack stack, boolean tanned) {
+    public Identifier getTexture(ItemStack stack, boolean tanned) {
         return tanned ? Identifier.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/summer_uniform_tanned.png")
                 : Identifier.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/summer_uniform.png");
     }
 
     @Override
-    protected Identifier getFlatModel(ItemStack stack) {
+    public Identifier getFlatModel(ItemStack stack) {
         return ClientUtils.SUMMER_UNIFORM_FLAT;
     }
 
     @Override
-    protected Identifier getFlatTexture(ItemStack stack, boolean tanned) {
+    public Identifier getFlatTexture(ItemStack stack, boolean tanned) {
         return tanned ? Identifier.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/summer_uniform_tanned.png")
                 : Identifier.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/summer_uniform.png");
     }

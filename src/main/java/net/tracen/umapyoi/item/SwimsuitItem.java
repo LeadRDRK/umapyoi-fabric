@@ -11,23 +11,23 @@ public class SwimsuitItem extends AbstractSuitItem {
     }
 
     @Override
-    protected Identifier getModel(ItemStack stack) {
+    public Identifier getModel(ItemStack stack) {
         return ClientUtils.SWIMSUIT;
     }
 
     @Override
-    protected Identifier getTexture(ItemStack stack, boolean tanned) {
+    public Identifier getTexture(ItemStack stack, boolean tanned) {
         return tanned ? Identifier.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/swimsuit_tanned.png")
                 : Identifier.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/swimsuit.png");
     }
 
     @Override
-    protected Identifier getFlatModel(ItemStack stack) {
+    public Identifier getFlatModel(ItemStack stack) {
         return ClientUtils.SWIMSUIT_FLAT;
     }
 
     @Override
-    protected Identifier getFlatTexture(ItemStack stack, boolean tanned) {
+    public Identifier getFlatTexture(ItemStack stack, boolean tanned) {
         return tanned ? Identifier.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/swimsuit_flat_tanned.png")
                 : Identifier.fromNamespaceAndPath(Umapyoi.MODID, "textures/model/swimsuit_flat.png");
     }

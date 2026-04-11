@@ -2,12 +2,14 @@ package net.tracen.umapyoi.data.tag;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider.ItemTagProvider;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Items;
 import net.tracen.umapyoi.item.ItemRegistry;
+import net.tracen.umapyoi.utils.RaceRanking;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -43,6 +45,37 @@ public class UmapyoiItemTagsProvider extends ItemTagProvider {
         valueLookupBuilder(UmapyoiItemTags.HORSESHOE).add(ItemRegistry.HORSESHOE_GOLD)
             .add(ItemRegistry.HORSESHOE_SILVER).add(ItemRegistry.HORSESHOE_RAINBOW);
         valueLookupBuilder(UmapyoiItemTags.HORSESHOE_RAINBOW).add(ItemRegistry.HORSESHOE_RAINBOW);
+
+        valueLookupBuilder(UmapyoiItemTags.getMotivationFoodTag(1))
+                .add(ItemRegistry.HACHIMI_MID)
+                .add(ItemRegistry.CUPCAKE);
+
+        valueLookupBuilder(UmapyoiItemTags.getMotivationFoodTag(2))
+                .add(ItemRegistry.HACHIMI_BIG)
+                .add(ItemRegistry.SWEET_CUPCAKE);
+
+        valueLookupBuilder(UmapyoiItemTags.getMotivationFoodTag(-1))
+                .add(ItemRegistry.ROYAL_BITTER);
+
+        valueLookupBuilder(UmapyoiItemTags.SLOW_METABOLISM)
+                .add(ItemRegistry.HACHIMI_BIG).add(ItemRegistry.SWEET_CUPCAKE);
+
+        valueLookupBuilder(UmapyoiItemTags.getRaceMaterialTag(RaceRanking.PREOP))
+                .forceAddTag(ConventionalItemTags.COPPER_INGOTS);
+
+        valueLookupBuilder(UmapyoiItemTags.getRaceMaterialTag(RaceRanking.OP))
+                .forceAddTag(ConventionalItemTags.IRON_INGOTS);
+
+        valueLookupBuilder(UmapyoiItemTags.getRaceMaterialTag(RaceRanking.GIII))
+                .forceAddTag(ConventionalItemTags.GOLD_INGOTS);
+
+        valueLookupBuilder(UmapyoiItemTags.getRaceMaterialTag(RaceRanking.GII))
+                .forceAddTag(ConventionalItemTags.EMERALD_GEMS);
+
+        valueLookupBuilder(UmapyoiItemTags.getRaceMaterialTag(RaceRanking.GI))
+                .forceAddTag(ConventionalItemTags.DIAMOND_GEMS);
+
+        valueLookupBuilder(UmapyoiItemTags.RACE_CHAMPIONS_MATERIAL).add(Items.ENDER_EYE);
     }
 
 }

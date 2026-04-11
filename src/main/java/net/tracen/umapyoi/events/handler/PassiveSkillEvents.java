@@ -63,8 +63,17 @@ public class PassiveSkillEvents {
         }
 
         if (living.isSprinting()) {
-            if (!movementSpeed.hasModifier(SPRINT_ID))
-                movementSpeed.addTransientModifier(speedModifier);
+            if (movementSpeed.hasModifier(speedModifier.id())) {
+                AttributeModifier oldModifier = movementSpeed.getModifier(speedModifier.id());
+                if (oldModifier != null) {
+                    if (oldModifier.amount() == speedModifier.amount() && oldModifier.operation() == speedModifier.operation()) {
+                        return;
+                    } else {
+                        movementSpeed.removeModifier(speedModifier.id());
+                    }
+                }
+            }
+            movementSpeed.addTransientModifier(speedModifier);
         } else {
             movementSpeed.removeModifier(speedModifier);
         }

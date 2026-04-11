@@ -16,8 +16,11 @@ import net.minecraft.world.phys.Vec3;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.block.UmaStatueBlock;
 import net.tracen.umapyoi.block.entity.UmaStatueBlockEntity;
+import net.tracen.umapyoi.client.model.UmaPlayerModel;
 import net.tracen.umapyoi.client.renderer.BedrockModelRenderer;
 import net.tracen.umapyoi.client.renderer.blockentity.state.UmaStatueBlockRenderState;
+import net.tracen.umapyoi.item.AbstractSuitItem;
+import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.utils.ClientUtils;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
@@ -59,6 +62,14 @@ public class UmaStatueBlockRenderer implements BlockEntityRenderer<UmaStatueBloc
                     .submitCustomGeometry(poseStack, emissiveRenderType, emissiveRenderer);
         }
 
+        var suitModel = renderState.suitModel;
+        if (suitModel != null) {
+            var suitRenderer = new BedrockModelRenderer(suitModel, renderState.lightCoords,
+                    OverlayTexture.NO_OVERLAY, -1);
+            var suitRenderType = RenderType.entityTranslucent(renderState.suitTexture);
+            nodeCollector.submitCustomGeometry(poseStack, suitRenderType, suitRenderer);
+        }
+
         poseStack.popPose();
     }
 
@@ -74,10 +85,11 @@ public class UmaStatueBlockRenderer implements BlockEntityRenderer<UmaStatueBloc
                                    @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, partialTick, cameraPosition, breakProgress);
 
-        var item = blockEntity.getStoredItem();
-        var useDefaultModel = blockEntity.isEmpty();
+        var soul = blockEntity.getStoredItem();
+        var suit = blockEntity.getCostume();
+        var useDefaultModel = !soul.is(ItemRegistry.UMA_SOUL);
 
-        var umaId = UmaSoulUtils.getName(item);
+        var umaId = UmaSoulUtils.getName(soul);
         var pojo = useDefaultModel
                 ? ClientUtils.getModelPOJO(ClientUtils.UMA_STATUES)
                 : ClientUtils.getModelPOJO(umaId);
@@ -85,10 +97,8 @@ public class UmaStatueBlockRenderer implements BlockEntityRenderer<UmaStatueBloc
         if (model.needRefresh(pojo)) {
             model.loadModel(pojo);
 
-            var leftArm = model.getChild("left_arm");
-            var rightArm = model.getChild("right_arm");
-            if (leftArm != null) leftArm.zRot = ClientUtils.convertRotation(-5);
-            if (rightArm != null) rightArm.zRot = ClientUtils.convertRotation(5);
+            model.leftArm.zRot = ClientUtils.convertRotation(-5);
+            model.rightArm.zRot = ClientUtils.convertRotation(5);
 
             if (useDefaultModel) {
                 renderState.texture = TEXTURE;
@@ -99,7 +109,50 @@ public class UmaStatueBlockRenderer implements BlockEntityRenderer<UmaStatueBloc
                 renderState.emissiveTexture = renderState.model.isEmissive()
                         ? ClientUtils.getEmissiveTexture(umaId)
                         : null;
+
+                if (renderState.suitModel != null) {
+                    ClientUtils.setUmaModelVisibilityForSuit(model, suit, renderState.suitModel);
+                }
             }
+        }
+
+        // no need to check for suit if soul isn't present
+        if (useDefaultModel) return;
+
+        var doRenderSuit = false;
+        if (suit.getItem() instanceof AbstractSuitItem suitItem) {
+            boolean isFlat = ClientUtils.isFlatUmamusume(soul);
+            var suitPojo = ClientUtils.getModelPOJO(isFlat
+                    ? suitItem.getFlatModel(suit)
+                    : suitItem.getModel(suit));
+            if (suitPojo != null) {
+                if (renderState.suitModel == null)
+                    renderState.suitModel = new UmaPlayerModel<>();
+                var suitModel = renderState.suitModel;
+                doRenderSuit = true;
+
+                if (suitModel.needRefresh(suitPojo)) {
+                    suitModel.loadModel(suitPojo);
+
+                    suitModel.leftArm.zRot = model.leftArm.zRot;
+                    suitModel.rightArm.zRot = model.rightArm.zRot;
+                    suitModel.head.visible = false;
+                    suitModel.tail.visible = false;
+
+                    boolean isTanned = ClientUtils.isTannedSkin(soul);
+                    renderState.suitTexture = isFlat
+                            ? suitItem.getFlatTexture(suit, isTanned)
+                            : suitItem.getTexture(suit, isTanned);
+
+                    ClientUtils.setUmaModelVisibilityForSuit(model, suit, renderState.suitModel);
+                }
+            }
+        }
+
+        if (!doRenderSuit && renderState.suitModel != null) {
+            renderState.suitModel = null;
+            renderState.suitTexture = null;
+            model.setAllVisible(true);
         }
     }
 }

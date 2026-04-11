@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.tracen.umapyoi.Umapyoi;
 
 import java.util.function.Function;
@@ -34,7 +35,7 @@ public class BlockRegistry {
             BlockBehaviour.Properties.ofLegacyCopy(Blocks.POLISHED_ANDESITE).noOcclusion());
 
     public static final Block THREE_GODDESS_UPPER = register("three_goddess_upper",
-            p -> new StatuesUpperBlock(THREE_GODDESS, p),
+            p -> new StatuesUpperBlock(THREE_GODDESS, Shapes.block(), true, p),
             BlockBehaviour.Properties.ofLegacyCopy(Blocks.POLISHED_ANDESITE).noOcclusion());
 
     public static final Block TRAINING_FACILITY = register("training_facility",
@@ -58,12 +59,36 @@ public class BlockRegistry {
             BlockBehaviour.Properties.ofLegacyCopy(Blocks.STONE).noOcclusion());
     
     public static final Block UMA_STATUES_UPPER = register("uma_statues_upper",
-            p -> new StatuesUpperBlock(UMA_STATUES, Block.box(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D), p),
+            p -> new StatuesUpperBlock(UMA_STATUES, Block.box(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D), true, p),
             BlockBehaviour.Properties.ofLegacyCopy(Blocks.STONE).noOcclusion());
 
     public static final Block UMA_SELECT_BLOCK = register("uma_select_block",
             UmaSelectBlock::new,
             BlockBehaviour.Properties.ofLegacyCopy(Blocks.OAK_WOOD));
+
+    public static final Block RACE_SELECT_BLOCK = register("race_select_block",
+            RaceSelectBlock::new,
+            BlockBehaviour.Properties.ofLegacyCopy(Blocks.OAK_WOOD));
+
+    public static final Block FACTOR_DECOMPOSE_TABLE = register("factor_decompose_table",
+            FactorDecomposeTable::new,
+            BlockBehaviour.Properties.ofLegacyCopy(Blocks.ANDESITE).noOcclusion());
+
+    public static final Block FACTOR_RESEARCH_TABLE = register("factor_research_table",
+            FactorResearchTableBlock::new,
+            BlockBehaviour.Properties.ofLegacyCopy(Blocks.ANDESITE).noOcclusion());
+
+    public static final Block RACE_REGISTER_BLOCK = register("race_register",
+            RaceRegisterBlock::new,
+            BlockBehaviour.Properties.ofLegacyCopy(Blocks.IRON_BLOCK).noOcclusion());
+
+    public static final Block GATE_DOOR = register("gate_door",
+            GateDoor::new,
+            BlockBehaviour.Properties.ofLegacyCopy(Blocks.IRON_BARS).noOcclusion());
+
+    public static final Block GATE = register("gate",
+            Gate::new,
+            BlockBehaviour.Properties.ofLegacyCopy(Blocks.IRON_BLOCK).noOcclusion());
 
     private static ResourceKey<Block> modBlockId(String name) {
         return ResourceKey.create(Registries.BLOCK,
@@ -77,5 +102,9 @@ public class BlockRegistry {
     public static Block register(ResourceKey<Block> resourceKey, Function<BlockBehaviour.Properties, Block> factory, BlockBehaviour.Properties properties) {
         Block block = factory.apply(properties.setId(resourceKey));
         return Registry.register(BuiltInRegistries.BLOCK, resourceKey, block);
+    }
+
+    public static void register() {
+        // dummy
     }
 }

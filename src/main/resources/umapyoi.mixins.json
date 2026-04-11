@@ -9,8 +9,7 @@
     "PlayerMixin",
     "ServerPlayerMixin",
     "PhantomSpawnerMixin",
-    "IronBarsBlockMixin",
-    "GiveGiftToHeroMixin"
+    "IronBarsBlockMixin"
   ],
   "client": [
     "client.HumanoidMobRendererMixin",

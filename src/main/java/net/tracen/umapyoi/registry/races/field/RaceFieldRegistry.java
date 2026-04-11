@@ -44,6 +44,6 @@ public class RaceFieldRegistry {
 
     public static void registerAll(BootstrapContext<RaceField> bootstep) {
         forDataGenMap.forEach((rKey, rFun) ->
-                bootstep.register(rKey, rFun.apply(rKey.location())));
+                bootstep.register(rKey, rFun.apply(rKey.identifier())));
     }
 }

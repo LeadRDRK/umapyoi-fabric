@@ -3261,7 +3261,7 @@ public class RaceRegistry {
                     .setLength(2400)
                     .setExclusive(false)
                     .setAllowStatus(Growth.RETIRED)
-                    .onlyIfLaterThen(URA_FINALS.location())
+                    .onlyIfLaterThen(URA_FINALS.identifier())
                     .setReferenceLevel(30)
                     .setTexture(PREDICATE_CHAMPIONS)
                     ::create
@@ -3276,7 +3276,7 @@ public class RaceRegistry {
                     .setLength(3200)
                     .setExclusive(false)
                     .setAllowStatus(Growth.RETIRED)
-                    .onlyIfLaterThen(URA_FINALS.location())
+                    .onlyIfLaterThen(URA_FINALS.identifier())
                     .setReferenceLevel(30)
                     .setTexture(PREDICATE_CHAMPIONS)
                     ::create
@@ -3291,7 +3291,7 @@ public class RaceRegistry {
                     .setLength(1600)
                     .setExclusive(false)
                     .setAllowStatus(Growth.RETIRED)
-                    .onlyIfLaterThen(URA_FINALS.location())
+                    .onlyIfLaterThen(URA_FINALS.identifier())
                     .setReferenceLevel(30)
                     .setTexture(PREDICATE_CHAMPIONS)
                     ::create
@@ -3306,7 +3306,7 @@ public class RaceRegistry {
                     .setLength(2200)
                     .setExclusive(false)
                     .setAllowStatus(Growth.RETIRED)
-                    .onlyIfLaterThen(URA_FINALS.location())
+                    .onlyIfLaterThen(URA_FINALS.identifier())
                     .setReferenceLevel(30)
                     .setTexture(PREDICATE_CHAMPIONS)
                     ::create
@@ -3322,7 +3322,7 @@ public class RaceRegistry {
                     .setLength(1600)
                     .setExclusive(false)
                     .setAllowStatus(Growth.RETIRED)
-                    .onlyIfLaterThen(URA_FINALS.location())
+                    .onlyIfLaterThen(URA_FINALS.identifier())
                     .setReferenceLevel(30)
                     .setTexture(PREDICATE_CHAMPIONS)
                     ::create
@@ -3337,7 +3337,7 @@ public class RaceRegistry {
                     .setLength(3000)
                     .setExclusive(false)
                     .setAllowStatus(Growth.RETIRED)
-                    .onlyIfLaterThen(URA_FINALS.location())
+                    .onlyIfLaterThen(URA_FINALS.identifier())
                     .setReferenceLevel(30)
                     .setTexture(PREDICATE_CHAMPIONS)
                     ::create
@@ -3352,7 +3352,7 @@ public class RaceRegistry {
                     .setLength(2000)
                     .setExclusive(false)
                     .setAllowStatus(Growth.RETIRED)
-                    .onlyIfLaterThen(URA_FINALS.location())
+                    .onlyIfLaterThen(URA_FINALS.identifier())
                     .setReferenceLevel(30)
                     .setTexture(PREDICATE_CHAMPIONS)
                     ::create
@@ -3367,7 +3367,7 @@ public class RaceRegistry {
                     .setLength(2500)
                     .setExclusive(false)
                     .setAllowStatus(Growth.RETIRED)
-                    .onlyIfLaterThen(URA_FINALS.location())
+                    .onlyIfLaterThen(URA_FINALS.identifier())
                     .setReferenceLevel(30)
                     .setTexture(PREDICATE_CHAMPIONS)
                     ::create
@@ -3382,7 +3382,7 @@ public class RaceRegistry {
                     .setLength(1200)
                     .setExclusive(false)
                     .setAllowStatus(Growth.RETIRED)
-                    .onlyIfLaterThen(URA_FINALS.location())
+                    .onlyIfLaterThen(URA_FINALS.identifier())
                     .setReferenceLevel(30)
                     .setTexture(PREDICATE_CHAMPIONS)
                     ::create
@@ -3397,7 +3397,7 @@ public class RaceRegistry {
                     .setLength(1600)
                     .setExclusive(false)
                     .setAllowStatus(Growth.RETIRED)
-                    .onlyIfLaterThen(URA_FINALS.location())
+                    .onlyIfLaterThen(URA_FINALS.identifier())
                     .setReferenceLevel(30)
                     .setTexture(PREDICATE_CHAMPIONS)
                     ::create
@@ -3412,7 +3412,7 @@ public class RaceRegistry {
                     .setLength(3200)
                     .setExclusive(false)
                     .setAllowStatus(Growth.RETIRED)
-                    .onlyIfLaterThen(URA_FINALS.location())
+                    .onlyIfLaterThen(URA_FINALS.identifier())
                     .setReferenceLevel(30)
                     .setTexture(PREDICATE_CHAMPIONS)
                     ::create
@@ -3427,7 +3427,7 @@ public class RaceRegistry {
                     .setLength(2000)
                     .setExclusive(false)
                     .setAllowStatus(Growth.RETIRED)
-                    .onlyIfLaterThen(URA_FINALS.location())
+                    .onlyIfLaterThen(URA_FINALS.identifier())
                     .setReferenceLevel(30)
                     .setTexture(PREDICATE_CHAMPIONS)
                     ::create
@@ -3445,6 +3445,6 @@ public class RaceRegistry {
 
     public static void registerAll(BootstrapContext<Race> bootstep) {
         forDataGenMap.forEach((rKey, rFun) ->
-                bootstep.register(rKey, rFun.apply(rKey.location())));
+                bootstep.register(rKey, rFun.apply(rKey.identifier())));
     }
 }

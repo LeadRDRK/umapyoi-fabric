@@ -30,7 +30,7 @@ public class VillageRegistry {
                 BuiltInRegistries.VILLAGER_PROFESSION,
                 key,
                 new VillagerProfession(
-                        Component.translatable("entity.minecraft.villager." + key.location().toLanguageKey()),
+                        Component.translatable("entity.minecraft.villager." + key.identifier().toLanguageKey()),
                         e -> e.is(poi),
                         e -> e.is(poi),
                         ImmutableSet.of(),

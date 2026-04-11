@@ -186,12 +186,12 @@ public class AnvilEvents {
 
             var registry = UmapyoiAPI.getUmaDataRegistry(player.level());
             Identifier name = soul.has(DataComponentsTypeRegistry.DATA_LOCATION.get()) ?
-                    soul.get(DataComponentsTypeRegistry.DATA_LOCATION.get()) : UmaDataRegistry.COMMON_UMA.location();
+                    soul.get(DataComponentsTypeRegistry.DATA_LOCATION.get()) : UmaDataRegistry.COMMON_UMA.identifier();
             if(!registry.containsKey(name) ||
-                    !registry.get(name).orElseThrow().value().identifier().equals(UmaDataRegistry.SILENCE_SUZUKA.location())) // meant to compare with identifier, but it's the same here
+                    !registry.get(name).orElseThrow().value().identifier().equals(UmaDataRegistry.SILENCE_SUZUKA.identifier())) // meant to compare with identifier, but it's the same here
                 return Optional.empty();
 
-            var id = UmaDataRegistry.STARDUST.location();
+            var id = UmaDataRegistry.STARDUST.identifier();
             if (!registry.containsKey(id)) return Optional.empty();
             ItemStack egg = ItemRegistry.BLANK_UMA_SOUL.getDefaultInstance();
             egg.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), id);

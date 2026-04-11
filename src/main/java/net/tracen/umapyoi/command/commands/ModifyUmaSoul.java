@@ -18,6 +18,7 @@ import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.item.ItemRegistry;
@@ -167,7 +168,7 @@ public class ModifyUmaSoul {
     }
 
     public static LiteralArgumentBuilder<CommandSourceStack> registry(LiteralArgumentBuilder<CommandSourceStack> builder) {
-        LiteralArgumentBuilder<CommandSourceStack> baseNode = Commands.literal("modify").requires(src -> src.hasPermission(2))// /umapyoi modify
+        LiteralArgumentBuilder<CommandSourceStack> baseNode = Commands.literal("modify").requires(src -> src.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))// /umapyoi modify
                 .then(makeNodeOfMode("hand"))
                 .then(makeNodeOfMode("equip"));
         RequiredArgumentBuilder<CommandSourceStack, EntitySelector> playerNode = Commands.argument("player", EntityArgument.player())

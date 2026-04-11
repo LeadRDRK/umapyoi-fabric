@@ -66,7 +66,7 @@ public class UmaStatueBlockRenderer implements BlockEntityRenderer<UmaStatueBloc
         if (suitModel != null) {
             var suitRenderer = new BedrockModelRenderer(suitModel, renderState.lightCoords,
                     OverlayTexture.NO_OVERLAY, -1);
-            var suitRenderType = RenderType.entityTranslucent(renderState.suitTexture);
+            var suitRenderType = RenderTypes.entityTranslucent(renderState.suitTexture);
             nodeCollector.submitCustomGeometry(poseStack, suitRenderType, suitRenderer);
         }
 

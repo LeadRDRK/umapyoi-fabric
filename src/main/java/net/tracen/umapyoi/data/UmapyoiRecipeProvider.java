@@ -229,7 +229,7 @@ public class UmapyoiRecipeProvider extends FabricRecipeProvider {
                         .requires(ConventionalItemTags.EMERALD_GEMS).requires(ItemRegistry.BLANK_TICKET)
                         .unlockedBy("has_item", has(ItemRegistry.BLANK_TICKET))
                         .save(
-                                new ShapelessRaceTicketRecipe.ComposeOutput(output, RaceRegistry.MAKE_DEBUT.location()),
+                                new ShapelessRaceTicketRecipe.ComposeOutput(output, RaceRegistry.MAKE_DEBUT.identifier()),
                                 ResourceKey.create(Registries.RECIPE, Umapyoi.id("craft_make_debut"))
                         );
             }

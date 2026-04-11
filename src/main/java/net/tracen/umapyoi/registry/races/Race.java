@@ -170,7 +170,7 @@ public class Race {
     }
 
     public boolean isAvailableToUmaSoul(ItemStack stack) {
-        if (this.id.equals(RaceRegistry.DEFAULT.location())) return false;
+        if (this.id.equals(RaceRegistry.DEFAULT.identifier())) return false;
         if (!(stack.is(ItemRegistry.UMA_SOUL) &&
                 ((this.ranking == RaceRanking.DEBUT) ^ UmaSoulUtils.hasUmaSoulDebut(stack)))) return false;
         var raceData = UmaSoulUtils.getRaceStatus(stack);
@@ -342,7 +342,7 @@ public class Race {
 
         @SafeVarargs
         public final RaceBuilder addTags(ResourceKey<RaceTag>... locs) {
-            Arrays.stream(locs).map(ResourceKey::location).forEach(this::addTags);
+            Arrays.stream(locs).map(ResourceKey::identifier).forEach(this::addTags);
             return this;
         }
 
@@ -356,7 +356,7 @@ public class Race {
         }
 
         public RaceBuilder setField(ResourceKey<RaceField> field) {
-            return this.setField(field.location());
+            return this.setField(field.identifier());
         }
 
         public RaceBuilder setField(Identifier field) {

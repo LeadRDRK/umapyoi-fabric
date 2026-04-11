@@ -52,6 +52,6 @@ public class RaceTagRegistry {
 
     public static void registerAll(BootstrapContext<RaceTag> bootstep) {
         forDataGenMap.forEach((rKey, rFun) ->
-                bootstep.register(rKey, rFun.apply(rKey.location())));
+                bootstep.register(rKey, rFun.apply(rKey.identifier())));
     }
 }

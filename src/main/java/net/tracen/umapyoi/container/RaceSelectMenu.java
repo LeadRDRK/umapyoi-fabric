@@ -81,7 +81,7 @@ public class RaceSelectMenu extends AbstractContainerMenu implements IItemNameMu
             @Override
             public boolean mayPlace(ItemStack pStack) {
                 return pStack.is(ItemRegistry.UMA_RACE_TICKET) &&
-                        UmaRaceTicketItem.getRaceID(pStack).equals(RaceRegistry.MAKE_DEBUT.location());
+                        UmaRaceTicketItem.getRaceID(pStack).equals(RaceRegistry.MAKE_DEBUT.identifier());
             }
 
         });
@@ -226,7 +226,7 @@ public class RaceSelectMenu extends AbstractContainerMenu implements IItemNameMu
             this.recipes = UmapyoiAPI.getRaceRegistry(level).entrySet().stream()
                     .sorted(UmaRaceTicketItem.RaceEntryComparator.INSTANCE)
                     .map(Map.Entry::getKey)
-                    .map(ResourceKey::location)
+                    .map(ResourceKey::identifier)
                     .collect(Collectors.toCollection(Lists::newArrayList));
         }
         this.broadcastChanges();

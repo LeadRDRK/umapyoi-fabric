@@ -16,6 +16,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.api.UmapyoiAPI;
@@ -223,7 +224,7 @@ public class GiveUmaSoul {
                 ).executes(ctx -> new GiveBuilder(ctx).create());
         recursiveBuilder(lastPosFix, subCommands, GiveBuilder::new, GiveBuilder::create);
 
-        return builder.then(Commands.literal("give").requires(src -> src.hasPermission(2)) // /umapyoi give
+        return builder.then(Commands.literal("give").requires(src -> src.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER)) // /umapyoi give
                 .then(Commands.argument("target", EntityArgument.player())
                         .then(lastPosFix)
                 )

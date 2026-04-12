@@ -3,6 +3,7 @@ package net.tracen.umapyoi.data;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.tracen.umapyoi.registry.cosmetics.CosmeticData;
 import net.tracen.umapyoi.registry.races.Race;
 import net.tracen.umapyoi.registry.races.field.RaceField;
@@ -26,6 +27,8 @@ public class UmapyoiRegistryProvider extends FabricDynamicRegistryProvider {
         entries.addAll(lookups.lookupOrThrow(Race.REGISTRY_KEY));
         entries.addAll(lookups.lookupOrThrow(RaceField.REGISTRY_KEY));
         entries.addAll(lookups.lookupOrThrow(RaceTag.REGISTRY_KEY));
+        entries.addAll(lookups.lookupOrThrow(Registries.VILLAGER_TRADE));
+        entries.addAll(lookups.lookupOrThrow(Registries.TRADE_SET));
     }
 
     @Override

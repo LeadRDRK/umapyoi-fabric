@@ -148,7 +148,7 @@ publishMods {
         minecraftVersions.add(minecraft_version)
 
         requires("fabric-api")
-        requires("trinkets-canary")
+        requires("trinkets-updated")
         requires("owo-lib")
         optional("modonomicon")
         optional("create-fly")
@@ -163,7 +163,7 @@ publishMods {
         serverRequired = true
 
         requires("fabric-api")
-        requires("trinkets") // TODO: trinkets canary is not available on curseforge
+        requires("trinkets-updated")
         requires("owo-lib")
         optional("modonomicon")
         optional("create-fly")

@@ -1,6 +1,6 @@
 package net.tracen.umapyoi.block.entity;
 
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -38,7 +38,7 @@ import net.tracen.umapyoi.utils.UmaSoulUtils;
 import java.util.List;
 import java.util.Objects;
 
-public class ThreeGoddessBlockEntity extends SyncedInventoryEntity implements ExtendedScreenHandlerFactory<BlockPos> {
+public class ThreeGoddessBlockEntity extends SyncedInventoryEntity implements ExtendedMenuProvider<BlockPos> {
     public static final int MAX_PROCESS_TIME = 200;
     private final NonNullList<ItemStack> items = NonNullList.withSize(4, ItemStack.EMPTY);
     protected final ContainerData tileData;

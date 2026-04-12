@@ -2,7 +2,7 @@ package net.tracen.umapyoi.compat.jei.category;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -47,8 +47,8 @@ public class JEIGachaCategory implements IRecipeCategory<JEISimpleRecipe> {
     }
 
     @Override
-    public void draw(JEISimpleRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX,
-                     double mouseY) {
+    public void draw(JEISimpleRecipe recipe, IRecipeSlotsView recipeSlotsView,
+                     GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
         background.draw(guiGraphics);
         Optional<ItemStack> outputStack = recipeSlotsView.findSlotByName("outputSlot")
                 .flatMap(slot -> slot.getDisplayedIngredient(VanillaTypes.ITEM_STACK));
@@ -57,7 +57,7 @@ public class JEIGachaCategory implements IRecipeCategory<JEISimpleRecipe> {
                 Minecraft minecraft = Minecraft.getInstance();
                 Font font = minecraft.font;
                 var needBookText = Component.translatable("umapyoi.jei.gacha.need_book");
-                guiGraphics.drawString(font, needBookText,
+                guiGraphics.text(font, needBookText,
                         46 - Math.round(font.width(needBookText.getVisualOrderText()) / 2.0F), 36, 0xFFFEFEFE);
                 //RenderSystem.setShaderColor(1, 1, 1, 1);
             }

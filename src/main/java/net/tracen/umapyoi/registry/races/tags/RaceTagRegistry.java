@@ -1,8 +1,8 @@
 package net.tracen.umapyoi.registry.races.tags;
 
 import net.minecraft.data.worldgen.BootstrapContext;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.tracen.umapyoi.Umapyoi;
 
 import java.util.HashMap;

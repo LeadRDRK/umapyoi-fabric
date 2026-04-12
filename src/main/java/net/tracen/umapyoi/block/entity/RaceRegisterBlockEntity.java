@@ -2,7 +2,7 @@ package net.tracen.umapyoi.block.entity;
 
 import static net.tracen.umapyoi.item.UmaRaceTicketItem.getRaceID;
 
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -10,8 +10,8 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ProblemReporter;
@@ -52,7 +52,7 @@ import javax.annotation.Nullable;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements ExtendedScreenHandlerFactory<BlockPos> {
+public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements ExtendedMenuProvider<BlockPos> {
     // No additional synchronized logic because provided by SyncedBlockEntity
     // Update by inventoryChanged (custom logic in SyncedBlockEntity, which is the super of this class)
 
@@ -72,7 +72,7 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
     @Nullable private Long winnerRenderSeed = null;
     private long safeGetWinnerRenderSeed() {
         if (winnerRenderSeed == null) {
-            RandomSource randomSeq = this.level == null ? RandomSource.create(this.getBlockPos().asLong()) : this.level.random.fork();
+            RandomSource randomSeq = this.level == null ? RandomSource.create(this.getBlockPos().asLong()) : this.level.getRandom().fork();
             this.winnerRenderSeed = randomSeq.nextLong();
         }
         return this.winnerRenderSeed;
@@ -276,7 +276,7 @@ public class RaceRegisterBlockEntity extends SyncedInventoryEntity implements Ex
                 fillStack = this.insertItemToSlot(i, fillStack);
             }
         });
-        this.winnerRenderSeed = this.level.random.fork().nextLong();
+        this.winnerRenderSeed = this.level.getRandom().fork().nextLong();
         this.setChanged();
         return true;
     }

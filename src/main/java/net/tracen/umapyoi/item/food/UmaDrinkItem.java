@@ -28,13 +28,14 @@ public class UmaDrinkItem extends ItemDrinkBase {
                 Player entityplayer = (Player) entity;
                 if (entityplayer.getAbilities().instabuild)
                     return itemstack;
-                if (!entityplayer.addItem(this.getRecipeRemainder(stack)))
-                    entityplayer.drop(this.getRecipeRemainder(stack), true);
+                var remainder = this.getCraftingRemainder(stack).create();
+                if (!entityplayer.addItem(remainder))
+                    entityplayer.drop(remainder, true);
             }
             return itemstack;
         }
         return entity instanceof Player && ((Player) entity).getAbilities().instabuild ? itemstack
-                : this.getRecipeRemainder(stack);
+                : this.getCraftingRemainder(stack).create();
     }
 
     private ItemStack eatAsUma(ItemStack stack, Level level, LivingEntity entity) {

@@ -1,12 +1,9 @@
 package net.tracen.umapyoi.recipe;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.tracen.umapyoi.item.ItemRegistry;
@@ -14,40 +11,36 @@ import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 
 public class ShapelessCostumeRecipe extends ShapelessRecipe {
 
-    public static final RecipeSerializer<ShapelessRecipe> SERIALIZER = new CostumeRecipeSerializer<>(
-            RecipeSerializer.SHAPELESS_RECIPE, ShapelessCostumeRecipe::new);
+    public static final RecipeSerializer<ShapelessRecipe> SERIALIZER = new CostumeRecipeSerializerFactory<>(
+            ShapelessRecipe.SERIALIZER, ShapelessCostumeRecipe::new
+    ).createAsCompose();
 
     private final Identifier output;
 
     public ShapelessCostumeRecipe(ShapelessRecipe compose, Identifier output) {
-        super(compose.group(), compose.category(),
-                getResultItem(output), compose.ingredients);
+        super(
+                new CommonInfo(compose.showNotification()),
+                new CraftingBookInfo(compose.category(), compose.group()),
+                getResultItem(output),
+                compose.ingredients
+        );
         this.output = output;
     }
 
-    private static ItemStack getResultItem(Identifier output) {
-        Item bladeItem = BuiltInRegistries.ITEM.containsKey(output)
-                ? BuiltInRegistries.ITEM.get(output).orElseThrow().value()
-                : ItemRegistry.UMA_COSTUME;
-
-        return bladeItem.getDefaultInstance();
+    private static ItemStackTemplate getResultItem(Identifier output) {
+        if (BuiltInRegistries.ITEM.containsKey(output)) {
+            return new ItemStackTemplate(BuiltInRegistries.ITEM.get(output).orElseThrow().value());
+        }
+        else {
+            return new ItemStackTemplate(ItemRegistry.UMA_COSTUME,
+                    DataComponentPatch.builder()
+                            .set(DataComponentsTypeRegistry.DATA_LOCATION.get(), output)
+                            .build());
+        }
     }
 
     public Identifier getOutput() {
         return output;
-    }
-
-    @Override
-    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
-        ItemStack result = ShapelessCostumeRecipe.getResultItem(output).copy();
-        if(registries == RegistryAccess.EMPTY)
-            return result;
-
-        if (!BuiltInRegistries.ITEM.getKey(result.getItem()).equals(output)) {
-            result = ItemRegistry.UMA_COSTUME.getDefaultInstance();
-            result.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), output);
-        }
-        return result;
     }
 
     @Override

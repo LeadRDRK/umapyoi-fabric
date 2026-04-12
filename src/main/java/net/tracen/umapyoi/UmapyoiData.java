@@ -3,10 +3,12 @@ package net.tracen.umapyoi;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.Registries;
 import net.tracen.umapyoi.data.UmapyoiAtlasProvider;
 import net.tracen.umapyoi.data.UmapyoiModelProvider;
 import net.tracen.umapyoi.data.UmapyoiRecipeProvider;
 import net.tracen.umapyoi.data.UmapyoiRegistryProvider;
+import net.tracen.umapyoi.data.UmapyoiSoundDefinitionProvider;
 import net.tracen.umapyoi.data.builtin.CostumeDataRegistry;
 import net.tracen.umapyoi.data.builtin.SupportCardRegistry;
 import net.tracen.umapyoi.data.builtin.UmaDataRegistry;
@@ -17,6 +19,9 @@ import net.tracen.umapyoi.data.tag.UmaDataTagProvider;
 import net.tracen.umapyoi.data.tag.UmapyoiBlockTagProvider;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTagsProvider;
 import net.tracen.umapyoi.data.tag.UmapyoiPOITagsProvider;
+import net.tracen.umapyoi.data.tag.UmapyoiVillagerTradeTagsProvider;
+import net.tracen.umapyoi.data.trading.UmapyoiTradeSets;
+import net.tracen.umapyoi.data.trading.UmapyoiVillagerTrades;
 import net.tracen.umapyoi.registry.cosmetics.CosmeticData;
 import net.tracen.umapyoi.registry.races.Race;
 import net.tracen.umapyoi.registry.races.RaceRegistry;
@@ -36,7 +41,7 @@ public class UmapyoiData implements DataGeneratorEntrypoint {
         pack.addProvider(UmapyoiRegistryProvider::new);
 
         pack.addProvider(UmapyoiModelProvider::new);
-        //pack.addProvider(UmapyoiSoundDefinitionProvider::new);
+        pack.addProvider(UmapyoiSoundDefinitionProvider::new);
         pack.addProvider(UmapyoiBlockTagProvider::new);
         pack.addProvider(UmapyoiItemTagsProvider::new);
         pack.addProvider(UmapyoiBlockLootTableProvider::new);
@@ -46,6 +51,7 @@ public class UmapyoiData implements DataGeneratorEntrypoint {
         pack.addProvider(UmapyoiPOITagsProvider::new);
         pack.addProvider(UmapyoiRecipeProvider::new);
         pack.addProvider(UmapyoiAtlasProvider::new);
+        pack.addProvider(UmapyoiVillagerTradeTagsProvider::new);
     }
 
     @Override
@@ -56,5 +62,7 @@ public class UmapyoiData implements DataGeneratorEntrypoint {
         registryBuilder.add(Race.REGISTRY_KEY, RaceRegistry::registerAll);
         registryBuilder.add(RaceField.REGISTRY_KEY, RaceFieldRegistry::registerAll);
         registryBuilder.add(RaceTag.REGISTRY_KEY, RaceTagRegistry::registerAll);
+        registryBuilder.add(Registries.VILLAGER_TRADE, UmapyoiVillagerTrades::bootstrap);
+        registryBuilder.add(Registries.TRADE_SET, UmapyoiTradeSets::bootstrap);
     }
 }

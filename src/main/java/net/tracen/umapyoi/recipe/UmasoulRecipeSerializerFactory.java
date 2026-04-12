@@ -25,9 +25,19 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
-public record SupportCardRecipeSerializer<T extends Recipe<?>, U extends T> (RecipeSerializer<T> compose,
-                                                                             BiFunction<T, @Nullable Identifier, U> converter) implements RecipeSerializer<U> {
-    @Override
+public record UmasoulRecipeSerializerFactory<T extends Recipe<?>, U extends T> (
+        RecipeSerializer<T> compose,
+        BiFunction<T, @Nullable Identifier, U> converter
+) {
+    public RecipeSerializer<U> create() {
+        return new RecipeSerializer<>(codec(), streamCodec());
+    }
+
+    @SuppressWarnings("unchecked")
+    public RecipeSerializer<T> createAsCompose() {
+        return (RecipeSerializer<T>) create();
+    }
+
     @NullMarked
     public MapCodec<U> codec() {
         return MapCodec.of(
@@ -48,7 +58,7 @@ public record SupportCardRecipeSerializer<T extends Recipe<?>, U extends T> (Rec
                     }
 
                     private NotImplementedException notImplemented() {
-                        return new NotImplementedException("Serializing SupportCardRecipe is not implemented yet.");
+                        return new NotImplementedException("Serializing UmasoulRecipe is not implemented yet.");
                     }
                 },
                 new MapDecoder<>() {
@@ -56,7 +66,7 @@ public record SupportCardRecipeSerializer<T extends Recipe<?>, U extends T> (Rec
                     public <V> Stream<V> keys(DynamicOps<V> ops) {
                         return Stream.concat(
                                 compose().codec().keys(ops),
-                                Stream.of(ops.createString("card"))
+                                Stream.of(ops.createString("umasoul"))
                         );
                     }
 
@@ -89,7 +99,7 @@ public record SupportCardRecipeSerializer<T extends Recipe<?>, U extends T> (Rec
 
                         var recipeResult = compose().codec().decode(ops, newInput);
                         return recipeResult.flatMap(recipe -> {
-                            var outputResult = Identifier.CODEC.optionalFieldOf("card").decode(ops, newInput);
+                            var outputResult = Identifier.CODEC.optionalFieldOf("umasoul").decode(ops, newInput);
                             return outputResult.map(outputOpt -> {
                                 var output = outputOpt
                                         .orElseGet(() -> // result.id MUST be present for the base recipe to even decode correctly
@@ -113,15 +123,14 @@ public record SupportCardRecipeSerializer<T extends Recipe<?>, U extends T> (Rec
         );
     }
 
-    @Override
     public StreamCodec<RegistryFriendlyByteBuf, U> streamCodec() {
         return StreamCodec.composite(
                 compose().streamCodec(), recipe -> recipe,
                 Identifier.STREAM_CODEC.apply(ByteBufCodecs::optional), recipe -> {
-                    if (recipe instanceof ShapedSupportCardRecipe bladeRecipe) {
-                        return Optional.ofNullable(bladeRecipe.getOutput());
-                    } else if (recipe instanceof ShapelessSupportCardRecipe bladeRecipe) {
-                        return Optional.ofNullable(bladeRecipe.getOutput());
+                    if (recipe instanceof ShapedUmasoulRecipe bladeRecipe) {
+                        return Optional.ofNullable(bladeRecipe.getOutputUma());
+                    } else if (recipe instanceof ShapelessUmasoulRecipe bladeRecipe) {
+                        return Optional.ofNullable(bladeRecipe.getOutputUma());
                     } else
                         return Optional.empty();
                 },

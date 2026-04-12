@@ -54,12 +54,12 @@ public class TrainingItem extends Item implements SupportContainer {
     private InteractionResult learning(Level pLevel, Player pPlayer, ItemStack soul,
                                                         ItemStack training) {
         if (soul.isEmpty()) {
-            pPlayer.displayClientMessage(Component.translatable("umapyoi.no_umasoul_equiped"), true);
+            pPlayer.sendOverlayMessage(Component.translatable("umapyoi.no_umasoul_equiped"));
             return InteractionResult.FAIL;
         }
 
         if (UmaSoulUtils.getLearningTimes(soul) <= 0) {
-            pPlayer.displayClientMessage(Component.translatable("umapyoi.learning.no_learning_time"), true);
+            pPlayer.sendOverlayMessage(Component.translatable("umapyoi.learning.no_learning_time"));
             return InteractionResult.FAIL;
         }
 
@@ -70,7 +70,7 @@ public class TrainingItem extends Item implements SupportContainer {
             training.shrink(1);
             return InteractionResult.SUCCESS;
         } else {
-            pPlayer.displayClientMessage(Component.translatable("umapyoi.learning.can_not_learn"), true);
+            pPlayer.sendOverlayMessage(Component.translatable("umapyoi.learning.can_not_learn"));
             return InteractionResult.FAIL;
         }
     }

@@ -2,62 +2,51 @@ package net.tracen.umapyoi.recipe;
 
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
-import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.item.ItemRegistry;
-import net.tracen.umapyoi.item.UmaRaceTicketItem;
-import net.tracen.umapyoi.registry.races.Race;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 
 import org.jetbrains.annotations.Nullable;
 
 public class ShapelessRaceTicketRecipe extends ShapelessRecipe implements RaceTicketRecipe<CraftingInput> {
-    public static final RecipeSerializer<ShapelessRecipe> SERIALIZER = new RaceTicketRecipeSerializer<>(
-            RecipeSerializer.SHAPELESS_RECIPE, ShapelessRaceTicketRecipe::new
-    );
+    public static final RecipeSerializer<ShapelessRecipe> SERIALIZER = new RaceTicketRecipeSerializerFactory<>(
+            ShapelessRecipe.SERIALIZER, ShapelessRaceTicketRecipe::new
+    ).createAsCompose();
 
     private final Identifier baseItemOrKey;
     public ShapelessRaceTicketRecipe(ShapelessRecipe compose, Identifier loc) {
-        super(compose.group(), compose.category(),
-                getResultItem(loc), compose.ingredients);
+        super(
+                new CommonInfo(compose.showNotification()),
+                new CraftingBookInfo(compose.category(), compose.group()),
+                getResultItem(loc),
+                compose.ingredients
+        );
         this.baseItemOrKey = loc;
     }
 
-    private static ItemStack getResultItem(Identifier loc) {
-        return BuiltInRegistries.ITEM.get(loc)
-                .map(Holder::value)
-                .orElse(ItemRegistry.UMA_RACE_TICKET)
-                .getDefaultInstance();
+    private static ItemStackTemplate getResultItem(Identifier output) {
+        if (BuiltInRegistries.ITEM.containsKey(output)) {
+            return new ItemStackTemplate(BuiltInRegistries.ITEM.get(output).orElseThrow().value());
+        }
+        else {
+            return new ItemStackTemplate(ItemRegistry.UMA_RACE_TICKET,
+                    DataComponentPatch.builder()
+                            .set(DataComponentsTypeRegistry.DATA_LOCATION.get(), output)
+                            .build());
+        }
     }
 
     @Override
     public Identifier getKey() { return this.baseItemOrKey; }
-
-    @Override
-    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
-        ItemStack result = getResultItem(this.baseItemOrKey).copy();
-        if(registries == RegistryAccess.EMPTY)
-            return result;
-
-        if (!BuiltInRegistries.ITEM.getKey(result.getItem()).equals(this.baseItemOrKey)) {
-            var race = UmapyoiAPI.getRaceRegistry(registries)
-                    .get(ResourceKey.create(Race.REGISTRY_KEY, this.baseItemOrKey))
-                    .map(Holder::value)
-                    .orElse(null);
-            result = UmaRaceTicketItem.init(this.baseItemOrKey, race);
-        }
-        return result;
-    }
 
     @Override
     public RecipeSerializer<ShapelessRecipe> getSerializer() {

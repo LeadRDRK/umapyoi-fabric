@@ -1,6 +1,6 @@
 package net.tracen.umapyoi.container;
 
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.flag.FeatureFlags;
@@ -14,10 +14,10 @@ public class ContainerRegistry {
             .create(Registries.MENU, Umapyoi.MODID);
 
     public static final RegistryObject<MenuType<ThreeGoddessContainer>> THREE_GODDESS = CONTAINER_TYPES
-            .register("three_goddess", () -> new ExtendedScreenHandlerType<>(ThreeGoddessContainer::new, BlockPos.STREAM_CODEC));
+            .register("three_goddess", () -> new ExtendedMenuType<>(ThreeGoddessContainer::new, BlockPos.STREAM_CODEC));
 
     public static final RegistryObject<MenuType<TrainingFacilityContainer>> TRAINING_FACILITY = CONTAINER_TYPES
-            .register("training_facility", () -> new ExtendedScreenHandlerType<>(TrainingFacilityContainer::new, BlockPos.STREAM_CODEC));
+            .register("training_facility", () -> new ExtendedMenuType<>(TrainingFacilityContainer::new, BlockPos.STREAM_CODEC));
 
     public static final RegistryObject<MenuType<SkillLearningMenu>> SKILL_LEARNING_TABLE = CONTAINER_TYPES
             .register("skill_learning_table", () -> new MenuType<>(SkillLearningMenu::new, FeatureFlags.DEFAULT_FLAGS));
@@ -38,7 +38,7 @@ public class ContainerRegistry {
             .register("factor_research_menu", () -> new MenuType<>(FactorResearchMenu::new, FeatureFlags.DEFAULT_FLAGS));
 
     public static final RegistryObject<MenuType<RaceContainer>> RACE_REGISTER = CONTAINER_TYPES
-            .register("race_container", () -> new ExtendedScreenHandlerType<>(RaceContainer::new, BlockPos.STREAM_CODEC));
+            .register("race_container", () -> new ExtendedMenuType<>(RaceContainer::new, BlockPos.STREAM_CODEC));
 
     public static final RegistryObject<MenuType<RaceSelectMenu>> RACE_SELECT_MENU = CONTAINER_TYPES
             .register("race_select_menu", () -> new MenuType<>((RaceSelectMenu::new), FeatureFlags.DEFAULT_FLAGS));

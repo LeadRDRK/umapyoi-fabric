@@ -1,6 +1,6 @@
 package net.tracen.umapyoi.client.screen;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -25,17 +25,15 @@ public class ThreeGoddessScreen extends AbstractContainerScreen<ThreeGoddessCont
             "textures/gui/three_goddess.png");
 
     public ThreeGoddessScreen(ThreeGoddessContainer screenContainer, Inventory inv, Component titleIn) {
-        super(screenContainer, inv, titleIn);
+        super(screenContainer, inv, titleIn, 176, 220);
         this.leftPos = 0;
         this.topPos = 0;
-        this.imageWidth = 176;
-        this.imageHeight = 220;
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-        this.renderTooltip(guiGraphics, mouseX, mouseY);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
+        this.extractTooltip(guiGraphics, mouseX, mouseY);
         this.renderModels(guiGraphics);
     }
 
@@ -49,7 +47,7 @@ public class ThreeGoddessScreen extends AbstractContainerScreen<ThreeGoddessCont
             (float)Math.toRadians(45f),
             0
     );
-    protected void renderModels(GuiGraphics guiGraphics) {
+    protected void renderModels(GuiGraphicsExtractor guiGraphics) {
         ItemStack fatherFactor = this.menu.tileEntity.getItem(1);
         ItemStack motherFactor = this.menu.tileEntity.getItem(2);
         if (!fatherFactor.isEmpty()) {
@@ -66,28 +64,28 @@ public class ThreeGoddessScreen extends AbstractContainerScreen<ThreeGoddessCont
         }
     }
 
-    protected void renderModel(GuiGraphics guiGraphics, int pPosX, int pPosY, float pScale,
+    protected void renderModel(GuiGraphicsExtractor guiGraphics, int pPosX, int pPosY, float pScale,
                                Vector3f pTranslation, Quaternionf pQuaternion, Identifier name) {
         if (!ClientUtils.getClientUmaDataRegistry().containsKey(name)) {
             name = UmaDataRegistry.COMMON_UMA.identifier();
         }
         SimpleBedrockModel model = new SimpleBedrockModel(ClientUtils.getModelPOJO(name));
-        guiGraphics.guiRenderState.submitPicturesInPictureState(new GuiBedrockModelRenderer.RenderState(
+        guiGraphics.guiRenderState.addPicturesInPictureState(new GuiBedrockModelRenderer.RenderState(
                 model, name, pTranslation, pQuaternion, pPosX, pPosY,
                 pPosX + 40, pPosY + 62, pScale, guiGraphics.scissorStack.peek()
         ));
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawString(this.font, this.title,
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        guiGraphics.text(this.font, this.title,
                 Math.round((this.imageWidth / 2.0F) - (this.font.width(this.title.getVisualOrderText()) / 2.0F)),
                 this.titleLabelY - 3, 0xFFFFFFFF, false);
-        guiGraphics.drawString(this.font, this.playerInventoryTitle, 8, this.imageHeight - 96 + 2, 0xFF404040, false);
+        guiGraphics.text(this.font, this.playerInventoryTitle, 8, this.imageHeight - 96 + 2, 0xFF404040, false);
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    public void extractBackground(final GuiGraphicsExtractor guiGraphics, final int mouseX, final int mouseY, final float a) {
         // Render UI background
         if (this.minecraft == null) {
             return;

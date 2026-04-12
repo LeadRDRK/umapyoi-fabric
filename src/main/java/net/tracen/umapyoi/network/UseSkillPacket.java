@@ -44,7 +44,7 @@ public record UseSkillPacket() implements CustomPacketPayload {
             UmaSkill selectedSkill = UmaSkillRegistry.REGISTRY.get().get(selectedSkillName)
                     .map(Holder::value).orElse(null);
             if (selectedSkill == null) {
-                player.displayClientMessage(Component.translatable("umapyoi.unknown_skill"), true);
+                player.sendOverlayMessage(Component.translatable("umapyoi.unknown_skill"));
                 return;
             }
 
@@ -66,7 +66,7 @@ public record UseSkillPacket() implements CustomPacketPayload {
                 var applyEvent = new ApplySkillCallback.Context(UmaSkillRegistry.REGISTRY.get().getKey(selectedSkill), player.level(), player);
                 ApplySkillCallback.invoke(applyEvent);
             } else {
-                player.displayClientMessage(Component.translatable("umapyoi.not_enough_ap"), true);
+                player.sendOverlayMessage(Component.translatable("umapyoi.not_enough_ap"));
             }
         }
     }

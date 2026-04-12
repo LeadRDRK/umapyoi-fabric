@@ -2,7 +2,7 @@ package net.tracen.umapyoi.item;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTabOutput;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
@@ -26,7 +26,7 @@ public class SkillBookItem extends Item implements CreativeModeTabFiller {
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void fillItemCategory(FabricItemGroupEntries entries) {
+    public void fillItemCategory(FabricCreativeModeTabOutput entries) {
         for (Identifier skill : UmaSkillRegistry.REGISTRY.get().keySet()) {
             ItemStack result = getDefaultInstance();
             result.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), skill);

@@ -5,14 +5,13 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.item.UmaRaceTicketItem;
 import net.tracen.umapyoi.registry.races.Race;
@@ -34,8 +33,8 @@ public record RaceTicketRandomLootFunction(RaceRanking least, RaceRanking most, 
             .apply(instance, RaceTicketRandomLootFunction::new));
 
     @Override
-    public LootItemFunctionType<?> getType() {
-        return LootFunctionRegistry.RACE_TICKET_RANDOM.get();
+    public MapCodec<? extends LootItemFunction> codec() {
+        return CODEC;
     }
 
     @Override

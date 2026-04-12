@@ -1,61 +1,46 @@
 package net.tracen.umapyoi.recipe;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
-import net.tracen.umapyoi.item.FadedUmaSoulItem;
 import net.tracen.umapyoi.item.ItemRegistry;
-import net.tracen.umapyoi.registry.umadata.UmaData;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 
 public class ShapelessUmasoulRecipe extends ShapelessRecipe {
 
-    public static final RecipeSerializer<ShapelessRecipe> SERIALIZER = new UmasoulRecipeSerializer<>(
-            RecipeSerializer.SHAPELESS_RECIPE, ShapelessUmasoulRecipe::new);
+    public static final RecipeSerializer<ShapelessRecipe> SERIALIZER = new UmasoulRecipeSerializerFactory<>(
+            ShapelessRecipe.SERIALIZER, ShapelessUmasoulRecipe::new
+    ).createAsCompose();
 
     private final Identifier outputUma;
 
     public ShapelessUmasoulRecipe(ShapelessRecipe compose, Identifier output) {
-        super(compose.group(), compose.category(),
-                getResultItem(output), compose.ingredients);
+        super(
+                new CommonInfo(compose.showNotification()),
+                new CraftingBookInfo(compose.category(), compose.group()),
+                getResultItem(output),
+                compose.ingredients
+        );
         this.outputUma = output;
     }
 
-    private static ItemStack getResultItem(Identifier output) {
-        Item bladeItem = BuiltInRegistries.ITEM.containsKey(output)
-                ? BuiltInRegistries.ITEM.get(output).orElseThrow().value()
-                : ItemRegistry.BLANK_UMA_SOUL;
-
-        return bladeItem.getDefaultInstance();
+    private static ItemStackTemplate getResultItem(Identifier output) {
+        if (BuiltInRegistries.ITEM.containsKey(output)) {
+            return new ItemStackTemplate(BuiltInRegistries.ITEM.get(output).orElseThrow().value());
+        }
+        else {
+            return new ItemStackTemplate(ItemRegistry.BLANK_UMA_SOUL,
+                    DataComponentPatch.builder()
+                            .set(DataComponentsTypeRegistry.DATA_LOCATION.get(), output)
+                            .build());
+        }
     }
 
     public Identifier getOutputUma() {
         return outputUma;
-    }
-
-    @Override
-    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
-        ItemStack result = getResultItem(outputUma).copy();
-        if(registries == RegistryAccess.EMPTY)
-            return result;
-
-        if (!BuiltInRegistries.ITEM.getKey(result.getItem()).equals(outputUma)) {
-            var dataOpt = registries
-                    .lookupOrThrow(UmaData.REGISTRY_KEY)
-                    .get(ResourceKey.create(UmaData.REGISTRY_KEY, outputUma));
-            if (dataOpt.isEmpty())
-                return ItemStack.EMPTY;
-
-            var data = dataOpt.get().value();
-            return FadedUmaSoulItem.genUmaSoul(outputUma, data);
-        }
-        return result;
     }
 
     @Override

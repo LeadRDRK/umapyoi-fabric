@@ -21,7 +21,8 @@ import net.tracen.umapyoi.registry.umadata.UmaData;
 import net.tracen.umapyoi.utils.ClientUtils;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
-import dev.emi.trinkets.api.TrinketsApi;
+import eu.pb4.trinkets.api.TrinketAttachment;
+import eu.pb4.trinkets.api.TrinketsApi;
 
 public class UmapyoiAPI {
     @Environment(EnvType.CLIENT)
@@ -44,42 +45,44 @@ public class UmapyoiAPI {
     }
 
     private static ItemStack getUmaSoulFromTrinkets(LivingEntity entity) {
-        var compOpt = TrinketsApi.getTrinketComponent(entity);
-        if (compOpt.isPresent()) {
-            var comp = compOpt.get();
-            var entityInventory = comp.getInventory();
-            if (entityInventory.containsKey("umapyoi")) {
-                var group = entityInventory.get("umapyoi");
-                if (group.containsKey("uma_soul")) {
-                    var inventory = group.get("uma_soul");
-                    if (inventory.getContainerSize() <= 0)
-                        return ItemStack.EMPTY;
+        var comp = TrinketsApi.getAttachment(entity);
+        return getUmaSoulFromTrinkets(comp);
+    }
 
-                    var stack = inventory.getItem(0);
-                    if (stack.getItem() instanceof UmaSoulItem)
-                        return stack;
-                }
+    private static ItemStack getUmaSoulFromTrinkets(TrinketAttachment comp) {
+        var entityInventory = comp.getInventory();
+        if (entityInventory.containsKey("umapyoi")) {
+            var group = entityInventory.get("umapyoi");
+            if (group.containsKey("uma_soul")) {
+                var inventory = group.get("uma_soul");
+                if (inventory.getContainerSize() <= 0)
+                    return ItemStack.EMPTY;
+
+                var stack = inventory.getItem(0);
+                if (stack.getItem() instanceof UmaSoulItem)
+                    return stack;
             }
         }
         return ItemStack.EMPTY;
     }
 
     public static ItemStack getUmaSuit(LivingEntity entity) {
-        var compOpt = TrinketsApi.getTrinketComponent(entity);
-        if (compOpt.isPresent()) {
-            var comp = compOpt.get();
-            var entityInventory = comp.getInventory();
-            if (entityInventory.containsKey("umapyoi")) {
-                var group = entityInventory.get("umapyoi");
-                if (group.containsKey("uma_suit")) {
-                    var inventory = group.get("uma_suit");
-                    if (inventory.getContainerSize() <= 0)
-                        return ItemStack.EMPTY;
+        var comp = TrinketsApi.getAttachment(entity);
+        return getUmaSuit(comp);
+    }
 
-                    var stack = inventory.getItem(0);
-                    if (stack.getItem() instanceof AbstractSuitItem)
-                        return stack;
-                }
+    public static ItemStack getUmaSuit(TrinketAttachment comp) {
+        var entityInventory = comp.getInventory();
+        if (entityInventory.containsKey("umapyoi")) {
+            var group = entityInventory.get("umapyoi");
+            if (group.containsKey("uma_suit")) {
+                var inventory = group.get("uma_suit");
+                if (inventory.getContainerSize() <= 0)
+                    return ItemStack.EMPTY;
+
+                var stack = inventory.getItem(0);
+                if (stack.getItem() instanceof AbstractSuitItem)
+                    return stack;
             }
         }
         return ItemStack.EMPTY;
@@ -88,6 +91,11 @@ public class UmapyoiAPI {
     public static boolean isUmaSuitRendering(LivingEntity player) {
         // STUB
         return !getUmaSuit(player).isEmpty();
+    }
+
+    public static boolean isUmaSuitRendering(TrinketAttachment comp) {
+        // STUB
+        return !getUmaSuit(comp).isEmpty();
     }
 
     public static boolean isUmaSuitHasHat(LivingEntityRenderState state) {

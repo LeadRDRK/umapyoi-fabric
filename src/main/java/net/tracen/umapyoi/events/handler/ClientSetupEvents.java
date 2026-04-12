@@ -3,22 +3,20 @@ package net.tracen.umapyoi.events.handler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
-import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
-import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.block.entity.BlockEntityRegistry;
 import net.tracen.umapyoi.client.ActionBarOverlay;
 import net.tracen.umapyoi.client.MotivationOverlay;
@@ -57,8 +55,6 @@ public class ClientSetupEvents {
         AbstractSuitItem.registerRenderer(ItemRegistry.TRAINING_SUIT);
         AbstractSuitItem.registerRenderer(ItemRegistry.SWIMSUIT);
         AbstractSuitItem.registerRenderer(ItemRegistry.UMA_COSTUME);
-
-        BlockRenderLayerMap.putBlock(BlockRegistry.TRAINING_FACILITY, ChunkSectionLayer.CUTOUT);
 
         ClientTickEvents.END_CLIENT_TICK.register(SkillKeyMapping::onEndClientTick);
 
@@ -140,15 +136,18 @@ public class ClientSetupEvents {
     }
 
     public static void registerKeyBinds() {
-        KeyBindingHelper.registerKeyBinding(SkillKeyMapping.KEY_USE_SKILL);
-        KeyBindingHelper.registerKeyBinding(SkillKeyMapping.KEY_FORMER_SKILL);
-        KeyBindingHelper.registerKeyBinding(SkillKeyMapping.KEY_LATTER_SKILL);
-        KeyBindingHelper.registerKeyBinding(SkillKeyMapping.KEY_CONFIGURE_GUI);
+        KeyMappingHelper.registerKeyMapping(SkillKeyMapping.KEY_USE_SKILL);
+        KeyMappingHelper.registerKeyMapping(SkillKeyMapping.KEY_FORMER_SKILL);
+        KeyMappingHelper.registerKeyMapping(SkillKeyMapping.KEY_LATTER_SKILL);
+        KeyMappingHelper.registerKeyMapping(SkillKeyMapping.KEY_CONFIGURE_GUI);
     }
 
     public static void registerGuiOverlay() {
-        HudRenderCallback.EVENT.register(new ActionBarOverlay());
-        HudRenderCallback.EVENT.register(new MotivationOverlay());
-        HudRenderCallback.EVENT.register(new SkillOverlay());
+        HudElementRegistry.attachElementAfter(VanillaHudElements.MISC_OVERLAYS,
+                ActionBarOverlay.ID, new ActionBarOverlay());
+        HudElementRegistry.attachElementAfter(VanillaHudElements.MISC_OVERLAYS,
+                MotivationOverlay.ID, new MotivationOverlay());
+        HudElementRegistry.attachElementAfter(VanillaHudElements.MISC_OVERLAYS,
+                SkillOverlay.ID, new SkillOverlay());
     }
 }

@@ -2,7 +2,7 @@ package net.tracen.umapyoi.item.factor;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTabOutput;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -56,7 +56,7 @@ public class FactorReport extends Item implements CreativeModeTabFiller {
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void fillItemCategory(FabricItemGroupEntries entries) {
+    public void fillItemCategory(FabricCreativeModeTabOutput entries) {
         UmaFactorRegistry.FACTORS.getEntries().stream()
                 .filter(i -> i.get().getFactorType() != FactorType.UNIQUE)
                 .filter(i -> i != UmaFactorRegistry.SKILL_FACTOR)

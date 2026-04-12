@@ -4,23 +4,26 @@ import com.google.common.base.Suppliers;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTabOutput;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
+import net.tracen.umapyoi.item.data.GachaRankingData;
 import net.tracen.umapyoi.registry.training.SupportContainer;
 import net.tracen.umapyoi.registry.training.SupportStack;
 import net.tracen.umapyoi.registry.training.SupportType;
@@ -32,6 +35,7 @@ import net.tracen.umapyoi.utils.UmaSoulUtils;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -49,7 +53,7 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void fillItemCategory(FabricItemGroupEntries entries) {
+    public void fillItemCategory(FabricCreativeModeTabOutput entries) {
         SupportCardItem.sortedCardDataList(entries.getContext().holders()).forEach(card -> {
             if (card.key().identifier().equals(Identifier.fromNamespaceAndPath(Umapyoi.MODID, "blank_card")))
                 return;
@@ -61,6 +65,28 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
     @Override
     public ItemStack getDefaultInstance() {
         return SupportCard.init(SupportCard.EMPTY_ID, SupportCard.EMPTY);
+    }
+
+    public static void postProcessSupportCard(ItemStack result, SupportCard card) {
+        result.set(DataComponents.MAX_DAMAGE, card.getMaxDamage());
+        result.set(DataComponents.DAMAGE, 0);
+        GachaRanking ranking = card.getGachaRanking();
+        result.set(DataComponentsTypeRegistry.GACHA_RANKING.get(), new GachaRankingData(ranking));
+        result.set(DataComponents.RARITY,
+                ranking == GachaRanking.SSR ? Rarity.EPIC : ranking == GachaRanking.SR ? Rarity.UNCOMMON : Rarity.COMMON
+        );
+    }
+
+    @Override
+    public void onCraftedPostProcess(ItemStack itemStack, Level level) {
+        super.onCraftedPostProcess(itemStack, level);
+
+        Optional.ofNullable(itemStack.get(DataComponentsTypeRegistry.DATA_LOCATION.get()))
+                .flatMap(output -> level.registryAccess()
+                        .lookupOrThrow(SupportCard.REGISTRY_KEY)
+                        .get(ResourceKey.create(SupportCard.REGISTRY_KEY, output))
+                )
+                .ifPresent(data -> postProcessSupportCard(itemStack, data.value()));
     }
 
     @Override

@@ -1,6 +1,6 @@
 package net.tracen.umapyoi.data;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.minecraft.client.data.AtlasProvider;
 import net.minecraft.client.renderer.texture.atlas.SpriteSource;
 import net.minecraft.client.renderer.texture.atlas.sources.SingleFile;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class UmapyoiAtlasProvider extends AtlasProvider {
-    public UmapyoiAtlasProvider(FabricDataOutput output) {
+    public UmapyoiAtlasProvider(FabricPackOutput output) {
         super(output);
     }
 
@@ -25,7 +25,7 @@ public class UmapyoiAtlasProvider extends AtlasProvider {
 
     private List<SpriteSource> blockSprites() {
         return List.of(
-                new SingleFile(SupportAlbumPedestalBlockRenderer.BOOK_LOCATION.texture())
+                new SingleFile(SupportAlbumPedestalBlockRenderer.BOOK_TEXTURE.texture())
         );
     }
 }

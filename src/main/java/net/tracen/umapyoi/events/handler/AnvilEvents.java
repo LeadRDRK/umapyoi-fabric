@@ -114,7 +114,7 @@ public class AnvilEvents {
 
         public Optional<AnvilUpdateCallback.Result> venusParkSoul() {
             if(!soul.is(ItemRegistry.BLANK_UMA_SOUL)) return Optional.empty();
-            if(!material.is(ConventionalItemTags.BREADS_FOODS)) return Optional.empty();
+            if(!material.is(ConventionalItemTags.BREAD_FOODS)) return Optional.empty();
             if(!itemName.equalsIgnoreCase("vivelafrance")) return Optional.empty();
 
             var registry = UmapyoiAPI.getUmaDataRegistry(player.level());

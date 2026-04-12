@@ -2,7 +2,7 @@ package net.tracen.umapyoi.item.factor;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTabOutput;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
@@ -33,7 +33,7 @@ public class UmaFactorContainerItem extends Item implements CreativeModeTabFille
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void fillItemCategory(FabricItemGroupEntries entries) {
+    public void fillItemCategory(FabricCreativeModeTabOutput entries) {
         for (UmaFactor factor : UmaFactorRegistry.REGISTRY.get()) {
             if (factor == UmaFactorRegistry.SKILL_FACTOR.get() || factor.getFactorType() == FactorType.UNIQUE)
                 continue;

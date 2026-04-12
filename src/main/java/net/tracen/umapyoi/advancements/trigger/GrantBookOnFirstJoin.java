@@ -5,7 +5,6 @@ import com.mojang.serialization.MapCodec;
 
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import org.jspecify.annotations.NullMarked;
 import net.minecraft.advancements.criterion.ContextAwarePredicate;
 import net.minecraft.advancements.criterion.SimpleCriterionTrigger;
 import net.minecraft.resources.Identifier;
@@ -13,6 +12,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.tracen.umapyoi.Umapyoi;
+
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
 

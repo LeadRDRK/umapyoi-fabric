@@ -1,7 +1,5 @@
 package net.tracen.umapyoi.events;
 
-import com.google.common.collect.Multimap;
-
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.core.Holder;
@@ -13,32 +11,34 @@ import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.item.UmaSoulItem;
 import net.tracen.umapyoi.utils.UmaStatusUtils;
 
-import dev.emi.trinkets.api.SlotReference;
+import java.util.function.BiConsumer;
+
+import eu.pb4.trinkets.api.TrinketSlotAccess;
 
 public interface ApplyUmasoulAttributeCallback {
     class Context extends UmaSoulContext {
-        private final SlotReference slotReference;
+        private final TrinketSlotAccess slotAccess;
         private final Identifier slotIdentifier;
-        private final Multimap<Holder<Attribute>, AttributeModifier> atts;
+        private final BiConsumer<Holder<Attribute>, AttributeModifier> consumer;
         private final LivingEntity user;
-        public Context(LivingEntity user, ItemStack soul, SlotReference slotReference, Identifier slotIdentifier, Multimap<Holder<Attribute>, AttributeModifier> atts) {
+        public Context(LivingEntity user, ItemStack soul, TrinketSlotAccess slotAccess, Identifier slotIdentifier, BiConsumer<Holder<Attribute>, AttributeModifier> consumer) {
             super(soul);
-            this.slotIdentifier = slotIdentifier;
-            this.slotReference = slotReference;
-            this.atts = atts;
             this.user = user;
+            this.slotAccess = slotAccess;
+            this.slotIdentifier = slotIdentifier;
+            this.consumer = consumer;
         }
 
-        public SlotReference slotReference() {
-            return slotReference;
+        public TrinketSlotAccess getSlotAccess() {
+            return slotAccess;
         }
 
         public Identifier getSlotIdentifier() {
             return slotIdentifier;
         }
 
-        public Multimap<Holder<Attribute>, AttributeModifier> getAttributes() {
-            return atts;
+        public BiConsumer<Holder<Attribute>, AttributeModifier> getConsumer() {
+            return consumer;
         }
 
         @Override

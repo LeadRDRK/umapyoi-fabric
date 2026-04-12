@@ -2,11 +2,11 @@ package net.tracen.umapyoi.client;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
@@ -19,8 +19,8 @@ import net.tracen.umapyoi.registry.skills.UmaSkill;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
 @Environment(EnvType.CLIENT)
-public class SkillOverlay implements HudRenderCallback {
-    public static final SkillOverlay INSTANCE = new SkillOverlay();
+public class SkillOverlay implements HudElement {
+    public static final Identifier ID = Umapyoi.id("skill_overlay");
     private final Minecraft minecraft = Minecraft.getInstance();
 
     public SkillOverlay() {
@@ -29,7 +29,7 @@ public class SkillOverlay implements HudRenderCallback {
     public static final Identifier HUD = Identifier.fromNamespaceAndPath(Umapyoi.MODID, "textures/gui/skill_hud.png");
 
     @Override
-    public void onHudRender(GuiGraphics guiGraphics, DeltaTracker tickCounter) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
         if (!Umapyoi.CONFIG.OVERLAY_SWITCH())
             return;
 
@@ -52,13 +52,13 @@ public class SkillOverlay implements HudRenderCallback {
         }
     }
 
-    private void renderSkill(ItemStack soul, GuiGraphics guiGraphics, int x, int y) {
+    private void renderSkill(ItemStack soul, GuiGraphicsExtractor guiGraphics, int x, int y) {
         UmaSkill skill = UmaSkillRegistry.REGISTRY.get().get(UmaSoulUtils.getSelectedSkill(soul))
                 .map(Holder::value).orElse(null);
         renderSkill(skill, this.minecraft.font, guiGraphics, x, y);
     }
 
-    public static void renderSkill(UmaSkill skill, Font font, GuiGraphics guiGraphics, int x, int y) {
+    public static void renderSkill(UmaSkill skill, Font font, GuiGraphicsExtractor guiGraphics, int x, int y) {
         if (skill != null) {
             switch (skill.getType()) {
                 case BUFF -> guiGraphics.blit(RenderPipelines.GUI_TEXTURED, HUD, x + 3, y + 2, 0, 48, 16, 16, 128, 64);
@@ -67,7 +67,7 @@ public class SkillOverlay implements HudRenderCallback {
                 case PASSIVE -> guiGraphics.blit(RenderPipelines.GUI_TEXTURED, HUD, x + 3, y + 2, 48, 48, 16, 16, 128, 64);
                 default -> throw new IllegalArgumentException("Unexpected value: " + skill.getType());
             }
-            guiGraphics.drawString(font, skill.getDescription(), x + 22, y + 6, 0xFF794016, false);
+            guiGraphics.text(font, skill.getDescription(), x + 22, y + 6, 0xFF794016, false);
         } else {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, HUD, x, y, 0, 20, 96, 20, 128, 64);
         }

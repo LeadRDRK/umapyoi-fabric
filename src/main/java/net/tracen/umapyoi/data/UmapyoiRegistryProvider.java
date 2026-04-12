@@ -1,6 +1,6 @@
 package net.tracen.umapyoi.data;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
 import net.minecraft.core.HolderLookup;
 import net.tracen.umapyoi.registry.cosmetics.CosmeticData;
@@ -13,7 +13,7 @@ import net.tracen.umapyoi.registry.umadata.UmaData;
 import java.util.concurrent.CompletableFuture;
 
 public class UmapyoiRegistryProvider extends FabricDynamicRegistryProvider {
-    public UmapyoiRegistryProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+    public UmapyoiRegistryProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(output, registriesFuture);
     }
 

@@ -1,6 +1,6 @@
 package net.tracen.umapyoi.compat.jei.category;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -40,7 +40,7 @@ public class JEIDisassemblyCategory implements IRecipeCategory<JEISimpleRecipe> 
     }
 
     @Override
-    public void draw(JEISimpleRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX,
+    public void draw(JEISimpleRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX,
                      double mouseY) {
         background.draw(guiGraphics);
     }

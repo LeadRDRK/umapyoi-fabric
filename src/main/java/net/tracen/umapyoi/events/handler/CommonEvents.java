@@ -150,7 +150,7 @@ public class CommonEvents {
         ApplyFactorCallback.Post.EVENT.register(CommonEvents::onFactorFinished);
         LearnSkillCallback.EVENT.register(CommonEvents::onSkillLearned);
         LivingEntityUseItemEvents.FINISH.register(CommonEvents::onConsumedItem);
-        ServerTickEvents.END_WORLD_TICK.register(CommonEvents::onWorldTick);
+        ServerTickEvents.END_LEVEL_TICK.register(CommonEvents::onWorldTick);
         PlayerSpawnPhantomsCallback.EVENT.register(CommonEvents::onPhantomEvent);
         EntitySleepEvents.START_SLEEPING.register(CommonEvents::onPlayerSlept);
     }

@@ -1,6 +1,6 @@
 package net.tracen.umapyoi.client.screen;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -30,27 +30,25 @@ public class FactorDecomposeScreen extends AbstractContainerScreen<FactorDecompo
             "textures/gui/factor_decompose.png");
 
     public FactorDecomposeScreen(FactorDecomposeMenu screenContainer, Inventory inv, Component titleIn) {
-        super(screenContainer, inv, titleIn);
+        super(screenContainer, inv, titleIn, 176, 226);
         this.leftPos = 0;
         this.topPos = 0;
-        this.imageWidth = 176;
-        this.imageHeight = 226;
     }
 
     @Override
-    public void render(GuiGraphics graphic, final int mouseX, final int mouseY, float partialTicks) {
-        super.render(graphic, mouseX, mouseY, partialTicks);
-        this.renderTooltip(graphic, mouseX, mouseY);
+    public void extractRenderState(GuiGraphicsExtractor graphic, final int mouseX, final int mouseY, float partialTicks) {
+        super.extractRenderState(graphic, mouseX, mouseY, partialTicks);
+        this.extractTooltip(graphic, mouseX, mouseY);
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphic, int mouseX, int mouseY) {
-        graphic.drawString(this.font, this.title, (this.imageWidth / 2) - (this.font.width(this.title.getVisualOrderText()) / 2), this.titleLabelY - 3, 0xFFFFFFFF);
-        graphic.drawString(this.font, this.playerInventoryTitle, 8, this.imageHeight - 96 + 2, 0xFF404040, false);
+    protected void extractLabels(GuiGraphicsExtractor graphic, int mouseX, int mouseY) {
+        graphic.text(this.font, this.title, (this.imageWidth / 2) - (this.font.width(this.title.getVisualOrderText()) / 2), this.titleLabelY - 3, 0xFFFFFFFF);
+        graphic.text(this.font, this.playerInventoryTitle, 8, this.imageHeight - 96 + 2, 0xFF404040, false);
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphic, float partialTicks, int mouseX, int mouseY) {
+    public void extractBackground(final GuiGraphicsExtractor graphic, final int mouseX, final int mouseY, final float a) {
         // Render UI background
         if (this.minecraft == null) {
             return;
@@ -64,7 +62,7 @@ public class FactorDecomposeScreen extends AbstractContainerScreen<FactorDecompo
             graphic.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos + 69, this.topPos + 94, 176, 0, 22, 15, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
     }
 
-    protected void renderUma(GuiGraphics graphic) {
+    protected void renderUma(GuiGraphicsExtractor graphic) {
         ItemStack rawStack = this.menu.getSlot(0).getItem();
         if (rawStack.isEmpty()) return;
         Identifier name = Optional.ofNullable(rawStack.get(DataComponentsTypeRegistry.DATA_LOCATION.get()))
@@ -81,7 +79,7 @@ public class FactorDecomposeScreen extends AbstractContainerScreen<FactorDecompo
         int y = this.topPos + 19;
         Vector3f translation = new Vector3f(0.0f, -0.38f, 0.0f);
         Quaternionf rotation = new Quaternionf().rotateXYZ((float) (Math.PI / 6f), (float) (-Math.PI / 4f), 0);
-        graphic.guiRenderState.submitPicturesInPictureState(new GuiBedrockModelRenderer.RenderState(
+        graphic.guiRenderState.addPicturesInPictureState(new GuiBedrockModelRenderer.RenderState(
                 model, name, translation, rotation, x, y,
                 x + 60, y + 60, 50f, graphic.scissorStack.peek()
         ));

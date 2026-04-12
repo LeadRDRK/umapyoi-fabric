@@ -9,11 +9,10 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.MaterialSet;
+import net.minecraft.client.resources.model.sprite.SpriteGetter;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
@@ -24,13 +23,13 @@ import net.tracen.umapyoi.client.renderer.blockentity.state.SupportAlbumPedestal
 import org.jetbrains.annotations.Nullable;
 
 public class SupportAlbumPedestalBlockRenderer extends AbstractPedestalBlockRenderer<AbstractSupportAlbumPedestalBlockEntity, SupportAlbumPedestalBlockRenderState> {
-    public static final Material BOOK_LOCATION = Sheets.BLOCK_ENTITIES_MAPPER.apply(
+    public static final SpriteId BOOK_TEXTURE = Sheets.BLOCK_ENTITIES_MAPPER.apply(
             Identifier.fromNamespaceAndPath(Umapyoi.MODID, "support_card_album"));
-    private final MaterialSet materials;
+    private final SpriteGetter sprites;
     private final BookModel bookModel;
 
     public SupportAlbumPedestalBlockRenderer(BlockEntityRendererProvider.Context context) {
-        this.materials = context.materials();
+        this.sprites = context.sprites();
         this.bookModel = new BookModel(context.bakeLayer(ModelLayers.BOOK));
     }
 
@@ -51,16 +50,16 @@ public class SupportAlbumPedestalBlockRenderer extends AbstractPedestalBlockRend
         poseStack.mulPose(Axis.ZP.rotationDegrees(80.0F));
         float g = Mth.frac(renderState.flip + 0.25F) * 1.6F - 0.3F;
         float h = Mth.frac(renderState.flip + 0.75F) * 1.6F - 0.3F;
-        BookModel.State state = new BookModel.State(renderState.bookTime, Mth.clamp(g, 0.0F, 1.0F), Mth.clamp(h, 0.0F, 1.0F), renderState.open);
+        BookModel.State bookState = BookModel.State.forAnimation(renderState.bookTime, Mth.clamp(g, 0.0F, 1.0F), Mth.clamp(h, 0.0F, 1.0F), renderState.open);
         nodeCollector.submitModel(
                 this.bookModel,
-                state,
+                bookState,
                 poseStack,
-                BOOK_LOCATION.renderType(RenderTypes::entitySolid),
                 renderState.lightCoords,
                 OverlayTexture.NO_OVERLAY,
                 -1,
-                this.materials.get(BOOK_LOCATION),
+                BOOK_TEXTURE,
+                this.sprites,
                 0,
                 renderState.breakProgress
         );

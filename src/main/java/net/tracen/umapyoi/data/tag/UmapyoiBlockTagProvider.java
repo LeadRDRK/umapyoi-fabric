@@ -1,7 +1,7 @@
 package net.tracen.umapyoi.data.tag;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider.BlockTagProvider;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider.BlockTagsProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Blocks;
@@ -9,8 +9,8 @@ import net.tracen.umapyoi.block.BlockRegistry;
 
 import java.util.concurrent.CompletableFuture;
 
-public class UmapyoiBlockTagProvider extends BlockTagProvider {
-    public UmapyoiBlockTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> completableFuture) {
+public class UmapyoiBlockTagProvider extends BlockTagsProvider {
+    public UmapyoiBlockTagProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> completableFuture) {
         super(output, completableFuture);
     }
 

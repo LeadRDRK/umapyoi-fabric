@@ -11,7 +11,9 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -24,33 +26,29 @@ import net.tracen.umapyoi.client.model.UmaPlayerModel;
 import net.tracen.umapyoi.client.renderer.BedrockModelRenderer;
 import net.tracen.umapyoi.compat.FPMCompat;
 import net.tracen.umapyoi.events.client.RenderingUmaSuitCallback;
-import net.tracen.umapyoi.registry.umadata.Growth;
 import net.tracen.umapyoi.utils.ClientUtils;
-import net.tracen.umapyoi.utils.UmaSoulUtils;
 
-import dev.emi.trinkets.api.SlotReference;
-import dev.emi.trinkets.api.TrinketItem;
-import dev.emi.trinkets.api.TrinketsApi;
-import dev.emi.trinkets.api.client.TrinketRenderer;
-import dev.emi.trinkets.api.client.TrinketRendererRegistry;
+import eu.pb4.trinkets.api.TrinketSlotAccess;
+import eu.pb4.trinkets.api.TrinketsApi;
+import eu.pb4.trinkets.api.callback.TrinketCallback;
+import eu.pb4.trinkets.api.client.TrinketRenderer;
+import eu.pb4.trinkets.api.client.TrinketRendererRegistry;
+import eu.pb4.trinkets.impl.TrinketUtilities;
 
-public abstract class AbstractSuitItem extends TrinketItem implements TrinketRenderer {
+public abstract class AbstractSuitItem extends Item implements TrinketCallback, TrinketRenderer {
     public AbstractSuitItem(Properties p) {
         super(p);
     }
 
     private boolean canEquip(LivingEntity entity) {
-        var compOpt = TrinketsApi.getTrinketComponent(entity);
-        if (compOpt.isPresent()) {
-            var comp = compOpt.get();
-            var entityInventory = comp.getInventory();
-            if (entityInventory.containsKey("umapyoi")) {
-                var group = entityInventory.get("umapyoi");
-                if (group.containsKey("uma_soul")) {
-                    var inventory = group.get("uma_soul");
-                    return inventory.getContainerSize() > 0 &&
-                            inventory.getItem(0).getItem() instanceof UmaSoulItem;
-                }
+        var comp = TrinketsApi.getAttachment(entity);
+        var entityInventory = comp.getInventory();
+        if (entityInventory.containsKey("umapyoi")) {
+            var group = entityInventory.get("umapyoi");
+            if (group.containsKey("uma_soul")) {
+                var inventory = group.get("uma_soul");
+                return inventory.getContainerSize() > 0
+                        && inventory.getItem(0).getItem() instanceof UmaSoulItem;
             }
         }
         return false;
@@ -59,38 +57,36 @@ public abstract class AbstractSuitItem extends TrinketItem implements TrinketRen
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand usedHand) {
         ItemStack stack = player.getItemInHand(usedHand);
-        if (UmaSoulUtils.getGrowth(stack) == Growth.UNTRAINED) {
-            return super.use(level, player, usedHand);
-        }
-
-        if (canEquip(player) && equipItem(player, stack)) {
-            player.playSound(SoundEvents.ARMOR_EQUIP_LEATHER.value(), 1.0f, 1.0f);
+        if (canEquip(player) && TrinketUtilities.swapWithEquipmentSlot(stack, player) == InteractionResult.SUCCESS) {
             return InteractionResult.SUCCESS;
         }
         return super.use(level, player, usedHand);
     }
 
     @Override
+    public Holder<SoundEvent> getEquipSound(ItemStack stack, TrinketSlotAccess slot, LivingEntity entity) {
+        return SoundEvents.ARMOR_EQUIP_LEATHER;
+    }
+
+    @Override
     @Environment(EnvType.CLIENT)
-    public void render(ItemStack itemStack, SlotReference slotReference, EntityModel<? extends LivingEntityRenderState> entityModel,
-                       PoseStack poseStack, SubmitNodeCollector nodeCollector, int light, LivingEntityRenderState entityState,
-                       float limbAngle, float limbDistance)
-    {
+    public void submit(
+            ItemStack itemStack, TrinketSlotAccess slotAccess, EntityModel<? extends LivingEntityRenderState> entityModel,
+            PoseStack poseStack, SubmitNodeCollector nodeCollector, int light, LivingEntityRenderState entityState,
+            float limbAngle, float limbDistance
+    ) {
         if (!(entityState instanceof HumanoidRenderState state) || state.isInvisible)
             return;
 
         var baseModel = state.umapyoi$getSuitModel();
         if (baseModel == null) return;
 
-        var comp = slotReference.inventory().getComponent();
-        var entity = comp.getEntity();
-
         var renderType = RenderTypes.entityTranslucent(state.umapyoi$getSuitTexture());
         baseModel.setModelProperties(state);
         baseModel.head.visible = false;
         baseModel.tail.visible = false;
         baseModel.prepareMobModel(state, limbAngle, limbDistance);
-        var callbackContext = new RenderingUmaSuitCallback.Context(entity, state, baseModel,
+        var callbackContext = new RenderingUmaSuitCallback.Context(slotAccess, state, baseModel,
                 poseStack, nodeCollector, light);
         if (RenderingUmaSuitCallback.Pre.invoke(callbackContext))
             return;

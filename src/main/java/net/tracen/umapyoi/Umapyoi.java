@@ -37,7 +37,6 @@ import net.tracen.umapyoi.registry.UmaFactorRegistry;
 import net.tracen.umapyoi.registry.UmaSkillRegistry;
 import net.tracen.umapyoi.registry.UmapyoiAttributesRegistry;
 import net.tracen.umapyoi.villager.VillageRegistry;
-import net.tracen.umapyoi.villager.VillagerTradeRegistry;
 
 import org.slf4j.Logger;
 
@@ -68,7 +67,6 @@ public class Umapyoi implements ModInitializer {
         ContainerRegistry.CONTAINER_TYPES.register();
         LootFunctionRegistry.LOOT_FUNCTION_TYPES.register();
         VillageRegistry.registerAll();
-        VillagerTradeRegistry.register();
         RecipeSerializerRegistry.RECIPE_SERIALIZER.register();
         TriggerRegistry.registerAll();
         SoundRegistry.SOUNDS.register();
@@ -84,10 +82,10 @@ public class Umapyoi implements ModInitializer {
 
         PassiveSkillEvents.register();
 
-        PayloadTypeRegistry.playC2S().register(UseSkillPacket.TYPE, UseSkillPacket.CODEC);
-        PayloadTypeRegistry.playC2S().register(SelectSkillPacket.TYPE, SelectSkillPacket.CODEC);
-        PayloadTypeRegistry.playC2S().register(SetupResultPacket.TYPE, SetupResultPacket.CODEC);
-        PayloadTypeRegistry.playC2S().register(EmptyResultPacket.TYPE, EmptyResultPacket.CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(UseSkillPacket.TYPE, UseSkillPacket.CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(SelectSkillPacket.TYPE, SelectSkillPacket.CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(SetupResultPacket.TYPE, SetupResultPacket.CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(EmptyResultPacket.TYPE, EmptyResultPacket.CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(UseSkillPacket.TYPE, UseSkillPacket::handler);
         ServerPlayNetworking.registerGlobalReceiver(SelectSkillPacket.TYPE, SelectSkillPacket::handler);

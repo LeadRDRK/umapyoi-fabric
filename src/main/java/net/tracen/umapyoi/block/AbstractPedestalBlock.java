@@ -70,7 +70,7 @@ public abstract class AbstractPedestalBlock extends BaseEntityBlock
             return InteractionResult.FAIL;
         }
         else {
-            player.displayClientMessage(Component.translatable("umapyoi.uma_pedestal.cannot_add_item"), true);
+            player.sendOverlayMessage(Component.translatable("umapyoi.uma_pedestal.cannot_add_item"));
             return InteractionResult.PASS;
         }
     }

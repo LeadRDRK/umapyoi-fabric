@@ -2,10 +2,10 @@ package net.tracen.umapyoi.client;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
@@ -15,8 +15,8 @@ import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
 @Environment(EnvType.CLIENT)
-public class ActionBarOverlay implements HudRenderCallback {
-    public static final ActionBarOverlay INSTANCE = new ActionBarOverlay();
+public class ActionBarOverlay implements HudElement {
+    public static final Identifier ID = Umapyoi.id("action_bar_overlay");
     private final Minecraft minecraft = Minecraft.getInstance();
 
     public ActionBarOverlay() {
@@ -25,7 +25,7 @@ public class ActionBarOverlay implements HudRenderCallback {
     private static final Identifier HUD = Identifier.fromNamespaceAndPath(Umapyoi.MODID, "textures/gui/actionbar.png");
 
     @Override
-    public void onHudRender(GuiGraphics drawContext, DeltaTracker tickCounter) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
         if (!Umapyoi.CONFIG.OVERLAY_SWITCH())
             return;
 
@@ -41,11 +41,11 @@ public class ActionBarOverlay implements HudRenderCallback {
             return;
 
         if (!UmapyoiAPI.getUmaSoul(player).isEmpty()) {
-            renderSkill(UmapyoiAPI.getUmaSoul(player), drawContext, x - 8, y - 64);
+            renderSkill(UmapyoiAPI.getUmaSoul(player), guiGraphics, x - 8, y - 64);
         }
     }
 
-    private void renderSkill(ItemStack soul, GuiGraphics guiGraphics, int x, int y) {
+    private void renderSkill(ItemStack soul, GuiGraphicsExtractor guiGraphics, int x, int y) {
         int ap = UmaSoulUtils.getActionPoint(soul);
         int maxAp = UmaSoulUtils.getMaxActionPoint(soul);
         if (ap == maxAp)
@@ -55,7 +55,7 @@ public class ActionBarOverlay implements HudRenderCallback {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, HUD, x, y - apbar, 6, 128 - apbar, 5, apbar, 16, 128);
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, HUD, x - 7, y - 3 - apbar, 0, 0, 6, 7, 16, 128);
         String str = String.valueOf(ap);
-        guiGraphics.drawString(this.minecraft.font, str,
+        guiGraphics.text(this.minecraft.font, str,
                 x - 8 - this.minecraft.font.width(str), y - 3 - apbar,
                 0xFFFFFFFF, false);
     }

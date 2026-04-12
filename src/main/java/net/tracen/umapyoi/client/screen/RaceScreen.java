@@ -3,7 +3,7 @@ package net.tracen.umapyoi.client.screen;
 import static net.tracen.umapyoi.item.UmaRaceTicketItem.getRaceNameInRawComponent;
 import static net.tracen.umapyoi.item.UmaRaceTicketItem.getRaceNameInStyledComponent;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -33,11 +33,9 @@ public class RaceScreen extends AbstractContainerScreen<RaceContainer> {
             "textures/gui/race_screen.png");
 
     public RaceScreen(RaceContainer container, Inventory inv, Component title) {
-        super(container, inv, title);
+        super(container, inv, title, 175, 201);
         this.leftPos = 0;
         this.topPos = 0;
-        this.imageWidth = 175;
-        this.imageHeight = 201;
     }
 
     private static double bezier(double t, double v0, double v1, double v2, double v3) {
@@ -79,21 +77,21 @@ public class RaceScreen extends AbstractContainerScreen<RaceContainer> {
     }
 
     @Override
-    public void render(@Nonnull GuiGraphics graphic, final int mouseX, final int mouseY, float partialTicks) {
-        super.render(graphic, mouseX, mouseY, partialTicks);
-        this.renderTooltip(graphic, mouseX, mouseY);
+    public void extractRenderState(@Nonnull GuiGraphicsExtractor graphic, final int mouseX, final int mouseY, float partialTicks) {
+        super.extractRenderState(graphic, mouseX, mouseY, partialTicks);
+        this.extractTooltip(graphic, mouseX, mouseY);
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphic, int mouseX, int mouseY) {
-        graphic.drawString(this.font, this.title,
+    protected void extractLabels(GuiGraphicsExtractor graphic, int mouseX, int mouseY) {
+        graphic.text(this.font, this.title,
                 (this.imageWidth / 2) - (this.font.width(this.title.getVisualOrderText()) / 2),
                 this.titleLabelY - 3, 0xFFFFFFFF);
-        graphic.drawString(this.font, this.playerInventoryTitle, 8, this.imageHeight - 96 + 2, 0xFF404040, false);
+        graphic.text(this.font, this.playerInventoryTitle, 8, this.imageHeight - 96 + 2, 0xFF404040, false);
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphic, float partialTicks, int mouseX, int mouseY) {
+    public void extractBackground(final GuiGraphicsExtractor graphic, final int mouseX, final int mouseY, final float a) {
         if (this.minecraft == null) {
             return;
         }
@@ -106,15 +104,15 @@ public class RaceScreen extends AbstractContainerScreen<RaceContainer> {
     private Component raceLabel = null;
 
     @Override
-    protected void renderTooltip(GuiGraphics pGuiGraphics, int pX, int pY) {
-        super.renderTooltip(pGuiGraphics, pX, pY);
+    protected void extractTooltip(GuiGraphicsExtractor pGuiGraphics, int pX, int pY) {
+        super.extractTooltip(pGuiGraphics, pX, pY);
         if (raceLabel == null) return;
         if (this.isHovering(55, 16, 66, 12, pX, pY)) {
             pGuiGraphics.setComponentTooltipForNextFrame(this.font, List.of(this.raceLabel), pX, pY);
         }
     }
 
-    private void renderMainUma(GuiGraphics pGuiGraphics, double progress, Position tactic) {
+    private void renderMainUma(GuiGraphicsExtractor pGuiGraphics, double progress, Position tactic) {
         int variance = this.menu.getAnimationTickMod(4);
         double mapped = mapProgress(progress, tactic);
         int startPixel = (int) Mth.lerp(mapped, 13d, 143d);
@@ -124,14 +122,14 @@ public class RaceScreen extends AbstractContainerScreen<RaceContainer> {
                 17, 19, 420, 256);
     }
 
-    private void renderDummyUma(GuiGraphics pGuiGrapahics, double progress, DummyUmaDefinition umaDefinition) {
+    private void renderDummyUma(GuiGraphicsExtractor pGuiGrapahics, double progress, DummyUmaDefinition umaDefinition) {
         int startPixel = (int) Mth.lerp(mapProgress(progress, umaDefinition.tactic), umaDefinition.start, umaDefinition.end);
         pGuiGrapahics.blit(RenderPipelines.GUI_TEXTURED, umaDefinition.texture, this.leftPos + startPixel,
                 this.topPos + 54 - umaDefinition.height, umaDefinition.uOffset, umaDefinition.vOffset,
                 umaDefinition.width, umaDefinition.height, umaDefinition.textureWidth, umaDefinition.textureHeight);
     }
 
-    private void renderLabelImage(GuiGraphics graphic, int backgroundWidth) {
+    private void renderLabelImage(GuiGraphicsExtractor graphic, int backgroundWidth) {
         if ((backgroundWidth & 1) == 1) backgroundWidth += 1;
         int repeatZone = backgroundWidth - 46;
         int startPos = this.leftPos + (this.imageWidth / 2) - (backgroundWidth / 2);
@@ -146,7 +144,7 @@ public class RaceScreen extends AbstractContainerScreen<RaceContainer> {
         graphic.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, startPos, this.topPos + 16, 220, 4, 30, 12, 420, 256);
     }
 
-    private void renderDetail(GuiGraphics graphic) {
+    private void renderDetail(GuiGraphicsExtractor graphic) {
         if (this.menu.tileEntity.getItem(0).isEmpty() || this.menu.tileEntity.getItem(1).isEmpty()) {
             raceLabel = null;
             return;
@@ -203,7 +201,7 @@ public class RaceScreen extends AbstractContainerScreen<RaceContainer> {
                     int backgroundWidth = fullWidth + 5;
                     renderLabelImage(graphic, backgroundWidth);
                 }
-                graphic.drawString(this.font, component,
+                graphic.text(this.font, component,
                         this.leftPos + (this.imageWidth / 2) - fullWidth / 2, this.topPos + 18, 0xFFFFFFFF);
             } else {
                 int ellipseWidth = this.font.width("...");
@@ -214,7 +212,7 @@ public class RaceScreen extends AbstractContainerScreen<RaceContainer> {
                 );
                 int textWidth = this.font.width(combinedSequence);
                 renderLabelImage(graphic, textWidth + 5);
-                graphic.drawString(this.font, combinedSequence,
+                graphic.text(this.font, combinedSequence,
                         this.leftPos + (this.imageWidth / 2) - textWidth / 2,
                         this.topPos + 18, 0xFFFFFFFF);
             }

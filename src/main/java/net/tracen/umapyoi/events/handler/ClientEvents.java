@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.api.UmapyoiAPI;
@@ -25,12 +24,12 @@ import net.tracen.umapyoi.utils.UmaSoulUtils;
 @Environment(EnvType.CLIENT)
 public class ClientEvents {
     public static boolean preUmaSoulRendering(RenderingModelCallback.Context event) {
-        LivingEntity entity = event.getWearer();
+        var comp = event.getSlotAccess().inventory().getAttachment();
         var model = event.getModel();
 
         var suitModel = event.getRenderState().umapyoi$getSuitModel();
-        if (suitModel != null && UmapyoiAPI.isUmaSuitRendering(entity)) {
-            var suitItem = UmapyoiAPI.getUmaSuit(entity);
+        if (suitModel != null && UmapyoiAPI.isUmaSuitRendering(comp)) {
+            var suitItem = UmapyoiAPI.getUmaSuit(comp);
             ClientUtils.setUmaModelVisibilityForSuit(model, suitItem, suitModel);
         }
 

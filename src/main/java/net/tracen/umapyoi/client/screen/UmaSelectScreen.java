@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.KeyEvent;
@@ -74,9 +74,7 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
     private String name;
 
     public UmaSelectScreen(UmaSelectMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
-        super(pMenu, pPlayerInventory, pTitle);
-        /** The Y size of the inventory window in pixels. */
-        this.imageHeight = 186;
+        super(pMenu, pPlayerInventory, pTitle, 176, 186);
         this.selectIndex = -1;
         this.name = "";
         pMenu.registerUpdateListener(this::containerChanged);
@@ -84,9 +82,9 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
     }
 
     @Override
-    public void render(GuiGraphics pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
-        this.renderTooltip(pPoseStack, pMouseX, pMouseY);
+    public void extractRenderState(GuiGraphicsExtractor pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+        super.extractRenderState(pPoseStack, pMouseX, pMouseY, pPartialTick);
+        this.extractTooltip(pPoseStack, pMouseX, pMouseY);
     }
 
     @Override
@@ -95,11 +93,11 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
     }
 
     @Override
-    protected void renderLabels(GuiGraphics pPoseStack, int pMouseX, int pMouseY) {
-        pPoseStack.drawString(this.font, this.title,
+    protected void extractLabels(GuiGraphicsExtractor pPoseStack, int pMouseX, int pMouseY) {
+        pPoseStack.text(this.font, this.title,
                 (this.imageWidth / 2) - (this.font.width(this.title.getVisualOrderText()) / 2),
                 this.titleLabelY - 3, 0xFFFFFFFF, false);
-        pPoseStack.drawString(this.font, this.playerInventoryTitle,
+        pPoseStack.text(this.font, this.playerInventoryTitle,
                 this.inventoryLabelX,this.inventoryLabelY + 20, 0xFF404040, false);
     }
 
@@ -167,7 +165,7 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float pPartialTick, int pX, int pY) {
+    public void extractBackground(final GuiGraphicsExtractor guiGraphics, final int mouseX, final int mouseY, final float a) {
         int i = this.leftPos;
         int j = this.topPos;
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, i, j, 0, 0, this.imageWidth, this.imageHeight, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
@@ -177,13 +175,13 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
         int l = this.leftPos + RECIPES_X;
         int i1 = this.topPos + RECIPES_Y;
         int j1 = this.startIndex + SCROLLER_WIDTH;
-        this.renderButtons(guiGraphics, pX, pY, l, i1, j1);
+        this.renderButtons(guiGraphics, mouseX, mouseY, l, i1, j1);
         this.renderRecipes(guiGraphics, l, i1, j1);
     }
 
     @Override
-    protected void renderTooltip(GuiGraphics pPoseStack, int pX, int pY) {
-        super.renderTooltip(pPoseStack, pX, pY);
+    protected void extractTooltip(GuiGraphicsExtractor pPoseStack, int pX, int pY) {
+        super.extractTooltip(pPoseStack, pX, pY);
         if (this.displayRecipes) {
             int i = this.leftPos + RECIPES_X;
             int j = this.topPos + RECIPES_Y;
@@ -201,7 +199,7 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
         }
     }
 
-    private void renderButtons(GuiGraphics guiGraphics, int pMouseX, int pMouseY, int pX, int pY,
+    private void renderButtons(GuiGraphicsExtractor guiGraphics, int pMouseX, int pMouseY, int pX, int pY,
                                int pLastVisibleElementIndex) {
         if (this.displayRecipes) {
             for (int i = this.startIndex; i < pLastVisibleElementIndex && i < this.getResults().size(); ++i) {
@@ -222,7 +220,7 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
         }
     }
 
-    private void renderRecipes(GuiGraphics pPoseStack,int pLeft, int pTop, int pRecipeIndexOffsetMax) {
+    private void renderRecipes(GuiGraphicsExtractor pPoseStack,int pLeft, int pTop, int pRecipeIndexOffsetMax) {
         if (this.displayRecipes) {
             List<Identifier> list = getResults();
 
@@ -231,7 +229,7 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
                 int k = pLeft + j % RECIPES_COLUMNS * RECIPES_IMAGE_SIZE_WIDTH;
                 int l = j / RECIPES_COLUMNS;
                 int i1 = pTop + l * RECIPES_IMAGE_SIZE_HEIGHT + 2;
-                pPoseStack.renderItem(this.getResultItem(list.get(i)), k, i1);
+                pPoseStack.item(this.getResultItem(list.get(i)), k, i1);
             }
         }
     }

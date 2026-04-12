@@ -1,6 +1,6 @@
 package net.tracen.umapyoi.client.screen;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.ItemCombinerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.nbt.StringTag;
@@ -25,14 +25,14 @@ public class SkillLearningScreen extends ItemCombinerScreen<SkillLearningMenu> {
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawString(this.font, this.title,
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        guiGraphics.text(this.font, this.title,
                 (this.imageWidth / 2) - (this.font.width(this.title.getVisualOrderText()) / 2),
                 this.titleLabelY - 3, 0xFFFFFFFF, false);
-        guiGraphics.drawString(this.font, this.playerInventoryTitle, 8, this.imageHeight - 96 + 2, 0xFF404040, false);
+        guiGraphics.text(this.font, this.playerInventoryTitle, 8, this.imageHeight - 96 + 2, 0xFF404040, false);
         UmaSkill skill = this.getBookSkill();
         if (skill != null) {
-            guiGraphics.drawString(this.font, skill.getDescription(), 51, 20, 0xFF794016, false);
+            guiGraphics.text(this.font, skill.getDescription(), 51, 20, 0xFF794016, false);
             ItemStack soul = this.getMenu().getSlot(0).hasItem() ? this.getMenu().getSlot(0).getItem()
                     : ItemStack.EMPTY;
             boolean has_retired = UmaSoulUtils.getGrowth(soul) == Growth.RETIRED;
@@ -42,23 +42,23 @@ public class SkillLearningScreen extends ItemCombinerScreen<SkillLearningMenu> {
                     UmaSoulUtils.getSkills(soul).contains(StringTag.valueOf(skill.getUpperSkill().toString()));
             boolean slot_needed = !soul.isEmpty() && !UmaSoulUtils.hasEmptySkillSlot(soul);
             if (has_learned || has_learned_upper)
-                guiGraphics.drawString(this.font, Component.translatable("umapyoi.skill.has_learned_skill"), 51, 31, 0xFF794016, false);
+                guiGraphics.text(this.font, Component.translatable("umapyoi.skill.has_learned_skill"), 51, 31, 0xFF794016, false);
             else if (has_retired)
-                guiGraphics.drawString(this.font, Component.translatable("umapyoi.skill.has_retired"), 51, 31, 0xFF794016, false);
+                guiGraphics.text(this.font, Component.translatable("umapyoi.skill.has_retired"), 51, 31, 0xFF794016, false);
             else if (slot_needed)
-                guiGraphics.drawString(this.font, Component.translatable("umapyoi.skill.slot_needed"), 51, 31, 0xFF794016, false);
+                guiGraphics.text(this.font, Component.translatable("umapyoi.skill.slot_needed"), 51, 31, 0xFF794016, false);
             else if (skill.getRequiredWisdom() > 0)
-                guiGraphics.drawString(this.font, Component.translatable("umapyoi.skill.require_wisdom",
+                guiGraphics.text(this.font, Component.translatable("umapyoi.skill.require_wisdom",
                         UmaStatusUtils.getStatusLevel(skill.getRequiredWisdom())), 51, 31, 0xFF794016, false);
             else
-                guiGraphics.drawString(this.font, Component.translatable("umapyoi.skill.no_require"), 51, 31, 0xFF794016, false);
+                guiGraphics.text(this.font, Component.translatable("umapyoi.skill.no_require"), 51, 31, 0xFF794016, false);
         }
 
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float pPartialTick, int pX, int pY) {
-        super.renderBg(guiGraphics, pPartialTick, pX, pY);
+    public void extractBackground(final GuiGraphicsExtractor guiGraphics, final int mouseX, final int mouseY, final float a) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, a);
         UmaSkill skill = this.getBookSkill();
         if (skill != null) {
             int i = (this.width - this.imageWidth) / 2;
@@ -74,7 +74,7 @@ public class SkillLearningScreen extends ItemCombinerScreen<SkillLearningMenu> {
     }
 
     @Override
-    protected void renderErrorIcon(GuiGraphics guiGraphics, int x, int y) {
+    protected void extractErrorIcon(GuiGraphicsExtractor guiGraphics, int x, int y) {
     }
 
     private UmaSkill getBookSkill() {

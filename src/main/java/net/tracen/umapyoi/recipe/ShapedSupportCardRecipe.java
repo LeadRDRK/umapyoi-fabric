@@ -1,64 +1,49 @@
 package net.tracen.umapyoi.recipe;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.tracen.umapyoi.item.ItemRegistry;
-import net.tracen.umapyoi.registry.training.card.SupportCard;
+import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 
 import java.util.Optional;
 
 public class ShapedSupportCardRecipe extends ShapedRecipe {
 
-    public static final RecipeSerializer<ShapedRecipe> SERIALIZER = new SupportCardRecipeSerializer<>(
-            RecipeSerializer.SHAPED_RECIPE, ShapedSupportCardRecipe::new);
+    public static final RecipeSerializer<ShapedRecipe> SERIALIZER = new SupportCardRecipeSerializerFactory<>(
+            ShapedRecipe.SERIALIZER, ShapedSupportCardRecipe::new
+    ).createAsCompose();
 
     private final Identifier outputUma;
 
     public ShapedSupportCardRecipe(ShapedRecipe compose, Identifier outputBlade) {
-        super(compose.group(), compose.category(),
+        super(
+                new CommonInfo(compose.showNotification()),
+                new CraftingBookInfo(compose.category(), compose.group()),
                 new ShapedRecipePattern(compose.getWidth(), compose.getHeight(), compose.getIngredients(), Optional.empty()),
-                getResultItem(outputBlade));
+                getResultItem(outputBlade)
+        );
         this.outputUma = outputBlade;
     }
 
-    private static ItemStack getResultItem(Identifier outputBlade) {
-        Item bladeItem = BuiltInRegistries.ITEM.containsKey(outputBlade)
-                ? BuiltInRegistries.ITEM.get(outputBlade).orElseThrow().value()
-                : ItemRegistry.SUPPORT_CARD;
-
-        return bladeItem.getDefaultInstance();
+    private static ItemStackTemplate getResultItem(Identifier output) {
+        if (BuiltInRegistries.ITEM.containsKey(output)) {
+            return new ItemStackTemplate(BuiltInRegistries.ITEM.get(output).orElseThrow().value());
+        }
+        else {
+            return new ItemStackTemplate(ItemRegistry.SUPPORT_CARD,
+                    DataComponentPatch.builder()
+                            .set(DataComponentsTypeRegistry.DATA_LOCATION.get(), output)
+                            .build());
+        }
     }
 
     public Identifier getOutput() {
         return outputUma;
-    }
-
-    @Override
-    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
-        ItemStack result = getResultItem(outputUma).copy();
-        if(registries == RegistryAccess.EMPTY)
-            return result;
-
-        if (!BuiltInRegistries.ITEM.getKey(result.getItem()).equals(outputUma)) {
-            var supportCardOpt = registries
-                    .lookupOrThrow(SupportCard.REGISTRY_KEY)
-                    .get(ResourceKey.create(SupportCard.REGISTRY_KEY, outputUma));
-            if (supportCardOpt.isEmpty())
-                return ItemStack.EMPTY;
-
-            var supportCard = supportCardOpt.get().value();
-            return SupportCard.init(outputUma, supportCard);
-        }
-        return result;
     }
 
     @Override

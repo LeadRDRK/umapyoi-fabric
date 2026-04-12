@@ -1,6 +1,6 @@
 package net.tracen.umapyoi.item;
 
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTabOutput;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
@@ -46,7 +46,7 @@ public class UmaCostumeItem extends AbstractSuitItem implements CreativeModeTabF
     }
 
     @Override
-    public void fillItemCategory(FabricItemGroupEntries entries) {
+    public void fillItemCategory(FabricCreativeModeTabOutput entries) {
         UmaCostumeItem.sortedCosmeticDataList(entries.getContext().holders()).forEach(
                 entry -> {
                     ItemStack result = ItemRegistry.UMA_COSTUME.getDefaultInstance();

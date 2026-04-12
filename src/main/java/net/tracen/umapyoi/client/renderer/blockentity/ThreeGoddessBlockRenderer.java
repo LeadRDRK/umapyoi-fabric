@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -41,8 +41,7 @@ public class ThreeGoddessBlockRenderer implements BlockEntityRenderer<ThreeGodde
     @Override
     public void submit(ThreeGoddessBlockRenderState renderState, PoseStack poseStack,
                        SubmitNodeCollector nodeCollector, CameraRenderState cameraRenderState) {
-        Direction direction = renderState.blockState.getValue(ThreeGoddessBlock.FACING);
-        renderModel(renderState, direction, poseStack, nodeCollector);
+        renderModel(renderState, renderState.direction, poseStack, nodeCollector);
         renderAnimation(renderState, poseStack, nodeCollector);
     }
 
@@ -98,6 +97,7 @@ public class ThreeGoddessBlockRenderer implements BlockEntityRenderer<ThreeGodde
                                    float partialTick, Vec3 cameraPosition,
                                    @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, partialTick, cameraPosition, breakProgress);
+        renderState.direction = blockEntity.getBlockState().getValue(ThreeGoddessBlock.FACING);
         renderState.time = (blockEntity.getAnimationTime() + partialTick) / 20.0F;
         ItemStack jewel = blockEntity.getItem(0);
         ItemStack soul = blockEntity.getItem(3);

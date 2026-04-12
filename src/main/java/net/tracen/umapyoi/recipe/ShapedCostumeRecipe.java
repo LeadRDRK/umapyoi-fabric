@@ -1,11 +1,9 @@
 package net.tracen.umapyoi.recipe;
 
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
@@ -16,38 +14,36 @@ import java.util.Optional;
 
 public class ShapedCostumeRecipe extends ShapedRecipe {
 
-    public static final RecipeSerializer<ShapedRecipe> SERIALIZER = new CostumeRecipeSerializer<>(
-            RecipeSerializer.SHAPED_RECIPE, ShapedCostumeRecipe::new);
+    public static final RecipeSerializer<ShapedRecipe> SERIALIZER = new CostumeRecipeSerializerFactory<>(
+            ShapedRecipe.SERIALIZER, ShapedCostumeRecipe::new
+    ).createAsCompose();
 
     private final Identifier output;
 
     public ShapedCostumeRecipe(ShapedRecipe compose, Identifier outputBlade) {
-        super(compose.group(), compose.category(),
+        super(
+                new CommonInfo(compose.showNotification()),
+                new CraftingBookInfo(compose.category(), compose.group()),
                 new ShapedRecipePattern(compose.getWidth(), compose.getHeight(), compose.getIngredients(), Optional.empty()),
-                getResultItem(outputBlade));
+                getResultItem(outputBlade)
+        );
         this.output = outputBlade;
     }
 
-    private static ItemStack getResultItem(Identifier output) {
-        Item bladeItem = BuiltInRegistries.ITEM.containsKey(output)
-                ? BuiltInRegistries.ITEM.get(output).orElseThrow().value()
-                : ItemRegistry.UMA_COSTUME;
-
-        return bladeItem.getDefaultInstance();
+    private static ItemStackTemplate getResultItem(Identifier output) {
+        if (BuiltInRegistries.ITEM.containsKey(output)) {
+            return new ItemStackTemplate(BuiltInRegistries.ITEM.get(output).orElseThrow().value());
+        }
+        else {
+            return new ItemStackTemplate(ItemRegistry.UMA_COSTUME,
+                    DataComponentPatch.builder()
+                            .set(DataComponentsTypeRegistry.DATA_LOCATION.get(), output)
+                            .build());
+        }
     }
 
     public Identifier getOutput() {
         return output;
-    }
-
-    @Override
-    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
-        ItemStack result = ShapedCostumeRecipe.getResultItem(output).copy();
-        if (!BuiltInRegistries.ITEM.getKey(result.getItem()).equals(getOutput())) {
-            result = ItemRegistry.UMA_COSTUME.getDefaultInstance();
-            result.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), output);
-        }
-        return result;
     }
 
     @Override

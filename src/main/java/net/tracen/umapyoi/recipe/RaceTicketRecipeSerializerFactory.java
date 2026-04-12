@@ -7,7 +7,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.MapLike;
 import com.mojang.serialization.RecordBuilder;
 
-import org.jspecify.annotations.NullMarked;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -19,13 +18,17 @@ import net.tracen.umapyoi.item.ItemRegistry;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
-public class RaceTicketRecipeSerializer<T extends Recipe<?>, U extends T> implements RecipeSerializer<U> {
-    private final MapCodec<U> codec;
-    private final StreamCodec<RegistryFriendlyByteBuf, U> streamCodec;
+public record RaceTicketRecipeSerializerFactory<T extends Recipe<?>, U extends T>(
+        RecipeSerializer<T> compose,
+        BiFunction<T, Identifier, U> converter
+) {
+    public RecipeSerializer<U> create() {
+        return new RecipeSerializer<>(makeCodec(compose, converter), makeStreamCodec(compose, converter));
+    }
 
-    public RaceTicketRecipeSerializer(RecipeSerializer<T> compose, BiFunction<T, Identifier, U> converter) {
-        this.codec = makeCodec(compose, converter);
-        this.streamCodec = makeStreamCodec(compose, converter);
+    @SuppressWarnings("unchecked")
+    public RecipeSerializer<T> createAsCompose() {
+        return (RecipeSerializer<T>) create();
     }
 
     private static <T extends Recipe<?>, U extends T> MapCodec<U> makeCodec(RecipeSerializer<T> compose,
@@ -103,17 +106,5 @@ public class RaceTicketRecipeSerializer<T extends Recipe<?>, U extends T> implem
                 Identifier.STREAM_CODEC, recipe -> ((RaceTicketRecipe<?>) recipe).getKey(),
                 converter
         );
-    }
-
-    @Override
-    @NullMarked
-    public MapCodec<U> codec() {
-        return codec;
-    }
-
-    @Override
-    @NullMarked
-    public StreamCodec<RegistryFriendlyByteBuf, U> streamCodec() {
-        return streamCodec;
     }
 }

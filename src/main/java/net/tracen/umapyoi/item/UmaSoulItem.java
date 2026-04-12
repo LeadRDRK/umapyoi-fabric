@@ -1,12 +1,10 @@
 package net.tracen.umapyoi.item;
 
-import com.google.common.collect.LinkedHashMultimap;
-import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTabOutput;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
@@ -21,6 +19,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Util;
 import net.minecraft.world.InteractionHand;
@@ -60,17 +59,19 @@ import net.tracen.umapyoi.utils.UmaStatusUtils.StatusType;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import dev.emi.trinkets.api.SlotAttributes;
-import dev.emi.trinkets.api.SlotReference;
-import dev.emi.trinkets.api.TrinketItem;
-import dev.emi.trinkets.api.TrinketsApi;
-import dev.emi.trinkets.api.client.TrinketRenderer;
-import dev.emi.trinkets.api.client.TrinketRendererRegistry;
+import eu.pb4.trinkets.api.SlotAttributes;
+import eu.pb4.trinkets.api.TrinketSlotAccess;
+import eu.pb4.trinkets.api.TrinketsApi;
+import eu.pb4.trinkets.api.callback.TrinketCallback;
+import eu.pb4.trinkets.api.client.TrinketRenderer;
+import eu.pb4.trinkets.api.client.TrinketRendererRegistry;
+import eu.pb4.trinkets.impl.TrinketUtilities;
 
-public class UmaSoulItem extends TrinketItem implements TrinketRenderer, CreativeModeTabFiller {
+public class UmaSoulItem extends Item implements TrinketCallback, TrinketRenderer, CreativeModeTabFiller {
     private static final Comparator<Holder.Reference<UmaData>> COMPARATOR = new UmaDataComparator();
 
     public UmaSoulItem(Properties p) {
@@ -83,7 +84,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void fillItemCategory(FabricItemGroupEntries entries) {
+    public void fillItemCategory(FabricCreativeModeTabOutput entries) {
         sortedUmaDataList(entries.getContext().holders()).forEach(entry -> {
             var initUmaSoul = UmaSoulUtils.initUmaSoul(getDefaultInstance(),
                     entry.key().identifier(),
@@ -203,61 +204,69 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
             return super.use(level, player, usedHand);
         }
 
-        if (equipItem(player, stack)) {
-            player.playSound(SoundEvents.ARMOR_EQUIP_LEATHER.value(), 1.0f, 1.0f);
+        if (TrinketUtilities.swapWithEquipmentSlot(stack, player) == InteractionResult.SUCCESS) {
             return InteractionResult.SUCCESS;
         }
         return super.use(level, player, usedHand);
     }
 
     @Override
-    public Multimap<Holder<Attribute>, AttributeModifier> getModifiers(ItemStack stack, SlotReference slot, LivingEntity user, Identifier slotIdentifier) {
-        Multimap<Holder<Attribute>, AttributeModifier> atts = LinkedHashMultimap.create();
-        SlotAttributes.addSlotModifier(atts, "umapyoi/uma_suit", slotIdentifier, 1.0, AttributeModifier.Operation.ADD_VALUE);
+    public Holder<SoundEvent> getEquipSound(ItemStack stack, TrinketSlotAccess slot, LivingEntity entity) {
+        return SoundEvents.ARMOR_EQUIP_LEATHER;
+    }
+
+    @Override
+    public void forEachTrinketModifier(
+            ItemStack stack, TrinketSlotAccess slot, LivingEntity user, Identifier slotIdentifier,
+            BiConsumer<Holder<Attribute>, AttributeModifier> consumer
+    ) {
+        consumer.accept(
+                SlotAttributes.createAttributeForSlot("umapyoi/uma_suit"),
+                new AttributeModifier(slotIdentifier, 1.0, AttributeModifier.Operation.ADD_VALUE)
+        );
         if (UmaSoulUtils.getGrowth(stack) == Growth.UNTRAINED)
-            return atts;
+            return;
 
         boolean hasFatique = user.hasEffect(MobEffectRegistry.SLOW_METABOLISM.getHolder());
 
-        atts.put(UmapyoiAttributesRegistry.SPRINT_SPEED,
+        consumer.accept(UmapyoiAttributesRegistry.SPRINT_SPEED,
                 new AttributeModifier(slotIdentifier,
                         hasFatique ? 0 : getExactProperty(stack, user, StatusType.SPEED, Umapyoi.CONFIG.UMASOUL_MAX_SPEED()),
                         Umapyoi.CONFIG.UMASOUL_SPEED_PRECENT_ENABLE() ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
                                 : AttributeModifier.Operation.ADD_VALUE));
 
-        atts.put(Attributes.WATER_MOVEMENT_EFFICIENCY,
+        consumer.accept(Attributes.WATER_MOVEMENT_EFFICIENCY,
                 new AttributeModifier(slotIdentifier,
                         hasFatique ? 0 : getExactProperty(stack, user, StatusType.SPEED, Umapyoi.CONFIG.UMASOUL_MAX_SPEED()),
                         Umapyoi.CONFIG.UMASOUL_SPEED_PRECENT_ENABLE() ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
                                 : AttributeModifier.Operation.ADD_VALUE));
 
-        atts.put(Attributes.ATTACK_DAMAGE,
+        consumer.accept(Attributes.ATTACK_DAMAGE,
                 new AttributeModifier(slotIdentifier,
                         getExactProperty(stack, user, StatusType.STRENGTH, Umapyoi.CONFIG.UMASOUL_MAX_STRENGTH_ATTACK()),
                         Umapyoi.CONFIG.UMASOUL_STRENGTH_PRECENT_ENABLE() ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
                                 : AttributeModifier.Operation.ADD_VALUE));
 
-        atts.put(Attributes.MAX_HEALTH,
+        consumer.accept(Attributes.MAX_HEALTH,
                 new AttributeModifier(slotIdentifier,
                         getExactProperty(stack, user, StatusType.STAMINA, Umapyoi.CONFIG.UMASOUL_MAX_STAMINA_HEALTH()) * (hasFatique ? 1.05 : 1),
                         Umapyoi.CONFIG.UMASOUL_STAMINA_PRECENT_ENABLE() ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
                                 : AttributeModifier.Operation.ADD_VALUE));
 
-        atts.put(Attributes.ARMOR,
+        consumer.accept(Attributes.ARMOR,
                 new AttributeModifier(slotIdentifier,
                         getExactProperty(stack, user, StatusType.GUTS, Umapyoi.CONFIG.UMASOUL_MAX_GUTS_ARMOR()) * (hasFatique ? 1.05 : 1),
                         Umapyoi.CONFIG.UMASOUL_GUTS_PRECENT_ENABLE() ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
                                 : AttributeModifier.Operation.ADD_VALUE));
 
-        atts.put(Attributes.ARMOR_TOUGHNESS,
+        consumer.accept(Attributes.ARMOR_TOUGHNESS,
                 new AttributeModifier(slotIdentifier,
                         getExactProperty(stack, user, StatusType.GUTS, Umapyoi.CONFIG.UMASOUL_MAX_GUTS_ARMOR_TOUGHNESS()),
                         Umapyoi.CONFIG.UMASOUL_GUTS_PRECENT_ENABLE() ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
                                 : AttributeModifier.Operation.ADD_VALUE));
 
-        var event = new ApplyUmasoulAttributeCallback.Context(user, stack, slot, slotIdentifier, atts);
+        var event = new ApplyUmasoulAttributeCallback.Context(user, stack, slot, slotIdentifier, consumer);
         ApplyUmasoulAttributeCallback.invoke(event);
-        return event.getAttributes();
     }
 
     public static double getExactProperty(ItemStack stack, LivingEntity user, StatusType status, double limit) {
@@ -283,7 +292,7 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
     }
 
     @Override
-    public void tick(ItemStack stack, SlotReference slot, LivingEntity entity) {
+    public void tick(ItemStack stack, TrinketSlotAccess slotAccess, LivingEntity entity) {
         if (stack.isEmpty()) return;
 
         Level level = entity.level();
@@ -303,10 +312,11 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void render(ItemStack itemStack, SlotReference slotReference, EntityModel<? extends LivingEntityRenderState> entityModel,
-                       PoseStack poseStack, SubmitNodeCollector nodeCollector, int light, LivingEntityRenderState entityState,
-                       float limbAngle, float limbDistance)
-    {
+    public void submit(
+            ItemStack itemStack, TrinketSlotAccess slotAccess, EntityModel<? extends LivingEntityRenderState> entityModel,
+            PoseStack poseStack, SubmitNodeCollector nodeCollector, int light, LivingEntityRenderState entityState,
+            float limbAngle, float limbDistance
+    ) {
         // match AvatarRenderState directly (disallow ArmorStandRenderState)
         if (!(entityState instanceof AvatarRenderState state) || (state.isInvisible && !state.isSpectator))
             return;
@@ -314,14 +324,11 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
         var baseModel = state.umapyoi$getUmaModel();
         if (baseModel == null) return;
 
-        var comp = slotReference.inventory().getComponent();
-        var entity = comp.getEntity();
-
         var renderType = RenderTypes.entityTranslucent(state.umapyoi$getUmaTexture());
         baseModel.setModelProperties(state);
         baseModel.prepareMobModel(state, limbAngle, limbDistance);
 
-        var callbackContext = new RenderingUmaSoulCallback.Context(entity, state, baseModel,
+        var callbackContext = new RenderingUmaSoulCallback.Context(slotAccess, state, baseModel,
                 poseStack, nodeCollector, light);
         if (RenderingUmaSoulCallback.Pre.invoke(callbackContext))
             return;
@@ -353,23 +360,20 @@ public class UmaSoulItem extends TrinketItem implements TrinketRenderer, Creativ
     public static Identifier getRenderTarget(ItemStack stack, LivingEntity entity) {
         boolean suit_flag = false;
         boolean alter_flag = false;
-        var compOpt = TrinketsApi.getTrinketComponent(entity);
-        if (compOpt.isPresent()) {
-            var comp = compOpt.get();
-            var entityInventory = comp.getInventory();
-            if (entityInventory.containsKey("umapyoi")) {
-                var group = entityInventory.get("umapyoi");
-                if (group.containsKey("uma_suit")) {
-                    var inventory = group.get("uma_suit");
-                    if (inventory.getContainerSize() > 0 && (inventory.getItem(0).getItem() instanceof AbstractSuitItem ||
-                            inventory.getItem(0).getItem() instanceof UmaCostumeItem)) {
-                        suit_flag = true;
+        var comp = TrinketsApi.getAttachment(entity);
+        var entityInventory = comp.getInventory();
+        if (entityInventory.containsKey("umapyoi")) {
+            var group = entityInventory.get("umapyoi");
+            if (group.containsKey("uma_suit")) {
+                var inventory = group.get("uma_suit");
+                if (inventory.getContainerSize() > 0 && (inventory.getItem(0).getItem() instanceof AbstractSuitItem ||
+                        inventory.getItem(0).getItem() instanceof UmaCostumeItem)) {
+                    suit_flag = true;
 
-                        alter_flag = ClientUtils.getClientUmaDataRegistry()
-                                .get(ResourceKey.create(UmaData.REGISTRY_KEY, UmaSoulUtils.getName(stack)))
-                                .map(uma -> uma.is(UmapyoiUmaDataTags.ALTER_MODEL))
-                                .orElse(false);
-                    }
+                    alter_flag = ClientUtils.getClientUmaDataRegistry()
+                            .get(ResourceKey.create(UmaData.REGISTRY_KEY, UmaSoulUtils.getName(stack)))
+                            .map(uma -> uma.is(UmapyoiUmaDataTags.ALTER_MODEL))
+                            .orElse(false);
                 }
             }
         }

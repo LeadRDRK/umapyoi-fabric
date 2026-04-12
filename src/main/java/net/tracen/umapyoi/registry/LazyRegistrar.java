@@ -84,7 +84,7 @@ public class LazyRegistrar<T> {
                         .map(Holder.Reference::value)
                         .map(Registry.class::cast)
                         .orElseGet(() -> FabricRegistryBuilder
-                                .createSimple((ResourceKey<Registry<T>>) key)
+                                .create((ResourceKey<Registry<T>>) key)
                                 .buildAndRegister());
             }
             return this.registry;

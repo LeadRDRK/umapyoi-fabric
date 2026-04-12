@@ -30,7 +30,7 @@ public class PassiveSkillEvents {
         if (UmaSoulUtils.hasSkill(soul, UmaSkillRegistry.INQUISITIVE_MIND.getId())) {
             var speedFlag = UmaSoulUtils.getProperty(soul).speed() >= 12;
             var wisdomFlag = UmaSoulUtils.getProperty(soul).wisdom() >= 12;
-            event.getAttributes().put(Attributes.ATTACK_SPEED, new AttributeModifier(PASSIVE_ID,
+            event.getConsumer().accept(Attributes.ATTACK_SPEED, new AttributeModifier(PASSIVE_ID,
                     speedFlag && wisdomFlag ? 0.075D :0.05D, Operation.ADD_MULTIPLIED_TOTAL));
         }
     }

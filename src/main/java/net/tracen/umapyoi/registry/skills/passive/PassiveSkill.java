@@ -18,7 +18,7 @@ public class PassiveSkill extends UmaSkill {
     @Override
     public void applySkill(ServerLevel level, LivingEntity user) {
         if(user instanceof Player player)
-            player.displayClientMessage(Component.translatable("umapyoi.skill.passive"), true);
+            player.sendOverlayMessage(Component.translatable("umapyoi.skill.passive"));
     }
 
     @Override

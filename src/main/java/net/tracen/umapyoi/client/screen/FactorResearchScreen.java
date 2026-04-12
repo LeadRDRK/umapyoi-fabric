@@ -1,7 +1,7 @@
 package net.tracen.umapyoi.client.screen;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.ItemCombinerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -29,23 +29,23 @@ public class FactorResearchScreen extends ItemCombinerScreen<FactorResearchMenu>
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphic, int mouseX, int mouseY) {
-        graphic.drawString(this.font, this.title,
+    protected void extractLabels(GuiGraphicsExtractor graphic, int mouseX, int mouseY) {
+        graphic.text(this.font, this.title,
                 (this.imageWidth / 2) - (this.font.width(this.title.getVisualOrderText()) / 2),
                 this.titleLabelY - 3, 0xFFFFFFFF);
-        graphic.drawString(this.font, this.playerInventoryTitle, 8, this.imageHeight - 96 + 2, 0xFF404040, false);
+        graphic.text(this.font, this.playerInventoryTitle, 8, this.imageHeight - 96 + 2, 0xFF404040, false);
     }
 
     @Override
-    protected void renderErrorIcon(GuiGraphics graphic, int x, int y) {
+    protected void extractErrorIcon(GuiGraphicsExtractor graphic, int x, int y) {
         if ((this.menu.getSlot(0).hasItem() || this.menu.getSlot(1).hasItem()) && !this.menu.getSlot(this.menu.getResultSlot()).hasItem()) {
             graphic.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, x + 99, y + 45, this.imageWidth, 0, 28, 21, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
         }
     }
 
     @Override
-    public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.renderContents(guiGraphics, mouseX, mouseY, partialTick);
+    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.extractContents(guiGraphics, mouseX, mouseY, partialTick);
         if (!this.menu.getSlot(1).hasItem()) return;
 
         List<UmaFactorStack> listFactors = FactorReport.getFactorStacks(this.menu.getSlot(1).getItem());
@@ -77,12 +77,12 @@ public class FactorResearchScreen extends ItemCombinerScreen<FactorResearchMenu>
             } else {
                 sequenceDetailDesc = componentDetailDesc.getVisualOrderText();
             }
-            guiGraphics.drawString(this.font, sequenceDesc, leftPos + 50, topPos + 19, 0xFF404040, false);
-            guiGraphics.drawString(this.font, sequenceDetailDesc, leftPos + 50, topPos + 30, 0xFF404040, false);
+            guiGraphics.text(this.font, sequenceDesc, leftPos + 50, topPos + 19, 0xFF404040, false);
+            guiGraphics.text(this.font, sequenceDetailDesc, leftPos + 50, topPos + 30, 0xFF404040, false);
         } else {
             needTooltip = true;
-            guiGraphics.drawString(this.font, Component.translatable("gui.umapyoi.multiple_factor", String.valueOf(listFactors.size())), leftPos + 50, topPos + 19, 0xFF404040, false);
-            guiGraphics.drawString(this.font, Component.translatable("gui.umapyoi.hover_for_tooltip"), leftPos + 50, topPos + 30, 0xFF404040, false);
+            guiGraphics.text(this.font, Component.translatable("gui.umapyoi.multiple_factor", String.valueOf(listFactors.size())), leftPos + 50, topPos + 19, 0xFF404040, false);
+            guiGraphics.text(this.font, Component.translatable("gui.umapyoi.hover_for_tooltip"), leftPos + 50, topPos + 30, 0xFF404040, false);
         }
     }
 
@@ -96,8 +96,8 @@ public class FactorResearchScreen extends ItemCombinerScreen<FactorResearchMenu>
     }
 
     @Override
-    protected void renderTooltip(GuiGraphics pGuiGraphics, int pX, int pY) {
-        super.renderTooltip(pGuiGraphics, pX, pY);
+    protected void extractTooltip(GuiGraphicsExtractor pGuiGraphics, int pX, int pY) {
+        super.extractTooltip(pGuiGraphics, pX, pY);
         if (needTooltip && this.isHovering(28, 16, 121, 25, pX, pY)) {
             if (!this.menu.getSlot(1).hasItem()) return;
 

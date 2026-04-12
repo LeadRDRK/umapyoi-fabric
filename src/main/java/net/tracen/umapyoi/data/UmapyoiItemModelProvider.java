@@ -6,6 +6,7 @@ import net.minecraft.client.data.models.model.ItemModelUtils;
 import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
@@ -68,7 +69,7 @@ public class UmapyoiItemModelProvider {
             String basePath = BuiltInRegistries.ITEM.getKey(item).getPath();
             var defaultModel = ModelTemplates.FLAT_ITEM.create(
                     ModelLocationUtils.getModelLocation(item),
-                    TextureMapping.layer0(Umapyoi.id("item/" + basePath + "_ssr")),
+                    TextureMapping.layer0(new Material(Umapyoi.id("item/" + basePath + "_ssr"))),
                     generator.modelOutput
             );
             generator.itemModelOutput.accept(item, ItemModelUtils.plainModel(defaultModel));
@@ -87,7 +88,7 @@ public class UmapyoiItemModelProvider {
                 String finalPath = builder.toString();
                 ModelTemplates.FLAT_ITEM.create(
                         Umapyoi.id(finalPath),
-                        TextureMapping.layer0(Umapyoi.id("item/" + path)),
+                        TextureMapping.layer0(new Material(Umapyoi.id("item/" + path))),
                         generator.modelOutput
                 );
             }
@@ -98,7 +99,7 @@ public class UmapyoiItemModelProvider {
             String basePath = BuiltInRegistries.ITEM.getKey(item).getPath();
             var defaultModel = ModelTemplates.FLAT_ITEM.create(
                     ModelLocationUtils.getModelLocation(item),
-                    TextureMapping.layer0(Umapyoi.id("item/" + basePath + "_common")),
+                    TextureMapping.layer0(new Material(Umapyoi.id("item/" + basePath + "_common"))),
                     generator.modelOutput
             );
             generator.itemModelOutput.accept(item, ItemModelUtils.plainModel(defaultModel));
@@ -120,7 +121,7 @@ public class UmapyoiItemModelProvider {
                 String finalPath = builder.toString();
                 ModelTemplates.FLAT_ITEM.create(
                         Umapyoi.id(finalPath),
-                        TextureMapping.layer0(Umapyoi.id("item/" + path)),
+                        TextureMapping.layer0(new Material(Umapyoi.id("item/" + path))),
                         generator.modelOutput
                 );
             });

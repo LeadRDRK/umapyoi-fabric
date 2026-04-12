@@ -27,8 +27,8 @@ import static net.tracen.umapyoi.registry.races.tags.RaceTagRegistry.TRIPLE_CROW
 import static net.tracen.umapyoi.registry.races.tags.RaceTagRegistry.TRIPLE_TIARA;
 
 import net.minecraft.data.worldgen.BootstrapContext;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.registry.umadata.Growth;
 import net.tracen.umapyoi.utils.Distance;

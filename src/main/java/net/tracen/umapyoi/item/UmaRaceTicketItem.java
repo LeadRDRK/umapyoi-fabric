@@ -2,16 +2,16 @@ package net.tracen.umapyoi.item;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTabOutput;
 import net.minecraft.ChatFormatting;
-import net.minecraft.util.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -52,19 +52,34 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
 
     public static ItemStack init(Identifier id, @Nullable Race race, ItemStack result) {
         result.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), id);
-
-        RaceRanking ranking = Optional.ofNullable(race).map(r -> r.ranking).orElse(RaceRanking.DEBUT);
-        var rarity = ranking == RaceRanking.GI
-                ? Rarity.EPIC
-                : (ranking == RaceRanking.GII || ranking == RaceRanking.GIII) ? Rarity.UNCOMMON : Rarity.COMMON;
-        result.set(DataComponents.RARITY, rarity);
-
+        postProcessRaceTicket(result, race);
         return result;
     }
 
     public static ItemStack init(Identifier id, @Nullable Race race) {
         ItemStack result = new ItemStack(ItemRegistry.UMA_RACE_TICKET);
         return init(id, race, result);
+    }
+
+    public static void postProcessRaceTicket(ItemStack result, @Nullable Race race) {
+        RaceRanking ranking = Optional.ofNullable(race).map(r -> r.ranking).orElse(RaceRanking.DEBUT);
+        var rarity = ranking == RaceRanking.GI
+                ? Rarity.EPIC
+                : (ranking == RaceRanking.GII || ranking == RaceRanking.GIII) ? Rarity.UNCOMMON : Rarity.COMMON;
+        result.set(DataComponents.RARITY, rarity);
+    }
+
+    @Override
+    public void onCraftedPostProcess(ItemStack itemStack, Level level) {
+        super.onCraftedPostProcess(itemStack, level);
+
+        var race = Optional.ofNullable(itemStack.get(DataComponentsTypeRegistry.DATA_LOCATION.get()))
+                .flatMap(output -> UmapyoiAPI.getRaceRegistry(level)
+                        .get(ResourceKey.create(Race.REGISTRY_KEY, output))
+                )
+                .map(Holder::value)
+                .orElse(null);
+        postProcessRaceTicket(itemStack, race);
     }
 
     public static class RacePairComparator implements Comparator<Map.Entry<Identifier, Race>> {
@@ -127,7 +142,7 @@ public class UmaRaceTicketItem extends Item implements CreativeModeTabFiller {
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void fillItemCategory(FabricItemGroupEntries entries) {
+    public void fillItemCategory(FabricCreativeModeTabOutput entries) {
         sortedRaceList(entries.getContext().holders()).forEachOrdered(race -> {
             if (race.key().identifier().equals(RaceRegistry.DEFAULT.identifier())) return;
             ItemStack result = init(race.key().identifier(), race.value());

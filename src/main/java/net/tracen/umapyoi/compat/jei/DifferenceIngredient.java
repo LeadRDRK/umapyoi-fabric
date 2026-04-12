@@ -35,7 +35,7 @@ public class DifferenceIngredient implements CustomIngredient {
     }
 
     @Override
-    public Stream<Holder<Item>> getMatchingItems() {
+    public Stream<Holder<Item>> items() {
         if (this.filteredMatchingItems == null)
             this.filteredMatchingItems = base.items()
                     .filter(holder -> !subtracted.test(new ItemStack(holder.value())))

@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
@@ -35,8 +35,7 @@ public class UmaStatueBlockRenderer implements BlockEntityRenderer<UmaStatueBloc
     @Override
     public void submit(UmaStatueBlockRenderState renderState, PoseStack poseStack,
                        SubmitNodeCollector nodeCollector, CameraRenderState cameraRenderState) {
-        Direction direction = renderState.blockState.getValue(UmaStatueBlock.FACING);
-        renderModel(renderState, direction, poseStack, nodeCollector);
+        renderModel(renderState, renderState.direction, poseStack, nodeCollector);
     }
 
     private void renderModel(UmaStatueBlockRenderState renderState, Direction direction,
@@ -84,6 +83,7 @@ public class UmaStatueBlockRenderer implements BlockEntityRenderer<UmaStatueBloc
                                    float partialTick, Vec3 cameraPosition,
                                    @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, partialTick, cameraPosition, breakProgress);
+        renderState.direction = blockEntity.getBlockState().getValue(UmaStatueBlock.FACING);
 
         var soul = blockEntity.getStoredItem();
         var suit = blockEntity.getCostume();

@@ -2,7 +2,7 @@ package net.tracen.umapyoi.client.screen;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -21,30 +21,28 @@ public class TrainingFacilityScreen extends AbstractContainerScreen<TrainingFaci
             "textures/gui/training_snap.png");
 
     public TrainingFacilityScreen(TrainingFacilityContainer screenContainer, Inventory inv, Component titleIn) {
-        super(screenContainer, inv, titleIn);
+        super(screenContainer, inv, titleIn, 176, 202);
         this.leftPos = 0;
         this.topPos = 0;
-        this.imageWidth = 176;
-        this.imageHeight = 202;
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, final int mouseX, final int mouseY, float partialTick) {
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-        this.renderTooltip(guiGraphics, mouseX, mouseY);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, final int mouseX, final int mouseY, float partialTick) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
+        this.extractTooltip(guiGraphics, mouseX, mouseY);
 
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawString(this.font, this.title,
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        guiGraphics.text(this.font, this.title,
                 Math.round((this.imageWidth / 2.0F) - (this.font.width(this.title.getVisualOrderText()) / 2.0F)),
                 this.titleLabelY - 3, 0xFFFFFFFF, false);
-        guiGraphics.drawString(this.font, this.playerInventoryTitle, 8, this.imageHeight - 96 + 2, 0xFF404040, false);
+        guiGraphics.text(this.font, this.playerInventoryTitle, 8, this.imageHeight - 96 + 2, 0xFF404040, false);
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    public void extractBackground(final GuiGraphicsExtractor guiGraphics, final int mouseX, final int mouseY, final float a) {
         // Render UI background
         if (this.minecraft == null) {
             return;
@@ -56,7 +54,7 @@ public class TrainingFacilityScreen extends AbstractContainerScreen<TrainingFaci
         this.renderUmaSoulPhysique(guiGraphics);
     }
 
-    private void renderUmaSoulPhysique(GuiGraphics graphic) {
+    private void renderUmaSoulPhysique(GuiGraphicsExtractor graphic) {
         ItemStack soul = this.getMenu().tileEntity.getItem(0);
         if(soul.getItem() instanceof UmaSoulItem) {
             if(UmaSoulUtils.getGrowth(soul) == Growth.RETIRED)
@@ -67,7 +65,7 @@ public class TrainingFacilityScreen extends AbstractContainerScreen<TrainingFaci
         }
     }
 
-    private void renderSupportTypes(GuiGraphics guiGraphics) {
+    private void renderSupportTypes(GuiGraphicsExtractor guiGraphics) {
         int[] types = { 0, 0, 0, 0, 0, 0, 0, 0 };
         for (int i = 1; i < 7; i++) {
             ItemStack stack = this.menu.tileEntity.getItem(i);
@@ -107,13 +105,13 @@ public class TrainingFacilityScreen extends AbstractContainerScreen<TrainingFaci
         }
         for (int i = 0; i < 7; i++) {
             if (types[i] > 0) {
-                guiGraphics.drawString(this.font, String.valueOf(types[i]), this.leftPos + 23 + i * 23,
+                guiGraphics.text(this.font, String.valueOf(types[i]), this.leftPos + 23 + i * 23,
                         this.topPos + 44, 0xFF86D008, false);
             }
         }
     }
 
-    private void renderSupportBG(GuiGraphics guiGraphics) {
+    private void renderSupportBG(GuiGraphicsExtractor guiGraphics) {
         for (int i = 1; i < 4; i++) {
             ItemStack stack = this.menu.tileEntity.getItem(i);
             if (stack.getItem() instanceof SupportContainer support) {
@@ -144,7 +142,7 @@ public class TrainingFacilityScreen extends AbstractContainerScreen<TrainingFaci
         }
     }
 
-    private void renderTrainingAnim(GuiGraphics guiGraphics) {
+    private void renderTrainingAnim(GuiGraphicsExtractor guiGraphics) {
         int l = this.menu.getProgressionScaled();
         int n = this.menu.getAnimation();
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos + 10 + l, this.topPos + 68, 207, 88 + n * 24, 24, 24, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);

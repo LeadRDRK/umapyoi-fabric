@@ -1,7 +1,8 @@
 package net.tracen.umapyoi.loot;
 
-import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
-import net.fabricmc.fabric.api.loot.v2.LootTableSource;
+import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
+import net.fabricmc.fabric.api.loot.v3.LootTableSource;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -26,7 +27,7 @@ public interface AddLootTableModifier {
 
     class ModifyLootTableListener implements LootTableEvents.Modify {
         @Override
-        public void modifyLootTable(ResourceKey<LootTable> key, LootTable.Builder tableBuilder, LootTableSource source) {
+        public void modifyLootTable(ResourceKey<LootTable> key, LootTable.Builder tableBuilder, LootTableSource source, HolderLookup.Provider holder) {
             for (var modifier : MODIFIERS) {
                 if (modifier.targetLootTables().contains(key)) {
                     tableBuilder.pool(

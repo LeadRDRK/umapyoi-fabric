@@ -46,7 +46,7 @@ public class UmasoulIngredient implements CustomIngredient {
     }
 
     @Override
-    public Stream<Holder<Item>> getMatchingItems() {
+    public Stream<Holder<Item>> items() {
         return items.stream();
     }
 
@@ -116,7 +116,7 @@ public class UmasoulIngredient implements CustomIngredient {
         }
 
         @Override
-        public StreamCodec<RegistryFriendlyByteBuf, UmasoulIngredient> getPacketCodec() {
+        public StreamCodec<RegistryFriendlyByteBuf, UmasoulIngredient> getStreamCodec() {
             return StreamCodec.composite(
                     ByteBufCodecs.collection(
                             HashSet::new,

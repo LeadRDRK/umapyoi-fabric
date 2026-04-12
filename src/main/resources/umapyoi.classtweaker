@@ -1,11 +1,11 @@
-classTweaker v1 named
+classTweaker v1 official
 
 accessible field net/minecraft/client/model/player/PlayerModel slim Z
 accessible method net/minecraft/world/level/block/entity/BlockEntityType <init> (Lnet/minecraft/world/level/block/entity/BlockEntityType$BlockEntitySupplier;Ljava/util/Set;)V
 accessible class net/minecraft/world/level/block/entity/BlockEntityType$BlockEntitySupplier
 accessible method net/minecraft/client/data/AtlasProvider storeAtlas (Lnet/minecraft/data/CachedOutput;Lnet/minecraft/resources/Identifier;Ljava/util/List;)Ljava/util/concurrent/CompletableFuture;
 accessible field net/minecraft/world/item/crafting/ShapelessRecipe ingredients Ljava/util/List;
-accessible method net/minecraft/client/renderer/item/BlockModelWrapper <init> (Ljava/util/List;Ljava/util/List;Lnet/minecraft/client/renderer/item/ModelRenderProperties;Ljava/util/function/Function;)V
-accessible method net/minecraft/client/renderer/item/BlockModelWrapper detectRenderType (Ljava/util/List;)Ljava/util/function/Function;
+accessible method net/minecraft/client/renderer/item/CuboidItemModelWrapper <init> (Ljava/util/List;Lnet/minecraft/client/resources/model/geometry/QuadCollection;Lnet/minecraft/client/renderer/item/ModelRenderProperties;Lorg/joml/Matrix4fc;)V
+accessible method net/minecraft/world/level/storage/loot/functions/SetItemFunction <init> (Ljava/util/List;Lnet/minecraft/core/Holder;)V
 
 inject-interface net/minecraft/client/renderer/entity/state/LivingEntityRenderState net/tracen/umapyoi/client/renderer/entity/state/UmapyoiRenderState

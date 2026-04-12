@@ -2,10 +2,10 @@ package net.tracen.umapyoi.client;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -15,8 +15,8 @@ import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
 @Environment(EnvType.CLIENT)
-public class MotivationOverlay implements HudRenderCallback {
-    public static final MotivationOverlay INSTANCE = new MotivationOverlay();
+public class MotivationOverlay implements HudElement {
+    public static final Identifier ID = Umapyoi.id("motivation_overlay");
     private final Minecraft minecraft = Minecraft.getInstance();
 
     public MotivationOverlay() {
@@ -25,7 +25,7 @@ public class MotivationOverlay implements HudRenderCallback {
     public static final Identifier HUD = Identifier.fromNamespaceAndPath(Umapyoi.MODID, "textures/gui/motivations.png");
 
     @Override
-    public void onHudRender(GuiGraphics guiGraphics, DeltaTracker tickCounter) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
         if (!Umapyoi.CONFIG.OVERLAY_SWITCH())
             return;
 
@@ -46,28 +46,28 @@ public class MotivationOverlay implements HudRenderCallback {
             switch (UmaSoulUtils.getMotivation(UmapyoiAPI.getUmaSoul(player))) {
                 case BAD -> {
                     guiGraphics.blit(RenderPipelines.GUI_TEXTURED, HUD, x + xOffset, y + yOffset, 0, 60, 64, 14, 64, 96);
-                    guiGraphics.drawString(this.minecraft.font, Component.translatable("umapyoi.motivation.bad"), x + xOffset + 14,
+                    guiGraphics.text(this.minecraft.font, Component.translatable("umapyoi.motivation.bad"), x + xOffset + 14,
                             y + yOffset + 3, 0xFFFFFFFF, false);
                 }
                 case DOWN -> {
                     guiGraphics.blit(RenderPipelines.GUI_TEXTURED, HUD, x + xOffset, y + yOffset, 0, 45, 64, 14, 64, 96);
-                    guiGraphics.drawString(this.minecraft.font, Component.translatable("umapyoi.motivation.down"), x + xOffset + 14,
+                    guiGraphics.text(this.minecraft.font, Component.translatable("umapyoi.motivation.down"), x + xOffset + 14,
                             y + yOffset + 3, 0xFFFFFFFF, false);
                 }
                 case NORMAL -> {
                     guiGraphics.blit(RenderPipelines.GUI_TEXTURED, HUD, x + xOffset, y + yOffset, 0, 30, 64, 14, 64, 96);
-                    guiGraphics.drawString(this.minecraft.font, Component.translatable("umapyoi.motivation.normal"),
+                    guiGraphics.text(this.minecraft.font, Component.translatable("umapyoi.motivation.normal"),
                             x + xOffset + 14, y + yOffset + 3, 0xFFFFFFFF, false);
                 }
                 case GOOD -> {
                     guiGraphics.blit(RenderPipelines.GUI_TEXTURED, HUD, x + xOffset, y + yOffset, 0, 15, 64, 14, 64, 96);
-                    guiGraphics.drawString(this.minecraft.font, Component.translatable("umapyoi.motivation.good"), x + xOffset + 14,
+                    guiGraphics.text(this.minecraft.font, Component.translatable("umapyoi.motivation.good"), x + xOffset + 14,
                             y + yOffset + 3, 0xFFFFFFFF, false);
                 }
 
                 case PERFECT -> {
                     guiGraphics.blit(RenderPipelines.GUI_TEXTURED, HUD, x + xOffset, y + yOffset, 0, 0, 64, 14, 64, 96);
-                    guiGraphics.drawString(this.minecraft.font, Component.translatable("umapyoi.motivation.perfect"),
+                    guiGraphics.text(this.minecraft.font, Component.translatable("umapyoi.motivation.perfect"),
                             x + xOffset + 14, y + yOffset + 3, 0xFFFFFFFF, false);
                 }
                 default -> throw new IllegalArgumentException(

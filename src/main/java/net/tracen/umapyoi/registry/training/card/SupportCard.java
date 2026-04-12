@@ -5,15 +5,13 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.Registry;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.item.ItemRegistry;
+import net.tracen.umapyoi.item.SupportCardItem;
 import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
-import net.tracen.umapyoi.item.data.GachaRankingData;
 import net.tracen.umapyoi.registry.RegistryNameHolder;
 import net.tracen.umapyoi.registry.TrainingSupportRegistry;
 import net.tracen.umapyoi.registry.training.SupportStack;
@@ -56,14 +54,8 @@ public class SupportCard extends RegistryNameHolder {
 
     public static ItemStack init(Identifier name, SupportCard card) {
         ItemStack result = new ItemStack(ItemRegistry.SUPPORT_CARD);
-        result.set(DataComponents.MAX_DAMAGE, card.getMaxDamage());
-        result.set(DataComponents.DAMAGE, 0);
         result.set(DataComponentsTypeRegistry.DATA_LOCATION.get(), name);
-        GachaRanking ranking = card.getGachaRanking();
-        result.set(DataComponentsTypeRegistry.GACHA_RANKING.get(), new GachaRankingData(ranking));
-        result.set(DataComponents.RARITY,
-                ranking == GachaRanking.SSR ? Rarity.EPIC : ranking == GachaRanking.SR ? Rarity.UNCOMMON : Rarity.COMMON
-        );
+        SupportCardItem.postProcessSupportCard(result, card);
         return result;
     }
 

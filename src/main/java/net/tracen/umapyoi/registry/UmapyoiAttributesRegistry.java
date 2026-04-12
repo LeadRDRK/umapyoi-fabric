@@ -8,6 +8,8 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.tracen.umapyoi.Umapyoi;
 
+import eu.pb4.trinkets.api.SlotAttributes;
+
 public class UmapyoiAttributesRegistry {
     public static final Holder<Attribute> SPRINT_SPEED = register("sprint_speed",
             "attribute.umapyoi.generic.sprint_speed",
@@ -16,6 +18,8 @@ public class UmapyoiAttributesRegistry {
     public static final Holder<Attribute> STEP_HEIGHT_ADDITION = register("step_height_addition",
             "attribute.umapyoi.generic.step_height_addition",
             0.0D, -512.0D, 512.0D, true);
+
+    public static final Holder<Attribute> UMA_SUIT_SLOT = SlotAttributes.createAttributeForSlot("umapyoi/uma_suit");
 
     private static Holder<Attribute> register(
             String path, String descriptionId, double defaultValue, double minValue, double maxValue, boolean syncedWithClient

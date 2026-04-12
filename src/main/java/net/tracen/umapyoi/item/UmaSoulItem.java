@@ -221,7 +221,7 @@ public class UmaSoulItem extends Item implements TrinketCallback, TrinketRendere
             BiConsumer<Holder<Attribute>, AttributeModifier> consumer
     ) {
         consumer.accept(
-                SlotAttributes.createAttributeForSlot("umapyoi/uma_suit"),
+                UmapyoiAttributesRegistry.UMA_SUIT_SLOT,
                 new AttributeModifier(slotIdentifier, 1.0, AttributeModifier.Operation.ADD_VALUE)
         );
         if (UmaSoulUtils.getGrowth(stack) == Growth.UNTRAINED)

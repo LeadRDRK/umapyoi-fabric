@@ -1,0 +1,73 @@
+{
+  "given_item_modifiers": [
+    {
+      "conditions": [
+        {
+          "chance": 0.2,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "function": "minecraft:set_item",
+      "item": "umapyoi:speed_high_item"
+    },
+    {
+      "conditions": [
+        {
+          "chance": 0.2,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "function": "minecraft:set_item",
+      "item": "umapyoi:stamina_high_item"
+    },
+    {
+      "conditions": [
+        {
+          "chance": 0.2,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "function": "minecraft:set_item",
+      "item": "umapyoi:strength_high_item"
+    },
+    {
+      "conditions": [
+        {
+          "chance": 0.2,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "function": "minecraft:set_item",
+      "item": "umapyoi:mentality_high_item"
+    },
+    {
+      "conditions": [
+        {
+          "chance": 0.2,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "function": "minecraft:set_item",
+      "item": "umapyoi:wisdom_high_item"
+    },
+    {
+      "add": false,
+      "count": {
+        "type": "minecraft:uniform",
+        "max": 5.0,
+        "min": 2.0
+      },
+      "function": "minecraft:set_count"
+    }
+  ],
+  "gives": {
+    "id": "umapyoi:speed_high_item"
+  },
+  "max_uses": 6.0,
+  "reputation_discount": 0.2,
+  "wants": {
+    "count": 2.0,
+    "id": "umapyoi:jewel"
+  },
+  "xp": 30.0
+}

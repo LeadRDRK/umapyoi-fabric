@@ -1,0 +1,33 @@
+{
+  "given_item_modifiers": [
+    {
+      "function": "umapyoi:race_ticket_random",
+      "least": "preop",
+      "mode": false,
+      "most": "preop",
+      "predicate": [
+        "champions"
+      ]
+    }
+  ],
+  "gives": {
+    "id": "umapyoi:race_ticket"
+  },
+  "max_uses": 12.0,
+  "reputation_discount": 0.2,
+  "wants": {
+    "count": {
+      "type": "minecraft:sum",
+      "summands": [
+        5.0,
+        {
+          "type": "minecraft:uniform",
+          "max": 2.0,
+          "min": -2.0
+        }
+      ]
+    },
+    "id": "umapyoi:jewel"
+  },
+  "xp": 6.0
+}

@@ -1,0 +1,33 @@
+{
+  "given_item_modifiers": [
+    {
+      "add": false,
+      "count": {
+        "type": "minecraft:uniform",
+        "max": 1.0,
+        "min": 1.0
+      },
+      "function": "minecraft:set_count"
+    }
+  ],
+  "gives": {
+    "id": "umapyoi:trainning_suit"
+  },
+  "max_uses": 8.0,
+  "reputation_discount": 0.2,
+  "wants": {
+    "count": {
+      "type": "minecraft:sum",
+      "summands": [
+        6.0,
+        {
+          "type": "minecraft:uniform",
+          "max": 14.0,
+          "min": 0.0
+        }
+      ]
+    },
+    "id": "umapyoi:jewel"
+  },
+  "xp": 30.0
+}

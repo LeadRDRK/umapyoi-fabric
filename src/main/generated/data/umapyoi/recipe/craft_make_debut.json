@@ -8,9 +8,8 @@
   "race": "umapyoi:make_debut",
   "result": {
     "components": {
-      "umapyoi:data_location": "umapyoi:undetermined_race"
+      "umapyoi:data_location": "umapyoi:make_debut"
     },
-    "count": 1,
     "id": "umapyoi:race_ticket"
   }
 }

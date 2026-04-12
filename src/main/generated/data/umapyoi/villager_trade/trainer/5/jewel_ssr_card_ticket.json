@@ -1,0 +1,33 @@
+{
+  "given_item_modifiers": [
+    {
+      "add": false,
+      "count": {
+        "type": "minecraft:uniform",
+        "max": 2.0,
+        "min": 1.0
+      },
+      "function": "minecraft:set_count"
+    }
+  ],
+  "gives": {
+    "id": "umapyoi:ssr_card_ticket"
+  },
+  "max_uses": 12.0,
+  "reputation_discount": 0.2,
+  "wants": {
+    "count": {
+      "type": "minecraft:sum",
+      "summands": [
+        7.0,
+        {
+          "type": "minecraft:uniform",
+          "max": 14.0,
+          "min": 0.0
+        }
+      ]
+    },
+    "id": "umapyoi:jewel"
+  },
+  "xp": 30.0
+}

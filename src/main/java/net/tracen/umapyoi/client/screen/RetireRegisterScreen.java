@@ -43,6 +43,7 @@ public class RetireRegisterScreen extends AbstractContainerScreen<RetireRegister
         if (this.minecraft == null) {
             return;
         }
+        this.extractTransparentBackground(guiGraphics);
         guiGraphics.pose().pushMatrix();
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE,
                 this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight,

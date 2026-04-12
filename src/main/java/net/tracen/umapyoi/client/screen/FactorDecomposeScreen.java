@@ -53,6 +53,7 @@ public class FactorDecomposeScreen extends AbstractContainerScreen<FactorDecompo
         if (this.minecraft == null) {
             return;
         }
+        this.extractTransparentBackground(graphic);
         graphic.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos + 20, this.topPos + 17, 176, 55, 64, 64, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
         this.renderUma(graphic);
         graphic.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);

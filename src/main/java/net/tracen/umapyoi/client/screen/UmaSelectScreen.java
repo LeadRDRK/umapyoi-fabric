@@ -98,7 +98,7 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
                 (this.imageWidth / 2) - (this.font.width(this.title.getVisualOrderText()) / 2),
                 this.titleLabelY - 3, 0xFFFFFFFF, false);
         pPoseStack.text(this.font, this.playerInventoryTitle,
-                this.inventoryLabelX,this.inventoryLabelY + 20, 0xFF404040, false);
+                this.inventoryLabelX,this.inventoryLabelY, 0xFF404040, false);
     }
 
     protected void subInit() {
@@ -166,6 +166,7 @@ public class UmaSelectScreen extends AbstractContainerScreen<UmaSelectMenu> impl
 
     @Override
     public void extractBackground(final GuiGraphicsExtractor guiGraphics, final int mouseX, final int mouseY, final float a) {
+        this.extractTransparentBackground(guiGraphics);
         int i = this.leftPos;
         int j = this.topPos;
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, i, j, 0, 0, this.imageWidth, this.imageHeight, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);

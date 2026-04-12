@@ -90,6 +90,7 @@ public class ThreeGoddessScreen extends AbstractContainerScreen<ThreeGoddessCont
         if (this.minecraft == null) {
             return;
         }
+        this.extractTransparentBackground(guiGraphics);
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
         // Render progress bar
         int l = this.menu.getProgressionScaled();

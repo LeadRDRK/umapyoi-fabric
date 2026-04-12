@@ -74,11 +74,13 @@ public class RaceSelectScreen extends AbstractContainerScreen<RaceSelectMenu> im
 
     }
 
+    @Override
     public void extractRenderState(GuiGraphicsExtractor pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         super.extractRenderState(pPoseStack, pMouseX, pMouseY, pPartialTick);
         this.extractTooltip(pPoseStack, pMouseX, pMouseY);
     }
 
+    @Override
     public void containerTick() {
         super.containerTick();
     }
@@ -89,7 +91,7 @@ public class RaceSelectScreen extends AbstractContainerScreen<RaceSelectMenu> im
                 (this.imageWidth / 2) - (this.font.width(this.title.getVisualOrderText()) / 2),
                 this.titleLabelY - 3, 0xFFFFFFFF);
         pPoseStack.text(this.font, this.playerInventoryTitle,
-                this.inventoryLabelX,this.inventoryLabelY + 20, 0xFF404040, false);
+                this.inventoryLabelX,this.inventoryLabelY, 0xFF404040, false);
     }
 
     protected void subInit() {
@@ -156,20 +158,23 @@ public class RaceSelectScreen extends AbstractContainerScreen<RaceSelectMenu> im
         return this.menu.getSlot(0).hasItem() && this.menu.getSlot(1).hasItem();
     }
 
-    protected void renderBg(GuiGraphicsExtractor pPoseStack, float pPartialTick, int pX, int pY) {
+    @Override
+    public void extractBackground(final GuiGraphicsExtractor guiGraphics, final int mouseX, final int mouseY, final float a) {
+        this.extractTransparentBackground(guiGraphics);
         int i = this.leftPos;
         int j = this.topPos;
-        pPoseStack.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, i, j, 0, 0, this.imageWidth, this.imageHeight, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, i, j, 0, 0, this.imageWidth, this.imageHeight, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
         int k = (int) (41.0F * this.scrollOffs);
-        pPoseStack.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, i + 116, j + 31 + k, 176 + (this.isScrollBarActive() ? 0 : SCROLLER_WIDTH), 0,
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, i + 116, j + 31 + k, 176 + (this.isScrollBarActive() ? 0 : SCROLLER_WIDTH), 0,
                 SCROLLER_WIDTH, SCROLLER_HEIGHT, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
         int l = this.leftPos + RECIPES_X;
         int i1 = this.topPos + RECIPES_Y;
         int j1 = this.startIndex + SCROLLER_WIDTH;
-        this.renderButtons(pPoseStack, pX, pY, l, i1, j1);
-        this.renderRecipes(pPoseStack, l, i1, j1);
+        this.renderButtons(guiGraphics, mouseX, mouseY, l, i1, j1);
+        this.renderRecipes(guiGraphics, l, i1, j1);
     }
 
+    @Override
     protected void extractTooltip(GuiGraphicsExtractor pPoseStack, int pX, int pY) {
         super.extractTooltip(pPoseStack, pX, pY);
         if (this.displayRecipes) {

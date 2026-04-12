@@ -95,6 +95,7 @@ public class RaceScreen extends AbstractContainerScreen<RaceContainer> {
         if (this.minecraft == null) {
             return;
         }
+        this.extractTransparentBackground(graphic);
         // Background image (with slot)
         graphic.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth,
                 this.imageHeight, 420, 256);

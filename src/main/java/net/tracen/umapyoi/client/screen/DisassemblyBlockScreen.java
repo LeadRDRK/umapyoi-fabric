@@ -40,6 +40,8 @@ public class DisassemblyBlockScreen extends AbstractContainerScreen<DisassemblyB
             return;
         }
 
+        this.extractTransparentBackground(guiGraphics);
+
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE,
                 this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight,
                 BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);

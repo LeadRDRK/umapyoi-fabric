@@ -63,7 +63,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import eu.pb4.trinkets.api.SlotAttributes;
 import eu.pb4.trinkets.api.TrinketSlotAccess;
 import eu.pb4.trinkets.api.TrinketsApi;
 import eu.pb4.trinkets.api.callback.TrinketCallback;

@@ -29,7 +29,8 @@ public class UmapyoiItemModelProvider {
             ItemRegistry.NAGINATA,
             ItemRegistry.UMA_SOUL_DISPLAY,
             ItemRegistry.GATE,
-            ItemRegistry.GATE_DOOR
+            ItemRegistry.GATE_DOOR,
+            ItemRegistry.MANUAL_CLOSED
     );
 
     private static final Set<Item> BLOCK_ITEMS_WITH_FLAT_MODEL = Set.of(

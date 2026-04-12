@@ -134,10 +134,10 @@ publishMods {
         minecraftVersions.add(minecraft_version)
 
         requires("fabric-api")
-        requires("trinkets")
+        requires("trinkets-updated")
         requires("owo-lib")
-        optional("patchouli")
-        optional("create-fabric")
+        optional("modonomicon")
+        optional("create-fly")
     }
 
     curseforge {
@@ -149,9 +149,9 @@ publishMods {
         serverRequired = true
 
         requires("fabric-api")
-        requires("trinkets")
+        requires("trinkets-updated")
         requires("owo-lib")
-        optional("patchouli-fabric")
-        optional("create-fabric")
+        optional("modonomicon")
+        optional("create-fly")
     }
 }

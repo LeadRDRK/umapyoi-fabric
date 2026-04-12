@@ -17,7 +17,8 @@
     "client.ItemInHandRendererMixin",
     "client.LivingEntityRendererMixin",
     "client.LivingEntityRenderStateMixin",
-    "client.AvatarRendererMixin"
+    "client.AvatarRendererMixin",
+    "client.ModelManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1,

@@ -17,6 +17,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.Resource;
 import net.tracen.umapyoi.block.entity.BlockEntityRegistry;
 import net.tracen.umapyoi.client.ActionBarOverlay;
 import net.tracen.umapyoi.client.MotivationOverlay;
@@ -38,6 +39,7 @@ import net.tracen.umapyoi.item.ItemRegistry;
 import net.tracen.umapyoi.item.UmaSoulItem;
 
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -80,23 +82,16 @@ public class ClientSetupEvents {
         ModelLoadingPlugin.register(pluginContext -> {
             DynamicItemBakedModel.MODELS.clear();
 
-            Stream.of("costume", "race_ticket", "support_card").forEachOrdered((type) -> {
-                FileToIdConverter.json("models/item/" + type)
-                        .listMatchingResources(Minecraft.getInstance().getResourceManager())
-                        .keySet()
-                        .stream()
-                        .map(ClientSetupEvents::resolveModelLocation)
-                        .forEach(location -> {
-                            var model = new UnbakedExtraItemModel(location);
-                            var modelId = Identifier.fromNamespaceAndPath(
-                                    location.getNamespace(),
-                                    location.getPath().substring("item/".length())
-                            );
-                            var key = ExtraModelKey.<ItemModel>create(location::toString);
+            forEachDynamicItemModelResource((location, _) -> {
+                var model = new UnbakedExtraItemModel(location);
+                var modelId = Identifier.fromNamespaceAndPath(
+                        location.getNamespace(),
+                        location.getPath().substring("item/".length())
+                );
+                var key = ExtraModelKey.<ItemModel>create(location::toString);
 
-                            pluginContext.addModel(key, model);
-                            DynamicItemBakedModel.MODELS.put(modelId, key);
-                        });
+                pluginContext.addModel(key, model);
+                DynamicItemBakedModel.MODELS.put(modelId, key);
             });
 
             var afterBakeEvent = pluginContext.modifyItemModelAfterBake();
@@ -109,6 +104,16 @@ public class ClientSetupEvents {
 
             afterBakeEvent.register(new BakedModelHandler(BuiltInRegistries.ITEM.getKey(ItemRegistry.SUPPORT_CARD),
                     SupportCardItemModel::new));
+        });
+    }
+
+    public static void forEachDynamicItemModelResource(BiConsumer<Identifier, Resource> consumer) {
+        Stream.of("costume", "race_ticket", "support_card").forEachOrdered((type) -> {
+            FileToIdConverter.json("models/item/" + type)
+                    .listMatchingResources(Minecraft.getInstance().getResourceManager())
+                    .forEach((resLocation, resource) -> {
+                        consumer.accept(ClientSetupEvents.resolveModelLocation(resLocation), resource);
+                    });
         });
     }
 

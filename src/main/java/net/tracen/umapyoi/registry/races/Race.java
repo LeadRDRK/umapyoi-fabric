@@ -245,6 +245,8 @@ public class Race {
 
     public void followUp(ItemStack stack, Level level) {
         var raceData = UmaSoulUtils.getRaceStatus(stack);
+        var attendRaceTagUnique = new HashMap<>(raceData.attendRaceTagUnique());
+        var attendRaceTag = new HashMap<>(raceData.attendRaceTag());
 
         var wonRaces = raceData.wonRaces();
         if (this.isPassed(stack, level)) {
@@ -252,7 +254,7 @@ public class Race {
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .map(Holder::value)
-                    .forEach((t) -> t.applyToUmaSoul(stack, this));
+                    .forEach((t) -> t.applyToUmaSoul(stack, this, attendRaceTag, attendRaceTagUnique));
             wonRaces = new HashSet<>(wonRaces);
             wonRaces.add(this.id);
         }
@@ -274,7 +276,7 @@ public class Race {
         }
 
         var newRaceData = new UmaDataRaceStatus(wonRaces, attended, newLastAttend, hasDebut,
-                raceData.attendRaceTag(), raceData.attendRaceTagUnique());
+                attendRaceTag, attendRaceTagUnique);
         UmaSoulUtils.setRaceStatus(stack, newRaceData);
     }
 

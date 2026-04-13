@@ -37,8 +37,8 @@ public record RaceTag(int maximum, Identifier id, boolean isUnique, int[] proper
     public boolean applyToUmaSoul(
             ItemStack soul,
             Race race,
-            final HashMap<ResourceLocation, Set<ResourceLocation>> attendRaceTag,
-            final HashMap<ResourceLocation, Integer> attendRaceTagUnique)
+            final HashMap<Identifier, Set<Identifier>> attendRaceTag,
+            final HashMap<Identifier, Integer> attendRaceTagUnique)
     {
         boolean isFulfill;
         if (!this.isUnique) {

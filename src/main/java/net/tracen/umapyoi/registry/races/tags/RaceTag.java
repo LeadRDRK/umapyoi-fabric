@@ -8,7 +8,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.tracen.umapyoi.Umapyoi;
-import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.races.Race;
 import net.tracen.umapyoi.registry.umadata.UmaDataRaceStatus;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
@@ -35,20 +34,20 @@ public record RaceTag(int maximum, ResourceLocation id, boolean isUnique, int[] 
     public static final ResourceKey<Registry<RaceTag>> REGISTRY_KEY = ResourceKey
             .createRegistryKey(ResourceLocation.fromNamespaceAndPath(Umapyoi.MODID, "race_tags"));
 
-    public boolean applyToUmaSoul(ItemStack soul, Race race) {
+    public boolean applyToUmaSoul(
+            ItemStack soul,
+            Race race,
+            final HashMap<ResourceLocation, Set<ResourceLocation>> attendRaceTag,
+            final HashMap<ResourceLocation, Integer> attendRaceTagUnique)
+    {
         boolean isFulfill;
-        var raceData = UmaSoulUtils.getRaceStatus(soul);
-        var attendRaceTagUnique = raceData.attendRaceTagUnique();
-        var attendRaceTag = raceData.attendRaceTag();
         if (!this.isUnique) {
-            attendRaceTagUnique = new HashMap<>(attendRaceTagUnique);
             int current = attendRaceTagUnique.getOrDefault(this.id, 0);
             if (current >= this.maximum) return false;
             attendRaceTagUnique.put(this.id, ++current);
             isFulfill = current == this.maximum;
         } else {
-            attendRaceTag = new HashMap<>(attendRaceTag);
-            var races = new HashSet<>(attendRaceTag.get(this.id));
+            var races = new HashSet<>(attendRaceTag.getOrDefault(this.id, Set.of()));
             int current = races.size();
             if (current >= this.maximum || !races.add(race.id)) return false;
             attendRaceTag.put(this.id, races);
@@ -67,10 +66,6 @@ public record RaceTag(int maximum, ResourceLocation id, boolean isUnique, int[] 
                 }
             });
         }
-        soul.set(DataComponentsTypeRegistry.UMADATA_RACE_STATUS.get(), new UmaDataRaceStatus(
-                raceData.wonRaces(), raceData.attended(), raceData.lastAttendTime(), raceData.hasDebut(),
-                attendRaceTag, attendRaceTagUnique
-        ));
         return true;
     }
 

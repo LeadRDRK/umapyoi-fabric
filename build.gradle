@@ -132,6 +132,7 @@ publishMods {
         accessToken = providers.gradleProperty("MODRINTH_TOKEN")
         projectId = "x1Rd7p5W"
         minecraftVersions.add(minecraft_version)
+        project.publish_mods_extra_versions.split(",").each { minecraftVersions.add(it.trim()) }
 
         requires("fabric-api")
         requires("trinkets-updated")
@@ -144,6 +145,7 @@ publishMods {
         accessToken = providers.gradleProperty("CURSEFORGE_TOKEN")
         projectId = "1414857"
         minecraftVersions.add(minecraft_version)
+        project.publish_mods_extra_versions.split(",").each { minecraftVersions.add(it.trim()) }
 
         clientRequired = true
         serverRequired = true

@@ -3,6 +3,7 @@ package net.tracen.umapyoi.utils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -106,15 +107,33 @@ public class UmaSoulUtils {
         stack.set(DataComponentsTypeRegistry.UMADATA_BASIC_STATUS.get(), props);
     }
 
+    /**
+     * @return The updated data
+     */
+    private static UmaDataBasicStatus updateBasicStatusComponentAsArray(
+            ItemStack stack,
+            DataComponentType<UmaDataBasicStatus> component,
+            UmaDataBasicStatus defaultValue,
+            Consumer<int[]> updater
+    ) {
+        var data = stack.getOrDefault(component, defaultValue);
+        var array = data.array();
+        updater.accept(array);
+
+        var newData = UmaDataBasicStatus.init(array);
+        stack.set(component, newData);
+        return newData;
+    }
+
+    /**
+     * @return The updated data
+     */
     public static UmaDataBasicStatus updatePropertyAsArray(ItemStack stack, Consumer<int[]> updater) {
-        return stack.update(
+        return updateBasicStatusComponentAsArray(
+                stack,
                 DataComponentsTypeRegistry.UMADATA_BASIC_STATUS.get(),
                 UmaDataBasicStatus.DEFAULT_STATUS,
-                data -> {
-                    var array = data.array();
-                    updater.accept(array);
-                    return UmaDataBasicStatus.init(array);
-                }
+                updater
         );
     }
 
@@ -127,15 +146,15 @@ public class UmaSoulUtils {
         stack.set(DataComponentsTypeRegistry.UMADATA_STATUS_RATE.get(), props);
     }
 
+    /**
+     * @return The updated data
+     */
     public static UmaDataBasicStatus updatePropertyRateAsArray(ItemStack stack, Consumer<int[]> updater) {
-        return stack.update(
+        return updateBasicStatusComponentAsArray(
+                stack,
                 DataComponentsTypeRegistry.UMADATA_STATUS_RATE.get(),
                 new UmaDataBasicStatus(0, 0, 0, 0, 0),
-                data -> {
-                    var array = data.array();
-                    updater.accept(array);
-                    return UmaDataBasicStatus.init(array);
-                }
+                updater
         );
     }
 
@@ -157,15 +176,15 @@ public class UmaSoulUtils {
         stack.set(DataComponentsTypeRegistry.UMADATA_MAX_BASIC_STATUS.get(), props);
     }
 
+    /**
+     * @return The updated data
+     */
     public static UmaDataBasicStatus updateMaxPropertyAsArray(ItemStack stack, Consumer<int[]> updater) {
-        return stack.update(
+        return updateBasicStatusComponentAsArray(
+                stack,
                 DataComponentsTypeRegistry.UMADATA_MAX_BASIC_STATUS.get(),
                 UmaDataBasicStatus.DEFAULT_MAX_STATUS,
-                data -> {
-                    var array = data.array();
-                    updater.accept(array);
-                    return UmaDataBasicStatus.init(array);
-                }
+                updater
         );
     }
 

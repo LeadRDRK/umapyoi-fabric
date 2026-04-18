@@ -1,19 +1,11 @@
 package net.tracen.umapyoi.item;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTabOutput;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
@@ -37,14 +29,11 @@ import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.client.model.UmaPlayerModel;
-import net.tracen.umapyoi.client.renderer.BedrockModelRenderer;
-import net.tracen.umapyoi.compat.FPMCompat;
 import net.tracen.umapyoi.data.tag.UmapyoiUmaDataTags;
 import net.tracen.umapyoi.effect.MobEffectRegistry;
 import net.tracen.umapyoi.events.ApplyUmasoulAttributeCallback;
 import net.tracen.umapyoi.events.ResumeActionPointCallback;
 import net.tracen.umapyoi.events.SettingPropertyCallback;
-import net.tracen.umapyoi.events.client.RenderingUmaSoulCallback;
 import net.tracen.umapyoi.registry.UmapyoiAttributesRegistry;
 import net.tracen.umapyoi.registry.umadata.Growth;
 import net.tracen.umapyoi.registry.umadata.UmaData;
@@ -66,11 +55,9 @@ import java.util.stream.Stream;
 import eu.pb4.trinkets.api.TrinketSlotAccess;
 import eu.pb4.trinkets.api.TrinketsApi;
 import eu.pb4.trinkets.api.callback.TrinketCallback;
-import eu.pb4.trinkets.api.client.TrinketRenderer;
-import eu.pb4.trinkets.api.client.TrinketRendererRegistry;
 import eu.pb4.trinkets.impl.TrinketUtilities;
 
-public class UmaSoulItem extends Item implements TrinketCallback, TrinketRenderer, CreativeModeTabFiller {
+public class UmaSoulItem extends Item implements TrinketCallback, CreativeModeTabFiller {
     private static final Comparator<Holder.Reference<UmaData>> COMPARATOR = new UmaDataComparator();
 
     public UmaSoulItem(Properties p) {
@@ -309,53 +296,6 @@ public class UmaSoulItem extends Item implements TrinketCallback, TrinketRendere
         }
     }
 
-    @Override
-    @Environment(EnvType.CLIENT)
-    public void submit(
-            ItemStack itemStack, TrinketSlotAccess slotAccess, EntityModel<? extends LivingEntityRenderState> entityModel,
-            PoseStack poseStack, SubmitNodeCollector nodeCollector, int light, LivingEntityRenderState entityState,
-            float limbAngle, float limbDistance
-    ) {
-        // match AvatarRenderState directly (disallow ArmorStandRenderState)
-        if (!(entityState instanceof AvatarRenderState state) || (state.isInvisible && !state.isSpectator))
-            return;
-
-        var baseModel = state.umapyoi$getUmaModel();
-        if (baseModel == null) return;
-
-        var renderType = RenderTypes.entityTranslucent(state.umapyoi$getUmaTexture());
-        baseModel.setModelProperties(state);
-        baseModel.prepareMobModel(state, limbAngle, limbDistance);
-
-        var callbackContext = new RenderingUmaSoulCallback.Context(slotAccess, state, baseModel,
-                poseStack, nodeCollector, light);
-        if (RenderingUmaSoulCallback.Pre.invoke(callbackContext))
-            return;
-        FPMCompat.hideHeadIfRendering(state, baseModel);
-
-        if (entityModel instanceof HumanoidModel<?> humanoidModel) {
-            baseModel.copyAnim(baseModel.head, humanoidModel.head);
-            baseModel.copyAnim(baseModel.body, humanoidModel.body);
-            baseModel.copyAnim(baseModel.leftArm, humanoidModel.leftArm);
-            baseModel.copyAnim(baseModel.leftLeg, humanoidModel.leftLeg);
-            baseModel.copyAnim(baseModel.rightArm, humanoidModel.rightArm);
-            baseModel.copyAnim(baseModel.rightLeg, humanoidModel.rightLeg);
-        }
-        baseModel.setupAnim(state);
-        var modelRenderer = new BedrockModelRenderer(baseModel, light,
-                LivingEntityRenderer.getOverlayCoords(state, 0.0F), -1);
-        nodeCollector.submitCustomGeometry(poseStack, renderType, modelRenderer);
-        if (baseModel.isEmissive()) {
-            var emissiveRenderType = RenderTypes.entityTranslucentEmissive(state.umapyoi$getUmaEmissiveTexture());
-            var emissiveRenderer = new BedrockModelRenderer(baseModel, light,
-                    LivingEntityRenderer.getOverlayCoords(state, 0.0F), -1, true);
-            nodeCollector.order(1)
-                    .submitCustomGeometry(poseStack, emissiveRenderType, emissiveRenderer);
-        }
-
-        RenderingUmaSoulCallback.Post.invoke(callbackContext);
-    }
-
     public static Identifier getRenderTarget(ItemStack stack, LivingEntity entity) {
         boolean suit_flag = false;
         boolean alter_flag = false;
@@ -386,11 +326,6 @@ public class UmaSoulItem extends Item implements TrinketCallback, TrinketRendere
         if(alter)
             identifier = Identifier.fromNamespaceAndPath(identifier.getNamespace(), identifier.getPath()+"_alter");
         return identifier;
-    }
-
-    public static void registerRenderer() {
-        Item item = ItemRegistry.UMA_SOUL;
-        TrinketRendererRegistry.registerRenderer(item, (TrinketRenderer) item);
     }
 
     public static void extractRenderState(ItemStack soul, LivingEntity entity,

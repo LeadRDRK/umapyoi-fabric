@@ -34,9 +34,9 @@ import net.tracen.umapyoi.client.renderer.blockentity.SupportAlbumPedestalBlockR
 import net.tracen.umapyoi.client.renderer.blockentity.ThreeGoddessBlockRenderer;
 import net.tracen.umapyoi.client.renderer.blockentity.UmaPedestalBlockRenderer;
 import net.tracen.umapyoi.client.renderer.blockentity.UmaStatueBlockRenderer;
-import net.tracen.umapyoi.item.AbstractSuitItem;
+import net.tracen.umapyoi.client.renderer.trinket.UmaSoulRenderer;
+import net.tracen.umapyoi.client.renderer.trinket.UmaSuitRenderer;
 import net.tracen.umapyoi.item.ItemRegistry;
-import net.tracen.umapyoi.item.UmaSoulItem;
 
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -51,12 +51,12 @@ public class ClientSetupEvents {
         registerModelLoadingPlugin();
 
         // Trinkets renderers
-        UmaSoulItem.registerRenderer();
-        AbstractSuitItem.registerRenderer(ItemRegistry.SUMMER_UNIFORM);
-        AbstractSuitItem.registerRenderer(ItemRegistry.WINTER_UNIFORM);
-        AbstractSuitItem.registerRenderer(ItemRegistry.TRAINING_SUIT);
-        AbstractSuitItem.registerRenderer(ItemRegistry.SWIMSUIT);
-        AbstractSuitItem.registerRenderer(ItemRegistry.UMA_COSTUME);
+        UmaSoulRenderer.register();
+        UmaSuitRenderer.register(ItemRegistry.SUMMER_UNIFORM);
+        UmaSuitRenderer.register(ItemRegistry.WINTER_UNIFORM);
+        UmaSuitRenderer.register(ItemRegistry.TRAINING_SUIT);
+        UmaSuitRenderer.register(ItemRegistry.SWIMSUIT);
+        UmaSuitRenderer.register(ItemRegistry.UMA_COSTUME);
 
         ClientTickEvents.END_CLIENT_TICK.register(SkillKeyMapping::onEndClientTick);
 

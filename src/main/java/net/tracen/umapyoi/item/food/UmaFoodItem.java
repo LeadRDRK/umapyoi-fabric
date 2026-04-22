@@ -5,11 +5,13 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.api.UmapyoiAPI;
 import net.tracen.umapyoi.item.ItemFoodBase;
 import net.tracen.umapyoi.item.info.FoodInfo;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public class UmaFoodItem extends ItemFoodBase {
@@ -28,14 +30,20 @@ public class UmaFoodItem extends ItemFoodBase {
                 Player entityplayer = (Player) entity;
                 if (entityplayer.getAbilities().instabuild)
                     return itemstack;
-                var remainder = this.getCraftingRemainder(stack).create();
-                if (!entityplayer.addItem(remainder))
-                    entityplayer.drop(remainder, true);
+                Optional.ofNullable(this.getCraftingRemainder(stack))
+                        .map(ItemStackTemplate::create)
+                        .ifPresent(remainder -> {
+                            if (!entityplayer.addItem(remainder))
+                                entityplayer.drop(remainder, true);
+                        });
             }
             return itemstack;
         }
-        return entity instanceof Player && ((Player) entity).getAbilities().instabuild ? itemstack
-                : this.getCraftingRemainder(stack).create();
+        return entity instanceof Player && ((Player) entity).getAbilities().instabuild
+                ? itemstack
+                : Optional.ofNullable(this.getCraftingRemainder(stack))
+                        .map(ItemStackTemplate::create)
+                        .orElse(itemstack);
     }
 
     private ItemStack eatAsUma(ItemStack stack, Level level, LivingEntity entity) {

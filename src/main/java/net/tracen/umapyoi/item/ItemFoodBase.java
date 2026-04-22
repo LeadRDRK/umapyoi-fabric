@@ -6,11 +6,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.component.Consumable;
 import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.item.info.FoodInfo;
+
+import java.util.Optional;
 
 public class ItemFoodBase extends Item implements IFoodLike {
     private final FoodInfo info;
@@ -29,14 +32,20 @@ public class ItemFoodBase extends Item implements IFoodLike {
                 Player entityplayer = (Player) entity;
                 if (entityplayer.getAbilities().instabuild)
                     return itemstack;
-                var remainder = this.getCraftingRemainder(stack).create();
-                if (!entityplayer.addItem(remainder))
-                    entityplayer.drop(remainder, true);
+                Optional.ofNullable(this.getCraftingRemainder(stack))
+                        .map(ItemStackTemplate::create)
+                        .ifPresent(remainder -> {
+                            if (!entityplayer.addItem(remainder))
+                                entityplayer.drop(remainder, true);
+                        });
             }
             return itemstack;
         }
-        return entity instanceof Player && ((Player) entity).getAbilities().instabuild ? itemstack
-                : this.getCraftingRemainder(stack).create();
+        return entity instanceof Player && ((Player) entity).getAbilities().instabuild
+                ? itemstack
+                : Optional.ofNullable(this.getCraftingRemainder(stack))
+                        .map(ItemStackTemplate::create)
+                        .orElse(itemstack);
     }
 
     @Override

@@ -1,4 +1,10 @@
 ------------------------------------------------------
+Version 1.12.72-26.1.2+fabric.17
+------------------------------------------------------
+This release is equivalent to version 1.12.72-1.20.1 of the original mod.
+- Fixed a crash when consuming food items.
+
+------------------------------------------------------
 Version 1.12.72-26.1.2+fabric.16
 ------------------------------------------------------
 This release is equivalent to version 1.12.72-1.20.1 of the original mod.

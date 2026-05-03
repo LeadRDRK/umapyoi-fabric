@@ -1,4 +1,10 @@
 ------------------------------------------------------
+Version 1.12.72-26.1.2+fabric.18
+------------------------------------------------------
+This release is equivalent to version 1.12.72-1.20.1 of the original mod.
+- Fixed motivation increments when consuming a single stack of food/drink items.
+
+------------------------------------------------------
 Version 1.12.72-26.1.2+fabric.17
 ------------------------------------------------------
 This release is equivalent to version 1.12.72-1.20.1 of the original mod.

@@ -11,6 +11,7 @@ import net.tracen.umapyoi.registry.UmapyoiAttributesRegistry;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
@@ -51,9 +52,18 @@ public abstract class LivingEntityMixin {
     @Shadow
     public abstract ItemStack getUseItem();
 
+    @Unique
+    private ItemStack usedItem;
+
+    @Inject(method = "completeUsingItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;finishUsingItem(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;)Lnet/minecraft/world/item/ItemStack;"))
+    public void onBeforeFinishUsing(CallbackInfo ci) {
+        // stack might be modified right after finishUsingItem is called
+        usedItem = this.getUseItem().copy();
+    }
+
     @Inject(method = "completeUsingItem", at = @At(value = "INVOKE", shift = At.Shift.BY, by = 2, target = "Lnet/minecraft/world/item/ItemStack;finishUsingItem(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;)Lnet/minecraft/world/item/ItemStack;"),
             locals = LocalCapture.CAPTURE_FAILHARD)
     public void onFinishUsing(CallbackInfo ci, InteractionHand hand, ItemStack result) {
-        LivingEntityUseItemEvents.FINISH.invoker().onUseItem((LivingEntity) (Object) this, this.getUseItem().copy());
+        LivingEntityUseItemEvents.FINISH.invoker().onUseItem((LivingEntity) (Object) this, usedItem);
     }
 }

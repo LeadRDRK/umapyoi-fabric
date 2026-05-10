@@ -88,7 +88,6 @@ dependencies {
     modRuntimeOnly("mezz.jei:jei-${project.jei_minecraft_version}-fabric:${project.jei_version}")
 
     annotationProcessor modImplementation("io.wispforest:owo-lib:${project.owo_version}")
-    include "io.wispforest:owo-sentinel:${project.owo_version}"
 
     implementation "com.google.code.findbugs:jsr305:3.0.2"
 }

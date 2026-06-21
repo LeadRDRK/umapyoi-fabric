@@ -1,4 +1,6 @@
 {
+    "type": "modonomicon:content",
+    "id": "trainers_manual/inherit/wish",
     "name": "book.umapyoi.trainers_manual.inherit.wish.name",
     "icon": "umapyoi:uma_factor_item",
     "category": "umapyoi:inherit",
@@ -8,18 +10,26 @@
     "pages": [
         {
             "type": "modonomicon:text",
+            "id": "page0",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.inherit.wish.page0.text"
         },
         {
             "type": "modonomicon:text",
+            "id": "page1",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.inherit.wish.page1.text"
         },
         {
             "type": "modonomicon:text",
+            "id": "page2",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.inherit.wish.page2.text"
         },
         {
             "type": "modonomicon:text",
+            "id": "page3",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.inherit.wish.page3.text"
         }
     ]

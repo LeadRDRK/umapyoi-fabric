@@ -1,4 +1,6 @@
 {
+    "type": "modonomicon:content",
+    "id": "trainers_manual/uma_soul/uma_soul",
     "name": "book.umapyoi.trainers_manual.uma_soul.uma_soul.name",
     "icon": "umapyoi:uma_soul",
     "category": "umapyoi:uma_soul",
@@ -8,18 +10,26 @@
     "pages": [
         {
             "type": "modonomicon:text",
+            "id": "page0",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.uma_soul.uma_soul.page0.text"
         },
         {
             "type": "modonomicon:text",
+            "id": "page1",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.uma_soul.uma_soul.page1.text"
         },
         {
             "type": "modonomicon:text",
+            "id": "page2",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.uma_soul.uma_soul.page2.text"
         },
         {
             "type": "modonomicon:image",
+            "id": "page3",
+            "title": "",
             "use_legacy_rendering": true,
             "images": [
                 "umapyoi:textures/book_images/summon_soul.png",
@@ -29,10 +39,14 @@
         },
         {
             "type": "modonomicon:text",
+            "id": "page4",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.uma_soul.uma_soul.page4.text"
         },
         {
             "type": "modonomicon:image",
+            "id": "page5",
+            "title": "",
             "use_legacy_rendering": true,
             "images": [
                 "umapyoi:textures/book_images/hud_info.png"

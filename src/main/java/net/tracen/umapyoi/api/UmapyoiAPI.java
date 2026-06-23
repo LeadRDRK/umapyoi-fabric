@@ -21,6 +21,8 @@ import net.tracen.umapyoi.registry.umadata.UmaData;
 import net.tracen.umapyoi.utils.ClientUtils;
 import net.tracen.umapyoi.utils.UmaSoulUtils;
 
+import java.util.Optional;
+
 import eu.pb4.trinkets.api.TrinketAttachment;
 import eu.pb4.trinkets.api.TrinketsApi;
 
@@ -50,20 +52,18 @@ public class UmapyoiAPI {
     }
 
     private static ItemStack getUmaSoulFromTrinkets(TrinketAttachment comp) {
-        var entityInventory = comp.getInventory();
-        if (entityInventory.containsKey("umapyoi")) {
-            var group = entityInventory.get("umapyoi");
-            if (group.containsKey("uma_soul")) {
-                var inventory = group.get("uma_soul");
-                if (inventory.getContainerSize() <= 0)
-                    return ItemStack.EMPTY;
+        return Optional.ofNullable(comp.getInventory("umapyoi/uma_soul"))
+                .map(inventory -> {
+                    if (inventory.getContainerSize() <= 0)
+                        return ItemStack.EMPTY;
 
-                var stack = inventory.getItem(0);
-                if (stack.getItem() instanceof UmaSoulItem)
-                    return stack;
-            }
-        }
-        return ItemStack.EMPTY;
+                    var stack = inventory.getItem(0);
+                    if (stack.getItem() instanceof UmaSoulItem)
+                        return stack;
+
+                    return ItemStack.EMPTY;
+                })
+                .orElse(ItemStack.EMPTY);
     }
 
     public static ItemStack getUmaSuit(LivingEntity entity) {
@@ -72,20 +72,18 @@ public class UmapyoiAPI {
     }
 
     public static ItemStack getUmaSuit(TrinketAttachment comp) {
-        var entityInventory = comp.getInventory();
-        if (entityInventory.containsKey("umapyoi")) {
-            var group = entityInventory.get("umapyoi");
-            if (group.containsKey("uma_suit")) {
-                var inventory = group.get("uma_suit");
-                if (inventory.getContainerSize() <= 0)
-                    return ItemStack.EMPTY;
+        return Optional.ofNullable(comp.getInventory("umapyoi/uma_suit"))
+                .map(inventory -> {
+                    if (inventory.getContainerSize() <= 0)
+                        return ItemStack.EMPTY;
 
-                var stack = inventory.getItem(0);
-                if (stack.getItem() instanceof AbstractSuitItem)
-                    return stack;
-            }
-        }
-        return ItemStack.EMPTY;
+                    var stack = inventory.getItem(0);
+                    if (stack.getItem() instanceof AbstractSuitItem)
+                        return stack;
+
+                    return ItemStack.EMPTY;
+                })
+                .orElse(ItemStack.EMPTY);
     }
 
     public static boolean isUmaSuitRendering(LivingEntity player) {

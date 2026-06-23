@@ -56,7 +56,7 @@ public class SkillKeyMapping {
             ClientPlayNetworking.send(new SelectSkillPacket(SelectSkillPacket.LATTER_SLOT));
         }
         while (KEY_CONFIGURE_GUI.consumeClick()) {
-            Minecraft.getInstance().setScreen(new OverlayScreen());
+            Minecraft.getInstance().setScreenAndShow(new OverlayScreen());
         }
     }
 }

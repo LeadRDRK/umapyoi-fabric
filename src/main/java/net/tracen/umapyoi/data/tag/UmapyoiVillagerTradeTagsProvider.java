@@ -3,7 +3,7 @@ package net.tracen.umapyoi.data.tag;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.KeyTagProvider;
+import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.tags.VillagerTradeTags;
 import net.minecraft.world.item.trading.VillagerTrade;
 import net.tracen.umapyoi.data.trading.UmapyoiVillagerTrades;
@@ -11,7 +11,7 @@ import net.tracen.umapyoi.data.trading.UmapyoiVillagerTrades;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
-public class UmapyoiVillagerTradeTagsProvider extends KeyTagProvider<VillagerTrade> {
+public class UmapyoiVillagerTradeTagsProvider extends TagsProvider<VillagerTrade> {
     public UmapyoiVillagerTradeTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
         super(output, Registries.VILLAGER_TRADE, lookupProvider);
     }

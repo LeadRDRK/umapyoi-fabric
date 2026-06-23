@@ -3,7 +3,10 @@ package net.tracen.umapyoi.data.tag;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider.BlockTagsProvider;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.tracen.umapyoi.block.BlockRegistry;
 
@@ -16,39 +19,43 @@ public class UmapyoiBlockTagProvider extends BlockTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider arg) {
-        valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE).add(BlockRegistry.THREE_GODDESS)
-                .add(BlockRegistry.SUPPORT_ALBUM_PEDESTAL).add(BlockRegistry.UMA_PEDESTAL)
-                .add(BlockRegistry.SILVER_SUPPORT_ALBUM_PEDESTAL).add(BlockRegistry.SILVER_UMA_PEDESTAL)
-                .add(BlockRegistry.UMA_STATUES).add(BlockRegistry.THREE_GODDESS_UPPER)
-                .add(BlockRegistry.TRAINING_FACILITY).add(BlockRegistry.FACTOR_DECOMPOSE_TABLE)
-                .add(BlockRegistry.FACTOR_RESEARCH_TABLE).add(BlockRegistry.GATE)
-                .add(BlockRegistry.GATE_DOOR).add(BlockRegistry.RACE_REGISTER_BLOCK);
+        builder(BlockTags.MINEABLE_WITH_PICKAXE).add(block(BlockRegistry.THREE_GODDESS))
+                .add(block(BlockRegistry.SUPPORT_ALBUM_PEDESTAL)).add(block(BlockRegistry.UMA_PEDESTAL))
+                .add(block(BlockRegistry.SILVER_SUPPORT_ALBUM_PEDESTAL)).add(block(BlockRegistry.SILVER_UMA_PEDESTAL))
+                .add(block(BlockRegistry.UMA_STATUES)).add(block(BlockRegistry.THREE_GODDESS_UPPER))
+                .add(block(BlockRegistry.TRAINING_FACILITY)).add(block(BlockRegistry.FACTOR_DECOMPOSE_TABLE))
+                .add(block(BlockRegistry.FACTOR_RESEARCH_TABLE)).add(block(BlockRegistry.GATE))
+                .add(block(BlockRegistry.GATE_DOOR)).add(block(BlockRegistry.RACE_REGISTER_BLOCK));
 
-        valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE).add(BlockRegistry.DISASSEMBLY_BLOCK).add(BlockRegistry.SKILL_LEARNING_TABLE)
-                .add(BlockRegistry.REGISTER_LECTERN).add(BlockRegistry.UMA_SELECT_BLOCK);
+        builder(BlockTags.MINEABLE_WITH_AXE).add(block(BlockRegistry.DISASSEMBLY_BLOCK)).add(block(BlockRegistry.SKILL_LEARNING_TABLE))
+                .add(block(BlockRegistry.REGISTER_LECTERN)).add(block(BlockRegistry.UMA_SELECT_BLOCK));
 
-        valueLookupBuilder(UmapyoiBlockTags.TRACK_TURF)
-                .add(Blocks.GRASS_BLOCK)
-                .add(Blocks.DIRT_PATH)
-                .add(Blocks.CRIMSON_NYLIUM)
-                .add(Blocks.WARPED_NYLIUM);
+        builder(UmapyoiBlockTags.TRACK_TURF)
+                .add(block(Blocks.GRASS_BLOCK))
+                .add(block(Blocks.DIRT_PATH))
+                .add(block(Blocks.CRIMSON_NYLIUM))
+                .add(block(Blocks.WARPED_NYLIUM));
 
-        valueLookupBuilder(UmapyoiBlockTags.TRACK_DIRT)
-                .add(Blocks.DIRT)
-                .add(Blocks.PODZOL)
-                .add(Blocks.ROOTED_DIRT)
-                .add(Blocks.COARSE_DIRT)
+        builder(UmapyoiBlockTags.TRACK_DIRT)
+                .add(block(Blocks.DIRT))
+                .add(block(Blocks.PODZOL))
+                .add(block(Blocks.ROOTED_DIRT))
+                .add(block(Blocks.COARSE_DIRT))
                 .forceAddTag(BlockTags.SAND);
 
-        valueLookupBuilder(UmapyoiBlockTags.TRACK_SNOW)
+        builder(UmapyoiBlockTags.TRACK_SNOW)
                 .forceAddTag(BlockTags.SNOW);
 
-        valueLookupBuilder(UmapyoiBlockTags.PEDESTAL_UMA)
-                .add(BlockRegistry.UMA_PEDESTAL)
-                .add(BlockRegistry.SILVER_UMA_PEDESTAL);
+        builder(UmapyoiBlockTags.PEDESTAL_UMA)
+                .add(block(BlockRegistry.UMA_PEDESTAL))
+                .add(block(BlockRegistry.SILVER_UMA_PEDESTAL));
 
-        valueLookupBuilder(UmapyoiBlockTags.PEDESTAL_SUPPORT)
-                .add(BlockRegistry.SUPPORT_ALBUM_PEDESTAL)
-                .add(BlockRegistry.SILVER_SUPPORT_ALBUM_PEDESTAL);
+        builder(UmapyoiBlockTags.PEDESTAL_SUPPORT)
+                .add(block(BlockRegistry.SUPPORT_ALBUM_PEDESTAL))
+                .add(block(BlockRegistry.SILVER_SUPPORT_ALBUM_PEDESTAL));
+    }
+
+    private ResourceKey<Block> block(Block block) {
+        return BuiltInRegistries.BLOCK.getResourceKey(block).orElseThrow();
     }
 }

@@ -300,21 +300,16 @@ public class UmaSoulItem extends Item implements TrinketCallback, CreativeModeTa
         boolean suit_flag = false;
         boolean alter_flag = false;
         var comp = TrinketsApi.getAttachment(entity);
-        var entityInventory = comp.getInventory();
-        if (entityInventory.containsKey("umapyoi")) {
-            var group = entityInventory.get("umapyoi");
-            if (group.containsKey("uma_suit")) {
-                var inventory = group.get("uma_suit");
-                if (inventory.getContainerSize() > 0 && (inventory.getItem(0).getItem() instanceof AbstractSuitItem ||
-                        inventory.getItem(0).getItem() instanceof UmaCostumeItem)) {
-                    suit_flag = true;
+        var inventory = comp.getInventory("umapyoi/uma_suit");
+        if (inventory != null && inventory.getContainerSize() > 0
+                && inventory.getItem(0).getItem() instanceof AbstractSuitItem)
+        {
+            suit_flag = true;
 
-                    alter_flag = ClientUtils.getClientUmaDataRegistry()
-                            .get(ResourceKey.create(UmaData.REGISTRY_KEY, UmaSoulUtils.getName(stack)))
-                            .map(uma -> uma.is(UmapyoiUmaDataTags.ALTER_MODEL))
-                            .orElse(false);
-                }
-            }
+            alter_flag = ClientUtils.getClientUmaDataRegistry()
+                    .get(ResourceKey.create(UmaData.REGISTRY_KEY, UmaSoulUtils.getName(stack)))
+                    .map(uma -> uma.is(UmapyoiUmaDataTags.ALTER_MODEL))
+                    .orElse(false);
         }
 
         Identifier renderTarget = suit_flag ? getSuitTarget(stack, alter_flag) : UmaSoulUtils.getName(stack);

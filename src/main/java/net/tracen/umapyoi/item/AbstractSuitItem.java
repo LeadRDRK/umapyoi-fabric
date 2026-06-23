@@ -15,6 +15,8 @@ import net.minecraft.world.level.Level;
 import net.tracen.umapyoi.client.model.UmaPlayerModel;
 import net.tracen.umapyoi.utils.ClientUtils;
 
+import java.util.Optional;
+
 import eu.pb4.trinkets.api.TrinketSlotAccess;
 import eu.pb4.trinkets.api.TrinketsApi;
 import eu.pb4.trinkets.api.callback.TrinketCallback;
@@ -27,16 +29,10 @@ public abstract class AbstractSuitItem extends Item implements TrinketCallback {
 
     private boolean canEquip(LivingEntity entity) {
         var comp = TrinketsApi.getAttachment(entity);
-        var entityInventory = comp.getInventory();
-        if (entityInventory.containsKey("umapyoi")) {
-            var group = entityInventory.get("umapyoi");
-            if (group.containsKey("uma_soul")) {
-                var inventory = group.get("uma_soul");
-                return inventory.getContainerSize() > 0
-                        && inventory.getItem(0).getItem() instanceof UmaSoulItem;
-            }
-        }
-        return false;
+        return Optional.ofNullable(comp.getInventory("umapyoi/uma_soul"))
+                .map(inventory -> inventory.getContainerSize() > 0
+                        && inventory.getItem(0).getItem() instanceof UmaSoulItem)
+                .orElse(false);
     }
 
     @Override

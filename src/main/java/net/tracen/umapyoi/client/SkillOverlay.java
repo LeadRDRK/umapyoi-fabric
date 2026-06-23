@@ -33,7 +33,7 @@ public class SkillOverlay implements HudElement {
         if (!Umapyoi.CONFIG.OVERLAY_SWITCH())
             return;
 
-        if (minecraft.options.hideGui)
+        if (minecraft.gui.hud.isHidden())
             return;
 
         var window = minecraft.getWindow();

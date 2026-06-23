@@ -44,7 +44,7 @@ public class OverlayScreen extends Screen {
 
     private void close() {
         this.onClose();
-        Minecraft.getInstance().setScreen(null);
+        Minecraft.getInstance().gui.setScreen(null);
     }
 
     @Override

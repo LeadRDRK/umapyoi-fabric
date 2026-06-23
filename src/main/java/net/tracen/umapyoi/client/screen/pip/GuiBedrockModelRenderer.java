@@ -2,12 +2,12 @@ package net.tracen.umapyoi.client.screen.pip;
 
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.fabricmc.fabric.api.client.rendering.v1.PictureInPictureRendererRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -21,8 +21,10 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 public class GuiBedrockModelRenderer extends PictureInPictureRenderer<GuiBedrockModelRenderer.RenderState> {
+    private final Minecraft minecraft;
+
     public GuiBedrockModelRenderer(PictureInPictureRendererRegistry.Context context) {
-        super(context.bufferSource());
+        this.minecraft = context.minecraft();
     }
 
     @Override
@@ -31,15 +33,19 @@ public class GuiBedrockModelRenderer extends PictureInPictureRenderer<GuiBedrock
     }
 
     @Override
-    protected void renderToTexture(RenderState renderState, PoseStack poseStack) {
-        Minecraft.getInstance().gameRenderer.getLighting().setupFor(Lighting.Entry.ENTITY_IN_UI);
+    protected void renderToTexture(RenderState renderState, PoseStack poseStack, SubmitNodeCollector nodeCollector) {
+        minecraft.gameRenderer.lighting().setupFor(Lighting.Entry.ENTITY_IN_UI);
         Vector3f translation = renderState.translation;
         poseStack.translate(translation.x, translation.y, translation.z);
         poseStack.mulPose(renderState.rotation());
-        VertexConsumer vertexconsumer = bufferSource
-                .getBuffer(RenderTypes.entityTranslucent(ClientUtils.getTexture(renderState.texture())));
-        renderState.model().renderToBuffer(poseStack, vertexconsumer, LightCoordsUtil.FULL_BRIGHT,
-                OverlayTexture.NO_OVERLAY, -1);
+
+        var renderType = RenderTypes.entityTranslucent(ClientUtils.getTexture(renderState.texture()));
+        nodeCollector.submitCustomGeometry(poseStack, renderType, (pose, buffer) -> {
+            var submitPoseStack = new PoseStack();
+            submitPoseStack.last().set(pose);
+            renderState.model().renderToBuffer(submitPoseStack, buffer, LightCoordsUtil.FULL_BRIGHT,
+                    OverlayTexture.NO_OVERLAY, -1);
+        });
     }
 
     @Override

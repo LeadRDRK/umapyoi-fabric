@@ -9,5 +9,6 @@ accessible method net/minecraft/client/renderer/item/CuboidItemModelWrapper <ini
 accessible method net/minecraft/world/level/storage/loot/functions/SetItemFunction <init> (Ljava/util/List;Lnet/minecraft/core/Holder;)V
 accessible field net/minecraft/client/resources/model/ModelDiscovery modelWrappers Lit/unimi/dsi/fastutil/objects/Object2ObjectMap;
 accessible method net/minecraft/client/resources/model/ModelDiscovery createAndQueueWrapper (Lnet/minecraft/resources/Identifier;Lnet/minecraft/client/resources/model/UnbakedModel;)Lnet/minecraft/client/resources/model/ModelDiscovery$ModelWrapper;
+accessible method net/minecraft/advancements/triggers/CriteriaTriggers register (Ljava/lang/String;Lnet/minecraft/advancements/triggers/CriterionTrigger;)Lnet/minecraft/advancements/triggers/CriterionTrigger;
 
 inject-interface net/minecraft/client/renderer/entity/state/LivingEntityRenderState net/tracen/umapyoi/client/renderer/entity/state/UmapyoiRenderState

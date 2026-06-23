@@ -79,7 +79,7 @@ public class UmapyoiRecipeProvider extends FabricRecipeProvider {
                         .pattern(" L ")
                         .pattern("A  ")
                         .define('A', Items.STICK)
-                        .define('L', Items.LIGHTNING_ROD)
+                        .define('L', Items.LIGHTNING_ROD.weathering().unaffected())
                         .define('J', ItemRegistry.HORSESHOE_RAINBOW)
                         .unlockedBy("has_item", has(ItemRegistry.HORSESHOE_RAINBOW)).save(output);
 
@@ -139,7 +139,7 @@ public class UmapyoiRecipeProvider extends FabricRecipeProvider {
                         .pattern("ILI")
                         .pattern(" I ")
                         .define('I', Items.LEATHER)
-                        .define('L', Items.BLUE_DYE)
+                        .define('L', Items.DYE.blue())
                         .define('J', ItemRegistry.JEWEL)
                         .unlockedBy("has_item", has(ItemRegistry.JEWEL)).save(output);
 
@@ -171,20 +171,20 @@ public class UmapyoiRecipeProvider extends FabricRecipeProvider {
                         .define('B', Items.IRON_BARS).unlockedBy("has_item", has(Items.IRON_BARS)).save(output);
 
                 shaped(RecipeCategory.DECORATIONS, ItemRegistry.GATE).pattern("GYG")
-                        .pattern("B B").pattern("B B").define('G', Items.GREEN_CONCRETE)
-                        .define('Y', Items.YELLOW_CONCRETE).define('B', Items.IRON_BARS).unlockedBy("has_item", has(Items.IRON_BARS))
+                        .pattern("B B").pattern("B B").define('G', Items.CONCRETE.green())
+                        .define('Y', Items.CONCRETE.yellow()).define('B', Items.IRON_BARS).unlockedBy("has_item", has(Items.IRON_BARS))
                         .save(output);
 
                 shaped(RecipeCategory.COMBAT, ItemRegistry.SUMMER_UNIFORM).pattern("IJI").pattern("ILI").pattern("ILI")
-                        .define('I', Items.PURPLE_WOOL).define('L', Items.WHITE_WOOL).define('J', ItemRegistry.JEWEL)
+                        .define('I', Items.WOOL.purple()).define('L', Items.WOOL.white()).define('J', ItemRegistry.JEWEL)
                         .unlockedBy("has_item", has(ItemRegistry.JEWEL)).save(output);
 
                 shaped(RecipeCategory.COMBAT, ItemRegistry.WINTER_UNIFORM).pattern("IJI").pattern("III").pattern("III")
-                        .define('I', Items.PURPLE_WOOL).define('J', ItemRegistry.JEWEL)
+                        .define('I', Items.WOOL.purple()).define('J', ItemRegistry.JEWEL)
                         .unlockedBy("has_item", has(ItemRegistry.JEWEL)).save(output);
 
                 shaped(RecipeCategory.COMBAT, ItemRegistry.TRAINING_SUIT).pattern("IJI").pattern("ILI").pattern("ILI")
-                        .define('I', Items.RED_WOOL).define('L', Items.WHITE_WOOL).define('J', ItemRegistry.JEWEL)
+                        .define('I', Items.WOOL.red()).define('L', Items.WOOL.white()).define('J', ItemRegistry.JEWEL)
                         .unlockedBy("has_item", has(ItemRegistry.JEWEL)).save(output);
 
                 shapeless(RecipeCategory.FOOD, ItemRegistry.HACHIMI_MID).requires(Items.HONEY_BOTTLE)

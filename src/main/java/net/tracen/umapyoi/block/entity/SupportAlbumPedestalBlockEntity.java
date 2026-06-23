@@ -10,8 +10,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.tracen.umapyoi.Umapyoi;
-import net.tracen.umapyoi.UmapyoiConfigModel;
 import net.tracen.umapyoi.api.UmapyoiAPI;
+import net.tracen.umapyoi.config.UmapyoiConfig;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
 import net.tracen.umapyoi.item.data.DataComponentsTypeRegistry;
 import net.tracen.umapyoi.registry.training.card.SupportCard;
@@ -67,21 +67,21 @@ public class SupportAlbumPedestalBlockEntity extends AbstractSupportAlbumPedesta
                 return UmapyoiAPI.getSupportCardRegistry(level).get(resloc).orElseThrow().value().getGachaRanking() == GachaRanking.R;
             boolean cfgFlag = GachaUtils.checkGachaConfig();
             int gacha_roll;
-            int ssrHit = cfgFlag ? Umapyoi.CONFIG.GACHA_PROBABILITY_SSR()
-                    : UmapyoiConfigModel.DEFAULT_GACHA_PROBABILITY_SSR;
+            int ssrHit = cfgFlag ? Umapyoi.CONFIG.GACHA_PROBABILITY_SSR
+                    : UmapyoiConfig.DEFAULT_GACHA_PROBABILITY_SSR;
             if (input.is(UmapyoiItemTags.SR_CARD_TICKET)) {
 //              Set gacha roll, 30 = 100 - 70(default).  
                 gacha_roll = level.getRandom()
                         .nextInt(cfgFlag
-                                ? Umapyoi.CONFIG.GACHA_PROBABILITY_SUM() - Umapyoi.CONFIG.GACHA_PROBABILITY_R()
+                                ? Umapyoi.CONFIG.GACHA_PROBABILITY_SUM - Umapyoi.CONFIG.GACHA_PROBABILITY_R
                                 : 30);
 
                 return UmapyoiAPI.getSupportCardRegistry(level).get(resloc).orElseThrow().value()
                         .getGachaRanking() == (gacha_roll < ssrHit ? GachaRanking.SSR : GachaRanking.SR);
             }
             gacha_roll = level.getRandom().nextInt(
-                    cfgFlag ? Umapyoi.CONFIG.GACHA_PROBABILITY_SUM() : UmapyoiConfigModel.DEFAULT_GACHA_PROBABILITY_SUM);
-            int srHit = ssrHit + (cfgFlag ? Umapyoi.CONFIG.GACHA_PROBABILITY_SR() : UmapyoiConfigModel.DEFAULT_GACHA_PROBABILITY_SR);
+                    cfgFlag ? Umapyoi.CONFIG.GACHA_PROBABILITY_SUM : UmapyoiConfig.DEFAULT_GACHA_PROBABILITY_SUM);
+            int srHit = ssrHit + (cfgFlag ? Umapyoi.CONFIG.GACHA_PROBABILITY_SR : UmapyoiConfig.DEFAULT_GACHA_PROBABILITY_SR);
             return UmapyoiAPI.getSupportCardRegistry(level).get(resloc).orElseThrow().value()
                     .getGachaRanking() == (gacha_roll < ssrHit ? GachaRanking.SSR
                             : gacha_roll < srHit ? GachaRanking.SR : GachaRanking.R);

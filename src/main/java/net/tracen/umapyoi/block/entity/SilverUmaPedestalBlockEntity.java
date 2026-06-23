@@ -10,8 +10,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.tracen.umapyoi.Umapyoi;
-import net.tracen.umapyoi.UmapyoiConfigModel;
 import net.tracen.umapyoi.api.UmapyoiAPI;
+import net.tracen.umapyoi.config.UmapyoiConfig;
 import net.tracen.umapyoi.data.builtin.UmaDataRegistry;
 import net.tracen.umapyoi.data.tag.UmapyoiItemTags;
 import net.tracen.umapyoi.item.FadedUmaSoulItem;
@@ -70,11 +70,11 @@ public class SilverUmaPedestalBlockEntity extends AbstractPedestalBlockEntity im
                 return UmapyoiAPI.getUmaDataRegistry(level).get(resloc).orElseThrow().value().ranking() == GachaRanking.R;
             boolean cfgFlag = GachaUtils.checkGachaConfig();
             int gacha_roll;
-            int ssrHit = cfgFlag ? Umapyoi.CONFIG.GACHA_PROBABILITY_SSR()
-                    : UmapyoiConfigModel.DEFAULT_GACHA_PROBABILITY_SSR;
+            int ssrHit = cfgFlag ? Umapyoi.CONFIG.GACHA_PROBABILITY_SSR
+                    : UmapyoiConfig.DEFAULT_GACHA_PROBABILITY_SSR;
             gacha_roll = level.getRandom().nextInt(
-                    cfgFlag ? Umapyoi.CONFIG.GACHA_PROBABILITY_SUM() : UmapyoiConfigModel.DEFAULT_GACHA_PROBABILITY_SUM);
-            int srHit = ssrHit + (cfgFlag ? Umapyoi.CONFIG.GACHA_PROBABILITY_SR() : UmapyoiConfigModel.DEFAULT_GACHA_PROBABILITY_SR);
+                    cfgFlag ? Umapyoi.CONFIG.GACHA_PROBABILITY_SUM : UmapyoiConfig.DEFAULT_GACHA_PROBABILITY_SUM);
+            int srHit = ssrHit + (cfgFlag ? Umapyoi.CONFIG.GACHA_PROBABILITY_SR : UmapyoiConfig.DEFAULT_GACHA_PROBABILITY_SR);
             return UmapyoiAPI.getUmaDataRegistry(level).get(resloc).orElseThrow().value()
                     .ranking() == (gacha_roll < srHit ? GachaRanking.SR : GachaRanking.R);
         };

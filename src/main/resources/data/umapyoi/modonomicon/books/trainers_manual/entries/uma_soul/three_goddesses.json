@@ -1,4 +1,6 @@
 {
+    "type": "modonomicon:content",
+    "id": "trainers_manual/uma_soul/three_goddesses",
     "name": "book.umapyoi.trainers_manual.uma_soul.three_goddesses.name",
     "icon": "umapyoi:three_goddess",
     "category": "umapyoi:uma_soul",
@@ -8,10 +10,13 @@
     "pages": [
         {
             "type": "modonomicon:text",
+            "id": "page0",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.uma_soul.three_goddesses.page0.text"
         },
         {
             "type": "modonomicon:crafting_recipe",
+            "id": "page1",
             "recipe_id_1": "umapyoi:three_goddess",
             "text": "book.umapyoi.trainers_manual.uma_soul.three_goddesses.page1.text"
         }

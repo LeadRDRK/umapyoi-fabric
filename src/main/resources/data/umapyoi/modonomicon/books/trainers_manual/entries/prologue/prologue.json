@@ -1,4 +1,6 @@
 {
+    "type": "modonomicon:content",
+    "id": "trainers_manual/prologue/prologue",
     "name": "book.umapyoi.trainers_manual.prologue.prologue.name",
     "icon": "umapyoi:blank_uma_soul",
     "category": "umapyoi:prologue",
@@ -8,14 +10,20 @@
     "pages": [
         {
             "type": "modonomicon:text",
+            "id": "page0",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.prologue.prologue.page0.text"
         },
         {
             "type": "modonomicon:text",
+            "id": "page1",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.prologue.prologue.page1.text"
         },
         {
             "type": "modonomicon:text",
+            "id": "page2",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.prologue.prologue.page2.text"
         }
     ]

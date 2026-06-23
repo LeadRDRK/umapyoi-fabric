@@ -37,7 +37,7 @@ public class SkillBookItem extends Item implements CreativeModeTabFiller {
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
         tooltipComponents.add(this.getSkill(stack).getDescription().copy().withStyle(ChatFormatting.GRAY));
-        if(tooltipFlag.isAdvanced() || Umapyoi.CONFIG.DISPLAY_DETAIL()) {
+        if(tooltipFlag.isAdvanced() || Umapyoi.CONFIG.DISPLAY_DETAIL) {
             tooltipComponents.add(this.getSkill(stack).getDescriptionDetail().copy().withStyle(ChatFormatting.DARK_GRAY));
         }
     }

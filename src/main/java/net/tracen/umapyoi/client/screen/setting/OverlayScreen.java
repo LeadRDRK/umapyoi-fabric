@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.tracen.umapyoi.Umapyoi;
 import net.tracen.umapyoi.client.MotivationOverlay;
 import net.tracen.umapyoi.client.SkillOverlay;
+import net.tracen.umapyoi.config.UmapyoiConfig;
 import net.tracen.umapyoi.registry.UmaSkillRegistry;
 
 import org.lwjgl.glfw.GLFW;
@@ -32,10 +33,10 @@ public class OverlayScreen extends Screen {
 
     public OverlayScreen() {
         super(Component.literal("Setting"));
-        this.skillX = Umapyoi.CONFIG.TOPLEFT_COORD_SKILL_X();
-        this.skillY = Umapyoi.CONFIG.TOPLEFT_COORD_SKILL_Y();
-        this.motivationX = Umapyoi.CONFIG.TOPLEFT_COORD_MOTIVATION_X();
-        this.motivationY = Umapyoi.CONFIG.TOPLEFT_COORD_MOTIVATION_Y();
+        this.skillX = Umapyoi.CONFIG.TOPLEFT_COORD_SKILL_X;
+        this.skillY = Umapyoi.CONFIG.TOPLEFT_COORD_SKILL_Y;
+        this.motivationX = Umapyoi.CONFIG.TOPLEFT_COORD_MOTIVATION_X;
+        this.motivationY = Umapyoi.CONFIG.TOPLEFT_COORD_MOTIVATION_Y;
         this.lastClicked = null;
     }
 
@@ -49,10 +50,11 @@ public class OverlayScreen extends Screen {
         super.init();
         this.x = this.width / 2;
         this.buttonSave = Button.builder(Component.translatable("setting.umapyoi.save"), b -> {
-            Umapyoi.CONFIG.TOPLEFT_COORD_SKILL_X((int) (this.skillX + x) - x);
-            Umapyoi.CONFIG.TOPLEFT_COORD_SKILL_Y((int) (this.skillY + this.height) - this.height);
-            Umapyoi.CONFIG.TOPLEFT_COORD_MOTIVATION_X((int) (this.motivationX + x) - x);
-            Umapyoi.CONFIG.TOPLEFT_COORD_MOTIVATION_Y((int) (this.motivationY + this.height) - this.height);
+            Umapyoi.CONFIG.TOPLEFT_COORD_SKILL_X = (int) (this.skillX + x) - x;
+            Umapyoi.CONFIG.TOPLEFT_COORD_SKILL_Y = (int) (this.skillY + this.height) - this.height;
+            Umapyoi.CONFIG.TOPLEFT_COORD_MOTIVATION_X = (int) (this.motivationX + x) - x;
+            Umapyoi.CONFIG.TOPLEFT_COORD_MOTIVATION_Y = (int) (this.motivationY + this.height) - this.height;
+            UmapyoiConfig.HANDLER.save();
             close();
         }).bounds(this.width / 2 - 75, 10, 70, 20).build();
         this.buttonDiscard = Button.builder(Component.translatable("setting.umapyoi.discard").withStyle(ChatFormatting.RED), b -> close())
@@ -86,11 +88,11 @@ public class OverlayScreen extends Screen {
     @Override
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
         if (pKeyCode == GLFW.GLFW_KEY_R) {
-            var config = Umapyoi.CONFIG;
-            this.skillX = (int) config.optionForKey(config.keys.TOPLEFT_COORD_SKILL_X).defaultValue();
-            this.skillY = (int) config.optionForKey(config.keys.TOPLEFT_COORD_SKILL_Y).defaultValue();
-            this.motivationX = (int) config.optionForKey(config.keys.TOPLEFT_COORD_MOTIVATION_X).defaultValue();
-            this.motivationY = (int) config.optionForKey(config.keys.TOPLEFT_COORD_MOTIVATION_Y).defaultValue();
+            var defaults = UmapyoiConfig.HANDLER.defaults();
+            this.skillX = defaults.TOPLEFT_COORD_SKILL_X;
+            this.skillY = defaults.TOPLEFT_COORD_SKILL_Y;
+            this.motivationX = defaults.TOPLEFT_COORD_MOTIVATION_X;
+            this.motivationY = defaults.TOPLEFT_COORD_MOTIVATION_Y;
             return true;
         }
         if (lastClicked == null) return super.keyPressed(pKeyCode, pScanCode, pModifiers);

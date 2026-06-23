@@ -144,9 +144,9 @@ public class UmaPlayerModel<T extends LivingEntity> extends BedrockHumanoidModel
 
     private void animationEarTail(T entityIn, float pAgeInTicks) {
         int ears_reminder = (int) ((pAgeInTicks + Math.abs(entityIn.getUUID().getLeastSignificantBits()) % 10)
-                % Umapyoi.CONFIG.EAR_ANIMATION_INTERVAL());
+                % Umapyoi.CONFIG.EAR_ANIMATION_INTERVAL);
         int tail_reminder = (int) ((pAgeInTicks + Math.abs(entityIn.getUUID().getLeastSignificantBits()) % 10)
-                % Umapyoi.CONFIG.TAIL_ANIMATION_INTERVAL());
+                % Umapyoi.CONFIG.TAIL_ANIMATION_INTERVAL);
         float earRot = Mth.cos(ears_reminder) * 0.125F;
         if (0 < ears_reminder && ears_reminder < 8) {
             if (this.leftEarHideParts != null)
@@ -185,7 +185,7 @@ public class UmaPlayerModel<T extends LivingEntity> extends BedrockHumanoidModel
             this.setAllVisible(true);
 
             this.crouching = player.isCrouching();
-            if (Umapyoi.CONFIG.VANILLA_ARMOR_RENDER() && !Umapyoi.CONFIG.HIDE_PARTS_RENDER()) {
+            if (Umapyoi.CONFIG.VANILLA_ARMOR_RENDER && !Umapyoi.CONFIG.HIDE_PARTS_RENDER) {
                 var noHelmet = player.getItemBySlot(EquipmentSlot.HEAD).isEmpty();
                 this.setHatAndEarsVisible(noHelmet, true);
 

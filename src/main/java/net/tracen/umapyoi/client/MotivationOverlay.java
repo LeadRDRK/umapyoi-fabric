@@ -25,7 +25,7 @@ public class MotivationOverlay implements HudRenderCallback {
 
     @Override
     public void onHudRender(GuiGraphics guiGraphics, DeltaTracker tickCounter) {
-        if (!Umapyoi.CONFIG.OVERLAY_SWITCH())
+        if (!Umapyoi.CONFIG.OVERLAY_SWITCH)
             return;
 
         if (minecraft.options.hideGui)
@@ -40,8 +40,8 @@ public class MotivationOverlay implements HudRenderCallback {
             return;
 
         if (!UmapyoiAPI.getUmaSoul(player).isEmpty()) {
-            int xOffset = Umapyoi.CONFIG.TOPLEFT_COORD_MOTIVATION_X();
-            int yOffset = Umapyoi.CONFIG.TOPLEFT_COORD_MOTIVATION_Y();
+            int xOffset = Umapyoi.CONFIG.TOPLEFT_COORD_MOTIVATION_X;
+            int yOffset = Umapyoi.CONFIG.TOPLEFT_COORD_MOTIVATION_Y;
             switch (UmaSoulUtils.getMotivation(UmapyoiAPI.getUmaSoul(player))) {
                 case BAD -> {
                     guiGraphics.blit(HUD, x + xOffset, y + yOffset, 0, 60, 64, 14, 64, 96);

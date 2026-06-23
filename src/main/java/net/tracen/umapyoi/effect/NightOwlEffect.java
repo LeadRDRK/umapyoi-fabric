@@ -24,7 +24,7 @@ public class NightOwlEffect extends MobEffect {
         Level level = pLivingEntity.level();
         if (level.isClientSide) return true;
         if (UmapyoiAPI.getUmaSoul(pLivingEntity).isEmpty()) return true;
-        if (level.random.nextDouble() <= Umapyoi.CONFIG.NIGHT_OWL_PROBABILITY_DOWN_MOTIVATION()) {
+        if (level.random.nextDouble() <= Umapyoi.CONFIG.NIGHT_OWL_PROBABILITY_DOWN_MOTIVATION) {
             UmaStatusUtils.changeMotivation(pLivingEntity, -1);
         }
         return true;

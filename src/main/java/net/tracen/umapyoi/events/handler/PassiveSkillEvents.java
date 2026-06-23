@@ -54,7 +54,7 @@ public class PassiveSkillEvents {
 
         var speedModifier = new AttributeModifier(SPRINT_ID,
                 sprintSpeed.getValue() - sprintSpeed.getBaseValue(),
-                Umapyoi.CONFIG.UMASOUL_SPEED_PRECENT_ENABLE() ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                Umapyoi.CONFIG.UMASOUL_SPEED_PRECENT_ENABLE ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
                         : AttributeModifier.Operation.ADD_VALUE);
 
         if (UmapyoiAPI.getUmaSoul(living).isEmpty()) {

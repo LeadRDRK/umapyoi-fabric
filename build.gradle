@@ -17,7 +17,7 @@ repositories {
     maven { url = "https://maven.blamejared.com/" }
     maven { url = "https://modmaven.dev" }
     maven { url = "https://maven.parchmentmc.org" }
-    maven { url = "https://maven.wispforest.io" }
+    maven { url = "https://maven.isxander.dev/releases" }
     exclusiveContent {
         forRepository {
             maven {
@@ -84,7 +84,8 @@ dependencies {
     // at runtime, use the full JEI jar for Fabric
     modRuntimeOnly("mezz.jei:jei-${project.minecraft_version}-fabric:${project.jei_version}")
 
-    annotationProcessor modImplementation("io.wispforest:owo-lib:${project.owo_version}")
+    modImplementation "dev.isxander:yet-another-config-lib:${project.yacl_version}"
+    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
     implementation "com.google.code.findbugs:jsr305:3.0.2"
 }
@@ -145,7 +146,7 @@ publishMods {
 
         requires("fabric-api")
         requires("trinkets")
-        requires("owo-lib")
+        requires("yacl")
         optional("patchouli")
         optional("create-fabric")
     }
@@ -160,7 +161,7 @@ publishMods {
 
         requires("fabric-api")
         requires("trinkets")
-        requires("owo-lib")
+        requires("yacl")
         optional("patchouli-fabric")
         optional("create-fabric")
     }

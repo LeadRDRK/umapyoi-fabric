@@ -25,7 +25,7 @@ public class HumanoidArmorLayerMixin {
     private void renderArmorPiece(PoseStack poseStack, MultiBufferSource buffer, LivingEntity entity,
                                   EquipmentSlot slot, int packedLight, HumanoidModel<LivingEntity> model,
                                   CallbackInfo ci) {
-        if (Umapyoi.CONFIG.VANILLA_ARMOR_RENDER() || !(entity instanceof Player))
+        if (Umapyoi.CONFIG.VANILLA_ARMOR_RENDER || !(entity instanceof Player))
             return;
 
         ItemStack umaSoul = UmapyoiAPI.getRenderingUmaSoul(entity);

@@ -81,7 +81,7 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
         if (isEmptyCard(registries, cardID))
             return ;
         if(!this.getSupports(registries, stack).isEmpty()) {
-            if (Screen.hasShiftDown() || !Umapyoi.CONFIG.TOOLTIP_SWITCH()) {
+            if (Screen.hasShiftDown() || !Umapyoi.CONFIG.TOOLTIP_SWITCH) {
                 tooltip.add(Component.translatable("tooltip.umapyoi.supports").withStyle(ChatFormatting.AQUA));
                 this.getSupports(registries, stack)
                         .forEach(support -> tooltip.add(support.getDescription().copy().withStyle(ChatFormatting.GRAY)));
@@ -93,7 +93,7 @@ public class SupportCardItem extends Item implements SupportContainer, CreativeM
 
         List<ResourceLocation> supporters = ClientUtils.getClientSupportCardRegistry().get(cardID).getSupporters();
         if (!supporters.isEmpty()) {
-            if (Screen.hasControlDown() || !Umapyoi.CONFIG.TOOLTIP_SWITCH()) {
+            if (Screen.hasControlDown() || !Umapyoi.CONFIG.TOOLTIP_SWITCH) {
                 tooltip.add(Component.translatable("tooltip.umapyoi.supporters").withStyle(ChatFormatting.AQUA));
                 supporters.forEach(name -> tooltip
                         .add(UmaSoulUtils.getTranslatedUmaName(name).copy().withStyle(ChatFormatting.GRAY)));

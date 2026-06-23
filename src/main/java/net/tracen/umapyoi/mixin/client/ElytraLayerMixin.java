@@ -31,7 +31,7 @@ public class ElytraLayerMixin {
             float headPitch,
             CallbackInfo ci
     ) {
-        if (Umapyoi.CONFIG.ELYTRA_RENDER()) return;
+        if (Umapyoi.CONFIG.ELYTRA_RENDER) return;
 
         ItemStack itemBySlot = livingEntity.getItemBySlot(EquipmentSlot.CHEST);
         if (itemBySlot.is(Items.ELYTRA)) {

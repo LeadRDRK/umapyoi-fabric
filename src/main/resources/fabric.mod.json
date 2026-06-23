@@ -23,6 +23,9 @@
     ],
     "client": [
       "net.tracen.umapyoi.UmapyoiClient"
+    ],
+    "modmenu": [
+      "net.tracen.umapyoi.config.ModMenuIntegration"
     ]
   },
   "mixins": [
@@ -35,7 +38,7 @@
     "java": ">=21",
     "fabric-api": "*",
     "trinkets": "*",
-    "owo": "*"
+    "yet_another_config_lib_v3": "*"
   },
   "suggests": {
     "patchouli": "*",

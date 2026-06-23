@@ -28,7 +28,7 @@ public class SkillOverlay implements HudRenderCallback {
 
     @Override
     public void onHudRender(GuiGraphics guiGraphics, DeltaTracker tickCounter) {
-        if (!Umapyoi.CONFIG.OVERLAY_SWITCH())
+        if (!Umapyoi.CONFIG.OVERLAY_SWITCH)
             return;
 
         if (minecraft.options.hideGui)
@@ -43,8 +43,8 @@ public class SkillOverlay implements HudRenderCallback {
             return;
 
         if (!UmapyoiAPI.getUmaSoul(player).isEmpty()) {
-            int xOffset = Umapyoi.CONFIG.TOPLEFT_COORD_SKILL_X();
-            int yOffset = Umapyoi.CONFIG.TOPLEFT_COORD_SKILL_Y();
+            int xOffset = Umapyoi.CONFIG.TOPLEFT_COORD_SKILL_X;
+            int yOffset = Umapyoi.CONFIG.TOPLEFT_COORD_SKILL_Y;
             guiGraphics.blit(HUD, x + xOffset, y + yOffset, 0, 0, 96, 20, 128, 64);
             renderSkill(UmapyoiAPI.getUmaSoul(player), guiGraphics, x + xOffset, y + yOffset);
         }

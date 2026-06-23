@@ -52,7 +52,7 @@ public class UmaFactorContainerItem extends Item implements CreativeModeTabFille
         String buffer = "umadata." + stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get()).toLanguageKey();
         tooltipComponents.add(Component.translatable("tooltip.umapyoi.umadata.name", I18n.get(buffer.toString()))
                 .withStyle(ChatFormatting.GRAY));
-        if (Screen.hasShiftDown() || !Umapyoi.CONFIG.TOOLTIP_SWITCH()) {
+        if (Screen.hasShiftDown() || !Umapyoi.CONFIG.TOOLTIP_SWITCH) {
             tooltipComponents.add(Component.translatable("tooltip.umapyoi.factors.factors_details")
                     .withStyle(ChatFormatting.AQUA));
             List<UmaFactorStack> stackList = UmaFactorUtils.deserializeData(datas);
@@ -64,7 +64,7 @@ public class UmaFactorContainerItem extends Item implements CreativeModeTabFille
                     case EXTRASTATUS -> tooltipComponents.add(factor.getDescription().copy().withStyle(ChatFormatting.RED));
                     default -> tooltipComponents.add(factor.getDescription().copy().withStyle(ChatFormatting.GRAY));
                 }
-                if(tooltipFlag.isAdvanced() || Umapyoi.CONFIG.DISPLAY_DETAIL()) {
+                if(tooltipFlag.isAdvanced() || Umapyoi.CONFIG.DISPLAY_DETAIL) {
                     tooltipComponents.add(factor.getDescriptionDetail().copy().withStyle(ChatFormatting.DARK_GRAY));
                 }
             });

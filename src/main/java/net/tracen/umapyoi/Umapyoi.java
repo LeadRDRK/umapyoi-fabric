@@ -12,6 +12,7 @@ import net.tracen.umapyoi.advancements.trigger.TriggerRegistry;
 import net.tracen.umapyoi.block.BlockRegistry;
 import net.tracen.umapyoi.block.entity.BlockEntityRegistry;
 import net.tracen.umapyoi.command.CommandRegistry;
+import net.tracen.umapyoi.config.UmapyoiConfig;
 import net.tracen.umapyoi.container.ContainerRegistry;
 import net.tracen.umapyoi.effect.MobEffectRegistry;
 import net.tracen.umapyoi.effect.MoodBonus;
@@ -43,7 +44,7 @@ import org.slf4j.Logger;
 public class Umapyoi implements ModInitializer {
     public static final String MODID = "umapyoi";
     private static final Logger LOGGER = LogUtils.getLogger();
-    public static final net.tracen.umapyoi.UmapyoiConfig CONFIG = net.tracen.umapyoi.UmapyoiConfig.createAndLoad();
+    public static UmapyoiConfig CONFIG;
 
     public static Item.Properties defaultItemProperties() {
         return new Item.Properties();
@@ -55,6 +56,9 @@ public class Umapyoi implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        UmapyoiConfig.HANDLER.load();
+        CONFIG = UmapyoiConfig.HANDLER.instance();
+
         DataComponentsTypeRegistry.DATA_COMPONENTS.register();
         TrainingSupportRegistry.SUPPORTS.register();
         UmaSkillRegistry.SKILLS.register();

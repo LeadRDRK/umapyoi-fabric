@@ -143,9 +143,9 @@ public class UmaPlayerModel<T extends HumanoidRenderState> extends BedrockHumano
     private void animationEarTail(T entityIn, float pAgeInTicks) {
         int earTailAnimationOffset = entityIn.umapyoi$getEarTailAnimationOffset();
         int ears_reminder = (int) ((pAgeInTicks + earTailAnimationOffset)
-                % Umapyoi.CONFIG.EAR_ANIMATION_INTERVAL());
+                % Umapyoi.CONFIG.EAR_ANIMATION_INTERVAL);
         int tail_reminder = (int) ((pAgeInTicks + earTailAnimationOffset)
-                % Umapyoi.CONFIG.TAIL_ANIMATION_INTERVAL());
+                % Umapyoi.CONFIG.TAIL_ANIMATION_INTERVAL);
         float earRot = Mth.cos(ears_reminder) * 0.125F;
         if (0 < ears_reminder && ears_reminder < 8) {
             if (this.leftEarHideParts != null)
@@ -180,7 +180,7 @@ public class UmaPlayerModel<T extends HumanoidRenderState> extends BedrockHumano
             this.setAllVisible(true);
 
             this.crouching = state.isCrouching;
-            if (Umapyoi.CONFIG.VANILLA_ARMOR_RENDER() && !Umapyoi.CONFIG.HIDE_PARTS_RENDER()) {
+            if (Umapyoi.CONFIG.VANILLA_ARMOR_RENDER && !Umapyoi.CONFIG.HIDE_PARTS_RENDER) {
                 var noHelmet = state.headEquipment.isEmpty();
                 this.setHatAndEarsVisible(noHelmet, true);
 

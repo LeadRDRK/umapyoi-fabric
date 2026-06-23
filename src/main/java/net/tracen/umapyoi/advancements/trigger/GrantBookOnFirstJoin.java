@@ -27,7 +27,7 @@ public class GrantBookOnFirstJoin extends SimpleCriterionTrigger<GrantBookOnFirs
 
     public static class Instance implements SimpleCriterionTrigger.SimpleInstance {
         public boolean test(ServerPlayer player) {
-            return Umapyoi.CONFIG.GRANT_GUIDE_ON_FIRST_JOIN();
+            return Umapyoi.CONFIG.GRANT_GUIDE_ON_FIRST_JOIN;
         }
 
         @Override

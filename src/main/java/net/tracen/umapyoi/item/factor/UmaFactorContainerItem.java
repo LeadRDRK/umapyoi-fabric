@@ -54,7 +54,7 @@ public class UmaFactorContainerItem extends Item implements CreativeModeTabFille
         String buffer = "umadata." + stack.get(DataComponentsTypeRegistry.DATA_LOCATION.get()).toLanguageKey();
         tooltipAdder.accept(Component.translatable("tooltip.umapyoi.umadata.name", I18n.get(buffer.toString()))
                 .withStyle(ChatFormatting.GRAY));
-        if (Minecraft.getInstance().hasShiftDown() || !Umapyoi.CONFIG.TOOLTIP_SWITCH()) {
+        if (Minecraft.getInstance().hasShiftDown() || !Umapyoi.CONFIG.TOOLTIP_SWITCH) {
             tooltipAdder.accept(Component.translatable("tooltip.umapyoi.factors.factors_details")
                     .withStyle(ChatFormatting.AQUA));
             List<UmaFactorStack> stackList = UmaFactorUtils.deserializeData(datas);
@@ -66,7 +66,7 @@ public class UmaFactorContainerItem extends Item implements CreativeModeTabFille
                     case EXTRASTATUS -> tooltipAdder.accept(factor.getDescription().copy().withStyle(ChatFormatting.RED));
                     default -> tooltipAdder.accept(factor.getDescription().copy().withStyle(ChatFormatting.GRAY));
                 }
-                if(flag.isAdvanced() || Umapyoi.CONFIG.DISPLAY_DETAIL()) {
+                if(flag.isAdvanced() || Umapyoi.CONFIG.DISPLAY_DETAIL) {
                     tooltipAdder.accept(factor.getDescriptionDetail().copy().withStyle(ChatFormatting.DARK_GRAY));
                 }
             });

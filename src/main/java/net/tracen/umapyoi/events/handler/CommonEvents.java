@@ -36,10 +36,10 @@ public class CommonEvents {
         ItemStack soul = UmapyoiAPI.getUmaSoul(entity);
         if (soul.isEmpty())
             return true;
-        if (amount < Umapyoi.CONFIG.DAMAGE_MOTIVATION_EFFECT())
+        if (amount < Umapyoi.CONFIG.DAMAGE_MOTIVATION_EFFECT)
             return true;
-        if (Umapyoi.CONFIG.CHANCE_MOTIVATION_EFFECT() > 0) {
-            if (entity.level().getRandom().nextDouble() <= Umapyoi.CONFIG.CHANCE_MOTIVATION_EFFECT())
+        if (Umapyoi.CONFIG.CHANCE_MOTIVATION_EFFECT > 0) {
+            if (entity.level().getRandom().nextDouble() <= Umapyoi.CONFIG.CHANCE_MOTIVATION_EFFECT)
                 UmaStatusUtils.downMotivation(soul);
         }
         return true;
@@ -49,10 +49,10 @@ public class CommonEvents {
         ItemStack soul = UmapyoiAPI.getUmaSoul(entity);
         if (soul.isEmpty() || UmaSoulUtils.getMotivation(soul) != Motivations.BAD)
             return true;
-        if (amount < Umapyoi.CONFIG.DAMAGE_MOTIVATION_EFFECT())
+        if (amount < Umapyoi.CONFIG.DAMAGE_MOTIVATION_EFFECT)
             return true;
-        if (Umapyoi.CONFIG.CHANCE_MOTIVATION_EFFECT() > 0) {
-            if (entity.level().getRandom().nextDouble() <= Umapyoi.CONFIG.CHANCE_MOTIVATION_EFFECT()) {
+        if (Umapyoi.CONFIG.CHANCE_MOTIVATION_EFFECT > 0) {
+            if (entity.level().getRandom().nextDouble() <= Umapyoi.CONFIG.CHANCE_MOTIVATION_EFFECT) {
                 if (entity.hasEffect(MobEffectRegistry.MOOD_BONUS.getHolder())) {
                     entity.removeEffect(MobEffectRegistry.MOOD_BONUS.getHolder());
                     return true;
@@ -105,7 +105,7 @@ public class CommonEvents {
         }
 
         if (stack.is(UmapyoiItemTags.SLOW_METABOLISM)) {
-            double p = Umapyoi.CONFIG.SLOW_METABOLISM_PROBABILITY();
+            double p = Umapyoi.CONFIG.SLOW_METABOLISM_PROBABILITY;
             if (p != 0) {
                 if (world.getRandom().nextDouble() <= p)
                     entity.addEffect(new MobEffectInstance(MobEffectRegistry.SLOW_METABOLISM.getHolder(), 3600));
@@ -129,7 +129,7 @@ public class CommonEvents {
         if (UmapyoiAPI.getUmaSoul(player).isEmpty()) return;
         ServerStatsCounter serverstatscounter = player.getStats();
         int timeSinceRest = serverstatscounter.getValue(Stats.CUSTOM.get(Stats.TIME_SINCE_REST));
-        if (timeSinceRest >= Umapyoi.CONFIG.NIGHT_OWL_THRESHOLD()) {
+        if (timeSinceRest >= Umapyoi.CONFIG.NIGHT_OWL_THRESHOLD) {
             MobEffectInstance effectInstance = new MobEffectInstance(MobEffectRegistry.NIGHT_OWL.getHolder(), -1);
             player.addEffect(effectInstance);
         }

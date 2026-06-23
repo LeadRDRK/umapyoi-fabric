@@ -26,7 +26,7 @@ public class ActionBarOverlay implements HudRenderCallback {
 
     @Override
     public void onHudRender(GuiGraphics drawContext, DeltaTracker tickCounter) {
-        if (!Umapyoi.CONFIG.OVERLAY_SWITCH())
+        if (!Umapyoi.CONFIG.OVERLAY_SWITCH)
             return;
 
         if (minecraft.options.hideGui)

@@ -21,7 +21,7 @@ public class BorealisSupport extends TrainingSupport {
     @Override
     public boolean applySupport(ItemStack soul, RandomSource rand, SupportStack stack) {
         var chance = rand.nextFloat();
-        if(chance < Umapyoi.CONFIG.ACUPUNCTUIST_SUPPORT_CHANCE())
+        if(chance < Umapyoi.CONFIG.ACUPUNCTUIST_SUPPORT_CHANCE)
             this.applySuccessEvent(soul, rand);
         else
             UmaStatusUtils.downMotivation(soul);

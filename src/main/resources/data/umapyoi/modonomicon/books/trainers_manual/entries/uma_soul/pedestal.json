@@ -1,4 +1,6 @@
 {
+    "type": "modonomicon:content",
+    "id": "trainers_manual/uma_soul/pedestal",
     "name": "book.umapyoi.trainers_manual.uma_soul.pedestal.name",
     "icon": "umapyoi:uma_pedestal",
     "category": "umapyoi:uma_soul",
@@ -8,18 +10,25 @@
     "pages": [
         {
             "type": "modonomicon:text",
+            "id": "page0",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.uma_soul.pedestal.page0.text"
         },
         {
             "type": "modonomicon:text",
+            "id": "page1",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.uma_soul.pedestal.page1.text"
         },
         {
             "type": "modonomicon:text",
+            "id": "page2",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.uma_soul.pedestal.page2.text"
         },
         {
             "type": "modonomicon:crafting_recipe",
+            "id": "page3",
             "recipe_id_1": "umapyoi:silver_uma_pedestal",
             "recipe_id_2": "umapyoi:uma_pedestal",
             "title1": "book.umapyoi.trainers_manual.uma_soul.pedestal.page3.title1",

@@ -1,4 +1,6 @@
 {
+    "type": "modonomicon:content",
+    "id": "trainers_manual/prologue/credits",
     "name": "book.umapyoi.trainers_manual.prologue.credits.name",
     "icon": "minecraft:writable_book",
     "category": "umapyoi:prologue",
@@ -8,10 +10,14 @@
     "pages": [
         {
             "type": "modonomicon:text",
+            "id": "page0",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.prologue.credits.page0.text"
         },
         {
             "type": "modonomicon:text",
+            "id": "page1",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.prologue.credits.page1.text"
         }
     ]

@@ -1,4 +1,6 @@
 {
+    "type": "modonomicon:content",
+    "id": "trainers_manual/uma_soul/motivations",
     "name": "book.umapyoi.trainers_manual.uma_soul.motivations.name",
     "icon": "umapyoi:textures/book_images/motivations_icon.png",
     "category": "umapyoi:uma_soul",
@@ -8,14 +10,20 @@
     "pages": [
         {
             "type": "modonomicon:text",
+            "id": "page0",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.uma_soul.motivations.page0.text"
         },
         {
             "type": "modonomicon:text",
+            "id": "page1",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.uma_soul.motivations.page1.text"
         },
         {
             "type": "modonomicon:image",
+            "id": "page2",
+            "title": "",
             "use_legacy_rendering": true,
             "images": [
                 "umapyoi:textures/book_images/motivations.png"
@@ -24,6 +32,8 @@
         },
         {
             "type": "modonomicon:text",
+            "id": "page3",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.uma_soul.motivations.page3.text"
         }
     ]

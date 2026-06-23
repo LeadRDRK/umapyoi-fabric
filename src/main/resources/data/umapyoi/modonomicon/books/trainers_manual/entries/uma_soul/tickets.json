@@ -1,4 +1,6 @@
 {
+    "type": "modonomicon:content",
+    "id": "trainers_manual/uma_soul/tickets",
     "name": "book.umapyoi.trainers_manual.uma_soul.tickets.name",
     "icon": "umapyoi:blank_ticket",
     "category": "umapyoi:uma_soul",
@@ -8,19 +10,25 @@
     "pages": [
         {
             "type": "modonomicon:text",
+            "id": "page0",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.uma_soul.tickets.page0.text"
         },
         {
             "type": "modonomicon:text",
+            "id": "page1",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.uma_soul.tickets.page1.text"
         },
         {
             "type": "modonomicon:crafting_recipe",
+            "id": "page2",
             "recipe_id_1": "umapyoi:blank_ticket",
             "text": "book.umapyoi.trainers_manual.uma_soul.tickets.page2.text"
         },
         {
             "type": "modonomicon:crafting_recipe",
+            "id": "page3",
             "recipe_id_1": "umapyoi:uma_ticket",
             "recipe_id_2": "umapyoi:card_ticket",
             "title1": "book.umapyoi.trainers_manual.uma_soul.tickets.page3.title1",
@@ -28,6 +36,7 @@
         },
         {
             "type": "modonomicon:crafting_recipe",
+            "id": "page4",
             "recipe_id_1": "umapyoi:sr_uma_ticket",
             "recipe_id_2": "umapyoi:sr_card_ticket",
             "title1": "book.umapyoi.trainers_manual.uma_soul.tickets.page4.title1",
@@ -35,6 +44,7 @@
         },
         {
             "type": "modonomicon:crafting_recipe",
+            "id": "page5",
             "recipe_id_1": "umapyoi:ssr_uma_ticket",
             "recipe_id_2": "umapyoi:ssr_card_ticket",
             "title1": "book.umapyoi.trainers_manual.uma_soul.tickets.page5.title1",

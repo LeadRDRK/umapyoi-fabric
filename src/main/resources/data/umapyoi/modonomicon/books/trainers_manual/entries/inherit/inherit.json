@@ -1,4 +1,6 @@
 {
+    "type": "modonomicon:content",
+    "id": "trainers_manual/inherit/inherit",
     "name": "book.umapyoi.trainers_manual.inherit.inherit.name",
     "icon": "umapyoi:three_goddess",
     "category": "umapyoi:inherit",
@@ -8,14 +10,20 @@
     "pages": [
         {
             "type": "modonomicon:text",
+            "id": "page0",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.inherit.inherit.page0.text"
         },
         {
             "type": "modonomicon:text",
+            "id": "page1",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.inherit.inherit.page1.text"
         },
         {
             "type": "modonomicon:text",
+            "id": "page2",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.inherit.inherit.page2.text"
         }
     ]

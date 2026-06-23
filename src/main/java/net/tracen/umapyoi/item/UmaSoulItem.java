@@ -127,7 +127,7 @@ public class UmaSoulItem extends Item implements TrinketCallback, CreativeModeTa
         if(UmaSoulUtils.getGrowth(stack) == Growth.RETIRED)
             tooltipAdder.accept(Component.translatable("tooltip.umapyoi.uma_soul.ranking", UmaStatusUtils.getStatusLevel(ranking))
                     .withStyle(ChatFormatting.GOLD));
-        if (Minecraft.getInstance().hasShiftDown() || !Umapyoi.CONFIG.TOOLTIP_SWITCH()) {
+        if (Minecraft.getInstance().hasShiftDown() || !Umapyoi.CONFIG.TOOLTIP_SWITCH) {
             tooltipAdder.accept(
                     Component.translatable("tooltip.umapyoi.uma_soul.soul_details").withStyle(ChatFormatting.AQUA));
             UmaDataBasicStatus property = UmaSoulUtils.getProperty(stack);
@@ -217,38 +217,38 @@ public class UmaSoulItem extends Item implements TrinketCallback, CreativeModeTa
 
         consumer.accept(UmapyoiAttributesRegistry.SPRINT_SPEED,
                 new AttributeModifier(slotIdentifier,
-                        hasFatique ? 0 : getExactProperty(stack, user, StatusType.SPEED, Umapyoi.CONFIG.UMASOUL_MAX_SPEED()),
-                        Umapyoi.CONFIG.UMASOUL_SPEED_PRECENT_ENABLE() ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                        hasFatique ? 0 : getExactProperty(stack, user, StatusType.SPEED, Umapyoi.CONFIG.UMASOUL_MAX_SPEED),
+                        Umapyoi.CONFIG.UMASOUL_SPEED_PRECENT_ENABLE ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
                                 : AttributeModifier.Operation.ADD_VALUE));
 
         consumer.accept(Attributes.WATER_MOVEMENT_EFFICIENCY,
                 new AttributeModifier(slotIdentifier,
-                        hasFatique ? 0 : getExactProperty(stack, user, StatusType.SPEED, Umapyoi.CONFIG.UMASOUL_MAX_SPEED()),
-                        Umapyoi.CONFIG.UMASOUL_SPEED_PRECENT_ENABLE() ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                        hasFatique ? 0 : getExactProperty(stack, user, StatusType.SPEED, Umapyoi.CONFIG.UMASOUL_MAX_SPEED),
+                        Umapyoi.CONFIG.UMASOUL_SPEED_PRECENT_ENABLE ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
                                 : AttributeModifier.Operation.ADD_VALUE));
 
         consumer.accept(Attributes.ATTACK_DAMAGE,
                 new AttributeModifier(slotIdentifier,
-                        getExactProperty(stack, user, StatusType.STRENGTH, Umapyoi.CONFIG.UMASOUL_MAX_STRENGTH_ATTACK()),
-                        Umapyoi.CONFIG.UMASOUL_STRENGTH_PRECENT_ENABLE() ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                        getExactProperty(stack, user, StatusType.STRENGTH, Umapyoi.CONFIG.UMASOUL_MAX_STRENGTH_ATTACK),
+                        Umapyoi.CONFIG.UMASOUL_STRENGTH_PRECENT_ENABLE ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
                                 : AttributeModifier.Operation.ADD_VALUE));
 
         consumer.accept(Attributes.MAX_HEALTH,
                 new AttributeModifier(slotIdentifier,
-                        getExactProperty(stack, user, StatusType.STAMINA, Umapyoi.CONFIG.UMASOUL_MAX_STAMINA_HEALTH()) * (hasFatique ? 1.05 : 1),
-                        Umapyoi.CONFIG.UMASOUL_STAMINA_PRECENT_ENABLE() ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                        getExactProperty(stack, user, StatusType.STAMINA, Umapyoi.CONFIG.UMASOUL_MAX_STAMINA_HEALTH) * (hasFatique ? 1.05 : 1),
+                        Umapyoi.CONFIG.UMASOUL_STAMINA_PRECENT_ENABLE ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
                                 : AttributeModifier.Operation.ADD_VALUE));
 
         consumer.accept(Attributes.ARMOR,
                 new AttributeModifier(slotIdentifier,
-                        getExactProperty(stack, user, StatusType.GUTS, Umapyoi.CONFIG.UMASOUL_MAX_GUTS_ARMOR()) * (hasFatique ? 1.05 : 1),
-                        Umapyoi.CONFIG.UMASOUL_GUTS_PRECENT_ENABLE() ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                        getExactProperty(stack, user, StatusType.GUTS, Umapyoi.CONFIG.UMASOUL_MAX_GUTS_ARMOR) * (hasFatique ? 1.05 : 1),
+                        Umapyoi.CONFIG.UMASOUL_GUTS_PRECENT_ENABLE ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
                                 : AttributeModifier.Operation.ADD_VALUE));
 
         consumer.accept(Attributes.ARMOR_TOUGHNESS,
                 new AttributeModifier(slotIdentifier,
-                        getExactProperty(stack, user, StatusType.GUTS, Umapyoi.CONFIG.UMASOUL_MAX_GUTS_ARMOR_TOUGHNESS()),
-                        Umapyoi.CONFIG.UMASOUL_GUTS_PRECENT_ENABLE() ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                        getExactProperty(stack, user, StatusType.GUTS, Umapyoi.CONFIG.UMASOUL_MAX_GUTS_ARMOR_TOUGHNESS),
+                        Umapyoi.CONFIG.UMASOUL_GUTS_PRECENT_ENABLE ? AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
                                 : AttributeModifier.Operation.ADD_VALUE));
 
         var event = new ApplyUmasoulAttributeCallback.Context(user, stack, slot, slotIdentifier, consumer);
@@ -265,9 +265,9 @@ public class UmaSoulItem extends Item implements TrinketCallback, CreativeModeTa
     }
 
     public static double propertyPercentageByValue(int x) {
-        var statLimit = Umapyoi.CONFIG.STAT_LIMIT_VALUE();
+        var statLimit = Umapyoi.CONFIG.STAT_LIMIT_VALUE;
         var denominator = 1 + Math.pow(Math.E,
-                (x > statLimit ? (-0.125 * Umapyoi.CONFIG.STAT_LIMIT_REDUCTION_RATE()) : -0.125) *
+                (x > statLimit ? (-0.125 * Umapyoi.CONFIG.STAT_LIMIT_REDUCTION_RATE) : -0.125) *
                         (x - statLimit));
         return 1 / denominator;
     }

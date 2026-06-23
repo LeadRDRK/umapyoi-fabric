@@ -1,4 +1,6 @@
 {
+    "type": "modonomicon:content",
+    "id": "trainers_manual/others/disassemble",
     "name": "book.umapyoi.trainers_manual.others.disassemble.name",
     "icon": "umapyoi:disassembly_block",
     "category": "umapyoi:others",
@@ -8,10 +10,13 @@
     "pages": [
         {
             "type": "modonomicon:text",
+            "id": "page0",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.others.disassemble.page0.text"
         },
         {
             "type": "modonomicon:crafting_recipe",
+            "id": "page1",
             "recipe_id_1": "umapyoi:disassembly_block",
             "text": "book.umapyoi.trainers_manual.others.disassemble.page1.text"
         }

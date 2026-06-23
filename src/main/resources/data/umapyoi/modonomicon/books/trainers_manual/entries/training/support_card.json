@@ -1,4 +1,6 @@
 {
+    "type": "modonomicon:content",
+    "id": "trainers_manual/training/support_card",
     "name": "book.umapyoi.trainers_manual.training.support_card.name",
     "icon": "umapyoi:support_card",
     "category": "umapyoi:training",
@@ -8,38 +10,56 @@
     "pages": [
         {
             "type": "modonomicon:text",
+            "id": "page0",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.training.support_card.page0.text"
         },
         {
             "type": "modonomicon:text",
+            "id": "page1",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.training.support_card.page1.text"
         },
         {
             "type": "modonomicon:text",
+            "id": "page2",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.training.support_card.page2.text"
         },
         {
             "type": "modonomicon:text",
+            "id": "page3",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.training.support_card.page3.text"
         },
         {
             "type": "modonomicon:text",
+            "id": "page4",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.training.support_card.page4.text"
         },
         {
             "type": "modonomicon:text",
+            "id": "page5",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.training.support_card.page5.text"
         },
         {
             "type": "modonomicon:text",
+            "id": "page6",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.training.support_card.page6.text"
         },
         {
             "type": "modonomicon:text",
+            "id": "page7",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.training.support_card.page7.text"
         },
         {
             "type": "modonomicon:text",
+            "id": "page8",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.training.support_card.page8.text"
         }
     ]

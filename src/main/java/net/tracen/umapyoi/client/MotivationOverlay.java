@@ -26,7 +26,7 @@ public class MotivationOverlay implements HudElement {
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
-        if (!Umapyoi.CONFIG.OVERLAY_SWITCH())
+        if (!Umapyoi.CONFIG.OVERLAY_SWITCH)
             return;
 
         if (minecraft.gui.hud.isHidden())
@@ -41,8 +41,8 @@ public class MotivationOverlay implements HudElement {
             return;
 
         if (!UmapyoiAPI.getUmaSoul(player).isEmpty()) {
-            int xOffset = Umapyoi.CONFIG.TOPLEFT_COORD_MOTIVATION_X();
-            int yOffset = Umapyoi.CONFIG.TOPLEFT_COORD_MOTIVATION_Y();
+            int xOffset = Umapyoi.CONFIG.TOPLEFT_COORD_MOTIVATION_X;
+            int yOffset = Umapyoi.CONFIG.TOPLEFT_COORD_MOTIVATION_Y;
             switch (UmaSoulUtils.getMotivation(UmapyoiAPI.getUmaSoul(player))) {
                 case BAD -> {
                     guiGraphics.blit(RenderPipelines.GUI_TEXTURED, HUD, x + xOffset, y + yOffset, 0, 60, 64, 14, 64, 96);

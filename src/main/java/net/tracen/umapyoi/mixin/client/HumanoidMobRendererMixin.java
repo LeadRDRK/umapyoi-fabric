@@ -25,8 +25,8 @@ public class HumanoidMobRendererMixin {
         ItemStack equipment;
         if (slot.getType() != EquipmentSlot.Type.HAND && !(equipment = ci.getReturnValue()).isEmpty()) {
             var umasoul = UmapyoiAPI.getRenderingUmaSoul(entity);
-            if (!Umapyoi.CONFIG.VANILLA_ARMOR_RENDER() && !umasoul.isEmpty()) {
-                boolean renderElytra = Umapyoi.CONFIG.ELYTRA_RENDER() && equipment.getItem() == Items.ELYTRA;
+            if (!Umapyoi.CONFIG.VANILLA_ARMOR_RENDER && !umasoul.isEmpty()) {
+                boolean renderElytra = Umapyoi.CONFIG.ELYTRA_RENDER && equipment.getItem() == Items.ELYTRA;
                 boolean shouldRender = equipment.is(UmapyoiItemTags.SHOULD_RENDER);
                 if (!renderElytra && !shouldRender)
                     ci.setReturnValue(ItemStack.EMPTY);

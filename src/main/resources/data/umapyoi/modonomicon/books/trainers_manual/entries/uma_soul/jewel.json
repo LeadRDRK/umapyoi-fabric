@@ -1,4 +1,6 @@
 {
+    "type": "modonomicon:content",
+    "id": "trainers_manual/uma_soul/jewel",
     "name": "book.umapyoi.trainers_manual.uma_soul.jewel.name",
     "icon": "umapyoi:jewel",
     "category": "umapyoi:uma_soul",
@@ -8,10 +10,13 @@
     "pages": [
         {
             "type": "modonomicon:text",
+            "id": "page0",
+            "title": "",
             "text": "book.umapyoi.trainers_manual.uma_soul.jewel.page0.text"
         },
         {
             "type": "modonomicon:crafting_recipe",
+            "id": "page1",
             "recipe_id_1": "umapyoi:jewel",
             "text": "book.umapyoi.trainers_manual.uma_soul.jewel.page1.text",
             "title1": "book.umapyoi.trainers_manual.uma_soul.jewel.page1.title1",

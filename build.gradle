@@ -73,8 +73,8 @@ dependencies {
     // at runtime, use the full JEI jar for Fabric
     runtimeOnly("mezz.jei:jei-${project.jei_minecraft_version}-fabric:${project.jei_version}")
 
-    modImplementation "dev.isxander:yet-another-config-lib:${project.yacl_version}"
-    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+    implementation "dev.isxander:yet-another-config-lib:${project.yacl_version}"
+    implementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
     implementation "com.google.code.findbugs:jsr305:3.0.2"
 }
